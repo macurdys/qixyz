@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#0f2318;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a3a2a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="balloonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d6b3f;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#1a5c30;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0e3d20;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="solarPanel" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a237e;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#283593;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#1a237e;stop-opacity:0.9" />
+    </linearGradient>
+    <linearGradient id="glowCyan" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#00f0ff;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient id="vineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7ed957;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#2d6b3f;stop-opacity:0.6" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient id="sunGlow" cx="50%" cy="30%" r="40%">
+      <stop offset="0%" style="stop-color:#ffb800;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#ffb800;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="600" fill="url(#skyGradient)" />
+
+  <!-- Grid lines (faint) -->
+  <g opacity="0.04" stroke="#00f0ff" stroke-width="0.5">
+    <line x1="0" y1="100" x2="800" y2="100" />
+    <line x1="0" y1="200" x2="800" y2="200" />
+    <line x1="0" y1="300" x2="800" y2="300" />
+    <line x1="0" y1="400" x2="800" y2="400" />
+    <line x1="0" y1="500" x2="800" y2="500" />
+    <line x1="100" y1="0" x2="100" y2="600" />
+    <line x1="200" y1="0" x2="200" y2="600" />
+    <line x1="300" y1="0" x2="300" y2="600" />
+    <line x1="400" y1="0" x2="400" y2="600" />
+    <line x1="500" y1="0" x2="500" y2="600" />
+    <line x1="600" y1="0" x2="600" y2="600" />
+    <line x1="700" y1="0" x2="700" y2="600" />
+  </g>
+
+  <!-- Sun glow -->
+  <circle cx="650" cy="120" r="250" fill="url(#sunGlow)" />
+  <circle cx="650" cy="120" r="40" fill="#ffb800" opacity="0.12" filter="url(#softGlow)" />
+
+  <!-- Stars / spores -->
+  <g fill="#7ed957" opacity="0.4">
+    <circle cx="80" cy="60" r="1.5" />
+    <circle cx="200" cy="40" r="1" />
+    <circle cx="350" cy="80" r="1.5" />
+    <circle cx="500" cy="30" r="1" />
+    <circle cx="720" cy="70" r="1.5" />
+    <circle cx="150" cy="150" r="1" />
+    <circle cx="680" cy="350" r="1" />
+    <circle cx="50" cy="400" r="1.5" />
+    <circle cx="750" cy="450" r="1" />
+  </g>
+  <g fill="#00f0ff" opacity="0.3">
+    <circle cx="120" cy="100" r="1" />
+    <circle cx="300" cy="55" r="1.5" />
+    <circle cx="580" cy="90" r="1" />
+    <circle cx="400" cy="520" r="1" />
+    <circle cx="100" cy="500" r="1.5" />
+  </g>
+
+  <!-- Distant floating islands -->
+  <g opacity="0.15">
+    <ellipse cx="120" cy="380" rx="60" ry="12" fill="#1a4a2e" />
+    <rect x="90" y="355" width="8" height="25" fill="#2d6b3f" rx="2" />
+    <circle cx="94" cy="348" r="12" fill="#4a9e5c" />
+    <rect x="115" y="360" width="6" height="20" fill="#2d6b3f" rx="2" />
+    <circle cx="118" cy="354" r="9" fill="#3d8b50" />
+
+    <ellipse cx="700" cy="420" rx="45" ry="10" fill="#1a4a2e" />
+    <rect x="685" y="400" width="6" height="20" fill="#2d6b3f" rx="2" />
+    <circle cx="688" cy="394" r="10" fill="#4a9e5c" />
+  </g>
+
+  <!-- BLIMP -->
+  <g transform="translate(400, 260)">
+
+    <!-- Envelope (main balloon) -->
+    <ellipse cx="0" cy="-50" rx="190" ry="85" fill="url(#balloonGradient)" stroke="#39FF9a" stroke-width="0.5" opacity="0.95"/>
+
+    <!-- Envelope panel lines -->
+    <path d="M-190,-50 Q-95,-115 0,-115 Q95,-115 190,-50" fill="none" stroke="#39FF9a" stroke-width="0.3" opacity="0.3"/>
+    <path d="M-190,-50 Q-95,15 0,15 Q95,15 190,-50" fill="none" stroke="#39FF9a" stroke-width="0.3" opacity="0.3"/>
+    <line x1="0" y1="-135" x2="0" y2="35" stroke="#39FF9a" stroke-width="0.3" opacity="0.2" />
+    <line x1="-95" y1="-130" x2="-95" y2="30" stroke="#39FF9a" stroke-width="0.3" opacity="0.15" />
+    <line x1="95" y1="-130" x2="95" y2="30" stroke="#39FF9a" stroke-width="0.3" opacity="0.15" />
+
+    <!-- Vine overgrowth on envelope -->
+    <path d="M-120,-90 Q-100,-100 -80,-85 Q-60,-95 -40,-80" fill="none" stroke="url(#vineGrad)" stroke-width="2" opacity="0.5"/>
+    <circle cx="-80" cy="-88" r="4" fill="#7ed957" opacity="0.3" />
+    <circle cx="-45" cy="-82" r="3" fill="#4a9e5c" opacity="0.4" />
+    <path d="M60,-95 Q80,-105 100,-90 Q120,-100 140,-85" fill="none" stroke="url(#vineGrad)" stroke-width="1.5" opacity="0.4"/>
+    <circle cx="100" cy="-93" r="3" fill="#7ed957" opacity="0.3" />
+
+    <!-- Solar panels on top -->
+    <g transform="translate(0, -120)">
+      <rect x="-70" y="-15" width="140" height="28" rx="2" fill="url(#solarPanel)" stroke="#00f0ff" stroke-width="0.5" opacity="0.85"/>
+      <!-- Panel grid -->
+      <line x1="-35" y1="-15" x2="-35" y2="13" stroke="#00f0ff" stroke-width="0.3" opacity="0.4" />
+      <line x1="0" y1="-15" x2="0" y2="13" stroke="#00f0ff" stroke-width="0.3" opacity="0.4" />
+      <line x1="35" y1="-15" x2="35" y2="13" stroke="#00f0ff" stroke-width="0.3" opacity="0.4" />
+      <line x1="-70" y1="-1" x2="70" y2="-1" stroke="#00f0ff" stroke-width="0.3" opacity="0.4" />
+      <!-- Solar glow -->
+      <rect x="-70" y="-15" width="140" height="28" rx="2" fill="#00f0ff" opacity="0.05" filter="url(#glow)"/>
+    </g>
+
+    <!-- Rigging lines -->
+    <line x1="-55" y1="35" x2="-110" y2="0" stroke="#00f0ff" stroke-width="0.5" opacity="0.3"/>
+    <line x1="55" y1="35" x2="110" y2="0" stroke="#00f0ff" stroke-width="0.5" opacity="0.3"/>
+    <line x1="-30" y1="35" x2="-60" y2="-10" stroke="#00f0ff" stroke-width="0.5" opacity="0.2"/>
+    <line x1="30" y1="35" x2="60" y2="-10" stroke="#00f0ff" stroke-width="0.5" opacity="0.2"/>
+
+    <!-- Gondola -->
+    <rect x="-65" y="35" width="130" height="45" rx="6" ry="6" fill="#111822" stroke="#00f0ff" stroke-width="1" opacity="0.95"/>
+    <!-- Gondola glow line -->
+    <line x1="-65" y1="35" x2="65" y2="35" stroke="#00f0ff" stroke-width="1" opacity="0.5" filter="url(#glow)"/>
+
+    <!-- Windows -->
+    <rect x="-52" y="42" width="22" height="16" rx="2" fill="#0a1628" stroke="#00f0ff" stroke-width="0.5" opacity="0.7"/>
+    <rect x="-52" y="42" width="22" height="16" rx="2" fill="#00f0ff" opacity="0.05"/>
+    <rect x="-22" y="42" width="44" height="16" rx="2" fill="#0a1628" stroke="#00f0ff" stroke-width="0.5" opacity="0.7"/>
+    <rect x="-22" y="42" width="44" height="16" rx="2" fill="#00f0ff" opacity="0.05"/>
+    <rect x="30" y="42" width="22" height="16" rx="2" fill="#0a1628" stroke="#00f0ff" stroke-width="0.5" opacity="0.7"/>
+    <rect x="30" y="42" width="22" height="16" rx="2" fill="#00f0ff" opacity="0.05"/>
+
+    <!-- Gondola vine -->
+    <path d="M-65,75 Q-55,70 -50,80 Q-40,72 -30,78" fill="none" stroke="#4a9e5c" stroke-width="1.5" opacity="0.4"/>
+    <circle cx="-50" cy="78" r="2.5" fill="#7ed957" opacity="0.3" />
+
+    <!-- Propellers -->
+    <g transform="translate(-75, 55)">
+      <circle cx="0" cy="0" r="14" fill="#111822" stroke="#00f0ff" stroke-width="0.5" opacity="0.8"/>
+      <line x1="-18" y1="0" x2="18" y2="0" stroke="#00f0ff" stroke-width="2" opacity="0.5" />
+      <line x1="0" y1="-18" x2="0" y2="18" stroke="#00f0ff" stroke-width="2" opacity="0.5" />
+      <circle cx="0" cy="0" r="3" fill="#00f0ff" opacity="0.3" filter="url(#glow)"/>
+    </g>
+    <g transform="translate(75, 55)">
+      <circle cx="0" cy="0" r="14" fill="#111822" stroke="#00f0ff" stroke-width="0.5" opacity="0.8"/>
+      <line x1="-18" y1="0" x2="18" y2="0" stroke="#00f0ff" stroke-width="2" opacity="0.5" />
+      <line x1="0" y1="-18" x2="0" y2="18" stroke="#00f0ff" stroke-width="2" opacity="0.5" />
+      <circle cx="0" cy="0" r="3" fill="#00f0ff" opacity="0.3" filter="url(#glow)"/>
+    </g>
+
+    <!-- Tail fin -->
+    <path d="M170,-50 L215,-85 L215,-15 Z" fill="#1a4a2e" stroke="#39FF9a" stroke-width="0.5" opacity="0.9"/>
+    <!-- Qi symbol on tail -->
+    <text x="195" y="-45" font-family="Arial, sans-serif" font-size="18" fill="#00f0ff" font-weight="bold" text-anchor="middle" opacity="0.7" transform="rotate(90 195,-45)">Qi</text>
+
+    <!-- Antenna with bioluminescent tip -->
+    <line x1="0" y1="-135" x2="0" y2="-160" stroke="#39FF9a" stroke-width="1" opacity="0.4"/>
+    <circle cx="0" cy="-163" r="4" fill="#39FF9a" opacity="0.6" filter="url(#glow)"/>
+
+  </g>
+
+  <!-- Bottom canopy / treeline silhouette -->
+  <g opacity="0.2">
+    <path d="M0,580 Q50,520 100,560 Q130,530 160,555 Q200,510 250,550 Q280,520 320,545 Q360,500 400,540 Q440,510 480,535 Q520,490 560,530 Q600,505 640,540 Q680,510 720,545 Q760,520 800,555 L800,600 L0,600 Z" fill="#1a4a2e"/>
+  </g>
+
+  <!-- QI.XYZ label -->
+  <text x="400" y="570" font-family="'Courier New', monospace" font-size="12" fill="#00f0ff" text-anchor="middle" letter-spacing="4" opacity="0.4">BLIMP.QI.XYZ</text>
+</svg>
