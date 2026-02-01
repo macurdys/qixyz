@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -212,6 +213,32 @@
             width: 8px; height: 8px;
             border-radius: 50%;
         }
+
+        /* Image-based carousel cards */
+        .carousel-card-img {
+            padding: 0;
+            overflow: hidden;
+        }
+        .carousel-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease, filter 0.4s ease;
+            filter: brightness(0.85);
+        }
+        .carousel-card:hover .carousel-card-img img {
+            transform: scale(1.05);
+            filter: brightness(1);
+        }
+        .carousel-card-img .card-tag-top {
+            background: rgba(6, 8, 13, 0.75);
+            backdrop-filter: blur(4px);
+        }
+
+        .carousel-card-featured {
+            flex: 0 0 400px;
+        }
         .card-status.live { background: var(--qi-green); box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); }
         .card-status.concept { background: var(--qi-amber); box-shadow: 0 0 8px rgba(255, 184, 0, 0.5); }
         .card-status.open { background: var(--qi-purple); box-shadow: 0 0 8px rgba(191, 90, 242, 0.5); }
@@ -337,6 +364,7 @@
             .bay-grid { grid-template-columns: 1fr; }
             .guild-highlight { padding: 32px 24px; }
             .carousel-card { flex: 0 0 280px; }
+            .carousel-card-featured { flex: 0 0 300px; }
             footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
         }
 
@@ -385,9 +413,33 @@
         <div class="carousel-track-wrapper">
             <div class="carousel-track" id="carouselTrack">
 
-                <a href="#accelerator" class="carousel-card" data-color="cyan">
-                    <div class="carousel-card-visual">
+                <a href="https://blimp.qi.xyz" class="carousel-card carousel-card-featured" data-color="green">
+                    <div class="carousel-card-visual carousel-card-img">
+                        <img src="images/blimp.svg" alt="Blimp — Solarpunk Dirigible Builder" />
                         <span class="card-tag-top">Proto-01</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Blimp</h3>
+                        <p>Solarpunk dirigible builder game. Construct your airship, equip it, fly, and dock with other players. Powered by Qi via BlipPay.</p>
+                    </div>
+                </a>
+
+                <a href="#accelerator" class="carousel-card carousel-card-featured" data-color="amber">
+                    <div class="carousel-card-visual carousel-card-img">
+                        <img src="images/podcast.png" alt="From Big Bang to Blockchain Podcast" />
+                        <span class="card-tag-top">Proto-02</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Big Bang to Blockchain</h3>
+                        <p>Podcast with Dr. Karl Kreder + Jordan Hall. Hosted by Steph Macurdy. Wolfram Blockchain Labs × Quai Network.</p>
+                    </div>
+                </a>
+
+                <a href="https://americanenergymoney.com" target="_blank" class="carousel-card" data-color="cyan">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Proto-03</span>
                         <span class="card-status live"></span>
                         <span class="card-glyph">AEM</span>
                     </div>
@@ -397,9 +449,9 @@
                     </div>
                 </a>
 
-                <a href="#accelerator" class="carousel-card" data-color="amber">
+                <a href="https://thermoeconomics.info" target="_blank" class="carousel-card" data-color="cyan">
                     <div class="carousel-card-visual">
-                        <span class="card-tag-top">Proto-02</span>
+                        <span class="card-tag-top">Proto-04</span>
                         <span class="card-status live"></span>
                         <span class="card-glyph">T·E</span>
                     </div>
@@ -411,7 +463,7 @@
 
                 <a href="#accelerator" class="carousel-card" data-color="green">
                     <div class="carousel-card-visual">
-                        <span class="card-tag-top">Proto-03</span>
+                        <span class="card-tag-top">Proto-05</span>
                         <span class="card-status concept"></span>
                         <span class="card-glyph">Q·C</span>
                     </div>
@@ -442,30 +494,6 @@
                     <div class="carousel-card-body">
                         <h3>Thermodynamic Model</h3>
                         <p>Mapping Qi/Quai to Active Inference and free energy. Understanding dual currency as thermodynamics.</p>
-                    </div>
-                </a>
-
-                <a href="#lab" class="carousel-card" data-color="green">
-                    <div class="carousel-card-visual">
-                        <span class="card-tag-top">Exp-02</span>
-                        <span class="card-status concept"></span>
-                        <span class="card-glyph">⛏</span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>Mining Dashboard</h3>
-                        <p>Real-time profitability analysis for Qi mining. Hash rate, difficulty, energy cost, and yield.</p>
-                    </div>
-                </a>
-
-                <a href="#lab" class="carousel-card" data-color="purple">
-                    <div class="carousel-card-visual">
-                        <span class="card-tag-top">Exp-03</span>
-                        <span class="card-status concept"></span>
-                        <span class="card-glyph">▶ M</span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>Manim Animations</h3>
-                        <p>Mathematical video animations explaining entropy decomposition and dual currency thermodynamics.</p>
                     </div>
                 </a>
 
