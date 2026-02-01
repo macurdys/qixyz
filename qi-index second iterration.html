@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qi — Energy Money Docking Station</title>
+    <meta name="description" content="Startup accelerator, gamer guild, and brainstorm dock. Build on Qi, the energy-based money.">
+    <meta property="og:title" content="Qi.xyz — Energy Money Docking Station">
+    <meta property="og:description" content="Startup accelerator. Gamer guild. Brainstorm dock. All built on Qi — the energy-based money.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-cyan-glow); }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s, text-shadow 0.3s; }
+        .nav-links a:hover { color: var(--qi-cyan); text-shadow: 0 0 10px var(--qi-cyan-glow); }
+        .nav-toggle { display: none; background: none; border: 1px solid var(--border-bright); color: var(--qi-cyan); padding: 6px 12px; font-family: var(--font-mono); font-size: 11px; cursor: pointer; letter-spacing: 2px; }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 120px 24px 60px; z-index: 1;
+        }
+        .hero-orb {
+            position: absolute; width: 500px; height: 500px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+            filter: blur(60px); top: 50%; left: 50%; transform: translate(-50%, -50%);
+            animation: orb-pulse 6s ease-in-out infinite;
+        }
+        @keyframes orb-pulse { 0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); } }
+
+        .hero-status { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 32px; opacity: 0; animation: fade-up 0.8s ease forwards 0.2s; }
+        .hero-status::before { content: '◆ '; animation: blink 2s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .hero h1 { font-family: var(--font-display); font-size: clamp(48px, 10vw, 120px); font-weight: 900; letter-spacing: 12px; color: var(--text-primary); line-height: 1; margin-bottom: 24px; opacity: 0; animation: fade-up 0.8s ease forwards 0.4s; }
+        .hero h1 span { color: var(--qi-cyan); text-shadow: 0 0 40px var(--qi-cyan-glow), 0 0 80px rgba(0, 240, 255, 0.15); }
+        .hero-tagline { font-family: var(--font-body); font-size: clamp(18px, 2.5vw, 24px); font-weight: 300; color: var(--text-secondary); max-width: 600px; margin-bottom: 48px; opacity: 0; animation: fade-up 0.8s ease forwards 0.6s; }
+        .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; opacity: 0; animation: fade-up 0.8s ease forwards 0.8s; }
+        @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== BUTTONS ===== */
+        .btn { font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; padding: 14px 32px; transition: all 0.3s; cursor: pointer; display: inline-block; }
+        .btn-primary { background: var(--qi-cyan); color: var(--bg-deep); border: 1px solid var(--qi-cyan); box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.1); }
+        .btn-primary:hover { box-shadow: 0 0 40px rgba(0, 240, 255, 0.4), inset 0 0 30px rgba(0, 240, 255, 0.2); transform: translateY(-2px); }
+        .btn-ghost { background: transparent; color: var(--qi-cyan); border: 1px solid var(--border-bright); }
+        .btn-ghost:hover { background: var(--qi-cyan-dim); border-color: var(--qi-cyan); box-shadow: 0 0 20px rgba(0, 240, 255, 0.1); }
+
+        /* ===== CAROUSEL ===== */
+        .carousel-section {
+            position: relative; z-index: 1;
+            padding: 0 24px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .carousel-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .carousel-label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan);
+            letter-spacing: 4px; text-transform: uppercase;
+        }
+        .carousel-label::before { content: '// '; color: var(--text-dim); }
+
+        .carousel-controls {
+            display: flex; gap: 8px;
+        }
+
+        .carousel-btn {
+            width: 40px; height: 40px;
+            background: transparent; border: 1px solid var(--border-dim);
+            color: var(--qi-cyan); font-size: 18px;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono);
+        }
+        .carousel-btn:hover { border-color: var(--qi-cyan); background: var(--qi-cyan-dim); box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
+
+        .carousel-track-wrapper {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-track-wrapper::before,
+        .carousel-track-wrapper::after {
+            content: '';
+            position: absolute; top: 0; bottom: 0; width: 60px; z-index: 10;
+            pointer-events: none;
+        }
+        .carousel-track-wrapper::before { left: 0; background: linear-gradient(90deg, var(--bg-deep), transparent); }
+        .carousel-track-wrapper::after { right: 0; background: linear-gradient(-90deg, var(--bg-deep), transparent); }
+
+        .carousel-track {
+            display: flex; gap: 20px;
+            transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .carousel-card {
+            flex: 0 0 340px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 0;
+            position: relative;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .carousel-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+
+        .carousel-card:hover { border-color: var(--border-bright); box-shadow: 0 0 30px rgba(0, 240, 255, 0.06); transform: translateY(-4px); }
+        .carousel-card:hover::before { opacity: 1; }
+
+        .carousel-card-visual {
+            height: 180px;
+            background: var(--bg-panel);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-card-visual .card-glyph {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--qi-cyan);
+            opacity: 0.15;
+            letter-spacing: 4px;
+        }
+
+        .carousel-card-visual .card-tag-top {
+            position: absolute;
+            top: 12px; left: 12px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border: 1px solid var(--border-bright);
+            color: var(--qi-cyan);
+        }
+
+        .carousel-card-visual .card-status {
+            position: absolute;
+            top: 12px; right: 12px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+        }
+        .card-status.live { background: var(--qi-green); box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); }
+        .card-status.concept { background: var(--qi-amber); box-shadow: 0 0 8px rgba(255, 184, 0, 0.5); }
+        .card-status.open { background: var(--qi-purple); box-shadow: 0 0 8px rgba(191, 90, 242, 0.5); }
+
+        /* Unique color accents per card */
+        .carousel-card[data-color="cyan"] .carousel-card-visual { border-bottom: 1px solid rgba(0, 240, 255, 0.15); }
+        .carousel-card[data-color="cyan"] .card-glyph { color: var(--qi-cyan); }
+        .carousel-card[data-color="amber"] .carousel-card-visual { border-bottom: 1px solid rgba(255, 184, 0, 0.15); }
+        .carousel-card[data-color="amber"] .card-glyph { color: var(--qi-amber); }
+        .carousel-card[data-color="green"] .carousel-card-visual { border-bottom: 1px solid rgba(57, 255, 20, 0.15); }
+        .carousel-card[data-color="green"] .card-glyph { color: var(--qi-green); }
+        .carousel-card[data-color="purple"] .carousel-card-visual { border-bottom: 1px solid rgba(191, 90, 242, 0.15); }
+        .carousel-card[data-color="purple"] .card-glyph { color: var(--qi-purple); }
+        .carousel-card[data-color="red"] .carousel-card-visual { border-bottom: 1px solid rgba(255, 51, 102, 0.15); }
+        .carousel-card[data-color="red"] .card-glyph { color: var(--qi-red); }
+
+        .carousel-card-body { padding: 24px; }
+        .carousel-card-body h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
+        .carousel-card-body p { font-size: 14px; font-weight: 300; color: var(--text-secondary); line-height: 1.6; }
+
+        .carousel-dots {
+            display: flex; gap: 6px; justify-content: center; margin-top: 24px;
+        }
+        .carousel-dot {
+            width: 8px; height: 2px;
+            background: var(--text-dim);
+            border: none; cursor: pointer;
+            transition: all 0.3s;
+            padding: 0;
+        }
+        .carousel-dot.active { width: 24px; background: var(--qi-cyan); box-shadow: 0 0 6px var(--qi-cyan-glow); }
+
+        /* ===== SECTIONS ===== */
+        section { position: relative; z-index: 1; padding: 120px 24px; }
+        .section-inner { max-width: 1100px; margin: 0 auto; }
+        .section-label { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+        .section-label::before { content: '// '; color: var(--text-dim); }
+        .section-title { font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; line-height: 1.2; }
+        .section-desc { font-size: 18px; font-weight: 300; color: var(--text-secondary); max-width: 700px; margin-bottom: 56px; line-height: 1.8; }
+
+        .divider { max-width: 1100px; margin: 0 auto; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); position: relative; z-index: 1; }
+
+        /* ===== MISSION ===== */
+        .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+        .mission-text h3 { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--qi-amber); letter-spacing: 1px; margin-bottom: 16px; }
+        .mission-text p { font-weight: 300; color: var(--text-secondary); line-height: 1.9; margin-bottom: 16px; }
+        .mission-visual { border: 1px solid var(--border-dim); background: var(--bg-panel); padding: 40px; position: relative; overflow: hidden; }
+        .mission-visual::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); }
+        .mission-stat { margin-bottom: 28px; }
+        .mission-stat:last-child { margin-bottom: 0; }
+        .mission-stat-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; }
+        .mission-stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--qi-cyan); letter-spacing: 2px; }
+        .mission-stat-value.amber { color: var(--qi-amber); }
+        .mission-stat-bar { height: 2px; background: var(--border-dim); margin-top: 8px; }
+        .mission-stat-bar-fill { height: 100%; background: var(--qi-cyan); box-shadow: 0 0 8px var(--qi-cyan-glow); }
+
+        /* ===== BAY CARDS ===== */
+        .bay-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .bay-card { background: var(--bg-card); border: 1px solid var(--border-dim); padding: 36px 32px; position: relative; transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s; overflow: hidden; }
+        .bay-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); opacity: 0; transition: opacity 0.3s; }
+        .bay-card:hover { border-color: var(--border-bright); box-shadow: 0 0 30px rgba(0, 240, 255, 0.05); transform: translateY(-4px); }
+        .bay-card:hover::before { opacity: 1; }
+        .bay-card-icon { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 2px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .bay-card-icon .dot { width: 6px; height: 6px; background: var(--qi-cyan); box-shadow: 0 0 8px var(--qi-cyan-glow); }
+        .bay-card h3 { font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: 1px; margin-bottom: 12px; }
+        .bay-card p { font-weight: 300; color: var(--text-secondary); line-height: 1.8; font-size: 15px; }
+        .bay-card .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+        .tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--border-dim); color: var(--text-dim); }
+        .tag.cyan { border-color: rgba(0, 240, 255, 0.25); color: var(--qi-cyan); }
+        .tag.amber { border-color: rgba(255, 184, 0, 0.25); color: var(--qi-amber); }
+        .tag.green { border-color: rgba(57, 255, 20, 0.25); color: var(--qi-green); }
+        .tag.purple { border-color: rgba(191, 90, 242, 0.25); color: var(--qi-purple); }
+        .tag.red { border-color: rgba(255, 51, 102, 0.25); color: var(--qi-red); }
+
+        .bay-card.acc-1::before { background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); opacity: 1; }
+        .bay-card.acc-2::before { background: linear-gradient(90deg, transparent, var(--qi-amber), transparent); opacity: 1; }
+        .bay-card.acc-3::before { background: linear-gradient(90deg, transparent, var(--qi-green), transparent); opacity: 1; }
+        .bay-card.acc-4::before { background: linear-gradient(90deg, transparent, var(--qi-purple), transparent); opacity: 1; }
+
+        /* ===== GUILD ===== */
+        .guild-highlight { background: var(--bg-panel); border: 1px solid var(--border-dim); padding: 48px; margin-bottom: 48px; position: relative; overflow: hidden; }
+        .guild-highlight::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--qi-amber), var(--qi-cyan), var(--qi-green)); }
+        .guild-highlight h3 { font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: 1px; margin-bottom: 16px; }
+        .guild-highlight p { font-weight: 300; color: var(--text-secondary); line-height: 1.9; max-width: 700px; }
+
+        /* ===== DOCK ===== */
+        .dock-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .dock-link { display: flex; align-items: center; gap: 16px; padding: 24px; border: 1px solid var(--border-dim); background: var(--bg-card); text-decoration: none; color: var(--text-primary); transition: all 0.3s; }
+        .dock-link:hover { border-color: var(--qi-cyan); background: var(--qi-cyan-dim); }
+        .dock-link-icon { font-family: var(--font-mono); font-size: 20px; color: var(--qi-cyan); width: 44px; height: 44px; border: 1px solid var(--border-bright); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .dock-link-text { font-family: var(--font-display); font-size: 13px; font-weight: 500; letter-spacing: 2px; }
+        .dock-link-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; margin-top: 2px; }
+
+        /* ===== LAB ===== */
+        .lab-status { background: var(--bg-panel); border: 1px solid var(--border-dim); padding: 32px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; }
+        .lab-status-indicator { width: 10px; height: 10px; background: var(--qi-green); box-shadow: 0 0 12px rgba(57, 255, 20, 0.5); flex-shrink: 0; animation: pulse-green 2s ease-in-out infinite; }
+        @keyframes pulse-green { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .lab-status-text { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); letter-spacing: 1px; }
+        .lab-status-text strong { color: var(--qi-green); }
+
+        /* ===== PARTNERS ===== */
+        .partners { text-align: center; padding: 80px 24px; position: relative; z-index: 1; }
+        .partners-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 32px; }
+        .partners-row { display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
+        .partner-link { font-family: var(--font-display); font-size: 14px; color: var(--text-secondary); text-decoration: none; letter-spacing: 3px; transition: color 0.3s; }
+        .partner-link:hover { color: var(--qi-cyan); }
+
+        /* ===== FOOTER ===== */
+        footer { position: relative; z-index: 1; border-top: 1px solid var(--border-dim); padding: 40px; display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; }
+        .footer-logo { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--qi-cyan); letter-spacing: 4px; text-shadow: 0 0 10px var(--qi-cyan-glow); }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--qi-cyan); }
+        .footer-copy { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: rgba(6, 8, 13, 0.95); backdrop-filter: blur(20px); padding: 24px; gap: 20px; border-bottom: 1px solid var(--border-dim); }
+            .nav-toggle { display: block; }
+            .mission-grid { grid-template-columns: 1fr; }
+            .bay-grid { grid-template-columns: 1fr; }
+            .guild-highlight { padding: 32px 24px; }
+            .carousel-card { flex: 0 0 280px; }
+            footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
+        }
+
+        .animate { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .animate.in-view { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="#" class="nav-logo">QI</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#mission">Mission</a></li>
+            <li><a href="#accelerator">Accelerator</a></li>
+            <li><a href="#guild">Guild</a></li>
+            <li><a href="#dock">Dock</a></li>
+            <li><a href="#lab">Lab</a></li>
+        </ul>
+        <button class="nav-toggle" id="navToggle">MENU</button>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-orb"></div>
+        <div class="hero-status">Docking Station Online</div>
+        <h1><span>QI</span>.XYZ</h1>
+        <p class="hero-tagline">Startup accelerator. Gamer guild. Brainstorm dock. All built on Qi — the energy-based money.</p>
+        <div class="hero-ctas">
+            <a href="#accelerator" class="btn btn-primary">Enter the Station</a>
+            <a href="https://docs.qu.ai/learn/tokenomics/qi-emissions" target="_blank" class="btn btn-ghost">What Is Qi?</a>
+        </div>
+    </section>
+
+    <!-- CAROUSEL: IDEAS INVENTORY -->
+    <div class="carousel-section" id="carousel">
+        <div class="carousel-header">
+            <div class="carousel-label">Ideas Inventory</div>
+            <div class="carousel-controls">
+                <button class="carousel-btn" id="carouselPrev">‹</button>
+                <button class="carousel-btn" id="carouselNext">›</button>
+            </div>
+        </div>
+        <div class="carousel-track-wrapper">
+            <div class="carousel-track" id="carouselTrack">
+
+                <a href="#accelerator" class="carousel-card" data-color="cyan">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Proto-01</span>
+                        <span class="card-status live"></span>
+                        <span class="card-glyph">AEM</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>American Energy Money</h3>
+                        <p>Research & advocacy for energy-based monetary systems. Mining analysis and the case for PoW currency.</p>
+                    </div>
+                </a>
+
+                <a href="#accelerator" class="carousel-card" data-color="amber">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Proto-02</span>
+                        <span class="card-status live"></span>
+                        <span class="card-glyph">T·E</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Thermoeconomics</h3>
+                        <p>Open knowledge base connecting thermodynamics, information theory, and proof-of-work economics.</p>
+                    </div>
+                </a>
+
+                <a href="#accelerator" class="carousel-card" data-color="green">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Proto-03</span>
+                        <span class="card-status concept"></span>
+                        <span class="card-glyph">Q·C</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Qi Commerce</h3>
+                        <p>Marketplace infrastructure when prices are denominated in energy. Payment rails and merchant tools.</p>
+                    </div>
+                </a>
+
+                <a href="#guild" class="carousel-card" data-color="red">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Guild</span>
+                        <span class="card-status live"></span>
+                        <span class="card-glyph">P2C</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Play to Create</h3>
+                        <p>Gamer guild that turns startup building into content creation. Videos, streams, and brainstorms.</p>
+                    </div>
+                </a>
+
+                <a href="#lab" class="carousel-card" data-color="cyan">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Exp-01</span>
+                        <span class="card-status concept"></span>
+                        <span class="card-glyph">Σ·F</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Thermodynamic Model</h3>
+                        <p>Mapping Qi/Quai to Active Inference and free energy. Understanding dual currency as thermodynamics.</p>
+                    </div>
+                </a>
+
+                <a href="#lab" class="carousel-card" data-color="green">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Exp-02</span>
+                        <span class="card-status concept"></span>
+                        <span class="card-glyph">⛏</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Mining Dashboard</h3>
+                        <p>Real-time profitability analysis for Qi mining. Hash rate, difficulty, energy cost, and yield.</p>
+                    </div>
+                </a>
+
+                <a href="#lab" class="carousel-card" data-color="purple">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Exp-03</span>
+                        <span class="card-status concept"></span>
+                        <span class="card-glyph">▶ M</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Manim Animations</h3>
+                        <p>Mathematical video animations explaining entropy decomposition and dual currency thermodynamics.</p>
+                    </div>
+                </a>
+
+                <a href="#accelerator" class="carousel-card" data-color="purple">
+                    <div class="carousel-card-visual">
+                        <span class="card-tag-top">Open</span>
+                        <span class="card-status open"></span>
+                        <span class="card-glyph">???</span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Your Idea Here</h3>
+                        <p>Open bay. Bring a business plan, a prototype, or just an idea worth testing. Build on energy money.</p>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- MISSION -->
+    <section id="mission">
+        <div class="section-inner">
+            <div class="section-label animate">Bay 01 — Mission</div>
+            <div class="mission-grid">
+                <div class="mission-text animate">
+                    <h2 class="section-title">Energy is money.<br>Build on it.</h2>
+                    <p>Qi is a currency minted proportionally to the energy miners spend securing the Quai Network. It is not pegged to a fiat price. It is pegged to physics — to the thermodynamic cost of computation.</p>
+                    <p>This station exists to build the economy that runs on Qi. Startups. Apps. Games. Videos. Ideas. Everything here is oriented toward one question: what does the world look like when money is energy?</p>
+                    <a href="https://qu.ai" target="_blank" class="btn btn-ghost" style="margin-top: 24px;">Quai Network →</a>
+                </div>
+                <div class="mission-visual animate">
+                    <div class="mission-stat">
+                        <div class="mission-stat-label">Currency Type</div>
+                        <div class="mission-stat-value">ENERGY-BASED</div>
+                    </div>
+                    <div class="mission-stat">
+                        <div class="mission-stat-label">Emission Model</div>
+                        <div class="mission-stat-value amber">∝ DIFFICULTY</div>
+                        <div class="mission-stat-bar"><div class="mission-stat-bar-fill" style="width: 72%;"></div></div>
+                    </div>
+                    <div class="mission-stat">
+                        <div class="mission-stat-label">Consensus</div>
+                        <div class="mission-stat-value">PROOF OF WORK</div>
+                    </div>
+                    <div class="mission-stat">
+                        <div class="mission-stat-label">Network</div>
+                        <div class="mission-stat-value amber">QUAI · SHA-256</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ACCELERATOR -->
+    <section id="accelerator">
+        <div class="section-inner">
+            <div class="section-label animate">Bay 02 — Accelerator</div>
+            <h2 class="section-title animate">Prototypes docked</h2>
+            <p class="section-desc animate">Startups, apps, and business plans built on Qi. Each one is a bet that energy money changes everything. Some are live. Some are ideas. All are open for collaboration.</p>
+            <div class="bay-grid">
+                <div class="bay-card acc-1 animate">
+                    <div class="bay-card-icon"><span class="dot"></span> PROTO-01</div>
+                    <h3>American Energy Money</h3>
+                    <p>Research and advocacy for energy-based monetary systems. Mining analysis, profitability tools, and the case for proof-of-work currency.</p>
+                    <div class="tag-row"><span class="tag cyan">Research</span><span class="tag amber">Mining</span><span class="tag">Live</span></div>
+                </div>
+                <div class="bay-card acc-2 animate">
+                    <div class="bay-card-icon"><span class="dot"></span> PROTO-02</div>
+                    <h3>Thermoeconomics</h3>
+                    <p>Open knowledge base connecting thermodynamics, information theory, and proof-of-work economics. The science behind why energy is money.</p>
+                    <div class="tag-row"><span class="tag cyan">Education</span><span class="tag green">Science</span><span class="tag">Live</span></div>
+                </div>
+                <div class="bay-card acc-3 animate">
+                    <div class="bay-card-icon"><span class="dot"></span> PROTO-03</div>
+                    <h3>Qi Commerce</h3>
+                    <p>What does a marketplace look like when prices are denominated in energy? Payment rails, pricing models, and merchant tools for Qi.</p>
+                    <div class="tag-row"><span class="tag amber">Commerce</span><span class="tag purple">Concept</span></div>
+                </div>
+                <div class="bay-card acc-4 animate">
+                    <div class="bay-card-icon"><span class="dot"></span> PROTO-04</div>
+                    <h3>Your Idea Here</h3>
+                    <p>The station has open bays. If you're building on Qi or Quai, dock here. Bring a business plan, a prototype, or just an idea worth testing.</p>
+                    <div class="tag-row"><span class="tag red">Open Bay</span><span class="tag">Apply</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- GUILD -->
+    <section id="guild">
+        <div class="section-inner">
+            <div class="section-label animate">Bay 03 — Guild</div>
+            <h2 class="section-title animate">Play to create</h2>
+            <p class="section-desc animate">The guild is where builders become players. Create videos, stream ideas, game together, and earn by making content that pushes the Qi ecosystem forward.</p>
+            <div class="guild-highlight animate">
+                <h3>The premise is simple</h3>
+                <p>Every startup in the accelerator is also a game. Build the business plan — but also build the trailer, the explainer video, the meme, the pitch deck that feels like a movie poster. The guild turns startup building into content creation and content creation into community.</p>
+            </div>
+            <div class="bay-grid">
+                <div class="bay-card animate">
+                    <div class="bay-card-icon"><span class="dot"></span> VIDEO</div>
+                    <h3>Create</h3>
+                    <p>Produce explainer videos, tutorials, trailers, and documentaries for Qi startups. Turn ideas into watchable, shareable content.</p>
+                    <div class="tag-row"><span class="tag amber">YouTube</span><span class="tag cyan">Tutorials</span></div>
+                </div>
+                <div class="bay-card animate">
+                    <div class="bay-card-icon"><span class="dot"></span> GAME</div>
+                    <h3>Play</h3>
+                    <p>Game nights, competitive events, collaborative world-building. The guild plays together and the games feed back into the startups being built.</p>
+                    <div class="tag-row"><span class="tag green">Events</span><span class="tag purple">Community</span></div>
+                </div>
+                <div class="bay-card animate">
+                    <div class="bay-card-icon"><span class="dot"></span> STREAM</div>
+                    <h3>Brainstorm</h3>
+                    <p>Live brainstorm sessions. Pitch new ideas. Roast bad ones. The guild is the first audience for every prototype that docks at the station.</p>
+                    <div class="tag-row"><span class="tag red">Live</span><span class="tag">Ideas</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- DOCK -->
+    <section id="dock">
+        <div class="section-inner">
+            <div class="section-label animate">Bay 04 — Dock</div>
+            <h2 class="section-title animate">Connect</h2>
+            <p class="section-desc animate">The dock is where you find people. Builders, miners, gamers, researchers, and anyone curious about energy money. Show up.</p>
+            <div class="dock-links animate">
+                <a href="https://discord.gg/quai" target="_blank" class="dock-link"><div class="dock-link-icon">⟐</div><div><div class="dock-link-text">Discord</div><div class="dock-link-sub">Quai Network Community</div></div></a>
+                <a href="https://qu.ai" target="_blank" class="dock-link"><div class="dock-link-icon">◈</div><div><div class="dock-link-text">Quai Network</div><div class="dock-link-sub">The Protocol</div></div></a>
+                <a href="https://thermoeconomics.info" target="_blank" class="dock-link"><div class="dock-link-icon">△</div><div><div class="dock-link-text">Thermoeconomics</div><div class="dock-link-sub">The Science</div></div></a>
+                <a href="https://americanenergymoney.com" target="_blank" class="dock-link"><div class="dock-link-icon">⚡</div><div><div class="dock-link-text">American Energy Money</div><div class="dock-link-sub">The Movement</div></div></a>
+                <a href="https://docs.qu.ai" target="_blank" class="dock-link"><div class="dock-link-icon">⌘</div><div><div class="dock-link-text">Developer Docs</div><div class="dock-link-sub">Build on Quai</div></div></a>
+                <a href="https://github.com/dominant-strategies" target="_blank" class="dock-link"><div class="dock-link-icon">⟁</div><div><div class="dock-link-text">GitHub</div><div class="dock-link-sub">Open Source</div></div></a>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- LAB -->
+    <section id="lab">
+        <div class="section-inner">
+            <div class="section-label animate">Bay 05 — Lab</div>
+            <h2 class="section-title animate">The Lab</h2>
+            <p class="section-desc animate">Active experiments. Half-baked ideas. Things being tested. The lab is messy on purpose — this is where new prototypes get built before they dock.</p>
+            <div class="lab-status animate">
+                <div class="lab-status-indicator"></div>
+                <div class="lab-status-text"><strong>STATUS: ACTIVE</strong> — Lab is open for new experiments. Bring ideas, prototypes, or questions.</div>
+            </div>
+            <div class="bay-grid">
+                <div class="bay-card animate">
+                    <div class="bay-card-icon"><span class="dot"></span> EXP-01</div>
+                    <h3>Qi/Quai Thermodynamic Model</h3>
+                    <p>Mapping the dual currency system to Active Inference and free energy principles. Understanding Qi as energy and Quai as belief in energy.</p>
+                    <div class="tag-row"><span class="tag cyan">Research</span><span class="tag amber">Active</span></div>
+                </div>
+                <div class="bay-card animate">
+                    <div class="bay-card-icon"><span class="dot"></span> EXP-02</div>
+                    <h3>Mining Economics Dashboard</h3>
+                    <p>Real-time profitability analysis for Qi mining. Hash rate, difficulty, energy cost, and yield calculations for SHA-256 miners.</p>
+                    <div class="tag-row"><span class="tag green">Tools</span><span class="tag">In Progress</span></div>
+                </div>
+                <div class="bay-card animate">
+                    <div class="bay-card-icon"><span class="dot"></span> EXP-03</div>
+                    <h3>Manim Animations</h3>
+                    <p>Mathematical animations explaining the Qi/Quai relationship, entropy decomposition, and the thermodynamics of dual currency systems.</p>
+                    <div class="tag-row"><span class="tag purple">Video</span><span class="tag amber">Math</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PARTNERS -->
+    <div class="partners">
+        <div class="partners-label animate">Partners & Affiliations</div>
+        <div class="partners-row animate">
+            <a href="https://waexservices.com/" target="_blank" class="partner-link">WAE SERVICES</a>
+            <a href="https://qu.ai" target="_blank" class="partner-link">QUAI NETWORK</a>
+            <a href="https://thermoeconomics.info" target="_blank" class="partner-link">THERMOECONOMICS</a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">QI.XYZ</div>
+        <div class="footer-links">
+            <a href="https://qu.ai" target="_blank">Quai</a>
+            <a href="https://thermoeconomics.info" target="_blank">Science</a>
+            <a href="https://docs.qu.ai" target="_blank">Docs</a>
+        </div>
+        <div class="footer-copy">© 2026 Qi.xyz</div>
+    </footer>
+
+    <script>
+        // ===== CAROUSEL =====
+        const track = document.getElementById('carouselTrack');
+        const cards = track.querySelectorAll('.carousel-card');
+        const dotsContainer = document.getElementById('carouselDots');
+        const cardWidth = 360; // card width + gap
+        let currentIndex = 0;
+        let autoplayInterval;
+
+        // How many cards visible at once
+        function getVisibleCount() {
+            const wrapperWidth = track.parentElement.offsetWidth;
+            return Math.floor(wrapperWidth / cardWidth) || 1;
+        }
+
+        function getMaxIndex() {
+            return Math.max(0, cards.length - getVisibleCount());
+        }
+
+        // Build dots
+        function buildDots() {
+            dotsContainer.innerHTML = '';
+            const max = getMaxIndex();
+            for (let i = 0; i <= max; i++) {
+                const dot = document.createElement('button');
+                dot.classList.add('carousel-dot');
+                if (i === currentIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => goTo(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateTrack() {
+            track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+            dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        function goTo(index) {
+            currentIndex = Math.min(Math.max(0, index), getMaxIndex());
+            updateTrack();
+            resetAutoplay();
+        }
+
+        document.getElementById('carouselNext').addEventListener('click', () => {
+            goTo(currentIndex >= getMaxIndex() ? 0 : currentIndex + 1);
+        });
+
+        document.getElementById('carouselPrev').addEventListener('click', () => {
+            goTo(currentIndex <= 0 ? getMaxIndex() : currentIndex - 1);
+        });
+
+        function resetAutoplay() {
+            clearInterval(autoplayInterval);
+            autoplayInterval = setInterval(() => {
+                goTo(currentIndex >= getMaxIndex() ? 0 : currentIndex + 1);
+            }, 4000);
+        }
+
+        // Touch / swipe support
+        let touchStartX = 0;
+        track.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) {
+                diff > 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
+            }
+        }, { passive: true });
+
+        // Init
+        buildDots();
+        resetAutoplay();
+        window.addEventListener('resize', () => { buildDots(); goTo(Math.min(currentIndex, getMaxIndex())); });
+
+        // ===== SCROLL ANIMATIONS =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+
+        // ===== MOBILE NAV =====
+        document.getElementById('navToggle').addEventListener('click', () => { document.getElementById('navLinks').classList.toggle('open'); });
+        document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { document.getElementById('navLinks').classList.remove('open'); }); });
+
+        // ===== NAV SCROLL =====
+        window.addEventListener('scroll', () => {
+            document.querySelector('nav').style.borderBottomColor = window.scrollY > 50 ? 'rgba(0, 240, 255, 0.15)' : 'rgba(0, 240, 255, 0.08)';
+        });
+    </script>
+
+</body>
+</html>
