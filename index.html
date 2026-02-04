@@ -486,7 +486,7 @@
                     </div>
                 </a>
 
-                <a href="blimp.html" class="carousel-card" data-color="green">
+                <a href="https://blimp.qi.xyz" target="_blank" class="carousel-card" data-color="green">
                     <div class="carousel-card-visual carousel-card-img">
                         <img src="blimp.png" alt="Blimp" />
                         <span class="card-tag-top">Proto-02</span>
@@ -495,7 +495,7 @@
                     <div class="carousel-card-body">
                         <h3>Blimp</h3>
                         <p>Solarpunk world builder. PVE Strategy. Construct your airship; equip it, fly it, and dock it with allied players.</p>
-                        <span class="card-link">blimp.html →</span>
+                        <span class="card-link">blimp.qi.xyz →</span>
                     </div>
                 </a>
 
@@ -697,6 +697,7 @@
 
         // Init
         buildDots();
+        updateTrack();
         resetAutoplay();
         window.addEventListener('resize', () => { buildDots(); goTo(Math.min(currentIndex, getMaxIndex())); });
 
