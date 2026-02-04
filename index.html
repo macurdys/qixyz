@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -639,21 +640,27 @@
         let isDragging = false;
         let dragStartX = 0;
         let dragScrollLeft = 0;
+        let hasDragged = false;
 
         wrapper.style.cursor = 'grab';
+        wrapper.style.userSelect = 'none';
 
         wrapper.addEventListener('mousedown', (e) => {
             isDragging = true;
+            hasDragged = false;
             wrapper.style.cursor = 'grabbing';
-            dragStartX = e.pageX - wrapper.offsetLeft;
+            dragStartX = e.pageX;
             dragScrollLeft = currentIndex * cardWidth;
             clearInterval(autoplayInterval);
+            e.preventDefault();
         });
 
         wrapper.addEventListener('mouseleave', () => {
             if (isDragging) {
                 isDragging = false;
                 wrapper.style.cursor = 'grab';
+                // Snap to nearest card
+                updateTrack();
                 resetAutoplay();
             }
         });
@@ -662,10 +669,12 @@
             if (!isDragging) return;
             isDragging = false;
             wrapper.style.cursor = 'grab';
-            const x = e.pageX - wrapper.offsetLeft;
-            const diff = dragStartX - x;
+            const diff = dragStartX - e.pageX;
             if (Math.abs(diff) > 50) {
+                hasDragged = true;
                 goTo(diff > 0 ? currentIndex + 1 : currentIndex - 1);
+            } else {
+                updateTrack(); // Snap back if not enough drag
             }
             resetAutoplay();
         });
@@ -673,10 +682,18 @@
         wrapper.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
             e.preventDefault();
-            const x = e.pageX - wrapper.offsetLeft;
-            const walk = (dragStartX - x);
-            track.style.transform = `translateX(-${dragScrollLeft + walk}px)`;
+            const diff = dragStartX - e.pageX;
+            track.style.transform = `translateX(-${dragScrollLeft + diff}px)`;
         });
+
+        // Prevent click on cards if we just dragged
+        wrapper.addEventListener('click', (e) => {
+            if (hasDragged) {
+                e.preventDefault();
+                e.stopPropagation();
+                hasDragged = false;
+            }
+        }, true);
 
         // Init
         buildDots();
