@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Moral Compass — Navigate with Arrow Keys</title>
-    <meta name="description" content="Explore the ontological space between Human, Agent, Energy, and Value. Navigate with arrow keys or WASD.">
+    <meta name="description" content="Explore the ontological space between Human, Agent, Energy, and Value.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,16 +63,19 @@
             pointer-events: none;
         }
 
-        /* ==================== BRIEFING OVERLAY ==================== */
+        /* ==================== BRIEFING SCREEN ==================== */
         .briefing-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: var(--bg-deep);
             z-index: 10000;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px;
             transition: opacity 0.5s, visibility 0.5s;
+            overflow-y: auto;
         }
         .briefing-overlay.hidden {
             opacity: 0;
@@ -80,106 +83,173 @@
             pointer-events: none;
         }
 
-        .briefing-content {
-            max-width: 700px;
-            padding: 48px;
+        .briefing-header {
             text-align: center;
+            margin-bottom: 20px;
         }
-
-        .briefing-icon {
-            font-size: 56px;
-            margin-bottom: 28px;
-            animation: pulse-icon 3s ease-in-out infinite;
-        }
-        @keyframes pulse-icon {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
-
         .briefing-title {
             font-family: var(--font-display);
-            font-size: clamp(22px, 5vw, 38px);
+            font-size: clamp(20px, 4vw, 32px);
             font-weight: 700;
             letter-spacing: 6px;
             color: var(--qi-cyan);
             text-shadow: 0 0 40px var(--qi-cyan-glow);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
-
         .briefing-subtitle {
             font-family: var(--font-mono);
             font-size: 11px;
             color: var(--text-secondary);
             letter-spacing: 3px;
-            margin-bottom: 36px;
         }
 
-        .briefing-text {
-            font-size: 15px;
-            color: var(--text-primary);
-            line-height: 1.9;
+        /* Compass Visual */
+        .compass-hero {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
             margin-bottom: 20px;
-            text-align: left;
+        }
+        .compass-svg {
+            width: 100%;
+            height: auto;
         }
 
-        .briefing-conditions {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-dim);
-            padding: 20px;
-            margin-bottom: 32px;
-            text-align: left;
+        /* Direction highlights */
+        .compass-svg .dir-highlight {
+            opacity: 0;
+            transition: opacity 0.15s;
         }
-        .briefing-conditions h3 {
-            font-family: var(--font-display);
-            font-size: 10px;
-            letter-spacing: 3px;
-            color: var(--qi-amber);
-            margin-bottom: 14px;
+        .compass-svg .dir-highlight.active {
+            opacity: 1;
         }
-        .briefing-conditions ul {
-            list-style: none;
+        .compass-svg .arrow-north,
+        .compass-svg .arrow-east,
+        .compass-svg .arrow-south,
+        .compass-svg .arrow-west {
+            transition: transform 0.15s, filter 0.15s;
+        }
+        .compass-svg .arrow-north.pulse { transform: translateY(-8px); filter: drop-shadow(0 0 15px #00f0ff); }
+        .compass-svg .arrow-east.pulse { transform: translateX(8px); filter: drop-shadow(0 0 15px #ffb800); }
+        .compass-svg .arrow-south.pulse { transform: translateY(8px); filter: drop-shadow(0 0 15px #39FF14); }
+        .compass-svg .arrow-west.pulse { transform: translateX(-8px); filter: drop-shadow(0 0 15px #bf5af2); }
+
+        /* Tutorial prompt */
+        .tutorial-prompt {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .tutorial-text {
             font-family: var(--font-mono);
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 16px;
         }
-        .briefing-conditions li {
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border-dim);
+        .tutorial-keys {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .key-hint {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-dim);
+            transition: all 0.15s;
         }
-        .briefing-conditions li:last-child { border-bottom: none; }
-        .briefing-conditions li::before {
+        .key-hint.active {
+            border-color: var(--qi-cyan);
+            color: var(--qi-cyan);
+            box-shadow: 0 0 15px var(--qi-cyan-glow);
+            background: var(--qi-cyan-dim);
+        }
+        .key-hint.north.active { border-color: var(--qi-cyan); color: var(--qi-cyan); box-shadow: 0 0 15px var(--qi-cyan-glow); }
+        .key-hint.east.active { border-color: var(--qi-amber); color: var(--qi-amber); box-shadow: 0 0 15px rgba(255,184,0,0.4); }
+        .key-hint.south.active { border-color: var(--qi-green); color: var(--qi-green); box-shadow: 0 0 15px rgba(57,255,20,0.4); }
+        .key-hint.west.active { border-color: var(--qi-purple); color: var(--qi-purple); box-shadow: 0 0 15px rgba(191,90,242,0.4); }
+
+        .tutorial-progress {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+        .tutorial-progress span {
+            color: var(--qi-cyan);
+        }
+
+        /* Briefing info */
+        .briefing-info {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 16px 20px;
+            max-width: 500px;
+            margin-bottom: 24px;
+        }
+        .briefing-info h3 {
+            font-family: var(--font-display);
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--qi-amber);
+            margin-bottom: 12px;
+        }
+        .briefing-info ul {
+            list-style: none;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        .briefing-info li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .briefing-info li::before {
             content: '◇';
             color: var(--qi-cyan);
+            font-size: 8px;
         }
 
         .briefing-enter {
             font-family: var(--font-display);
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 4px;
-            padding: 18px 50px;
+            padding: 16px 48px;
             background: transparent;
             border: 2px solid var(--qi-cyan);
             color: var(--qi-cyan);
             cursor: pointer;
             transition: all 0.3s;
+            opacity: 0.3;
+            pointer-events: none;
         }
-        .briefing-enter:hover {
+        .briefing-enter.ready {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .briefing-enter.ready:hover {
             background: var(--qi-cyan);
             color: var(--bg-deep);
             box-shadow: 0 0 40px var(--qi-cyan-glow);
         }
         .briefing-enter-hint {
             font-family: var(--font-mono);
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-dim);
-            margin-top: 14px;
+            margin-top: 12px;
             letter-spacing: 1px;
         }
 
-        /* ==================== MAIN COMPASS ==================== */
+        /* ==================== MAIN EXPLORATION ==================== */
         .compass-world {
             position: relative;
             z-index: 1;
@@ -245,6 +315,7 @@
             flex: 1;
             display: flex;
             overflow: hidden;
+            position: relative;
         }
 
         .exploration-zone {
@@ -260,13 +331,13 @@
         .node-container {
             position: relative;
             width: 100%;
-            max-width: 650px;
+            max-width: 600px;
         }
 
         .node-content {
             background: var(--bg-panel);
             border: 1px solid var(--border-dim);
-            padding: 36px;
+            padding: 32px;
             position: relative;
             opacity: 1;
             transform: scale(1);
@@ -286,7 +357,7 @@
 
         .node-title {
             font-family: var(--font-display);
-            font-size: clamp(18px, 3vw, 28px);
+            font-size: clamp(18px, 3vw, 26px);
             font-weight: 700;
             letter-spacing: 4px;
             margin-bottom: 6px;
@@ -299,7 +370,7 @@
             font-size: 10px;
             color: var(--text-secondary);
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             text-transform: uppercase;
         }
 
@@ -307,14 +378,14 @@
             font-size: 15px;
             color: var(--text-primary);
             line-height: 1.8;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .node-data {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .data-block {
@@ -331,7 +402,7 @@
         }
         .data-value {
             font-family: var(--font-display);
-            font-size: 14px;
+            font-size: 13px;
             color: var(--node-color, var(--qi-cyan));
         }
 
@@ -342,7 +413,7 @@
         }
         .node-tag {
             font-family: var(--font-mono);
-            font-size: 9px;
+            font-size: 8px;
             letter-spacing: 1px;
             padding: 4px 8px;
             background: var(--qi-cyan-dim);
@@ -350,7 +421,7 @@
             color: var(--qi-cyan);
         }
 
-        /* Locked overlay */
+        /* Locked */
         .locked-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -360,30 +431,30 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
-            padding: 32px;
+            padding: 28px;
         }
-        .locked-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.5; }
+        .locked-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.5; }
         .locked-title {
             font-family: var(--font-display);
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 4px;
             color: var(--qi-amber);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .locked-desc {
             font-family: var(--font-mono);
             font-size: 11px;
             color: var(--text-secondary);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             text-align: center;
-            max-width: 280px;
+            max-width: 260px;
             line-height: 1.7;
         }
         .unlock-btn {
             font-family: var(--font-display);
-            font-size: 10px;
+            font-size: 9px;
             letter-spacing: 2px;
-            padding: 10px 24px;
+            padding: 10px 22px;
             background: transparent;
             border: 1px solid var(--qi-amber);
             color: var(--qi-amber);
@@ -393,7 +464,6 @@
         .unlock-btn:hover:not(:disabled) {
             background: var(--qi-amber);
             color: var(--bg-deep);
-            box-shadow: 0 0 30px rgba(255, 184, 0, 0.3);
         }
         .unlock-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .unlock-cost {
@@ -403,9 +473,35 @@
             margin-top: 10px;
         }
 
+        /* ==================== MINI COMPASS (corner) ==================== */
+        .mini-compass {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 140px;
+            height: 140px;
+            background: rgba(6, 8, 13, 0.9);
+            border: 1px solid var(--border-dim);
+            padding: 8px;
+            z-index: 50;
+        }
+        .mini-compass-svg {
+            width: 100%;
+            height: 100%;
+        }
+        .mini-compass .arrow-group {
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .mini-compass .arrow-group.available { opacity: 1; }
+        .mini-compass .arrow-group.unavailable { opacity: 0.15; }
+        .mini-compass .arrow-group.current { }
+        .mini-compass .center-dot {
+            transition: fill 0.3s;
+        }
+
         /* ==================== PATHWAY INDEX ==================== */
         .pathway-index {
-            width: 240px;
+            width: 220px;
             background: var(--bg-panel);
             border-left: 1px solid var(--border-dim);
             display: flex;
@@ -414,7 +510,7 @@
         }
 
         .index-header {
-            padding: 14px 16px;
+            padding: 12px 14px;
             border-bottom: 1px solid var(--border-dim);
         }
         .index-title {
@@ -422,7 +518,7 @@
             font-size: 9px;
             letter-spacing: 3px;
             color: var(--qi-cyan);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .index-stats {
             font-family: var(--font-mono);
@@ -433,32 +529,31 @@
         .index-list {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            padding: 8px;
         }
 
-        .index-category { margin-bottom: 14px; }
+        .index-category { margin-bottom: 12px; }
         .index-category-title {
             font-family: var(--font-mono);
             font-size: 8px;
             letter-spacing: 2px;
             color: var(--text-dim);
-            padding: 6px;
+            padding: 5px;
             border-bottom: 1px solid var(--border-dim);
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .index-node {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 8px;
+            gap: 7px;
+            padding: 5px 7px;
             cursor: pointer;
             transition: background 0.2s;
             border: 1px solid transparent;
         }
         .index-node:hover { background: var(--bg-card); border-color: var(--border-dim); }
         .index-node.current { background: var(--qi-cyan-dim); border-color: var(--qi-cyan); }
-        .index-node.locked { opacity: 0.5; }
         .index-node.unexplored { opacity: 0.3; cursor: default; }
 
         .index-node-icon {
@@ -467,9 +562,8 @@
             border-radius: 50%;
             flex-shrink: 0;
         }
-        .index-node-icon.explored { background: var(--qi-green); box-shadow: 0 0 4px rgba(57, 255, 20, 0.5); }
-        .index-node-icon.current { background: var(--qi-cyan); box-shadow: 0 0 4px var(--qi-cyan-glow); }
-        .index-node-icon.locked { background: var(--qi-amber); }
+        .index-node-icon.explored { background: var(--qi-green); }
+        .index-node-icon.current { background: var(--qi-cyan); }
         .index-node-icon.unexplored { background: var(--text-dim); }
 
         .index-node-name {
@@ -494,14 +588,14 @@
         .nav-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .nav-btn {
             font-family: var(--font-display);
             font-size: 10px;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
             color: var(--qi-cyan);
@@ -514,23 +608,21 @@
         .nav-btn:hover:not(:disabled) {
             background: var(--qi-cyan-dim);
             border-color: var(--qi-cyan);
-            box-shadow: 0 0 12px var(--qi-cyan-glow);
         }
         .nav-btn:disabled { opacity: 0.2; cursor: not-allowed; }
         .nav-btn.back-btn {
             width: auto;
-            padding: 0 14px;
+            padding: 0 12px;
             font-size: 9px;
             letter-spacing: 1px;
             color: var(--text-secondary);
         }
-        .nav-btn.back-btn:hover:not(:disabled) { color: var(--qi-cyan); }
 
         .nav-dpad {
             display: grid;
-            grid-template-columns: repeat(3, 32px);
-            grid-template-rows: repeat(2, 32px);
-            gap: 3px;
+            grid-template-columns: repeat(3, 30px);
+            grid-template-rows: repeat(2, 30px);
+            gap: 2px;
         }
         .nav-dpad .nav-btn:nth-child(1) { grid-column: 2; grid-row: 1; }
         .nav-dpad .nav-btn:nth-child(2) { grid-column: 1; grid-row: 2; }
@@ -542,7 +634,7 @@
             font-size: 9px;
             color: var(--text-dim);
             letter-spacing: 1px;
-            max-width: 250px;
+            max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -573,8 +665,7 @@
         @media (max-width: 900px) { .pathway-index { display: none; } }
         @media (max-width: 600px) {
             .path-display { display: none; }
-            .hud-top, .hud-bottom { padding: 8px 12px; }
-            .node-content { padding: 20px; }
+            .mini-compass { width: 100px; height: 100px; bottom: 10px; left: 10px; }
         }
     </style>
 </head>
@@ -583,37 +674,178 @@
     <div class="grid-bg"></div>
     <div class="flash-overlay" id="flash"></div>
 
-    <!-- BRIEFING -->
+    <!-- ==================== BRIEFING WITH COMPASS HERO ==================== -->
     <div class="briefing-overlay" id="briefingOverlay">
-        <div class="briefing-content">
-            <div class="briefing-icon">🧭</div>
+        
+        <div class="briefing-header">
             <h1 class="briefing-title">AI MORAL COMPASS</h1>
             <p class="briefing-subtitle">Navigational Protocol v0.1</p>
-            
-            <p class="briefing-text">
-                You are about to enter an ontological exploration space. The compass maps relationships between <strong>Human</strong>, <strong>Agent</strong>, <strong>Energy</strong>, and <strong>Value</strong> — the four cardinal axes of autonomous economic systems.
-            </p>
-
-            <div class="briefing-conditions">
-                <h3>OPERATING PARAMETERS</h3>
-                <ul>
-                    <li>Navigate via Arrow Keys (↑↓←→) or WASD</li>
-                    <li>Click direction buttons as alternative</li>
-                    <li>Some paths are locked — costs Qi to unlock</li>
-                    <li>Dead ends exist — use BACK or Backspace</li>
-                    <li>Pathway index tracks all exploration</li>
-                    <li>Starting reserve: 500 Qi</li>
-                </ul>
-            </div>
-
-            <button class="briefing-enter" id="enterBtn" onclick="enterCompass()">
-                BEGIN EXPLORATION
-            </button>
-            <p class="briefing-enter-hint">Press ENTER to continue</p>
         </div>
+
+        <!-- Large Compass Visual -->
+        <div class="compass-hero">
+            <svg class="compass-svg" id="heroCompass" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#00f0ff" />
+                        <stop offset="100%" style="stop-color:#0088aa" />
+                    </linearGradient>
+                    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ffb800" />
+                        <stop offset="100%" style="stop-color:#cc8800" />
+                    </linearGradient>
+                    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#39FF14" />
+                        <stop offset="100%" style="stop-color:#22aa0a" />
+                    </linearGradient>
+                    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#bf5af2" />
+                        <stop offset="100%" style="stop-color:#8a3fbd" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="softGlow">
+                        <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="strongGlow">
+                        <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:0.15" />
+                        <stop offset="100%" style="stop-color:#00f0ff;stop-opacity:0" />
+                    </radialGradient>
+                </defs>
+
+                <!-- Outer ring -->
+                <circle cx="250" cy="250" r="230" fill="none" stroke="rgba(0, 240, 255, 0.15)" stroke-width="1"/>
+                
+                <!-- Tick marks -->
+                <g stroke="rgba(0, 240, 255, 0.3)" stroke-width="1">
+                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(0, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(30, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(60, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(90, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(120, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(150, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(180, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(210, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(240, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(270, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(300, 250, 250)"/>
+                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(330, 250, 250)"/>
+                </g>
+
+                <!-- Dashed inner ring -->
+                <circle cx="250" cy="250" r="195" fill="none" stroke="rgba(0, 240, 255, 0.08)" stroke-width="1" stroke-dasharray="4 8"/>
+
+                <!-- Main ring -->
+                <circle cx="250" cy="250" r="170" fill="none" stroke="rgba(0, 240, 255, 0.25)" stroke-width="2"/>
+
+                <!-- Data flow lines -->
+                <g stroke="rgba(0, 240, 255, 0.3)" stroke-width="1" fill="none">
+                    <path d="M250,80 L250,170"/>
+                    <path d="M330,250 L420,250"/>
+                    <path d="M250,330 L250,420"/>
+                    <path d="M80,250 L170,250"/>
+                </g>
+
+                <!-- Center glow -->
+                <circle cx="250" cy="250" r="120" fill="url(#centerGlow)"/>
+                <circle cx="250" cy="250" r="100" fill="none" stroke="rgba(0, 240, 255, 0.12)" stroke-width="1"/>
+
+                <!-- Direction highlight circles (hidden by default) -->
+                <circle class="dir-highlight north-highlight" cx="250" cy="80" r="50" fill="rgba(0, 240, 255, 0.15)" filter="url(#strongGlow)"/>
+                <circle class="dir-highlight east-highlight" cx="420" cy="250" r="50" fill="rgba(255, 184, 0, 0.15)" filter="url(#strongGlow)"/>
+                <circle class="dir-highlight south-highlight" cx="250" cy="420" r="50" fill="rgba(57, 255, 20, 0.15)" filter="url(#strongGlow)"/>
+                <circle class="dir-highlight west-highlight" cx="80" cy="250" r="50" fill="rgba(191, 90, 242, 0.15)" filter="url(#strongGlow)"/>
+
+                <!-- Cardinal arrows -->
+                <g filter="url(#glow)">
+                    <g class="arrow-north">
+                        <polygon points="250,80 262,155 250,135 238,155" fill="url(#cyanGrad)" opacity="0.9"/>
+                    </g>
+                    <g class="arrow-east">
+                        <polygon points="420,250 345,238 365,250 345,262" fill="url(#amberGrad)" opacity="0.9"/>
+                    </g>
+                    <g class="arrow-south">
+                        <polygon points="250,420 238,345 250,365 262,345" fill="url(#greenGrad)" opacity="0.9"/>
+                    </g>
+                    <g class="arrow-west">
+                        <polygon points="80,250 155,262 135,250 155,238" fill="url(#purpleGrad)" opacity="0.9"/>
+                    </g>
+                </g>
+
+                <!-- Diagonal arrows (dimmer) -->
+                <g opacity="0.25">
+                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(45, 250, 250)"/>
+                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(135, 250, 250)"/>
+                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(225, 250, 250)"/>
+                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(315, 250, 250)"/>
+                </g>
+
+                <!-- Labels -->
+                <g font-family="Orbitron, monospace" font-weight="700" text-anchor="middle">
+                    <text x="250" y="55" fill="#00f0ff" font-size="12" letter-spacing="3" filter="url(#softGlow)">HUMAN</text>
+                    <text x="250" y="68" fill="#00f0ff" font-size="8" letter-spacing="1" opacity="0.6">↑ W</text>
+                    <text x="448" y="247" fill="#ffb800" font-size="12" letter-spacing="3" filter="url(#softGlow)">AGENT</text>
+                    <text x="448" y="260" fill="#ffb800" font-size="8" letter-spacing="1" opacity="0.6">→ D</text>
+                    <text x="250" y="455" fill="#39FF14" font-size="12" letter-spacing="3" filter="url(#softGlow)">ENERGY</text>
+                    <text x="250" y="468" fill="#39FF14" font-size="8" letter-spacing="1" opacity="0.6">↓ S</text>
+                    <text x="52" y="247" fill="#bf5af2" font-size="12" letter-spacing="3" filter="url(#softGlow)">VALUE</text>
+                    <text x="52" y="260" fill="#bf5af2" font-size="8" letter-spacing="1" opacity="0.6">← A</text>
+                </g>
+
+                <!-- Center -->
+                <circle cx="250" cy="250" r="25" fill="#0c1018" stroke="#00f0ff" stroke-width="2"/>
+                <circle cx="250" cy="250" r="15" fill="#00f0ff" opacity="0.1"/>
+                <circle cx="250" cy="250" r="8" fill="#00f0ff" opacity="0.4" filter="url(#glow)"/>
+
+                <!-- Corner brackets -->
+                <g stroke="#00f0ff" stroke-width="1" fill="none" opacity="0.25">
+                    <path d="M15,15 L15,55 M15,15 L55,15"/>
+                    <path d="M485,15 L485,55 M485,15 L445,15"/>
+                    <path d="M15,485 L15,445 M15,485 L55,485"/>
+                    <path d="M485,485 L485,445 M485,485 L445,485"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Tutorial -->
+        <div class="tutorial-prompt">
+            <p class="tutorial-text">TRY THE CONTROLS — Press each direction to continue</p>
+            <div class="tutorial-keys">
+                <div class="key-hint north" id="keyUp">↑</div>
+            </div>
+            <div class="tutorial-keys">
+                <div class="key-hint west" id="keyLeft">←</div>
+                <div class="key-hint south" id="keyDown">↓</div>
+                <div class="key-hint east" id="keyRight">→</div>
+            </div>
+            <p class="tutorial-progress"><span id="tutorialCount">0</span> / 4 directions tested</p>
+        </div>
+
+        <!-- Info -->
+        <div class="briefing-info">
+            <h3>PARAMETERS</h3>
+            <ul>
+                <li>Navigate with ↑↓←→ or WASD</li>
+                <li>Locked paths cost Qi to unlock</li>
+                <li>Backspace or BACK button to return</li>
+                <li>Starting reserve: 500 Qi</li>
+            </ul>
+        </div>
+
+        <button class="briefing-enter" id="enterBtn" onclick="enterCompass()">
+            BEGIN EXPLORATION
+        </button>
+        <p class="briefing-enter-hint" id="enterHint">Complete the tutorial to unlock</p>
     </div>
 
-    <!-- MAIN -->
+    <!-- ==================== MAIN EXPLORATION ==================== -->
     <div class="compass-world" id="compassWorld">
         
         <div class="hud-top">
@@ -629,6 +861,52 @@
 
         <div class="main-area">
             <div class="exploration-zone">
+                <!-- Mini Compass in corner -->
+                <div class="mini-compass">
+                    <svg class="mini-compass-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="mcCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00f0ff" />
+                                <stop offset="100%" style="stop-color:#0088aa" />
+                            </linearGradient>
+                            <linearGradient id="mcAmber" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffb800" />
+                                <stop offset="100%" style="stop-color:#cc8800" />
+                            </linearGradient>
+                            <linearGradient id="mcGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#39FF14" />
+                                <stop offset="100%" style="stop-color:#22aa0a" />
+                            </linearGradient>
+                            <linearGradient id="mcPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#bf5af2" />
+                                <stop offset="100%" style="stop-color:#8a3fbd" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Rings -->
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0,240,255,0.1)" stroke-width="1"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
+                        
+                        <!-- Arrows -->
+                        <g class="arrow-group north-arrow" id="mcNorth">
+                            <polygon points="50,8 54,28 50,22 46,28" fill="url(#mcCyan)"/>
+                        </g>
+                        <g class="arrow-group east-arrow" id="mcEast">
+                            <polygon points="92,50 72,46 78,50 72,54" fill="url(#mcAmber)"/>
+                        </g>
+                        <g class="arrow-group south-arrow" id="mcSouth">
+                            <polygon points="50,92 46,72 50,78 54,72" fill="url(#mcGreen)"/>
+                        </g>
+                        <g class="arrow-group west-arrow" id="mcWest">
+                            <polygon points="8,50 28,54 22,50 28,46" fill="url(#mcPurple)"/>
+                        </g>
+                        
+                        <!-- Center -->
+                        <circle class="center-dot" id="mcCenter" cx="50" cy="50" r="6" fill="#00f0ff"/>
+                        <circle cx="50" cy="50" r="3" fill="#0c1018"/>
+                    </svg>
+                </div>
+
                 <div class="node-container">
                     <div class="node-content" id="nodeContent"></div>
                 </div>
@@ -661,244 +939,246 @@
     </div>
 
     <script>
+        // ============================================
+        // TUTORIAL STATE
+        // ============================================
+        let tutorialComplete = false;
+        const testedDirections = { north: false, east: false, south: false, west: false };
+        
+        const keyUp = document.getElementById('keyUp');
+        const keyDown = document.getElementById('keyDown');
+        const keyLeft = document.getElementById('keyLeft');
+        const keyRight = document.getElementById('keyRight');
+        const tutorialCount = document.getElementById('tutorialCount');
+        const enterBtn = document.getElementById('enterBtn');
+        const enterHint = document.getElementById('enterHint');
+        
+        // Hero compass elements
+        const heroCompass = document.getElementById('heroCompass');
+        const northHighlight = heroCompass.querySelector('.north-highlight');
+        const eastHighlight = heroCompass.querySelector('.east-highlight');
+        const southHighlight = heroCompass.querySelector('.south-highlight');
+        const westHighlight = heroCompass.querySelector('.west-highlight');
+        const arrowNorth = heroCompass.querySelector('.arrow-north');
+        const arrowEast = heroCompass.querySelector('.arrow-east');
+        const arrowSouth = heroCompass.querySelector('.arrow-south');
+        const arrowWest = heroCompass.querySelector('.arrow-west');
+
+        function highlightDirection(dir) {
+            // Clear all
+            [northHighlight, eastHighlight, southHighlight, westHighlight].forEach(h => h.classList.remove('active'));
+            [arrowNorth, arrowEast, arrowSouth, arrowWest].forEach(a => a.classList.remove('pulse'));
+            [keyUp, keyDown, keyLeft, keyRight].forEach(k => k.classList.remove('active'));
+
+            // Highlight specific
+            if (dir === 'north') {
+                northHighlight.classList.add('active');
+                arrowNorth.classList.add('pulse');
+                keyUp.classList.add('active');
+                if (!testedDirections.north) { testedDirections.north = true; updateTutorial(); }
+            } else if (dir === 'east') {
+                eastHighlight.classList.add('active');
+                arrowEast.classList.add('pulse');
+                keyRight.classList.add('active');
+                if (!testedDirections.east) { testedDirections.east = true; updateTutorial(); }
+            } else if (dir === 'south') {
+                southHighlight.classList.add('active');
+                arrowSouth.classList.add('pulse');
+                keyDown.classList.add('active');
+                if (!testedDirections.south) { testedDirections.south = true; updateTutorial(); }
+            } else if (dir === 'west') {
+                westHighlight.classList.add('active');
+                arrowWest.classList.add('pulse');
+                keyLeft.classList.add('active');
+                if (!testedDirections.west) { testedDirections.west = true; updateTutorial(); }
+            }
+
+            // Clear after delay
+            setTimeout(() => {
+                [northHighlight, eastHighlight, southHighlight, westHighlight].forEach(h => h.classList.remove('active'));
+                [arrowNorth, arrowEast, arrowSouth, arrowWest].forEach(a => a.classList.remove('pulse'));
+            }, 300);
+        }
+
+        function updateTutorial() {
+            const count = Object.values(testedDirections).filter(v => v).length;
+            tutorialCount.textContent = count;
+            
+            // Mark tested keys
+            if (testedDirections.north) keyUp.classList.add('active');
+            if (testedDirections.east) keyRight.classList.add('active');
+            if (testedDirections.south) keyDown.classList.add('active');
+            if (testedDirections.west) keyLeft.classList.add('active');
+
+            if (count >= 4) {
+                tutorialComplete = true;
+                enterBtn.classList.add('ready');
+                enterHint.textContent = 'Press ENTER or click to begin';
+            }
+        }
+
+        // ============================================
+        // NODES
+        // ============================================
         const nodes = {
             origin: {
-                title: "ORIGIN",
-                subtitle: "The compass center • Where all paths begin",
-                color: "var(--qi-cyan)",
-                glow: "var(--qi-cyan-glow)",
-                description: "You stand at the nexus of the AI Moral Compass. Four cardinal directions extend before you, each representing a fundamental axis of the human-agent-energy relationship.",
-                data: [
-                    { label: "POSITION", value: "Center" },
-                    { label: "DEPTH", value: "0" },
-                    { label: "PATHS", value: "4" }
-                ],
-                tags: ["Start", "Nexus", "Ontology"],
+                title: "ORIGIN", subtitle: "The compass center",
+                color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
+                description: "You stand at the nexus. Four cardinal directions extend before you, each representing a fundamental axis of the human-agent-energy relationship.",
+                data: [{ label: "POSITION", value: "Center" }, { label: "DEPTH", value: "0" }, { label: "PATHS", value: "4" }],
+                tags: ["Start", "Nexus"],
                 north: "human", east: "agent", south: "energy", west: "value",
                 category: "core"
             },
-
             human: {
-                title: "HUMAN",
-                subtitle: "The mandate issuer • Source of intent",
-                color: "var(--qi-cyan)",
-                glow: "var(--qi-cyan-glow)",
-                description: "Humans define intent through mandates — bounded instructions that constrain agent behavior. A mandate specifies what an agent may do, how much energy it may spend, and what outcomes satisfy the request.",
-                data: [
-                    { label: "ROLE", value: "Principal" },
-                    { label: "FUNCTION", value: "Intent" },
-                    { label: "PROTOCOL", value: "AP2" }
-                ],
-                tags: ["Mandates", "Intent", "Boundaries"],
+                title: "HUMAN", subtitle: "The mandate issuer",
+                color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
+                description: "Humans define intent through mandates — bounded instructions that constrain agent behavior.",
+                data: [{ label: "ROLE", value: "Principal" }, { label: "FUNCTION", value: "Intent" }, { label: "PROTOCOL", value: "AP2" }],
+                tags: ["Mandates", "Intent"],
                 north: "locked:intent_theory", east: "human_agent", south: "origin", west: "human_value",
                 category: "cardinal"
             },
-
             agent: {
-                title: "AGENT",
-                subtitle: "The autonomous executor • ERC-8004 identity",
-                color: "var(--qi-amber)",
-                glow: "rgba(255, 184, 0, 0.4)",
-                description: "Agents are autonomous programs with on-chain identity (ERC-8004). They receive mandates, spend energy to accomplish tasks, and return value.",
-                data: [
-                    { label: "ROLE", value: "Executor" },
-                    { label: "IDENTITY", value: "ERC-8004" },
-                    { label: "PROTOCOL", value: "A2A" }
-                ],
-                tags: ["Autonomous", "Identity", "Capability"],
+                title: "AGENT", subtitle: "The autonomous executor",
+                color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
+                description: "Agents are autonomous programs with on-chain identity (ERC-8004). They receive mandates and return value.",
+                data: [{ label: "ROLE", value: "Executor" }, { label: "IDENTITY", value: "ERC-8004" }, { label: "PROTOCOL", value: "A2A" }],
+                tags: ["Autonomous", "Identity"],
                 north: "agent_human", east: "locked:agent_registry", south: "agent_energy", west: "origin",
                 category: "cardinal"
             },
-
             energy: {
-                title: "ENERGY",
-                subtitle: "The fuel of computation • Qi / x402",
-                color: "var(--qi-green)",
-                glow: "rgba(57, 255, 20, 0.4)",
-                description: "Energy is the fundamental resource. Qi tokens represent computational capacity — the ability to run inference, execute transactions, store data.",
-                data: [
-                    { label: "ROLE", value: "Fuel" },
-                    { label: "TOKEN", value: "Qi" },
-                    { label: "PROTOCOL", value: "x402" }
-                ],
-                tags: ["Qi", "Computation", "x402"],
+                title: "ENERGY", subtitle: "The fuel of computation",
+                color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
+                description: "Qi tokens represent computational capacity — the ability to run inference, execute transactions, store data.",
+                data: [{ label: "ROLE", value: "Fuel" }, { label: "TOKEN", value: "Qi" }, { label: "PROTOCOL", value: "x402" }],
+                tags: ["Qi", "x402"],
                 north: "origin", east: "energy_agent", south: "locked:thermodynamics", west: "energy_value",
                 category: "cardinal"
             },
-
             value: {
-                title: "VALUE",
-                subtitle: "The return path • Outcomes and reputation",
-                color: "var(--qi-purple)",
-                glow: "rgba(191, 90, 242, 0.4)",
-                description: "Value is what flows back to humans — completed tasks, data, generated content. Quality determines reputation and future mandate allocation.",
-                data: [
-                    { label: "ROLE", value: "Return" },
-                    { label: "MEASURE", value: "Reputation" },
-                    { label: "PROTOCOL", value: "Settlement" }
-                ],
-                tags: ["Outcomes", "Reputation", "Trust"],
+                title: "VALUE", subtitle: "The return path",
+                color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
+                description: "Value flows back to humans — completed tasks, data, content. Quality determines reputation.",
+                data: [{ label: "ROLE", value: "Return" }, { label: "MEASURE", value: "Reputation" }, { label: "PROTOCOL", value: "Settlement" }],
+                tags: ["Outcomes", "Trust"],
                 north: "value_human", east: "origin", south: "value_energy", west: "locked:value_theory",
                 category: "cardinal"
             },
-
             human_agent: {
-                title: "HUMAN → AGENT",
-                subtitle: "The delegation interface",
+                title: "HUMAN → AGENT", subtitle: "Delegation interface",
                 color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
-                description: "Where human intent becomes agent action. Mandates are signed, boundaries set, autonomy granted within limits.",
+                description: "Where human intent becomes agent action. Mandates signed, boundaries set.",
                 data: [{ label: "INTERFACE", value: "Mandate" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["Delegation", "Trust"],
+                tags: ["Delegation"],
                 north: null, east: "agent_human", south: "origin", west: "human",
                 category: "intersection"
             },
-
             agent_human: {
-                title: "AGENT → HUMAN",
-                subtitle: "The reporting interface",
+                title: "AGENT → HUMAN", subtitle: "Reporting interface",
                 color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
-                description: "Agents report status, completions, and failures. This channel carries accountability.",
+                description: "Agents report status and completions. This channel carries accountability.",
                 data: [{ label: "INTERFACE", value: "Report" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Accountability", "Oversight"],
+                tags: ["Accountability"],
                 north: "human", east: null, south: "agent", west: "human_agent",
                 category: "intersection"
             },
-
             human_value: {
-                title: "HUMAN ← VALUE",
-                subtitle: "The satisfaction endpoint",
+                title: "HUMAN ← VALUE", subtitle: "Satisfaction endpoint",
                 color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "Where value returns to humans. Completion of mandates, delivery of results.",
+                description: "Where value returns to humans. Completion of mandates.",
                 data: [{ label: "INTERFACE", value: "Delivery" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Satisfaction", "Receipt"],
+                tags: ["Satisfaction"],
                 north: null, east: "human", south: "value_human", west: null,
                 category: "intersection"
             },
-
             value_human: {
-                title: "VALUE → HUMAN",
-                subtitle: "The return channel",
+                title: "VALUE → HUMAN", subtitle: "Return channel",
                 color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "The path by which completed work flows back to the mandate issuer.",
+                description: "The path by which completed work flows back.",
                 data: [{ label: "INTERFACE", value: "Return" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["Delivery", "Closure"],
+                tags: ["Delivery"],
                 north: "human_value", east: null, south: "value", west: null,
                 category: "intersection"
             },
-
             agent_energy: {
-                title: "AGENT → ENERGY",
-                subtitle: "The spending interface",
+                title: "AGENT → ENERGY", subtitle: "Spending interface",
                 color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
-                description: "Agents spend energy to accomplish tasks — paying for compute, data, services via x402.",
+                description: "Agents spend energy for compute, data, services via x402.",
                 data: [{ label: "INTERFACE", value: "Spend" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["x402", "Micropayments"],
+                tags: ["x402"],
                 north: "agent", east: null, south: "energy_agent", west: "origin",
                 category: "intersection"
             },
-
             energy_agent: {
-                title: "ENERGY → AGENT",
-                subtitle: "The fueling interface",
+                title: "ENERGY → AGENT", subtitle: "Fueling interface",
                 color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
-                description: "Energy flows into agents through mandate budgets and service earnings.",
+                description: "Energy flows into agents through mandate budgets.",
                 data: [{ label: "INTERFACE", value: "Fuel" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Budget", "Allocation"],
+                tags: ["Budget"],
                 north: "agent_energy", east: null, south: "energy", west: null,
                 category: "intersection"
             },
-
             energy_value: {
-                title: "ENERGY → VALUE",
-                subtitle: "The transformation interface",
+                title: "ENERGY → VALUE", subtitle: "Transformation",
                 color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
-                description: "Energy transforms into value through computation. Raw capacity becomes useful output.",
+                description: "Energy transforms into value through computation.",
                 data: [{ label: "INTERFACE", value: "Transform" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["Conversion", "Output"],
+                tags: ["Conversion"],
                 north: null, east: "energy", south: null, west: "value_energy",
                 category: "intersection"
             },
-
             value_energy: {
-                title: "VALUE ← ENERGY",
-                subtitle: "The accounting interface",
+                title: "VALUE ← ENERGY", subtitle: "Accounting",
                 color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "Tracking energy cost of produced value. Every output has an energy input.",
+                description: "Tracking energy cost of produced value.",
                 data: [{ label: "INTERFACE", value: "Account" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Efficiency", "Cost"],
+                tags: ["Efficiency"],
                 north: "value", east: "energy_value", south: null, west: null,
                 category: "intersection"
             },
-
-            "locked:intent_theory": {
-                locked: true, cost: 50,
-                title: "INTENT THEORY", subtitle: "Unexplored territory",
-                preview: "The philosophy of machine intent. How do we formalize what an agent 'wants'?",
-                unlocks: "intent_theory", category: "deep"
-            },
-
-            "locked:agent_registry": {
-                locked: true, cost: 75,
-                title: "AGENT REGISTRY", subtitle: "Unexplored territory",
-                preview: "The global registry of ERC-8004 agents. Identity, capabilities, reputation.",
-                unlocks: "agent_registry", category: "deep"
-            },
-
-            "locked:thermodynamics": {
-                locked: true, cost: 100,
-                title: "THERMODYNAMICS", subtitle: "Unexplored territory",
-                preview: "The physics of computational economics. Energy, entropy, information theory.",
-                unlocks: "thermodynamics", category: "deep"
-            },
-
-            "locked:value_theory": {
-                locked: true, cost: 60,
-                title: "VALUE THEORY", subtitle: "Unexplored territory",
-                preview: "What makes agent output valuable? Alignment, accuracy, utility.",
-                unlocks: "value_theory", category: "deep"
-            },
-
+            "locked:intent_theory": { locked: true, cost: 50, title: "INTENT THEORY", subtitle: "Locked", preview: "Philosophy of machine intent.", unlocks: "intent_theory", category: "deep" },
+            "locked:agent_registry": { locked: true, cost: 75, title: "AGENT REGISTRY", subtitle: "Locked", preview: "Global ERC-8004 registry.", unlocks: "agent_registry", category: "deep" },
+            "locked:thermodynamics": { locked: true, cost: 100, title: "THERMODYNAMICS", subtitle: "Locked", preview: "Physics of computational economics.", unlocks: "thermodynamics", category: "deep" },
+            "locked:value_theory": { locked: true, cost: 60, title: "VALUE THEORY", subtitle: "Locked", preview: "Economics of utility.", unlocks: "value_theory", category: "deep" },
             intent_theory: {
-                title: "INTENT THEORY", subtitle: "Philosophy of machine purpose",
+                title: "INTENT THEORY", subtitle: "Philosophy",
                 color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
-                description: "Intent bridges human desire and machine action. Formalizing intent requires bounded languages, verifiable constraints, interpretable outputs.",
-                data: [{ label: "DOMAIN", value: "Philosophy" }, { label: "STATUS", value: "Research" }],
-                tags: ["Philosophy", "Formalization"],
-                north: null, east: null, south: "human", west: null,
-                category: "deep"
+                description: "Intent bridges human desire and machine action.",
+                data: [{ label: "DOMAIN", value: "Philosophy" }],
+                tags: ["Formalization"],
+                north: null, east: null, south: "human", west: null, category: "deep"
             },
-
             agent_registry: {
-                title: "AGENT REGISTRY", subtitle: "On-chain identity layer",
+                title: "AGENT REGISTRY", subtitle: "Identity layer",
                 color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
-                description: "Every agent has an ERC-8004 identity — a smart contract defining capabilities, tracking reputation, managing stake.",
-                data: [{ label: "DOMAIN", value: "Identity" }, { label: "STANDARD", value: "ERC-8004" }],
-                tags: ["Registry", "Namespace"],
-                north: null, east: null, south: null, west: "agent",
-                category: "deep"
+                description: "Every agent has an ERC-8004 identity.",
+                data: [{ label: "STANDARD", value: "ERC-8004" }],
+                tags: ["Registry"],
+                north: null, east: null, south: null, west: "agent", category: "deep"
             },
-
             thermodynamics: {
-                title: "THERMODYNAMICS", subtitle: "Physics of computation",
+                title: "THERMODYNAMICS", subtitle: "Physics",
                 color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
-                description: "Computation requires energy. Information has entropy. AI economics are fundamentally thermodynamic — bounded by physics.",
-                data: [{ label: "DOMAIN", value: "Physics" }, { label: "STATUS", value: "Theoretical" }],
-                tags: ["Entropy", "Landauer"],
-                north: "energy", east: null, south: null, west: null,
-                category: "deep"
+                description: "Computation requires energy. Information has entropy.",
+                data: [{ label: "DOMAIN", value: "Physics" }],
+                tags: ["Entropy"],
+                north: "energy", east: null, south: null, west: null, category: "deep"
             },
-
             value_theory: {
-                title: "VALUE THEORY", subtitle: "Economics of utility",
+                title: "VALUE THEORY", subtitle: "Economics",
                 color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "Value is subjective but measurable. Agent outputs are rated, compared, priced. Reputation emerges from consistent delivery.",
-                data: [{ label: "DOMAIN", value: "Economics" }, { label: "STATUS", value: "Applied" }],
-                tags: ["Utility", "Pricing"],
-                north: null, east: "value", south: null, west: null,
-                category: "deep"
+                description: "Value is subjective but measurable.",
+                data: [{ label: "DOMAIN", value: "Economics" }],
+                tags: ["Utility"],
+                north: null, east: "value", south: null, west: null, category: "deep"
             }
         };
 
+        // ============================================
+        // STATE
+        // ============================================
         let currentNode = 'origin';
         let energy = 500;
         let maxEnergy = 500;
@@ -906,6 +1186,7 @@
         let pathHistory = ['origin'];
         let gameStarted = false;
 
+        // DOM
         const briefingOverlay = document.getElementById('briefingOverlay');
         const compassWorld = document.getElementById('compassWorld');
         const nodeContent = document.getElementById('nodeContent');
@@ -921,8 +1202,16 @@
         const btnEast = document.getElementById('btnEast');
         const btnSouth = document.getElementById('btnSouth');
         const btnWest = document.getElementById('btnWest');
+        
+        // Mini compass
+        const mcNorth = document.getElementById('mcNorth');
+        const mcEast = document.getElementById('mcEast');
+        const mcSouth = document.getElementById('mcSouth');
+        const mcWest = document.getElementById('mcWest');
+        const mcCenter = document.getElementById('mcCenter');
 
         function enterCompass() {
+            if (!tutorialComplete) return;
             gameStarted = true;
             briefingOverlay.classList.add('hidden');
             compassWorld.classList.add('active');
@@ -935,10 +1224,7 @@
             energyFill.style.width = `${(energy / maxEnergy) * 100}%`;
             energyValue.textContent = `${energy} Qi`;
 
-            const displayPath = pathHistory.slice(-5).map(p => {
-                const n = nodes[p];
-                return n ? (n.title || p) : p;
-            });
+            const displayPath = pathHistory.slice(-4).map(p => nodes[p]?.title || p);
             pathDisplay.innerHTML = displayPath.join(' <span>→</span> ');
 
             backBtn.disabled = pathHistory.length <= 1;
@@ -950,6 +1236,7 @@
             }
 
             updateNavButtons(node);
+            updateMiniCompass(node);
             renderIndex();
         }
 
@@ -958,10 +1245,7 @@
             nodeContent.style.setProperty('--node-glow', node.glow || 'var(--qi-cyan-glow)');
             
             let dataHTML = node.data ? `<div class="node-data">${node.data.map(d => `
-                <div class="data-block">
-                    <div class="data-label">${d.label}</div>
-                    <div class="data-value">${d.value}</div>
-                </div>
+                <div class="data-block"><div class="data-label">${d.label}</div><div class="data-value">${d.value}</div></div>
             `).join('')}</div>` : '';
 
             let tagsHTML = node.tags ? `<div class="node-tags">${node.tags.map(t => `<span class="node-tag">${t}</span>`).join('')}</div>` : '';
@@ -983,8 +1267,8 @@
                     <div class="locked-icon">🔒</div>
                     <div class="locked-title">${node.title}</div>
                     <div class="locked-desc">${node.preview}</div>
-                    <button class="unlock-btn" onclick="unlockNode()" ${!canAfford ? 'disabled' : ''}>EXPLORE PATH</button>
-                    <div class="unlock-cost">Cost: ${node.cost} Qi ${!canAfford ? '(insufficient)' : ''}</div>
+                    <button class="unlock-btn" onclick="unlockNode()" ${!canAfford ? 'disabled' : ''}>EXPLORE</button>
+                    <div class="unlock-cost">Cost: ${node.cost} Qi</div>
                 </div>
             `;
         }
@@ -996,16 +1280,32 @@
             btnWest.disabled = !node.west;
         }
 
+        function updateMiniCompass(node) {
+            // Update arrow availability
+            mcNorth.classList.toggle('available', !!node.north);
+            mcNorth.classList.toggle('unavailable', !node.north);
+            mcEast.classList.toggle('available', !!node.east);
+            mcEast.classList.toggle('unavailable', !node.east);
+            mcSouth.classList.toggle('available', !!node.south);
+            mcSouth.classList.toggle('unavailable', !node.south);
+            mcWest.classList.toggle('available', !!node.west);
+            mcWest.classList.toggle('unavailable', !node.west);
+
+            // Update center color based on current node
+            const colorMap = {
+                'var(--qi-cyan)': '#00f0ff',
+                'var(--qi-amber)': '#ffb800',
+                'var(--qi-green)': '#39FF14',
+                'var(--qi-purple)': '#bf5af2'
+            };
+            mcCenter.style.fill = colorMap[node.color] || '#00f0ff';
+        }
+
         function renderIndex() {
             const totalNodes = Object.keys(nodes).filter(k => !k.startsWith('locked:')).length;
             indexStats.textContent = `Explored: ${exploredNodes.size} / ${totalNodes}`;
 
-            const categories = {
-                core: { title: 'CORE', nodes: [] },
-                cardinal: { title: 'CARDINAL', nodes: [] },
-                intersection: { title: 'INTERSECTIONS', nodes: [] },
-                deep: { title: 'DEEP', nodes: [] }
-            };
+            const categories = { core: { title: 'CORE', nodes: [] }, cardinal: { title: 'CARDINAL', nodes: [] }, intersection: { title: 'INTERSECTIONS', nodes: [] }, deep: { title: 'DEEP', nodes: [] } };
 
             Object.keys(nodes).forEach(key => {
                 const node = nodes[key];
@@ -1024,7 +1324,6 @@
                     let statusClass = isExplored ? '' : 'unexplored';
                     let iconClass = isExplored ? 'explored' : 'unexplored';
                     if (isCurrent) { statusClass = 'current'; iconClass = 'current'; }
-
                     html += `<div class="index-node ${statusClass}" onclick="jumpToNode('${key}')">
                         <div class="index-node-icon ${iconClass}"></div>
                         <div class="index-node-name">${node.title}</div>
@@ -1032,7 +1331,6 @@
                 });
                 html += `</div>`;
             });
-
             indexList.innerHTML = html;
         }
 
@@ -1049,8 +1347,7 @@
             setTimeout(() => {
                 pathHistory.push(target);
                 currentNode = target;
-                const trackKey = target.startsWith('locked:') ? target : target;
-                exploredNodes.add(trackKey);
+                exploredNodes.add(target);
                 render();
                 nodeContent.classList.remove('transitioning');
             }, 200);
@@ -1060,7 +1357,6 @@
             if (pathHistory.length <= 1) return;
             flash.classList.add('active');
             setTimeout(() => flash.classList.remove('active'), 100);
-
             nodeContent.classList.add('transitioning');
             setTimeout(() => {
                 pathHistory.pop();
@@ -1075,7 +1371,6 @@
             if (key === currentNode) return;
             flash.classList.add('active');
             setTimeout(() => flash.classList.remove('active'), 100);
-
             nodeContent.classList.add('transitioning');
             setTimeout(() => {
                 pathHistory.push(key);
@@ -1090,28 +1385,33 @@
             if (!node.locked || energy < node.cost) return;
             energy -= node.cost;
             const unlockedKey = node.unlocks;
-
             Object.keys(nodes).forEach(key => {
                 const n = nodes[key];
                 ['north', 'east', 'south', 'west'].forEach(dir => {
                     if (n[dir] === currentNode) n[dir] = unlockedKey;
                 });
             });
-
             pathHistory[pathHistory.length - 1] = unlockedKey;
             currentNode = unlockedKey;
             exploredNodes.add(currentNode);
             render();
         }
 
+        // ============================================
+        // KEYBOARD
+        // ============================================
         document.addEventListener('keydown', (e) => {
-            if (!gameStarted && (e.key === 'Enter' || e.key === ' ')) {
-                e.preventDefault();
-                enterCompass();
+            // Tutorial mode
+            if (!gameStarted) {
+                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { e.preventDefault(); highlightDirection('north'); }
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); highlightDirection('east'); }
+                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { e.preventDefault(); highlightDirection('south'); }
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); highlightDirection('west'); }
+                if ((e.key === 'Enter' || e.key === ' ') && tutorialComplete) { e.preventDefault(); enterCompass(); }
                 return;
             }
-            if (!gameStarted) return;
 
+            // Exploration mode
             switch(e.key) {
                 case 'ArrowUp': case 'w': case 'W': e.preventDefault(); navigate('north'); break;
                 case 'ArrowRight': case 'd': case 'D': e.preventDefault(); navigate('east'); break;
@@ -1120,7 +1420,7 @@
                 case 'Backspace': e.preventDefault(); goBack(); break;
                 case ' ': case 'Enter':
                     e.preventDefault();
-                    if (nodes[currentNode] && nodes[currentNode].locked) unlockNode();
+                    if (nodes[currentNode]?.locked) unlockNode();
                     break;
             }
         });
