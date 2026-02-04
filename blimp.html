@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,28 +45,6 @@
             overflow-x: hidden;
         }
 
-        /* Soft cloud shapes */
-        .clouds-bg {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .cloud-shape {
-            position: absolute;
-            background: radial-gradient(ellipse, rgba(255,255,255,0.8) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: drift 120s linear infinite;
-        }
-        .cloud-shape:nth-child(1) { width: 600px; height: 200px; top: 5%; left: -300px; animation-duration: 150s; }
-        .cloud-shape:nth-child(2) { width: 400px; height: 150px; top: 20%; left: -200px; animation-duration: 100s; animation-delay: -30s; }
-        .cloud-shape:nth-child(3) { width: 500px; height: 180px; top: 60%; left: -250px; animation-duration: 130s; animation-delay: -60s; }
-        @keyframes drift {
-            from { transform: translateX(0); }
-            to { transform: translateX(calc(100vw + 600px)); }
-        }
-
         /* Navigation */
         nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
@@ -107,7 +86,7 @@
         }
         .nav-links a:hover { color: var(--forest); }
 
-        /* Hero */
+        /* HERO with Forest Background */
         .hero {
             position: relative;
             min-height: 100vh;
@@ -116,55 +95,56 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 140px 24px 100px;
+            padding: 70px 24px 80px;
+            background: url('forest.png') center center / cover no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Dark overlay for text readability */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.2) 0%,
+                rgba(0, 0, 0, 0.1) 40%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
             z-index: 1;
         }
 
-        .hero-image {
-            width: 100%;
-            max-width: 700px;
-            margin-bottom: 48px;
-            border-radius: 16px;
-            box-shadow: 0 30px 80px rgba(45, 107, 63, 0.15);
-            animation: float 8s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        .hero-eyebrow {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--forest);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            opacity: 0;
-            animation: fade-in 0.8s ease forwards 0.2s;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
         }
 
         .hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(48px, 8vw, 88px);
-            font-weight: 600;
-            font-style: italic;
-            color: var(--text-dark);
-            margin-bottom: 24px;
-            letter-spacing: -1px;
+            font-family: var(--font-body);
+            font-size: clamp(72px, 15vw, 160px);
+            font-weight: 700;
+            color: white;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            text-shadow: 
+                0 4px 30px rgba(0, 0, 0, 0.4),
+                0 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 16px;
             opacity: 0;
-            animation: fade-in 0.8s ease forwards 0.3s;
+            animation: fade-in 1s ease forwards 0.3s;
         }
 
-        .hero-tagline {
-            font-family: var(--font-body);
-            font-size: clamp(18px, 2.5vw, 22px);
-            font-weight: 300;
-            color: var(--text-medium);
-            max-width: 600px;
+        .hero-subtitle {
+            font-family: var(--font-display);
+            font-size: clamp(24px, 4vw, 36px);
+            font-weight: 500;
+            font-style: italic;
+            color: white;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
             margin-bottom: 48px;
             opacity: 0;
-            animation: fade-in 0.8s ease forwards 0.5s;
+            animation: fade-in 1s ease forwards 0.6s;
         }
 
         @keyframes fade-in {
@@ -178,7 +158,7 @@
             flex-wrap: wrap;
             justify-content: center;
             opacity: 0;
-            animation: fade-in 0.8s ease forwards 0.7s;
+            animation: fade-in 1s ease forwards 0.9s;
         }
 
         .btn {
@@ -193,26 +173,58 @@
             cursor: pointer;
         }
         .btn-primary {
-            background: var(--forest);
-            color: white;
-            border: 2px solid var(--forest);
-            box-shadow: 0 4px 20px rgba(45, 107, 63, 0.25);
+            background: white;
+            color: var(--forest);
+            border: 2px solid white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         .btn-primary:hover {
-            background: var(--forest-light);
-            border-color: var(--forest-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(45, 107, 63, 0.3);
-        }
-        .btn-ghost {
-            background: transparent;
-            color: var(--forest);
-            border: 2px solid var(--border-medium);
-        }
-        .btn-ghost:hover {
             background: var(--forest);
             color: white;
             border-color: var(--forest);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        .btn-ghost:hover {
+            background: white;
+            color: var(--forest);
+            border-color: white;
+        }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            text-align: center;
+            opacity: 0;
+            animation: fade-in 1s ease forwards 1.2s;
+        }
+        .scroll-hint span {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .scroll-hint .arrow {
+            font-size: 24px;
+            color: white;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(8px); opacity: 1; }
         }
 
         /* Sections */
@@ -448,6 +460,25 @@
             text-align: center;
             padding: 140px 24px;
         }
+        .cta-section .btn-primary {
+            background: var(--forest);
+            color: white;
+            border-color: var(--forest);
+        }
+        .cta-section .btn-primary:hover {
+            background: var(--forest-light);
+            border-color: var(--forest-light);
+        }
+        .cta-section .btn-ghost {
+            background: transparent;
+            color: var(--forest);
+            border-color: var(--border-medium);
+        }
+        .cta-section .btn-ghost:hover {
+            background: var(--forest);
+            color: white;
+            border-color: var(--forest);
+        }
 
         /* Footer */
         footer {
@@ -478,7 +509,7 @@
         @media (max-width: 768px) {
             nav { padding: 0 24px; }
             .nav-links { display: none; }
-            .hero-image { max-width: 100%; }
+            .hero h1 { letter-spacing: 6px; }
             .tier { grid-template-columns: 1fr; gap: 12px; text-align: center; }
             .tier-badge { justify-self: center; width: 100px; }
             .tier-unlock { justify-self: center; }
@@ -486,12 +517,6 @@
     </style>
 </head>
 <body>
-
-    <div class="clouds-bg">
-        <div class="cloud-shape"></div>
-        <div class="cloud-shape"></div>
-        <div class="cloud-shape"></div>
-    </div>
 
     <nav>
         <a href="index.html" class="nav-back">← Qi.xyz</a>
@@ -503,17 +528,21 @@
         </ul>
     </nav>
 
-    <!-- HERO -->
+    <!-- HERO with Forest Background -->
     <section class="hero">
-        <img src="blimp.png" alt="Solarpunk Airship" class="hero-image" />
-        
-        <div class="hero-eyebrow">Build Protocol</div>
-        <h1>Build Your Airship</h1>
-        <p class="hero-tagline">Send Qi. Earn parts. Construct your vessel piece by piece. Dock with others. Land on floating islands. Begin worldbuilding.</p>
-        
-        <div class="cta-group">
-            <a href="#how" class="btn btn-primary">How It Works</a>
-            <a href="#" class="btn btn-ghost">Connect Wallet</a>
+        <div class="hero-content">
+            <h1>BLIMP</h1>
+            <p class="hero-subtitle">Build Your Airship</p>
+            
+            <div class="cta-group">
+                <a href="#how" class="btn btn-primary">How It Works</a>
+                <a href="#" class="btn btn-ghost">Connect Wallet</a>
+            </div>
+        </div>
+
+        <div class="scroll-hint">
+            <span>Explore</span>
+            <div class="arrow">↓</div>
         </div>
     </section>
 
