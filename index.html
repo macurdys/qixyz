@@ -146,7 +146,8 @@
 
         .hero h1 { font-family: var(--font-display); font-size: clamp(48px, 10vw, 120px); font-weight: 900; letter-spacing: 12px; color: var(--text-primary); line-height: 1; margin-bottom: 24px; opacity: 0; animation: fade-up 0.8s ease forwards 0.4s; }
         .hero h1 span { color: var(--qi-cyan); text-shadow: 0 0 40px var(--qi-cyan-glow), 0 0 80px rgba(0, 240, 255, 0.15); }
-        .hero-tagline { font-family: var(--font-body); font-size: clamp(18px, 2.5vw, 24px); font-weight: 300; color: var(--text-secondary); max-width: 600px; margin-bottom: 48px; opacity: 0; animation: fade-up 0.8s ease forwards 0.6s; }
+        .hero-tagline { font-family: var(--font-body); font-size: clamp(18px, 2.5vw, 24px); font-weight: 300; color: var(--text-secondary); max-width: 600px; margin-bottom: 12px; opacity: 0; animation: fade-up 0.8s ease forwards 0.6s; }
+        .hero-tagline-sub { font-family: var(--font-mono); font-size: clamp(12px, 1.5vw, 14px); font-weight: 400; color: var(--qi-cyan); max-width: 600px; margin-bottom: 48px; opacity: 0; animation: fade-up 0.8s ease forwards 0.7s; letter-spacing: 1px; }
         .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; opacity: 0; animation: fade-up 0.8s ease forwards 0.8s; }
         @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -160,8 +161,8 @@
         /* ===== CAROUSEL ===== */
         .carousel-section {
             position: relative; z-index: 1;
-            padding: 0 24px 80px;
-            max-width: 1200px;
+            padding: 120px 24px 80px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -205,12 +206,12 @@
         .carousel-track-wrapper::after { right: 0; background: linear-gradient(-90deg, var(--bg-deep), transparent); }
 
         .carousel-track {
-            display: flex; gap: 20px;
+            display: flex; gap: 24px;
             transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
         .carousel-card {
-            flex: 0 0 340px;
+            flex: 0 0 420px;
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
             padding: 0;
@@ -230,11 +231,11 @@
             opacity: 0; transition: opacity 0.3s;
         }
 
-        .carousel-card:hover { border-color: var(--border-bright); box-shadow: 0 0 30px rgba(0, 240, 255, 0.06); transform: translateY(-4px); }
+        .carousel-card:hover { border-color: var(--qi-cyan); box-shadow: 0 0 40px rgba(0, 240, 255, 0.15), 0 8px 32px rgba(0, 0, 0, 0.4); transform: translateY(-8px); }
         .carousel-card:hover::before { opacity: 1; }
 
         .carousel-card-visual {
-            height: 180px;
+            height: 280px;
             background: var(--bg-panel);
             display: flex; align-items: center; justify-content: center;
             position: relative;
@@ -310,9 +311,11 @@
         .carousel-card[data-color="red"] .carousel-card-visual { border-bottom: 1px solid rgba(255, 51, 102, 0.15); }
         .carousel-card[data-color="red"] .card-glyph { color: var(--qi-red); }
 
-        .carousel-card-body { padding: 24px; }
-        .carousel-card-body h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
-        .carousel-card-body p { font-size: 14px; font-weight: 300; color: var(--text-secondary); line-height: 1.6; }
+        .carousel-card-body { padding: 28px 24px 32px; }
+        .carousel-card-body h3 { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
+        .carousel-card-body p { font-size: 15px; font-weight: 400; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
+        .carousel-card-body .card-link { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; transition: opacity 0.3s; }
+        .carousel-card:hover .card-link { opacity: 1; }
 
         .carousel-dots {
             display: flex; gap: 6px; justify-content: center; margin-top: 24px;
@@ -435,8 +438,8 @@
     <nav>
         <a href="#" class="nav-logo">QI</a>
         <ul class="nav-links" id="navLinks">
+            <li><a href="https://americanenergymoney.com" target="_blank">American Energy Money</a></li>
             <li><a href="https://thermoeconomics.info" target="_blank">Thermoeconomics</a></li>
-            <li><a href="https://qu.ai" target="_blank">Quai Network</a></li>
         </ul>
         <button class="nav-toggle" id="navToggle">MENU</button>
     </nav>
@@ -446,12 +449,12 @@
         <div class="hero-orb"></div>
         <div class="hero-status">Docking Station Online</div>
         <h1><span>QI</span>.XYZ</h1>
-        <p class="hero-tagline">Startup accelerator. Gamer guild. Brainstorm dock. All built on Qi — the energy-based money.</p>
+        <p class="hero-tagline">Startup accelerator. Brainstorm station. Social guild.</p>
+        <p class="hero-tagline-sub">All built with Qi (气) — the ancient energy gradient.</p>
         <div class="hero-ctas">
             <a href="#carousel" class="btn btn-primary" id="enterBtn">Enter the Station</a>
             <a href="https://thermoeconomics.info" target="_blank" class="btn btn-ghost" id="qiBtn">What Is Qi?</a>
         </div>
-        <div class="scroll-hint">Scroll to explore<span class="arrow">⌄</span></div>
     </section>
 
     <!-- ===== STATION CONTENT (hidden until unveiled) ===== -->
@@ -478,10 +481,11 @@
                     <div class="carousel-card-body">
                         <h3>AI Moral Compass</h3>
                         <p>Navigation HUD for the Human → Agent → Energy → Value framework. Economics as thermodynamics.</p>
+                        <span class="card-link">compass.html →</span>
                     </div>
                 </a>
 
-                <a href="https://blimp.qi.xyz" class="carousel-card" data-color="green">
+                <a href="https://blimp.qi.xyz" target="_blank" class="carousel-card" data-color="green">
                     <div class="carousel-card-visual carousel-card-img">
                         <img src="blimp.png" alt="Blimp" />
                         <span class="card-tag-top">Proto-02</span>
@@ -490,6 +494,7 @@
                     <div class="carousel-card-body">
                         <h3>Blimp</h3>
                         <p>Solarpunk dirigible builder game. Construct your airship, equip it, fly, and dock with other players.</p>
+                        <span class="card-link">blimp.qi.xyz →</span>
                     </div>
                 </a>
 
@@ -502,6 +507,7 @@
                     <div class="carousel-card-body">
                         <h3>American Energy Money</h3>
                         <p>The case for energy-backed currency in America. Educational advocacy for thermodynamic money.</p>
+                        <span class="card-link">americanenergymoney.com →</span>
                     </div>
                 </a>
 
@@ -514,6 +520,7 @@
                     <div class="carousel-card-body">
                         <h3>Quai Vault</h3>
                         <p>Secure storage and staking for Qi and Quai. Your gateway to the energy money ecosystem.</p>
+                        <span class="card-link">quaivault.org →</span>
                     </div>
                 </a>
 
@@ -526,6 +533,7 @@
                     <div class="carousel-card-body">
                         <h3>Your Idea Here</h3>
                         <p>Open bay. Bring a business plan, a prototype, or just an idea worth testing. Build on energy money.</p>
+                        <span class="card-link">discord.gg/quai →</span>
                     </div>
                 </a>
 
@@ -559,31 +567,11 @@
             unveilStation('#carousel');
         });
 
-        // Scroll/swipe to unveil
-        let scrollUnlockAttempt = 0;
-        window.addEventListener('wheel', (e) => {
-            if (document.body.classList.contains('locked') && e.deltaY > 0) {
-                scrollUnlockAttempt++;
-                if (scrollUnlockAttempt >= 2) { unveilStation('#carousel'); }
-            }
-        }, { passive: true });
-
-        let touchStartY = 0;
-        window.addEventListener('touchstart', (e) => {
-            if (document.body.classList.contains('locked')) { touchStartY = e.touches[0].clientY; }
-        }, { passive: true });
-        window.addEventListener('touchend', (e) => {
-            if (document.body.classList.contains('locked')) {
-                const diff = touchStartY - e.changedTouches[0].clientY;
-                if (diff > 60) { unveilStation('#carousel'); }
-            }
-        }, { passive: true });
-
         // ===== CAROUSEL =====
         const track = document.getElementById('carouselTrack');
         const cards = track.querySelectorAll('.carousel-card');
         const dotsContainer = document.getElementById('carouselDots');
-        const cardWidth = 360;
+        const cardWidth = 444; // card width (420) + gap (24)
         let currentIndex = 0;
         let autoplayInterval;
 
