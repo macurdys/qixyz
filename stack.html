@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Agent Economy Stack — Qi.xyz</title>
+    <meta name="description" content="Full infrastructure stack for AI agent commerce: Mandates, Identity, Discovery, Payments, and Validation on Quai Network.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-green: #39FF14;
+            --qi-green-dim: rgba(57, 255, 20, 0.15);
+            --qi-purple: #bf5af2;
+            --qi-purple-dim: rgba(191, 90, 242, 0.15);
+            --qi-red: #ff3366;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: var(--font-body); 
+            background: var(--bg-deep); 
+            color: var(--text-primary); 
+            font-size: 17px; 
+            line-height: 1.7;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.2;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.95); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { 
+            font-family: var(--font-display); font-size: 20px; font-weight: 700; 
+            color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; 
+        }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+            text-decoration: none; letter-spacing: 2px; text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--qi-cyan); }
+
+        .content {
+            position: relative; z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 24px 80px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 0 80px;
+            border-bottom: 1px solid var(--border-dim);
+            margin-bottom: 60px;
+        }
+        .hero-tag {
+            font-family: var(--font-mono); font-size: 10px; color: var(--qi-green);
+            letter-spacing: 4px; text-transform: uppercase;
+            padding: 6px 16px;
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-family: var(--font-display); font-size: clamp(28px, 5vw, 44px);
+            font-weight: 700; letter-spacing: 3px; margin-bottom: 16px;
+        }
+        .hero h1 span { color: var(--qi-cyan); }
+        .hero p {
+            font-size: 18px; color: var(--text-secondary); max-width: 700px; margin: 0 auto;
+        }
+
+        /* Stack Diagram */
+        .stack-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 60px 0;
+        }
+
+        .stack-layer {
+            position: relative;
+            padding: 40px;
+            border: 1px solid var(--border-dim);
+            margin-top: -1px;
+        }
+        .stack-layer::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+        }
+
+        .stack-layer[data-layer="human"]::before { background: var(--qi-cyan); }
+        .stack-layer[data-layer="mandate"]::before { background: var(--qi-cyan); }
+        .stack-layer[data-layer="discovery"]::before { background: var(--qi-amber); }
+        .stack-layer[data-layer="trust"]::before { background: var(--qi-amber); }
+        .stack-layer[data-layer="payment"]::before { background: var(--qi-green); }
+        .stack-layer[data-layer="settlement"]::before { background: var(--qi-green); }
+
+        .layer-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .layer-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            margin-bottom: 8px;
+        }
+        .layer-label[data-color="cyan"] { color: var(--qi-cyan); border: 1px solid var(--qi-cyan); background: var(--qi-cyan-dim); }
+        .layer-label[data-color="amber"] { color: var(--qi-amber); border: 1px solid var(--qi-amber); background: var(--qi-amber-dim); }
+        .layer-label[data-color="green"] { color: var(--qi-green); border: 1px solid var(--qi-green); background: var(--qi-green-dim); }
+        .layer-label[data-color="purple"] { color: var(--qi-purple); border: 1px solid var(--qi-purple); background: var(--qi-purple-dim); }
+
+        .layer-title {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .layer-role {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-align: right;
+        }
+
+        .layer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .protocol-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 20px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .protocol-card:hover {
+            border-color: var(--border-bright);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+        }
+
+        .protocol-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .protocol-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid var(--border-bright);
+        }
+        .protocol-icon.cyan { color: var(--qi-cyan); border-color: var(--qi-cyan); }
+        .protocol-icon.amber { color: var(--qi-amber); border-color: var(--qi-amber); }
+        .protocol-icon.green { color: var(--qi-green); border-color: var(--qi-green); }
+        .protocol-icon.purple { color: var(--qi-purple); border-color: var(--qi-purple); }
+
+        .protocol-name {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .protocol-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .protocol-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .protocol-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border: 1px solid var(--border-dim);
+            color: var(--text-dim);
+        }
+        .protocol-tag.active {
+            border-color: var(--qi-green);
+            color: var(--qi-green);
+        }
+
+        /* Connector Lines */
+        .connector {
+            display: flex;
+            justify-content: center;
+            padding: 8px 0;
+        }
+        .connector-line {
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(180deg, var(--qi-cyan), var(--qi-amber), var(--qi-green));
+            position: relative;
+        }
+        .connector-line::after {
+            content: '↓';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+
+        /* Compass Mapping */
+        .compass-mapping {
+            margin-top: 80px;
+            padding-top: 60px;
+            border-top: 1px solid var(--border-dim);
+        }
+
+        .compass-mapping h2 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--qi-cyan);
+        }
+        .compass-mapping h2::before {
+            content: '// ';
+            color: var(--text-dim);
+        }
+
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .mapping-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 24px;
+            text-align: center;
+            position: relative;
+        }
+        .mapping-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .mapping-card[data-direction="north"]::before { background: var(--qi-cyan); }
+        .mapping-card[data-direction="east"]::before { background: var(--qi-amber); }
+        .mapping-card[data-direction="south"]::before { background: var(--qi-green); }
+        .mapping-card[data-direction="west"]::before { background: var(--qi-purple); }
+
+        .mapping-direction {
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+        .mapping-card[data-direction="north"] .mapping-direction { color: var(--qi-cyan); }
+        .mapping-card[data-direction="east"] .mapping-direction { color: var(--qi-amber); }
+        .mapping-card[data-direction="south"] .mapping-direction { color: var(--qi-green); }
+        .mapping-card[data-direction="west"] .mapping-direction { color: var(--qi-purple); }
+
+        .mapping-role {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .mapping-layers {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            line-height: 1.8;
+        }
+
+        /* Example Flow */
+        .example-section {
+            margin-top: 80px;
+            padding-top: 60px;
+            border-top: 1px solid var(--border-dim);
+        }
+
+        .example-section h2 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            color: var(--qi-amber);
+        }
+        .example-section h2::before {
+            content: '// ';
+            color: var(--text-dim);
+        }
+
+        .example-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 32px;
+            position: relative;
+        }
+        .example-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--qi-cyan), var(--qi-amber), var(--qi-green), var(--qi-purple));
+        }
+
+        .example-title {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .example-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .example-step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid var(--border-bright);
+            flex-shrink: 0;
+        }
+        .step-number[data-color="cyan"] { color: var(--qi-cyan); border-color: var(--qi-cyan); }
+        .step-number[data-color="amber"] { color: var(--qi-amber); border-color: var(--qi-amber); }
+        .step-number[data-color="green"] { color: var(--qi-green); border-color: var(--qi-green); }
+        .step-number[data-color="purple"] { color: var(--qi-purple); border-color: var(--qi-purple); }
+
+        .step-content {
+            flex: 1;
+        }
+        .step-action {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .step-detail {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .step-protocol {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--qi-cyan);
+            margin-top: 6px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 24px;
+            border-top: 1px solid var(--border-dim);
+            margin-top: 80px;
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--text-dim); letter-spacing: 2px;
+        }
+        footer a { color: var(--qi-cyan); text-decoration: none; }
+
+        @media (max-width: 900px) {
+            .mapping-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .mapping-grid { grid-template-columns: 1fr; }
+            .layer-header { flex-direction: column; gap: 12px; }
+            .layer-role { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <nav>
+        <a href="index.html" class="nav-logo">QI.XYZ</a>
+        <div class="nav-links">
+            <a href="index.html">Station</a>
+            <a href="compass.html">Compass</a>
+            <a href="erc8004.html">ERC-8004</a>
+            <a href="https://qu.ai" target="_blank">Quai</a>
+        </div>
+    </nav>
+
+    <div class="content">
+
+        <header class="hero">
+            <span class="hero-tag">Infrastructure Map</span>
+            <h1>The <span>Agent Economy</span> Stack</h1>
+            <p>From human intent to on-chain settlement. Every layer of the AI commerce infrastructure mapped to protocols, standards, and Quai-native implementations.</p>
+        </header>
+
+        <!-- Stack Diagram -->
+        <div class="stack-diagram">
+
+            <!-- Layer 1: Human Intent -->
+            <div class="stack-layer" data-layer="human">
+                <div class="layer-header">
+                    <div>
+                        <span class="layer-label" data-color="cyan">Layer 1</span>
+                        <h3 class="layer-title">Human Intent</h3>
+                    </div>
+                    <div class="layer-role">PRINCIPAL</div>
+                </div>
+                <div class="layer-content">
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon cyan">M</div>
+                            <span class="protocol-name">Mandates (AP2)</span>
+                        </div>
+                        <p class="protocol-desc">Cryptographically signed contracts binding price, scope, and conditions. Cart Mandates for explicit purchases, Intent Mandates for delegated autonomy.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Live</span>
+                            <span class="protocol-tag">Google AP2</span>
+                        </div>
+                    </div>
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon cyan">W</div>
+                            <span class="protocol-name">Wallet Auth</span>
+                        </div>
+                        <p class="protocol-desc">x402 V2 wallet-based identity. User signs mandates with their Quai wallet, creating verifiable proof of intent.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Live</span>
+                            <span class="protocol-tag">x402 V2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 2: Discovery -->
+            <div class="stack-layer" data-layer="discovery">
+                <div class="layer-header">
+                    <div>
+                        <span class="layer-label" data-color="amber">Layer 2</span>
+                        <h3 class="layer-title">Discovery & Coordination</h3>
+                    </div>
+                    <div class="layer-role">EXECUTOR</div>
+                </div>
+                <div class="layer-content">
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon amber">8K</div>
+                            <span class="protocol-name">ERC-8004</span>
+                        </div>
+                        <p class="protocol-desc">Agent identity, reputation, and validation registries. On-chain discovery of capabilities, trust scores, and verification status.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Mainnet</span>
+                            <span class="protocol-tag">EVM</span>
+                        </div>
+                    </div>
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon amber">A2A</div>
+                            <span class="protocol-name">Agent-to-Agent</span>
+                        </div>
+                        <p class="protocol-desc">Google's open protocol for agent coordination. Agent Cards for capability discovery, standardized task lifecycle for handoffs.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Live</span>
+                            <span class="protocol-tag">Google</span>
+                        </div>
+                    </div>
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon amber">MCP</div>
+                            <span class="protocol-name">Model Context Protocol</span>
+                        </div>
+                        <p class="protocol-desc">Standard for connecting AI to tools and data. 10,000+ published servers. Integrated in ChatGPT, Cursor, Gemini, VS Code.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Live</span>
+                            <span class="protocol-tag">Linux Foundation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 3: Trust -->
+            <div class="stack-layer" data-layer="trust">
+                <div class="layer-header">
+                    <div>
+                        <span class="layer-label" data-color="amber">Layer 3</span>
+                        <h3 class="layer-title">Trust & Verification</h3>
+                    </div>
+                    <div class="layer-role">VALIDATION</div>
+                </div>
+                <div class="layer-content">
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon amber">REP</div>
+                            <span class="protocol-name">Reputation Registry</span>
+                        </div>
+                        <p class="protocol-desc">Standardized feedback tied to payment proofs. On-chain aggregation for composability, off-chain for richer algorithms.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag">ERC-8004</span>
+                        </div>
+                    </div>
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon amber">VAL</div>
+                            <span class="protocol-name">Validation Registry</span>
+                        </div>
+                        <p class="protocol-desc">Independent verification: stake-secured re-execution, zkML proofs, TEE attestations. Choose trust model by risk.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag">ERC-8004</span>
+                            <span class="protocol-tag">zkML</span>
+                            <span class="protocol-tag">TEE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 4: Payment -->
+            <div class="stack-layer" data-layer="payment">
+                <div class="layer-header">
+                    <div>
+                        <span class="layer-label" data-color="green">Layer 4</span>
+                        <h3 class="layer-title">Payment & Energy</h3>
+                    </div>
+                    <div class="layer-role">SUBSTRATE</div>
+                </div>
+                <div class="layer-content">
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon green">x402</div>
+                            <span class="protocol-name">x402 Protocol</span>
+                        </div>
+                        <p class="protocol-desc">100M+ transactions processed. V2 with wallet identity, automatic API discovery, multichain via CAIP. A2A extension for agent crypto payments.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Live</span>
+                            <span class="protocol-tag">CAIP</span>
+                        </div>
+                    </div>
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon green">Qi</div>
+                            <span class="protocol-name">Qi Currency</span>
+                        </div>
+                        <p class="protocol-desc">Energy-based money. Minted proportionally to thermodynamic work. When agents pay in Qi, they transfer proof-of-work.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Quai Native</span>
+                            <span class="protocol-tag">PoW</span>
+                        </div>
+                    </div>
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon green">BP</div>
+                            <span class="protocol-name">BlipPay</span>
+                        </div>
+                        <p class="protocol-desc">Quai-native mobile payments. QR scan, non-custodial wallet, iOS + Android. Payment rail for agent commerce.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Live</span>
+                            <span class="protocol-tag">Mobile</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 5: Settlement -->
+            <div class="stack-layer" data-layer="settlement">
+                <div class="layer-header">
+                    <div>
+                        <span class="layer-label" data-color="green">Layer 5</span>
+                        <h3 class="layer-title">Settlement & Finality</h3>
+                    </div>
+                    <div class="layer-role">INFRASTRUCTURE</div>
+                </div>
+                <div class="layer-content">
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon green">Q</div>
+                            <span class="protocol-name">Quai Network</span>
+                        </div>
+                        <p class="protocol-desc">Hierarchical blockchain: Prime → Region → Zone. EVM compatible. Merged mining. Dual currency (QUAI + Qi).</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag active">Mainnet</span>
+                            <span class="protocol-tag">EVM</span>
+                            <span class="protocol-tag">PoEM</span>
+                        </div>
+                    </div>
+                    <div class="protocol-card">
+                        <div class="protocol-header">
+                            <div class="protocol-icon green">⛓</div>
+                            <span class="protocol-name">On-Chain Settlement</span>
+                        </div>
+                        <p class="protocol-desc">All transactions settle on Quai. Payment proofs, reputation updates, validation records — permanent and auditable.</p>
+                        <div class="protocol-tags">
+                            <span class="protocol-tag">Immutable</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Compass Mapping -->
+        <section class="compass-mapping">
+            <h2>Moral Compass Mapping</h2>
+            <div class="mapping-grid">
+                <div class="mapping-card" data-direction="north">
+                    <div class="mapping-direction">NORTH</div>
+                    <div class="mapping-role">HUMAN</div>
+                    <div class="mapping-layers">
+                        Layer 1: Mandates<br>
+                        AP2 • Wallet Auth<br>
+                        Intent + Authorization
+                    </div>
+                </div>
+                <div class="mapping-card" data-direction="east">
+                    <div class="mapping-direction">EAST</div>
+                    <div class="mapping-role">AGENT</div>
+                    <div class="mapping-layers">
+                        Layer 2-3: Discovery + Trust<br>
+                        ERC-8004 • A2A • MCP<br>
+                        Reputation + Validation
+                    </div>
+                </div>
+                <div class="mapping-card" data-direction="south">
+                    <div class="mapping-direction">SOUTH</div>
+                    <div class="mapping-role">ENERGY</div>
+                    <div class="mapping-layers">
+                        Layer 4-5: Payment + Settlement<br>
+                        x402 • Qi • Quai<br>
+                        Thermodynamic Cost
+                    </div>
+                </div>
+                <div class="mapping-card" data-direction="west">
+                    <div class="mapping-direction">WEST</div>
+                    <div class="mapping-role">VALUE</div>
+                    <div class="mapping-layers">
+                        Return Loop<br>
+                        Deliverables • Reputation<br>
+                        Task Completion
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example Flow -->
+        <section class="example-section">
+            <h2>The Stack in Action</h2>
+            <div class="example-box">
+                <div class="example-title">SCENARIO: Market Research Report by Morning</div>
+                
+                <div class="example-step">
+                    <div class="step-number" data-color="cyan">1</div>
+                    <div class="step-content">
+                        <div class="step-action">User signs Intent Mandate</div>
+                        <div class="step-detail">≤500 Qi budget, 24h TTL, 3 sources minimum, report deliverable</div>
+                        <div class="step-protocol">→ AP2 Mandate • Wallet signature</div>
+                    </div>
+                </div>
+
+                <div class="example-step">
+                    <div class="step-number" data-color="amber">2</div>
+                    <div class="step-content">
+                        <div class="step-action">Agent queries ERC-8004 registry</div>
+                        <div class="step-detail">Finds data providers with strong reputation signals, filters by capability</div>
+                        <div class="step-protocol">→ Identity Registry • Reputation scores</div>
+                    </div>
+                </div>
+
+                <div class="example-step">
+                    <div class="step-number" data-color="amber">3</div>
+                    <div class="step-content">
+                        <div class="step-action">Discovers capabilities via A2A</div>
+                        <div class="step-detail">Agent Cards reveal pricing, endpoints, supported data types</div>
+                        <div class="step-protocol">→ A2A Agent Cards • MCP tool discovery</div>
+                    </div>
+                </div>
+
+                <div class="example-step">
+                    <div class="step-number" data-color="green">4</div>
+                    <div class="step-content">
+                        <div class="step-action">Negotiates access and pays via x402</div>
+                        <div class="step-detail">12.5 Qi to DataOracle.eth, 45 Qi to ResearchBot.qi</div>
+                        <div class="step-protocol">→ x402 • Qi settlement</div>
+                    </div>
+                </div>
+
+                <div class="example-step">
+                    <div class="step-number" data-color="amber">5</div>
+                    <div class="step-content">
+                        <div class="step-action">Providers deliver via MCP tool calls</div>
+                        <div class="step-detail">847 data points aggregated, report synthesized</div>
+                        <div class="step-protocol">→ MCP servers • Structured responses</div>
+                    </div>
+                </div>
+
+                <div class="example-step">
+                    <div class="step-number" data-color="green">6</div>
+                    <div class="step-content">
+                        <div class="step-action">All transactions settle on-chain</div>
+                        <div class="step-detail">Payment proofs recorded, reputation updated, validation available</div>
+                        <div class="step-protocol">→ Quai Network • Permanent record</div>
+                    </div>
+                </div>
+
+                <div class="example-step">
+                    <div class="step-number" data-color="purple">7</div>
+                    <div class="step-content">
+                        <div class="step-action">Value returned to user</div>
+                        <div class="step-detail">Report delivered. No human coordination required.</div>
+                        <div class="step-protocol">→ Task complete • Loop closed</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>QI.XYZ — Built on <a href="https://qu.ai" target="_blank">Quai Network</a></p>
+            <p style="margin-top: 8px;">Agent Economy Stack • February 2026</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
