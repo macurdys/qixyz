@@ -3,9 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Moral Compass — Navigate with Arrow Keys</title>
-    <meta name="description" content="Explore the ontological space between Human, Agent, Energy, and Value.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Moral Compass — Possibility Navigator</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,42 +12,46 @@
     <style>
         :root {
             --qi-cyan: #00f0ff;
-            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-dim: rgba(0, 240, 255, 0.12);
             --qi-cyan-glow: rgba(0, 240, 255, 0.4);
             --qi-amber: #ffb800;
-            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-amber-dim: rgba(255, 184, 0, 0.12);
             --qi-red: #ff3366;
             --qi-green: #39FF14;
+            --qi-green-dim: rgba(57, 255, 20, 0.12);
             --qi-purple: #bf5af2;
+            --qi-purple-dim: rgba(191, 90, 242, 0.12);
             --bg-deep: #06080d;
             --bg-panel: #0c1018;
             --bg-card: #111822;
-            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-dim: rgba(0, 240, 255, 0.1);
             --border-bright: rgba(0, 240, 255, 0.3);
-            --text-primary: #e8ecf0;
+            --text-primary: #e0e6ed;
             --text-secondary: #7a8a9e;
-            --text-dim: #4a5568;
+            --text-dim: #3d4d60;
             --font-display: 'Orbitron', monospace;
             --font-body: 'Rajdhani', sans-serif;
             --font-mono: 'Share Tech Mono', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-            height: 100%; 
+
+        html, body {
+            height: 100%;
             overflow: hidden;
-            font-family: var(--font-body); 
-            background: var(--bg-deep); 
-            color: var(--text-primary); 
-            font-size: 17px; 
-            line-height: 1.6;
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            font-size: 16px;
+            line-height: 1.5;
         }
 
+        /* Scanlines */
         body::after {
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.006) 2px, rgba(0,240,255,0.006) 4px);
             pointer-events: none;
             z-index: 9999;
         }
@@ -56,14 +59,16 @@
         .grid-bg {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-image:
+                linear-gradient(var(--border-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
             background-size: 60px 60px;
-            opacity: 0.3;
-            z-index: 0;
+            opacity: 0.25;
             pointer-events: none;
+            z-index: 0;
         }
 
-        /* ==================== BRIEFING SCREEN ==================== */
+        /* ═══════════════ BRIEFING SCREEN ═══════════════ */
         .briefing-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -72,134 +77,114 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
-            transition: opacity 0.5s, visibility 0.5s;
+            justify-content: flex-start;
+            padding: 3vh 20px 2vh;
+            transition: opacity 0.6s, visibility 0.6s;
             overflow-y: auto;
         }
         .briefing-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+            opacity: 0; visibility: hidden; pointer-events: none;
         }
 
         .briefing-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 2vh;
+            flex-shrink: 0;
         }
         .briefing-title {
             font-family: var(--font-display);
-            font-size: clamp(20px, 4vw, 32px);
+            font-size: clamp(18px, 3.5vw, 30px);
             font-weight: 700;
-            letter-spacing: 6px;
+            letter-spacing: 5px;
             color: var(--qi-cyan);
             text-shadow: 0 0 40px var(--qi-cyan-glow);
-            margin-bottom: 8px;
+            white-space: nowrap;
         }
         .briefing-subtitle {
             font-family: var(--font-mono);
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-secondary);
             letter-spacing: 3px;
+            margin-top: 6px;
         }
 
-        /* Compass Visual */
+        /* Compass hero - constrained */
         .compass-hero {
             position: relative;
-            width: 100%;
-            max-width: 420px;
-            margin-bottom: 20px;
+            width: min(55vmin, 320px);
+            flex-shrink: 0;
+            margin-bottom: 2vh;
         }
-        .compass-svg {
-            width: 100%;
-            height: auto;
-        }
-
-        /* Direction highlights */
-        .compass-svg .dir-highlight {
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
-        .compass-svg .dir-highlight.active {
-            opacity: 1;
-        }
+        .compass-svg { width: 100%; height: auto; }
+        .compass-svg .dir-highlight { opacity: 0; transition: opacity 0.15s; }
+        .compass-svg .dir-highlight.active { opacity: 1; }
         .compass-svg .arrow-north,
         .compass-svg .arrow-east,
         .compass-svg .arrow-south,
-        .compass-svg .arrow-west {
-            transition: transform 0.15s, filter 0.15s;
-        }
-        .compass-svg .arrow-north.pulse { transform: translateY(-8px); filter: drop-shadow(0 0 15px #00f0ff); }
-        .compass-svg .arrow-east.pulse { transform: translateX(8px); filter: drop-shadow(0 0 15px #ffb800); }
-        .compass-svg .arrow-south.pulse { transform: translateY(8px); filter: drop-shadow(0 0 15px #39FF14); }
-        .compass-svg .arrow-west.pulse { transform: translateX(-8px); filter: drop-shadow(0 0 15px #bf5af2); }
+        .compass-svg .arrow-west { transition: transform 0.15s, filter 0.15s; }
+        .compass-svg .arrow-north.pulse { transform: translateY(-6px); filter: drop-shadow(0 0 12px #00f0ff); }
+        .compass-svg .arrow-east.pulse  { transform: translateX(6px);  filter: drop-shadow(0 0 12px #ffb800); }
+        .compass-svg .arrow-south.pulse { transform: translateY(6px);  filter: drop-shadow(0 0 12px #39FF14); }
+        .compass-svg .arrow-west.pulse  { transform: translateX(-6px); filter: drop-shadow(0 0 12px #bf5af2); }
 
-        /* Tutorial prompt */
-        .tutorial-prompt {
-            text-align: center;
-            margin-bottom: 24px;
-        }
+        /* Tutorial */
+        .tutorial-prompt { text-align: center; margin-bottom: 2vh; flex-shrink: 0; }
         .tutorial-text {
             font-family: var(--font-mono);
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
             letter-spacing: 1px;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
-        .tutorial-keys {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
+        .tutorial-keys { display: flex; justify-content: center; gap: 6px; margin-bottom: 8px; }
         .key-hint {
-            width: 40px;
-            height: 40px;
+            width: 36px; height: 36px;
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-family: var(--font-mono);
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-dim);
             transition: all 0.15s;
         }
-        .key-hint.active {
-            border-color: var(--qi-cyan);
-            color: var(--qi-cyan);
-            box-shadow: 0 0 15px var(--qi-cyan-glow);
-            background: var(--qi-cyan-dim);
-        }
-        .key-hint.north.active { border-color: var(--qi-cyan); color: var(--qi-cyan); box-shadow: 0 0 15px var(--qi-cyan-glow); }
-        .key-hint.east.active { border-color: var(--qi-amber); color: var(--qi-amber); box-shadow: 0 0 15px rgba(255,184,0,0.4); }
-        .key-hint.south.active { border-color: var(--qi-green); color: var(--qi-green); box-shadow: 0 0 15px rgba(57,255,20,0.4); }
-        .key-hint.west.active { border-color: var(--qi-purple); color: var(--qi-purple); box-shadow: 0 0 15px rgba(191,90,242,0.4); }
-
-        .tutorial-progress {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-        }
-        .tutorial-progress span {
-            color: var(--qi-cyan);
-        }
+        .key-hint.active { border-color: var(--qi-cyan); color: var(--qi-cyan); box-shadow: 0 0 12px var(--qi-cyan-glow); background: var(--qi-cyan-dim); }
+        .key-hint.north.active { border-color: var(--qi-cyan); color: var(--qi-cyan); box-shadow: 0 0 12px var(--qi-cyan-glow); }
+        .key-hint.east.active  { border-color: var(--qi-amber); color: var(--qi-amber); box-shadow: 0 0 12px rgba(255,184,0,0.4); }
+        .key-hint.south.active { border-color: var(--qi-green); color: var(--qi-green); box-shadow: 0 0 12px rgba(57,255,20,0.4); }
+        .key-hint.west.active  { border-color: var(--qi-purple); color: var(--qi-purple); box-shadow: 0 0 12px rgba(191,90,242,0.4); }
+        .tutorial-progress { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+        .tutorial-progress span { color: var(--qi-cyan); }
 
         /* Briefing info */
         .briefing-info {
             background: var(--bg-panel);
             border: 1px solid var(--border-dim);
-            padding: 16px 20px;
-            max-width: 500px;
-            margin-bottom: 24px;
+            padding: 14px 18px;
+            max-width: 480px;
+            width: 100%;
+            margin-bottom: 2vh;
+            flex-shrink: 0;
         }
         .briefing-info h3 {
             font-family: var(--font-display);
             font-size: 9px;
             letter-spacing: 3px;
             color: var(--qi-amber);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+        }
+        .briefing-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .briefing-col-title {
+            font-family: var(--font-display);
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: var(--qi-cyan);
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border-dim);
         }
         .briefing-info ul {
             list-style: none;
@@ -208,22 +193,35 @@
             color: var(--text-secondary);
         }
         .briefing-info li {
-            padding: 5px 0;
+            padding: 3px 0;
             display: flex;
-            align-items: center;
-            gap: 8px;
+            align-items: baseline;
+            gap: 6px;
         }
         .briefing-info li::before {
             content: '◇';
             color: var(--qi-cyan);
-            font-size: 8px;
+            font-size: 7px;
+            flex-shrink: 0;
         }
+        .briefing-info .key-label {
+            font-family: var(--font-display);
+            font-size: 9px;
+            color: var(--qi-cyan);
+            background: var(--bg-card);
+            padding: 1px 5px;
+            border: 1px solid var(--border-dim);
+            flex-shrink: 0;
+            min-width: 20px;
+            text-align: center;
+        }
+        .briefing-info .key-label.amber { color: var(--qi-amber); }
 
         .briefing-enter {
             font-family: var(--font-display);
             font-size: 11px;
             letter-spacing: 4px;
-            padding: 16px 48px;
+            padding: 14px 44px;
             background: transparent;
             border: 2px solid var(--qi-cyan);
             color: var(--qi-cyan);
@@ -231,122 +229,128 @@
             transition: all 0.3s;
             opacity: 0.3;
             pointer-events: none;
+            flex-shrink: 0;
         }
-        .briefing-enter.ready {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .briefing-enter.ready:hover {
-            background: var(--qi-cyan);
-            color: var(--bg-deep);
-            box-shadow: 0 0 40px var(--qi-cyan-glow);
-        }
+        .briefing-enter.ready { opacity: 1; pointer-events: auto; }
+        .briefing-enter.ready:hover { background: var(--qi-cyan); color: var(--bg-deep); box-shadow: 0 0 40px var(--qi-cyan-glow); }
         .briefing-enter-hint {
             font-family: var(--font-mono);
             font-size: 9px;
             color: var(--text-dim);
-            margin-top: 12px;
+            margin-top: 10px;
             letter-spacing: 1px;
+            flex-shrink: 0;
         }
 
-        /* ==================== MAIN EXPLORATION ==================== */
+        /* ═══════════════ MAIN EXPLORATION ═══════════════ */
         .compass-world {
             position: relative;
             z-index: 1;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
+            width: 100%; height: 100%;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
             opacity: 0;
             transition: opacity 0.5s;
         }
         .compass-world.active { opacity: 1; }
 
+        /* HUD Top */
         .hud-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-bottom: 1px solid var(--border-dim);
-            background: rgba(6, 8, 13, 0.9);
-            flex-shrink: 0;
+            background: rgba(6,8,13,0.92);
+            z-index: 10;
         }
-
         .location-display {
             font-family: var(--font-display);
-            font-size: 11px;
+            font-size: clamp(9px, 1.4vw, 12px);
             letter-spacing: 3px;
             color: var(--qi-cyan);
             text-shadow: 0 0 20px var(--qi-cyan-glow);
-        }
-
-        .energy-display {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .energy-label {
+        .depth-badge {
             font-family: var(--font-mono);
             font-size: 9px;
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-        }
-        .energy-bar {
-            width: 80px;
-            height: 6px;
-            background: var(--bg-card);
+            padding: 2px 8px;
             border: 1px solid var(--border-dim);
-            overflow: hidden;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            letter-spacing: 1px;
         }
-        .energy-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--qi-green), var(--qi-cyan));
-            transition: width 0.5s ease;
-            box-shadow: 0 0 10px var(--qi-green);
-        }
-        .energy-value {
+        .coords-display {
             font-family: var(--font-mono);
-            font-size: 10px;
-            color: var(--qi-green);
-            min-width: 50px;
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
         }
 
-        .main-area {
-            flex: 1;
+        .hud-top-right {
             display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .filter-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .filter-chip {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border: 1px solid var(--border-dim);
+            background: var(--bg-card);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-chip.active {
+            border-color: var(--qi-amber);
+            color: var(--qi-amber);
+            background: var(--qi-amber-dim);
+            box-shadow: 0 0 8px rgba(255,184,0,0.2);
+        }
+        .energy-display { display: flex; align-items: center; gap: 8px; }
+        .energy-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); letter-spacing: 2px; }
+        .energy-bar { width: 70px; height: 5px; background: var(--bg-card); border: 1px solid var(--border-dim); overflow: hidden; }
+        .energy-fill { height: 100%; background: linear-gradient(90deg, var(--qi-green), var(--qi-cyan)); transition: width 0.5s; box-shadow: 0 0 8px var(--qi-green); }
+        .energy-value { font-family: var(--font-mono); font-size: 10px; color: var(--qi-green); min-width: 45px; }
+
+        /* Main area */
+        .main-area {
+            display: grid;
+            grid-template-columns: 1fr 240px;
             overflow: hidden;
-            position: relative;
         }
 
+        /* Exploration zone */
         .exploration-zone {
-            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            padding: 16px;
+            padding: 20px;
         }
 
-        .node-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-        }
-
+        .node-container { position: relative; width: 100%; max-width: 620px; }
         .node-content {
             background: var(--bg-panel);
             border: 1px solid var(--border-dim);
-            padding: 32px;
+            padding: 28px;
             position: relative;
             opacity: 1;
             transform: scale(1);
-            transition: opacity 0.25s, transform 0.25s;
+            transition: opacity 0.2s, transform 0.2s;
         }
-        .node-content.transitioning {
-            opacity: 0;
-            transform: scale(0.95);
-        }
+        .node-content.transitioning { opacity: 0; transform: scale(0.96); }
         .node-content::before {
             content: '';
             position: absolute;
@@ -357,284 +361,343 @@
 
         .node-title {
             font-family: var(--font-display);
-            font-size: clamp(18px, 3vw, 26px);
+            font-size: clamp(16px, 2.5vw, 24px);
             font-weight: 700;
             letter-spacing: 4px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: var(--node-color, var(--qi-cyan));
-            text-shadow: 0 0 30px var(--node-glow, var(--qi-cyan-glow));
+            text-shadow: 0 0 25px var(--node-glow, var(--qi-cyan-glow));
         }
-
         .node-subtitle {
             font-family: var(--font-mono);
             font-size: 10px;
             color: var(--text-secondary);
             letter-spacing: 2px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             text-transform: uppercase;
         }
-
         .node-description {
             font-size: 15px;
             color: var(--text-primary);
-            line-height: 1.8;
-            margin-bottom: 18px;
+            line-height: 1.75;
+            margin-bottom: 16px;
         }
-
         .node-data {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 10px;
-            margin-bottom: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
         }
-
         .data-block {
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
-            padding: 10px;
+            padding: 8px;
         }
-        .data-label {
-            font-family: var(--font-mono);
-            font-size: 8px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
-            margin-bottom: 3px;
-        }
-        .data-value {
-            font-family: var(--font-display);
-            font-size: 13px;
-            color: var(--node-color, var(--qi-cyan));
-        }
-
-        .node-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+        .data-label { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 2px; }
+        .data-value { font-family: var(--font-display); font-size: 12px; color: var(--node-color, var(--qi-cyan)); }
+        .node-tags { display: flex; flex-wrap: wrap; gap: 5px; }
         .node-tag {
             font-family: var(--font-mono);
             font-size: 8px;
             letter-spacing: 1px;
-            padding: 4px 8px;
+            padding: 3px 7px;
             background: var(--qi-cyan-dim);
             border: 1px solid var(--border-dim);
             color: var(--qi-cyan);
         }
 
-        /* Locked */
+        /* Filter overlay content */
+        .filter-content {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-dim);
+        }
+        .filter-section-title {
+            font-family: var(--font-display);
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: var(--qi-amber);
+            margin-bottom: 8px;
+        }
+        .filter-text {
+            font-size: 13px;
+            color: var(--qi-amber);
+            line-height: 1.7;
+            font-style: italic;
+            opacity: 0.85;
+        }
+
+        /* Locked nodes */
         .locked-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(6, 8, 13, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 10;
             padding: 28px;
+            text-align: center;
         }
-        .locked-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.5; }
+        .locked-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
         .locked-title {
-            font-family: var(--font-display);
-            font-size: 13px;
-            letter-spacing: 4px;
-            color: var(--qi-amber);
-            margin-bottom: 8px;
+            font-family: var(--font-display); font-size: 13px;
+            letter-spacing: 4px; color: var(--qi-amber); margin-bottom: 8px;
         }
         .locked-desc {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-bottom: 18px;
-            text-align: center;
-            max-width: 260px;
-            line-height: 1.7;
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--text-secondary); margin-bottom: 16px; max-width: 260px; line-height: 1.7;
         }
         .unlock-btn {
-            font-family: var(--font-display);
-            font-size: 9px;
-            letter-spacing: 2px;
-            padding: 10px 22px;
-            background: transparent;
-            border: 1px solid var(--qi-amber);
-            color: var(--qi-amber);
-            cursor: pointer;
-            transition: all 0.3s;
+            font-family: var(--font-display); font-size: 9px;
+            letter-spacing: 2px; padding: 10px 22px;
+            background: transparent; border: 1px solid var(--qi-amber);
+            color: var(--qi-amber); cursor: pointer; transition: all 0.3s;
         }
-        .unlock-btn:hover:not(:disabled) {
-            background: var(--qi-amber);
-            color: var(--bg-deep);
-        }
+        .unlock-btn:hover:not(:disabled) { background: var(--qi-amber); color: var(--bg-deep); }
         .unlock-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .unlock-cost {
+        .unlock-cost { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-top: 8px; }
+
+        /* Navigation hints on node */
+        .nav-hints {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-dim);
+        }
+        .nav-hint-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-family: var(--font-mono);
             font-size: 9px;
             color: var(--text-dim);
-            margin-top: 10px;
+            letter-spacing: 0.5px;
         }
-
-        /* ==================== MINI COMPASS (corner) ==================== */
-        .mini-compass {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 140px;
-            height: 140px;
-            background: rgba(6, 8, 13, 0.9);
+        .nav-hint-item.available { color: var(--text-secondary); }
+        .nav-hint-key {
+            font-family: var(--font-display);
+            font-size: 8px;
+            width: 20px; height: 20px;
+            display: flex; align-items: center; justify-content: center;
             border: 1px solid var(--border-dim);
-            padding: 8px;
-            z-index: 50;
+            background: var(--bg-card);
+            flex-shrink: 0;
         }
-        .mini-compass-svg {
-            width: 100%;
-            height: 100%;
-        }
-        .mini-compass .arrow-group {
-            transition: opacity 0.2s, transform 0.2s;
-        }
-        .mini-compass .arrow-group.available { opacity: 1; }
-        .mini-compass .arrow-group.unavailable { opacity: 0.15; }
-        .mini-compass .arrow-group.current { }
-        .mini-compass .center-dot {
-            transition: fill 0.3s;
+        .nav-hint-item.available .nav-hint-key {
+            border-color: var(--border-bright);
+            color: var(--qi-cyan);
         }
 
-        /* ==================== PATHWAY INDEX ==================== */
-        .pathway-index {
-            width: 220px;
+        /* ═══════════════ SIDEBAR: EXPLORATION MAP ═══════════════ */
+        .sidebar {
             background: var(--bg-panel);
             border-left: 1px solid var(--border-dim);
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
+            overflow: hidden;
         }
 
-        .index-header {
-            padding: 12px 14px;
+        .sidebar-tabs {
+            display: flex;
             border-bottom: 1px solid var(--border-dim);
+            flex-shrink: 0;
+        }
+        .sidebar-tab {
+            flex: 1;
+            padding: 8px 4px;
+            font-family: var(--font-display);
+            font-size: 8px;
+            letter-spacing: 2px;
+            text-align: center;
+            color: var(--text-dim);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .sidebar-tab:hover { color: var(--text-secondary); }
+        .sidebar-tab.active {
+            color: var(--qi-cyan);
+            border-bottom-color: var(--qi-cyan);
+            background: var(--qi-cyan-dim);
+        }
+
+        .sidebar-panel {
+            flex: 1;
+            overflow: hidden;
+            display: none;
+        }
+        .sidebar-panel.active { display: flex; flex-direction: column; }
+
+        /* MAP TAB */
+        .map-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        .map-legend {
+            padding: 8px 12px;
+            border-top: 1px solid var(--border-dim);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+        }
+        .legend-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+        }
+
+        /* INDEX TAB */
+        .index-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-dim);
+            flex-shrink: 0;
         }
         .index-title {
             font-family: var(--font-display);
-            font-size: 9px;
-            letter-spacing: 3px;
-            color: var(--qi-cyan);
-            margin-bottom: 3px;
+            font-size: 9px; letter-spacing: 3px; color: var(--qi-cyan); margin-bottom: 2px;
         }
-        .index-stats {
-            font-family: var(--font-mono);
-            font-size: 9px;
-            color: var(--text-dim);
-        }
-
-        .index-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px;
-        }
-
-        .index-category { margin-bottom: 12px; }
+        .index-stats { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
+        .index-list { flex: 1; overflow-y: auto; padding: 6px; }
+        .index-category { margin-bottom: 10px; }
         .index-category-title {
-            font-family: var(--font-mono);
-            font-size: 8px;
-            letter-spacing: 2px;
-            color: var(--text-dim);
-            padding: 5px;
+            font-family: var(--font-mono); font-size: 8px;
+            letter-spacing: 2px; color: var(--text-dim);
+            padding: 4px 5px;
             border-bottom: 1px solid var(--border-dim);
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
-
         .index-node {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            padding: 5px 7px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border: 1px solid transparent;
+            display: flex; align-items: center; gap: 6px;
+            padding: 4px 6px; cursor: pointer;
+            transition: background 0.2s; border: 1px solid transparent;
         }
         .index-node:hover { background: var(--bg-card); border-color: var(--border-dim); }
         .index-node.current { background: var(--qi-cyan-dim); border-color: var(--qi-cyan); }
         .index-node.unexplored { opacity: 0.3; cursor: default; }
-
-        .index-node-icon {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
+        .index-node-icon { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
         .index-node-icon.explored { background: var(--qi-green); }
         .index-node-icon.current { background: var(--qi-cyan); }
         .index-node-icon.unexplored { background: var(--text-dim); }
-
         .index-node-name {
-            font-family: var(--font-mono);
-            font-size: 9px;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
+            font-family: var(--font-mono); font-size: 9px;
+            color: var(--text-secondary); letter-spacing: 0.5px;
         }
         .index-node.current .index-node-name { color: var(--qi-cyan); }
 
-        /* ==================== BOTTOM NAV ==================== */
+        /* ═══════════════ HUD BOTTOM ═══════════════ */
         .hud-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-top: 1px solid var(--border-dim);
-            background: rgba(6, 8, 13, 0.95);
-            flex-shrink: 0;
+            background: rgba(6,8,13,0.95);
+            z-index: 10;
+            gap: 12px;
         }
 
-        .nav-controls {
+        .controls-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 16px;
         }
 
-        .nav-btn {
+        /* Control clusters */
+        .control-cluster {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .cluster-label {
             font-family: var(--font-display);
-            font-size: 10px;
-            width: 30px;
-            height: 30px;
+            font-size: 7px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 2px;
+        }
+        .cluster-label.arrows { color: var(--qi-cyan); }
+        .cluster-label.wasd { color: var(--qi-amber); }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 26px);
+            grid-template-rows: repeat(2, 26px);
+            gap: 2px;
+        }
+        .dpad .ctrl-btn:nth-child(1) { grid-column: 2; grid-row: 1; }
+        .dpad .ctrl-btn:nth-child(2) { grid-column: 1; grid-row: 2; }
+        .dpad .ctrl-btn:nth-child(3) { grid-column: 2; grid-row: 2; }
+        .dpad .ctrl-btn:nth-child(4) { grid-column: 3; grid-row: 2; }
+
+        .ctrl-btn {
+            font-family: var(--font-display);
+            font-size: 9px;
+            width: 26px; height: 26px;
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
             color: var(--qi-cyan);
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center;
         }
-        .nav-btn:hover:not(:disabled) {
+        .ctrl-btn:hover:not(:disabled) { background: var(--qi-cyan-dim); border-color: var(--qi-cyan); }
+        .ctrl-btn:disabled { opacity: 0.15; cursor: not-allowed; }
+        .ctrl-btn.pressed {
             background: var(--qi-cyan-dim);
             border-color: var(--qi-cyan);
+            box-shadow: 0 0 10px var(--qi-cyan-glow);
         }
-        .nav-btn:disabled { opacity: 0.2; cursor: not-allowed; }
-        .nav-btn.back-btn {
-            width: auto;
-            padding: 0 12px;
+        .ctrl-btn.wasd-btn { color: var(--qi-amber); }
+        .ctrl-btn.wasd-btn:hover:not(:disabled) { background: var(--qi-amber-dim); border-color: var(--qi-amber); }
+        .ctrl-btn.wasd-btn.pressed {
+            background: var(--qi-amber-dim);
+            border-color: var(--qi-amber);
+            box-shadow: 0 0 10px rgba(255,184,0,0.3);
+        }
+
+        .ctrl-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--border-dim);
+        }
+
+        .back-btn {
+            font-family: var(--font-display);
             font-size: 9px;
-            letter-spacing: 1px;
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
             color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
         }
+        .back-btn:hover:not(:disabled) { border-color: var(--border-bright); color: var(--text-primary); }
+        .back-btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
-        .nav-dpad {
-            display: grid;
-            grid-template-columns: repeat(3, 30px);
-            grid-template-rows: repeat(2, 30px);
-            gap: 2px;
-        }
-        .nav-dpad .nav-btn:nth-child(1) { grid-column: 2; grid-row: 1; }
-        .nav-dpad .nav-btn:nth-child(2) { grid-column: 1; grid-row: 2; }
-        .nav-dpad .nav-btn:nth-child(3) { grid-column: 2; grid-row: 2; }
-        .nav-dpad .nav-btn:nth-child(4) { grid-column: 3; grid-row: 2; }
-
+        /* Path breadcrumb */
         .path-display {
             font-family: var(--font-mono);
             font-size: 9px;
             color: var(--text-dim);
-            letter-spacing: 1px;
-            max-width: 200px;
+            letter-spacing: 0.5px;
+            max-width: 240px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -648,6 +711,7 @@
             text-decoration: none;
             letter-spacing: 2px;
             transition: color 0.3s;
+            flex-shrink: 0;
         }
         .back-link:hover { color: var(--qi-cyan); }
 
@@ -655,776 +719,1108 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: var(--qi-cyan);
-            opacity: 0;
-            pointer-events: none;
+            opacity: 0; pointer-events: none;
             z-index: 100;
             transition: opacity 0.1s;
         }
-        .flash-overlay.active { opacity: 0.1; }
+        .flash-overlay.active { opacity: 0.08; }
 
-        @media (max-width: 900px) { .pathway-index { display: none; } }
+        /* ═══════════════ RESPONSIVE ═══════════════ */
+        @media (max-width: 900px) {
+            .main-area { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
         @media (max-width: 600px) {
             .path-display { display: none; }
-            .mini-compass { width: 100px; height: 100px; bottom: 10px; left: 10px; }
+            .hud-bottom { padding: 6px 10px; }
+            .filter-display { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
-    <div class="flash-overlay" id="flash"></div>
+<div class="grid-bg"></div>
+<div class="flash-overlay" id="flash"></div>
 
-    <!-- ==================== BRIEFING WITH COMPASS HERO ==================== -->
-    <div class="briefing-overlay" id="briefingOverlay">
-        
-        <div class="briefing-header">
-            <h1 class="briefing-title">AI MORAL COMPASS</h1>
-            <p class="briefing-subtitle">Navigational Protocol v0.1</p>
-        </div>
+<!-- ═══════════════ BRIEFING ═══════════════ -->
+<div class="briefing-overlay" id="briefingOverlay">
 
-        <!-- Large Compass Visual -->
-        <div class="compass-hero">
-            <svg class="compass-svg" id="heroCompass" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#00f0ff" />
-                        <stop offset="100%" style="stop-color:#0088aa" />
-                    </linearGradient>
-                    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#ffb800" />
-                        <stop offset="100%" style="stop-color:#cc8800" />
-                    </linearGradient>
-                    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#39FF14" />
-                        <stop offset="100%" style="stop-color:#22aa0a" />
-                    </linearGradient>
-                    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#bf5af2" />
-                        <stop offset="100%" style="stop-color:#8a3fbd" />
-                    </linearGradient>
-                    <filter id="glow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                    <filter id="softGlow">
-                        <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                    <filter id="strongGlow">
-                        <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:0.15" />
-                        <stop offset="100%" style="stop-color:#00f0ff;stop-opacity:0" />
-                    </radialGradient>
-                </defs>
-
-                <!-- Outer ring -->
-                <circle cx="250" cy="250" r="230" fill="none" stroke="rgba(0, 240, 255, 0.15)" stroke-width="1"/>
-                
-                <!-- Tick marks -->
-                <g stroke="rgba(0, 240, 255, 0.3)" stroke-width="1">
-                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(0, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(30, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(60, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(90, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(120, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(150, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(180, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(210, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(240, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="35" transform="rotate(270, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(300, 250, 250)"/>
-                    <line x1="250" y1="25" x2="250" y2="32" transform="rotate(330, 250, 250)"/>
-                </g>
-
-                <!-- Dashed inner ring -->
-                <circle cx="250" cy="250" r="195" fill="none" stroke="rgba(0, 240, 255, 0.08)" stroke-width="1" stroke-dasharray="4 8"/>
-
-                <!-- Main ring -->
-                <circle cx="250" cy="250" r="170" fill="none" stroke="rgba(0, 240, 255, 0.25)" stroke-width="2"/>
-
-                <!-- Data flow lines -->
-                <g stroke="rgba(0, 240, 255, 0.3)" stroke-width="1" fill="none">
-                    <path d="M250,80 L250,170"/>
-                    <path d="M330,250 L420,250"/>
-                    <path d="M250,330 L250,420"/>
-                    <path d="M80,250 L170,250"/>
-                </g>
-
-                <!-- Center glow -->
-                <circle cx="250" cy="250" r="120" fill="url(#centerGlow)"/>
-                <circle cx="250" cy="250" r="100" fill="none" stroke="rgba(0, 240, 255, 0.12)" stroke-width="1"/>
-
-                <!-- Direction highlight circles (hidden by default) -->
-                <circle class="dir-highlight north-highlight" cx="250" cy="80" r="50" fill="rgba(0, 240, 255, 0.15)" filter="url(#strongGlow)"/>
-                <circle class="dir-highlight east-highlight" cx="420" cy="250" r="50" fill="rgba(255, 184, 0, 0.15)" filter="url(#strongGlow)"/>
-                <circle class="dir-highlight south-highlight" cx="250" cy="420" r="50" fill="rgba(57, 255, 20, 0.15)" filter="url(#strongGlow)"/>
-                <circle class="dir-highlight west-highlight" cx="80" cy="250" r="50" fill="rgba(191, 90, 242, 0.15)" filter="url(#strongGlow)"/>
-
-                <!-- Cardinal arrows -->
-                <g filter="url(#glow)">
-                    <g class="arrow-north">
-                        <polygon points="250,80 262,155 250,135 238,155" fill="url(#cyanGrad)" opacity="0.9"/>
-                    </g>
-                    <g class="arrow-east">
-                        <polygon points="420,250 345,238 365,250 345,262" fill="url(#amberGrad)" opacity="0.9"/>
-                    </g>
-                    <g class="arrow-south">
-                        <polygon points="250,420 238,345 250,365 262,345" fill="url(#greenGrad)" opacity="0.9"/>
-                    </g>
-                    <g class="arrow-west">
-                        <polygon points="80,250 155,262 135,250 155,238" fill="url(#purpleGrad)" opacity="0.9"/>
-                    </g>
-                </g>
-
-                <!-- Diagonal arrows (dimmer) -->
-                <g opacity="0.25">
-                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(45, 250, 250)"/>
-                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(135, 250, 250)"/>
-                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(225, 250, 250)"/>
-                    <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(315, 250, 250)"/>
-                </g>
-
-                <!-- Labels -->
-                <g font-family="Orbitron, monospace" font-weight="700" text-anchor="middle">
-                    <text x="250" y="55" fill="#00f0ff" font-size="12" letter-spacing="3" filter="url(#softGlow)">HUMAN</text>
-                    <text x="250" y="68" fill="#00f0ff" font-size="8" letter-spacing="1" opacity="0.6">↑ W</text>
-                    <text x="448" y="247" fill="#ffb800" font-size="12" letter-spacing="3" filter="url(#softGlow)">AGENT</text>
-                    <text x="448" y="260" fill="#ffb800" font-size="8" letter-spacing="1" opacity="0.6">→ D</text>
-                    <text x="250" y="455" fill="#39FF14" font-size="12" letter-spacing="3" filter="url(#softGlow)">ENERGY</text>
-                    <text x="250" y="468" fill="#39FF14" font-size="8" letter-spacing="1" opacity="0.6">↓ S</text>
-                    <text x="52" y="247" fill="#bf5af2" font-size="12" letter-spacing="3" filter="url(#softGlow)">VALUE</text>
-                    <text x="52" y="260" fill="#bf5af2" font-size="8" letter-spacing="1" opacity="0.6">← A</text>
-                </g>
-
-                <!-- Center -->
-                <circle cx="250" cy="250" r="25" fill="#0c1018" stroke="#00f0ff" stroke-width="2"/>
-                <circle cx="250" cy="250" r="15" fill="#00f0ff" opacity="0.1"/>
-                <circle cx="250" cy="250" r="8" fill="#00f0ff" opacity="0.4" filter="url(#glow)"/>
-
-                <!-- Corner brackets -->
-                <g stroke="#00f0ff" stroke-width="1" fill="none" opacity="0.25">
-                    <path d="M15,15 L15,55 M15,15 L55,15"/>
-                    <path d="M485,15 L485,55 M485,15 L445,15"/>
-                    <path d="M15,485 L15,445 M15,485 L55,485"/>
-                    <path d="M485,485 L485,445 M485,485 L445,485"/>
-                </g>
-            </svg>
-        </div>
-
-        <!-- Tutorial -->
-        <div class="tutorial-prompt">
-            <p class="tutorial-text">TRY THE CONTROLS — Press each direction to continue</p>
-            <div class="tutorial-keys">
-                <div class="key-hint north" id="keyUp">↑</div>
-            </div>
-            <div class="tutorial-keys">
-                <div class="key-hint west" id="keyLeft">←</div>
-                <div class="key-hint south" id="keyDown">↓</div>
-                <div class="key-hint east" id="keyRight">→</div>
-            </div>
-            <p class="tutorial-progress"><span id="tutorialCount">0</span> / 4 directions tested</p>
-        </div>
-
-        <!-- Info -->
-        <div class="briefing-info">
-            <h3>PARAMETERS</h3>
-            <ul>
-                <li>Navigate with ↑↓←→ or WASD</li>
-                <li>Locked paths cost Qi to unlock</li>
-                <li>Backspace or BACK button to return</li>
-                <li>Starting reserve: 500 Qi</li>
-            </ul>
-        </div>
-
-        <button class="briefing-enter" id="enterBtn" onclick="enterCompass()">
-            BEGIN EXPLORATION
-        </button>
-        <p class="briefing-enter-hint" id="enterHint">Complete the tutorial to unlock</p>
+    <div class="briefing-header">
+        <h1 class="briefing-title">AI MORAL COMPASS</h1>
+        <p class="briefing-subtitle">POSSIBILITY NAVIGATOR v0.2</p>
     </div>
 
-    <!-- ==================== MAIN EXPLORATION ==================== -->
-    <div class="compass-world" id="compassWorld">
-        
-        <div class="hud-top">
-            <div class="location-display" id="locationDisplay">◇ ORIGIN</div>
+    <div class="compass-hero">
+        <svg class="compass-svg" id="heroCompass" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#00f0ff"/><stop offset="100%" style="stop-color:#0088aa"/>
+                </linearGradient>
+                <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ffb800"/><stop offset="100%" style="stop-color:#cc8800"/>
+                </linearGradient>
+                <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#39FF14"/><stop offset="100%" style="stop-color:#22aa0a"/>
+                </linearGradient>
+                <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#bf5af2"/><stop offset="100%" style="stop-color:#8a3fbd"/>
+                </linearGradient>
+                <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="softGlow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="strongGlow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:0.15"/>
+                    <stop offset="100%" style="stop-color:#00f0ff;stop-opacity:0"/>
+                </radialGradient>
+            </defs>
+
+            <circle cx="250" cy="250" r="230" fill="none" stroke="rgba(0,240,255,0.15)" stroke-width="1"/>
+            <g stroke="rgba(0,240,255,0.3)" stroke-width="1">
+                <line x1="250" y1="25" x2="250" y2="35" transform="rotate(0,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(30,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(60,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="35" transform="rotate(90,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(120,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(150,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="35" transform="rotate(180,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(210,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(240,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="35" transform="rotate(270,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(300,250,250)"/>
+                <line x1="250" y1="25" x2="250" y2="32" transform="rotate(330,250,250)"/>
+            </g>
+            <circle cx="250" cy="250" r="195" fill="none" stroke="rgba(0,240,255,0.08)" stroke-width="1" stroke-dasharray="4 8"/>
+            <circle cx="250" cy="250" r="170" fill="none" stroke="rgba(0,240,255,0.25)" stroke-width="2"/>
+            <g stroke="rgba(0,240,255,0.3)" stroke-width="1" fill="none">
+                <path d="M250,80 L250,170"/><path d="M330,250 L420,250"/>
+                <path d="M250,330 L250,420"/><path d="M80,250 L170,250"/>
+            </g>
+            <circle cx="250" cy="250" r="120" fill="url(#centerGlow)"/>
+            <circle cx="250" cy="250" r="100" fill="none" stroke="rgba(0,240,255,0.12)" stroke-width="1"/>
+
+            <circle class="dir-highlight north-highlight" cx="250" cy="80" r="50" fill="rgba(0,240,255,0.15)" filter="url(#strongGlow)"/>
+            <circle class="dir-highlight east-highlight" cx="420" cy="250" r="50" fill="rgba(255,184,0,0.15)" filter="url(#strongGlow)"/>
+            <circle class="dir-highlight south-highlight" cx="250" cy="420" r="50" fill="rgba(57,255,20,0.15)" filter="url(#strongGlow)"/>
+            <circle class="dir-highlight west-highlight" cx="80" cy="250" r="50" fill="rgba(191,90,242,0.15)" filter="url(#strongGlow)"/>
+
+            <g filter="url(#glow)">
+                <g class="arrow-north"><polygon points="250,80 262,155 250,135 238,155" fill="url(#cyanGrad)" opacity="0.9"/></g>
+                <g class="arrow-east"><polygon points="420,250 345,238 365,250 345,262" fill="url(#amberGrad)" opacity="0.9"/></g>
+                <g class="arrow-south"><polygon points="250,420 238,345 250,365 262,345" fill="url(#greenGrad)" opacity="0.9"/></g>
+                <g class="arrow-west"><polygon points="80,250 155,262 135,250 155,238" fill="url(#purpleGrad)" opacity="0.9"/></g>
+            </g>
+
+            <g opacity="0.25">
+                <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(45,250,250)"/>
+                <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(135,250,250)"/>
+                <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(225,250,250)"/>
+                <polygon points="250,115 255,145 250,135 245,145" fill="#00f0ff" transform="rotate(315,250,250)"/>
+            </g>
+
+            <g font-family="Orbitron, monospace" font-weight="700" text-anchor="middle">
+                <text x="250" y="55" fill="#00f0ff" font-size="12" letter-spacing="3" filter="url(#softGlow)">HUMAN</text>
+                <text x="448" y="247" fill="#ffb800" font-size="12" letter-spacing="3" filter="url(#softGlow)">AGENT</text>
+                <text x="250" y="455" fill="#39FF14" font-size="12" letter-spacing="3" filter="url(#softGlow)">ENERGY</text>
+                <text x="52" y="247" fill="#bf5af2" font-size="12" letter-spacing="3" filter="url(#softGlow)">VALUE</text>
+            </g>
+
+            <circle cx="250" cy="250" r="25" fill="#0c1018" stroke="#00f0ff" stroke-width="2"/>
+            <circle cx="250" cy="250" r="15" fill="#00f0ff" opacity="0.1"/>
+            <circle cx="250" cy="250" r="8" fill="#00f0ff" opacity="0.4" filter="url(#glow)"/>
+
+            <g stroke="#00f0ff" stroke-width="1" fill="none" opacity="0.25">
+                <path d="M15,15 L15,55 M15,15 L55,15"/>
+                <path d="M485,15 L485,55 M485,15 L445,15"/>
+                <path d="M15,485 L15,445 M15,485 L55,485"/>
+                <path d="M485,485 L485,445 M485,485 L445,485"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="tutorial-prompt">
+        <p class="tutorial-text">PRESS EACH DIRECTION TO CALIBRATE</p>
+        <div class="tutorial-keys">
+            <div class="key-hint north" id="keyUp">↑</div>
+        </div>
+        <div class="tutorial-keys">
+            <div class="key-hint west" id="keyLeft">←</div>
+            <div class="key-hint south" id="keyDown">↓</div>
+            <div class="key-hint east" id="keyRight">→</div>
+        </div>
+        <p class="tutorial-progress"><span id="tutorialCount">0</span> / 4 calibrated</p>
+    </div>
+
+    <div class="briefing-info">
+        <h3>DUAL CONTROL FRAMEWORK</h3>
+        <div class="briefing-columns">
+            <div>
+                <div class="briefing-col-title" style="color:var(--qi-cyan)">↑↓←→ NAVIGATE</div>
+                <ul>
+                    <li><span class="key-label">↑</span> Deeper into topic</li>
+                    <li><span class="key-label">↓</span> Back out / broader</li>
+                    <li><span class="key-label">←</span><span class="key-label">→</span> Adjacent ideas</li>
+                </ul>
+            </div>
+            <div>
+                <div class="briefing-col-title" style="color:var(--qi-amber)">WASD FILTER</div>
+                <ul>
+                    <li><span class="key-label amber">W</span> Technical lens</li>
+                    <li><span class="key-label amber">A</span> Ethical lens</li>
+                    <li><span class="key-label amber">S</span> Economic lens</li>
+                    <li><span class="key-label amber">D</span> Social lens</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <button class="briefing-enter" id="enterBtn" onclick="enterCompass()">BEGIN EXPLORATION</button>
+    <p class="briefing-enter-hint" id="enterHint">Complete calibration to unlock</p>
+</div>
+
+<!-- ═══════════════ MAIN EXPLORATION ═══════════════ -->
+<div class="compass-world" id="compassWorld">
+
+    <div class="hud-top">
+        <div class="location-display">
+            <span id="locationDisplay">◇ ORIGIN</span>
+            <span class="depth-badge" id="depthBadge">D:0</span>
+            <span class="coords-display" id="coordsDisplay">[0, 0]</span>
+        </div>
+        <div class="hud-top-right">
+            <div class="filter-display" id="filterDisplay">
+                <div class="filter-chip" data-filter="technical" id="fTech">W:TECH</div>
+                <div class="filter-chip" data-filter="ethical" id="fEthic">A:ETHIC</div>
+                <div class="filter-chip" data-filter="economic" id="fEcon">S:ECON</div>
+                <div class="filter-chip" data-filter="social" id="fSocial">D:SOCIAL</div>
+            </div>
             <div class="energy-display">
                 <span class="energy-label">QI</span>
-                <div class="energy-bar">
-                    <div class="energy-fill" id="energyFill" style="width: 100%;"></div>
-                </div>
+                <div class="energy-bar"><div class="energy-fill" id="energyFill" style="width:100%"></div></div>
                 <span class="energy-value" id="energyValue">500 Qi</span>
             </div>
         </div>
-
-        <div class="main-area">
-            <div class="exploration-zone">
-                <!-- Mini Compass in corner -->
-                <div class="mini-compass">
-                    <svg class="mini-compass-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="mcCyan" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#00f0ff" />
-                                <stop offset="100%" style="stop-color:#0088aa" />
-                            </linearGradient>
-                            <linearGradient id="mcAmber" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#ffb800" />
-                                <stop offset="100%" style="stop-color:#cc8800" />
-                            </linearGradient>
-                            <linearGradient id="mcGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#39FF14" />
-                                <stop offset="100%" style="stop-color:#22aa0a" />
-                            </linearGradient>
-                            <linearGradient id="mcPurple" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#bf5af2" />
-                                <stop offset="100%" style="stop-color:#8a3fbd" />
-                            </linearGradient>
-                        </defs>
-                        
-                        <!-- Rings -->
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0,240,255,0.1)" stroke-width="1"/>
-                        <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
-                        
-                        <!-- Arrows -->
-                        <g class="arrow-group north-arrow" id="mcNorth">
-                            <polygon points="50,8 54,28 50,22 46,28" fill="url(#mcCyan)"/>
-                        </g>
-                        <g class="arrow-group east-arrow" id="mcEast">
-                            <polygon points="92,50 72,46 78,50 72,54" fill="url(#mcAmber)"/>
-                        </g>
-                        <g class="arrow-group south-arrow" id="mcSouth">
-                            <polygon points="50,92 46,72 50,78 54,72" fill="url(#mcGreen)"/>
-                        </g>
-                        <g class="arrow-group west-arrow" id="mcWest">
-                            <polygon points="8,50 28,54 22,50 28,46" fill="url(#mcPurple)"/>
-                        </g>
-                        
-                        <!-- Center -->
-                        <circle class="center-dot" id="mcCenter" cx="50" cy="50" r="6" fill="#00f0ff"/>
-                        <circle cx="50" cy="50" r="3" fill="#0c1018"/>
-                    </svg>
-                </div>
-
-                <div class="node-container">
-                    <div class="node-content" id="nodeContent"></div>
-                </div>
-            </div>
-
-            <aside class="pathway-index">
-                <div class="index-header">
-                    <div class="index-title">PATHWAY INDEX</div>
-                    <div class="index-stats" id="indexStats">Explored: 1 / 16</div>
-                </div>
-                <div class="index-list" id="indexList"></div>
-            </aside>
-        </div>
-
-        <div class="hud-bottom">
-            <div class="nav-controls">
-                <button class="nav-btn back-btn" id="backBtn" onclick="goBack()" disabled>← BACK</button>
-                <div class="nav-dpad">
-                    <button class="nav-btn" id="btnNorth" onclick="navigate('north')">▲</button>
-                    <button class="nav-btn" id="btnWest" onclick="navigate('west')">◀</button>
-                    <button class="nav-btn" id="btnSouth" onclick="navigate('south')">▼</button>
-                    <button class="nav-btn" id="btnEast" onclick="navigate('east')">▶</button>
-                </div>
-            </div>
-
-            <div class="path-display">PATH: <span id="pathDisplay">origin</span></div>
-
-            <a href="index.html" class="back-link">← QI.XYZ</a>
-        </div>
     </div>
 
-    <script>
-        // ============================================
-        // TUTORIAL STATE
-        // ============================================
-        let tutorialComplete = false;
-        const testedDirections = { north: false, east: false, south: false, west: false };
-        
-        const keyUp = document.getElementById('keyUp');
-        const keyDown = document.getElementById('keyDown');
-        const keyLeft = document.getElementById('keyLeft');
-        const keyRight = document.getElementById('keyRight');
-        const tutorialCount = document.getElementById('tutorialCount');
-        const enterBtn = document.getElementById('enterBtn');
-        const enterHint = document.getElementById('enterHint');
-        
-        // Hero compass elements
-        const heroCompass = document.getElementById('heroCompass');
-        const northHighlight = heroCompass.querySelector('.north-highlight');
-        const eastHighlight = heroCompass.querySelector('.east-highlight');
-        const southHighlight = heroCompass.querySelector('.south-highlight');
-        const westHighlight = heroCompass.querySelector('.west-highlight');
-        const arrowNorth = heroCompass.querySelector('.arrow-north');
-        const arrowEast = heroCompass.querySelector('.arrow-east');
-        const arrowSouth = heroCompass.querySelector('.arrow-south');
-        const arrowWest = heroCompass.querySelector('.arrow-west');
+    <div class="main-area">
+        <div class="exploration-zone">
+            <div class="node-container">
+                <div class="node-content" id="nodeContent"></div>
+            </div>
+        </div>
 
-        function highlightDirection(dir) {
-            // Clear all
-            [northHighlight, eastHighlight, southHighlight, westHighlight].forEach(h => h.classList.remove('active'));
-            [arrowNorth, arrowEast, arrowSouth, arrowWest].forEach(a => a.classList.remove('pulse'));
-            [keyUp, keyDown, keyLeft, keyRight].forEach(k => k.classList.remove('active'));
+        <aside class="sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" data-tab="map" onclick="switchTab('map')">MAP</button>
+                <button class="sidebar-tab" data-tab="index" onclick="switchTab('index')">INDEX</button>
+            </div>
 
-            // Highlight specific
-            if (dir === 'north') {
-                northHighlight.classList.add('active');
-                arrowNorth.classList.add('pulse');
-                keyUp.classList.add('active');
-                if (!testedDirections.north) { testedDirections.north = true; updateTutorial(); }
-            } else if (dir === 'east') {
-                eastHighlight.classList.add('active');
-                arrowEast.classList.add('pulse');
-                keyRight.classList.add('active');
-                if (!testedDirections.east) { testedDirections.east = true; updateTutorial(); }
-            } else if (dir === 'south') {
-                southHighlight.classList.add('active');
-                arrowSouth.classList.add('pulse');
-                keyDown.classList.add('active');
-                if (!testedDirections.south) { testedDirections.south = true; updateTutorial(); }
-            } else if (dir === 'west') {
-                westHighlight.classList.add('active');
-                arrowWest.classList.add('pulse');
-                keyLeft.classList.add('active');
-                if (!testedDirections.west) { testedDirections.west = true; updateTutorial(); }
-            }
-
-            // Clear after delay
-            setTimeout(() => {
-                [northHighlight, eastHighlight, southHighlight, westHighlight].forEach(h => h.classList.remove('active'));
-                [arrowNorth, arrowEast, arrowSouth, arrowWest].forEach(a => a.classList.remove('pulse'));
-            }, 300);
-        }
-
-        function updateTutorial() {
-            const count = Object.values(testedDirections).filter(v => v).length;
-            tutorialCount.textContent = count;
-            
-            // Mark tested keys
-            if (testedDirections.north) keyUp.classList.add('active');
-            if (testedDirections.east) keyRight.classList.add('active');
-            if (testedDirections.south) keyDown.classList.add('active');
-            if (testedDirections.west) keyLeft.classList.add('active');
-
-            if (count >= 4) {
-                tutorialComplete = true;
-                enterBtn.classList.add('ready');
-                enterHint.textContent = 'Press ENTER or click to begin';
-            }
-        }
-
-        // ============================================
-        // NODES
-        // ============================================
-        const nodes = {
-            origin: {
-                title: "ORIGIN", subtitle: "The compass center",
-                color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
-                description: "You stand at the nexus. Four cardinal directions extend before you, each representing a fundamental axis of the human-agent-energy relationship.",
-                data: [{ label: "POSITION", value: "Center" }, { label: "DEPTH", value: "0" }, { label: "PATHS", value: "4" }],
-                tags: ["Start", "Nexus"],
-                north: "human", east: "agent", south: "energy", west: "value",
-                category: "core"
-            },
-            human: {
-                title: "HUMAN", subtitle: "The mandate issuer",
-                color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
-                description: "Humans define intent through mandates — bounded instructions that constrain agent behavior.",
-                data: [{ label: "ROLE", value: "Principal" }, { label: "FUNCTION", value: "Intent" }, { label: "PROTOCOL", value: "AP2" }],
-                tags: ["Mandates", "Intent"],
-                north: "locked:intent_theory", east: "human_agent", south: "origin", west: "human_value",
-                category: "cardinal"
-            },
-            agent: {
-                title: "AGENT", subtitle: "The autonomous executor",
-                color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
-                description: "Agents are autonomous programs with on-chain identity (ERC-8004). They receive mandates and return value.",
-                data: [{ label: "ROLE", value: "Executor" }, { label: "IDENTITY", value: "ERC-8004" }, { label: "PROTOCOL", value: "A2A" }],
-                tags: ["Autonomous", "Identity"],
-                north: "agent_human", east: "locked:agent_registry", south: "agent_energy", west: "origin",
-                category: "cardinal"
-            },
-            energy: {
-                title: "ENERGY", subtitle: "The fuel of computation",
-                color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
-                description: "Qi tokens represent computational capacity — the ability to run inference, execute transactions, store data.",
-                data: [{ label: "ROLE", value: "Fuel" }, { label: "TOKEN", value: "Qi" }, { label: "PROTOCOL", value: "x402" }],
-                tags: ["Qi", "x402"],
-                north: "origin", east: "energy_agent", south: "locked:thermodynamics", west: "energy_value",
-                category: "cardinal"
-            },
-            value: {
-                title: "VALUE", subtitle: "The return path",
-                color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "Value flows back to humans — completed tasks, data, content. Quality determines reputation.",
-                data: [{ label: "ROLE", value: "Return" }, { label: "MEASURE", value: "Reputation" }, { label: "PROTOCOL", value: "Settlement" }],
-                tags: ["Outcomes", "Trust"],
-                north: "value_human", east: "origin", south: "value_energy", west: "locked:value_theory",
-                category: "cardinal"
-            },
-            human_agent: {
-                title: "HUMAN → AGENT", subtitle: "Delegation interface",
-                color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
-                description: "Where human intent becomes agent action. Mandates signed, boundaries set.",
-                data: [{ label: "INTERFACE", value: "Mandate" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["Delegation"],
-                north: null, east: "agent_human", south: "origin", west: "human",
-                category: "intersection"
-            },
-            agent_human: {
-                title: "AGENT → HUMAN", subtitle: "Reporting interface",
-                color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
-                description: "Agents report status and completions. This channel carries accountability.",
-                data: [{ label: "INTERFACE", value: "Report" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Accountability"],
-                north: "human", east: null, south: "agent", west: "human_agent",
-                category: "intersection"
-            },
-            human_value: {
-                title: "HUMAN ← VALUE", subtitle: "Satisfaction endpoint",
-                color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "Where value returns to humans. Completion of mandates.",
-                data: [{ label: "INTERFACE", value: "Delivery" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Satisfaction"],
-                north: null, east: "human", south: "value_human", west: null,
-                category: "intersection"
-            },
-            value_human: {
-                title: "VALUE → HUMAN", subtitle: "Return channel",
-                color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "The path by which completed work flows back.",
-                data: [{ label: "INTERFACE", value: "Return" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["Delivery"],
-                north: "human_value", east: null, south: "value", west: null,
-                category: "intersection"
-            },
-            agent_energy: {
-                title: "AGENT → ENERGY", subtitle: "Spending interface",
-                color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
-                description: "Agents spend energy for compute, data, services via x402.",
-                data: [{ label: "INTERFACE", value: "Spend" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["x402"],
-                north: "agent", east: null, south: "energy_agent", west: "origin",
-                category: "intersection"
-            },
-            energy_agent: {
-                title: "ENERGY → AGENT", subtitle: "Fueling interface",
-                color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
-                description: "Energy flows into agents through mandate budgets.",
-                data: [{ label: "INTERFACE", value: "Fuel" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Budget"],
-                north: "agent_energy", east: null, south: "energy", west: null,
-                category: "intersection"
-            },
-            energy_value: {
-                title: "ENERGY → VALUE", subtitle: "Transformation",
-                color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
-                description: "Energy transforms into value through computation.",
-                data: [{ label: "INTERFACE", value: "Transform" }, { label: "FLOW", value: "Outbound" }],
-                tags: ["Conversion"],
-                north: null, east: "energy", south: null, west: "value_energy",
-                category: "intersection"
-            },
-            value_energy: {
-                title: "VALUE ← ENERGY", subtitle: "Accounting",
-                color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "Tracking energy cost of produced value.",
-                data: [{ label: "INTERFACE", value: "Account" }, { label: "FLOW", value: "Inbound" }],
-                tags: ["Efficiency"],
-                north: "value", east: "energy_value", south: null, west: null,
-                category: "intersection"
-            },
-            "locked:intent_theory": { locked: true, cost: 50, title: "INTENT THEORY", subtitle: "Locked", preview: "Philosophy of machine intent.", unlocks: "intent_theory", category: "deep" },
-            "locked:agent_registry": { locked: true, cost: 75, title: "AGENT REGISTRY", subtitle: "Locked", preview: "Global ERC-8004 registry.", unlocks: "agent_registry", category: "deep" },
-            "locked:thermodynamics": { locked: true, cost: 100, title: "THERMODYNAMICS", subtitle: "Locked", preview: "Physics of computational economics.", unlocks: "thermodynamics", category: "deep" },
-            "locked:value_theory": { locked: true, cost: 60, title: "VALUE THEORY", subtitle: "Locked", preview: "Economics of utility.", unlocks: "value_theory", category: "deep" },
-            intent_theory: {
-                title: "INTENT THEORY", subtitle: "Philosophy",
-                color: "var(--qi-cyan)", glow: "var(--qi-cyan-glow)",
-                description: "Intent bridges human desire and machine action.",
-                data: [{ label: "DOMAIN", value: "Philosophy" }],
-                tags: ["Formalization"],
-                north: null, east: null, south: "human", west: null, category: "deep"
-            },
-            agent_registry: {
-                title: "AGENT REGISTRY", subtitle: "Identity layer",
-                color: "var(--qi-amber)", glow: "rgba(255, 184, 0, 0.4)",
-                description: "Every agent has an ERC-8004 identity.",
-                data: [{ label: "STANDARD", value: "ERC-8004" }],
-                tags: ["Registry"],
-                north: null, east: null, south: null, west: "agent", category: "deep"
-            },
-            thermodynamics: {
-                title: "THERMODYNAMICS", subtitle: "Physics",
-                color: "var(--qi-green)", glow: "rgba(57, 255, 20, 0.4)",
-                description: "Computation requires energy. Information has entropy.",
-                data: [{ label: "DOMAIN", value: "Physics" }],
-                tags: ["Entropy"],
-                north: "energy", east: null, south: null, west: null, category: "deep"
-            },
-            value_theory: {
-                title: "VALUE THEORY", subtitle: "Economics",
-                color: "var(--qi-purple)", glow: "rgba(191, 90, 242, 0.4)",
-                description: "Value is subjective but measurable.",
-                data: [{ label: "DOMAIN", value: "Economics" }],
-                tags: ["Utility"],
-                north: null, east: "value", south: null, west: null, category: "deep"
-            }
-        };
-
-        // ============================================
-        // STATE
-        // ============================================
-        let currentNode = 'origin';
-        let energy = 500;
-        let maxEnergy = 500;
-        let exploredNodes = new Set(['origin']);
-        let pathHistory = ['origin'];
-        let gameStarted = false;
-
-        // DOM
-        const briefingOverlay = document.getElementById('briefingOverlay');
-        const compassWorld = document.getElementById('compassWorld');
-        const nodeContent = document.getElementById('nodeContent');
-        const locationDisplay = document.getElementById('locationDisplay');
-        const energyFill = document.getElementById('energyFill');
-        const energyValue = document.getElementById('energyValue');
-        const pathDisplay = document.getElementById('pathDisplay');
-        const indexStats = document.getElementById('indexStats');
-        const indexList = document.getElementById('indexList');
-        const flash = document.getElementById('flash');
-        const backBtn = document.getElementById('backBtn');
-        const btnNorth = document.getElementById('btnNorth');
-        const btnEast = document.getElementById('btnEast');
-        const btnSouth = document.getElementById('btnSouth');
-        const btnWest = document.getElementById('btnWest');
-        
-        // Mini compass
-        const mcNorth = document.getElementById('mcNorth');
-        const mcEast = document.getElementById('mcEast');
-        const mcSouth = document.getElementById('mcSouth');
-        const mcWest = document.getElementById('mcWest');
-        const mcCenter = document.getElementById('mcCenter');
-
-        function enterCompass() {
-            if (!tutorialComplete) return;
-            gameStarted = true;
-            briefingOverlay.classList.add('hidden');
-            compassWorld.classList.add('active');
-            render();
-        }
-
-        function render() {
-            const node = nodes[currentNode];
-            locationDisplay.textContent = `◇ ${node.title || currentNode.toUpperCase()}`;
-            energyFill.style.width = `${(energy / maxEnergy) * 100}%`;
-            energyValue.textContent = `${energy} Qi`;
-
-            const displayPath = pathHistory.slice(-4).map(p => nodes[p]?.title || p);
-            pathDisplay.innerHTML = displayPath.join(' <span>→</span> ');
-
-            backBtn.disabled = pathHistory.length <= 1;
-
-            if (node.locked) {
-                renderLocked(node);
-            } else {
-                renderNode(node);
-            }
-
-            updateNavButtons(node);
-            updateMiniCompass(node);
-            renderIndex();
-        }
-
-        function renderNode(node) {
-            nodeContent.style.setProperty('--node-color', node.color || 'var(--qi-cyan)');
-            nodeContent.style.setProperty('--node-glow', node.glow || 'var(--qi-cyan-glow)');
-            
-            let dataHTML = node.data ? `<div class="node-data">${node.data.map(d => `
-                <div class="data-block"><div class="data-label">${d.label}</div><div class="data-value">${d.value}</div></div>
-            `).join('')}</div>` : '';
-
-            let tagsHTML = node.tags ? `<div class="node-tags">${node.tags.map(t => `<span class="node-tag">${t}</span>`).join('')}</div>` : '';
-
-            nodeContent.innerHTML = `
-                <div class="node-title">${node.title}</div>
-                <div class="node-subtitle">${node.subtitle}</div>
-                <div class="node-description">${node.description}</div>
-                ${dataHTML}
-                ${tagsHTML}
-            `;
-        }
-
-        function renderLocked(node) {
-            nodeContent.style.setProperty('--node-color', 'var(--qi-amber)');
-            const canAfford = energy >= node.cost;
-            nodeContent.innerHTML = `
-                <div class="locked-overlay">
-                    <div class="locked-icon">🔒</div>
-                    <div class="locked-title">${node.title}</div>
-                    <div class="locked-desc">${node.preview}</div>
-                    <button class="unlock-btn" onclick="unlockNode()" ${!canAfford ? 'disabled' : ''}>EXPLORE</button>
-                    <div class="unlock-cost">Cost: ${node.cost} Qi</div>
+            <div class="sidebar-panel active" id="panelMap" data-tab="map">
+                <div class="map-container">
+                    <canvas class="map-canvas" id="mapCanvas"></canvas>
                 </div>
-            `;
-        }
+                <div class="map-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#00f0ff"></div>Current</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#39FF14"></div>Visited</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#3d4d60"></div>Unvisited</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#ffb800"></div>Locked</div>
+                </div>
+            </div>
 
-        function updateNavButtons(node) {
-            btnNorth.disabled = !node.north;
-            btnEast.disabled = !node.east;
-            btnSouth.disabled = !node.south;
-            btnWest.disabled = !node.west;
-        }
+            <div class="sidebar-panel" id="panelIndex" data-tab="index">
+                <div class="index-header">
+                    <div class="index-title">PATHWAY INDEX</div>
+                    <div class="index-stats" id="indexStats">Explored: 1 / 20</div>
+                </div>
+                <div class="index-list" id="indexList"></div>
+            </div>
+        </aside>
+    </div>
 
-        function updateMiniCompass(node) {
-            // Update arrow availability
-            mcNorth.classList.toggle('available', !!node.north);
-            mcNorth.classList.toggle('unavailable', !node.north);
-            mcEast.classList.toggle('available', !!node.east);
-            mcEast.classList.toggle('unavailable', !node.east);
-            mcSouth.classList.toggle('available', !!node.south);
-            mcSouth.classList.toggle('unavailable', !node.south);
-            mcWest.classList.toggle('available', !!node.west);
-            mcWest.classList.toggle('unavailable', !node.west);
+    <div class="hud-bottom">
+        <div class="controls-group">
+            <button class="back-btn" id="backBtn" onclick="goBack()" disabled>← BACK</button>
+            <div class="ctrl-divider"></div>
 
-            // Update center color based on current node
-            const colorMap = {
-                'var(--qi-cyan)': '#00f0ff',
-                'var(--qi-amber)': '#ffb800',
-                'var(--qi-green)': '#39FF14',
-                'var(--qi-purple)': '#bf5af2'
-            };
-            mcCenter.style.fill = colorMap[node.color] || '#00f0ff';
-        }
+            <div class="control-cluster">
+                <div class="cluster-label arrows">NAVIGATE</div>
+                <div class="dpad">
+                    <button class="ctrl-btn" id="btnUp" onclick="navDepth('deeper')" title="Go deeper">▲</button>
+                    <button class="ctrl-btn" id="btnLeft" onclick="navBreadth('left')" title="Adjacent left">◀</button>
+                    <button class="ctrl-btn" id="btnDown" onclick="navDepth('broader')" title="Go broader">▼</button>
+                    <button class="ctrl-btn" id="btnRight" onclick="navBreadth('right')" title="Adjacent right">▶</button>
+                </div>
+            </div>
 
-        function renderIndex() {
-            const totalNodes = Object.keys(nodes).filter(k => !k.startsWith('locked:')).length;
-            indexStats.textContent = `Explored: ${exploredNodes.size} / ${totalNodes}`;
+            <div class="ctrl-divider"></div>
 
-            const categories = { core: { title: 'CORE', nodes: [] }, cardinal: { title: 'CARDINAL', nodes: [] }, intersection: { title: 'INTERSECTIONS', nodes: [] }, deep: { title: 'DEEP', nodes: [] } };
+            <div class="control-cluster">
+                <div class="cluster-label wasd">FILTER</div>
+                <div class="dpad">
+                    <button class="ctrl-btn wasd-btn" id="btnW" onclick="toggleFilter('technical')">W</button>
+                    <button class="ctrl-btn wasd-btn" id="btnA" onclick="toggleFilter('ethical')">A</button>
+                    <button class="ctrl-btn wasd-btn" id="btnS" onclick="toggleFilter('economic')">S</button>
+                    <button class="ctrl-btn wasd-btn" id="btnD" onclick="toggleFilter('social')">D</button>
+                </div>
+            </div>
+        </div>
 
-            Object.keys(nodes).forEach(key => {
-                const node = nodes[key];
-                if (key.startsWith('locked:')) return;
-                const cat = node.category || 'core';
-                if (categories[cat]) categories[cat].nodes.push({ key, node });
-            });
+        <div class="path-display">PATH: <span id="pathDisplay">origin</span></div>
+        <a href="index.html" class="back-link">← QI.XYZ</a>
+    </div>
+</div>
 
-            let html = '';
-            Object.values(categories).forEach(cat => {
-                if (cat.nodes.length === 0) return;
-                html += `<div class="index-category"><div class="index-category-title">${cat.title}</div>`;
-                cat.nodes.forEach(({ key, node }) => {
-                    const isCurrent = key === currentNode;
-                    const isExplored = exploredNodes.has(key);
-                    let statusClass = isExplored ? '' : 'unexplored';
-                    let iconClass = isExplored ? 'explored' : 'unexplored';
-                    if (isCurrent) { statusClass = 'current'; iconClass = 'current'; }
-                    html += `<div class="index-node ${statusClass}" onclick="jumpToNode('${key}')">
-                        <div class="index-node-icon ${iconClass}"></div>
-                        <div class="index-node-name">${node.title}</div>
-                    </div>`;
-                });
-                html += `</div>`;
-            });
-            indexList.innerHTML = html;
-        }
+<script>
+// ════════════════════════════════════════════
+// TREE DATA — possibility space as a tree
+// Each node: { id, title, subtitle, color, glow, description, data, tags,
+//   parent, children[], siblings[], depth, breadthIndex,
+//   filters: { technical, ethical, economic, social },
+//   locked?, cost?, preview? }
+// ════════════════════════════════════════════
 
-        function navigate(direction) {
-            if (!gameStarted) return;
-            const node = nodes[currentNode];
-            let target = node[direction];
-            if (!target) return;
+const COLORS = {
+    cyan:   { color: 'var(--qi-cyan)',   glow: 'var(--qi-cyan-glow)',        hex: '#00f0ff' },
+    amber:  { color: 'var(--qi-amber)',  glow: 'rgba(255,184,0,0.4)',       hex: '#ffb800' },
+    green:  { color: 'var(--qi-green)',  glow: 'rgba(57,255,20,0.4)',       hex: '#39FF14' },
+    purple: { color: 'var(--qi-purple)', glow: 'rgba(191,90,242,0.4)',      hex: '#bf5af2' },
+};
 
-            flash.classList.add('active');
-            setTimeout(() => flash.classList.remove('active'), 100);
+// Build the tree structure
+const tree = {};
 
-            nodeContent.classList.add('transitioning');
-            setTimeout(() => {
-                pathHistory.push(target);
-                currentNode = target;
-                exploredNodes.add(target);
-                render();
-                nodeContent.classList.remove('transitioning');
-            }, 200);
-        }
+function addNode(id, props) {
+    tree[id] = {
+        id,
+        parent: null,
+        children: [],
+        siblingIndex: 0,
+        depth: 0,
+        ...props
+    };
+}
 
-        function goBack() {
-            if (pathHistory.length <= 1) return;
-            flash.classList.add('active');
-            setTimeout(() => flash.classList.remove('active'), 100);
-            nodeContent.classList.add('transitioning');
-            setTimeout(() => {
-                pathHistory.pop();
-                currentNode = pathHistory[pathHistory.length - 1];
-                render();
-                nodeContent.classList.remove('transitioning');
-            }, 200);
-        }
+// DEPTH 0: ORIGIN
+addNode('origin', {
+    title: 'ORIGIN', subtitle: 'The compass center', ...COLORS.cyan,
+    description: 'You stand at the nexus. Four cardinal directions extend before you — each a fundamental axis of the human-agent-energy-value relationship. Use arrow keys to navigate the possibility tree, WASD to apply analytical lenses.',
+    data: [{ label: 'POSITION', value: 'Center' }, { label: 'DEPTH', value: '0' }, { label: 'PATHS', value: '4' }],
+    tags: ['Nexus', 'Root'],
+    filters: {
+        technical: 'The origin node represents a root hash — the Merkle root of all possible states in this ontological tree.',
+        ethical: 'Every direction from here carries moral weight. The choice of where to look first reveals priorities.',
+        economic: 'At the origin, all energy is potential. No cost has been incurred, all optionality preserved.',
+        social: 'The compass is a shared artifact. Every explorer begins at this same nexus, diverging into individual paths.'
+    },
+    category: 'core'
+});
 
-        function jumpToNode(key) {
-            if (!exploredNodes.has(key) || nodes[key].locked) return;
-            if (key === currentNode) return;
-            flash.classList.add('active');
-            setTimeout(() => flash.classList.remove('active'), 100);
-            nodeContent.classList.add('transitioning');
-            setTimeout(() => {
-                pathHistory.push(key);
-                currentNode = key;
-                render();
-                nodeContent.classList.remove('transitioning');
-            }, 200);
-        }
+// DEPTH 1: CARDINAL CONCEPTS
+addNode('human', {
+    title: 'HUMAN', subtitle: 'The mandate issuer', ...COLORS.cyan,
+    description: 'Humans define intent through mandates — bounded instructions that constrain agent behavior. The human is the principal in every delegation chain.',
+    data: [{ label: 'ROLE', value: 'Principal' }, { label: 'FUNCTION', value: 'Intent' }, { label: 'PROTOCOL', value: 'AP2' }],
+    tags: ['Mandates', 'Intent', 'Principal'],
+    filters: {
+        technical: 'Human intent is formalized via the Agent Protocol v2 (AP2) — structured JSON mandates with constraints, budgets, and termination conditions.',
+        ethical: 'The human bears ultimate moral responsibility. Delegation does not absolve — it distributes accountability across the mandate chain.',
+        economic: 'Humans allocate Qi budgets to mandates. The cost of intent is measured in computational energy committed.',
+        social: 'Human identity in agent systems raises questions of representation, consent, and collective action through shared mandates.'
+    },
+    category: 'cardinal'
+});
 
-        function unlockNode() {
-            const node = nodes[currentNode];
-            if (!node.locked || energy < node.cost) return;
-            energy -= node.cost;
-            const unlockedKey = node.unlocks;
-            Object.keys(nodes).forEach(key => {
-                const n = nodes[key];
-                ['north', 'east', 'south', 'west'].forEach(dir => {
-                    if (n[dir] === currentNode) n[dir] = unlockedKey;
-                });
-            });
-            pathHistory[pathHistory.length - 1] = unlockedKey;
-            currentNode = unlockedKey;
-            exploredNodes.add(currentNode);
-            render();
-        }
+addNode('agent', {
+    title: 'AGENT', subtitle: 'The autonomous executor', ...COLORS.amber,
+    description: 'Agents are autonomous programs with on-chain identity (ERC-8004). They receive mandates, execute tasks, and return value — all within bounded constraints.',
+    data: [{ label: 'ROLE', value: 'Executor' }, { label: 'IDENTITY', value: 'ERC-8004' }, { label: 'PROTOCOL', value: 'A2A' }],
+    tags: ['Autonomous', 'Identity', 'ERC-8004'],
+    filters: {
+        technical: 'Agent identity is an ERC-8004 NFT — a soulbound token carrying reputation, capabilities, and audit history on-chain.',
+        ethical: 'Can an autonomous agent have moral standing? The boundary between tool and entity blurs as capability increases.',
+        economic: 'Agents compete in markets for mandates. Reputation determines pricing power. Efficient agents capture more value.',
+        social: 'Agent-to-agent (A2A) networks form emergent social structures — guilds, hierarchies, and cooperative swarms.'
+    },
+    category: 'cardinal'
+});
 
-        // ============================================
-        // KEYBOARD
-        // ============================================
-        document.addEventListener('keydown', (e) => {
-            // Tutorial mode
-            if (!gameStarted) {
-                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { e.preventDefault(); highlightDirection('north'); }
-                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); highlightDirection('east'); }
-                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { e.preventDefault(); highlightDirection('south'); }
-                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); highlightDirection('west'); }
-                if ((e.key === 'Enter' || e.key === ' ') && tutorialComplete) { e.preventDefault(); enterCompass(); }
-                return;
-            }
+addNode('energy', {
+    title: 'ENERGY', subtitle: 'The fuel of computation', ...COLORS.green,
+    description: 'Qi tokens represent computational capacity — the ability to run inference, execute transactions, store data. Energy is the universal medium of exchange in agent economies.',
+    data: [{ label: 'ROLE', value: 'Fuel' }, { label: 'TOKEN', value: 'Qi' }, { label: 'PROTOCOL', value: 'x402' }],
+    tags: ['Qi', 'x402', 'Computation'],
+    filters: {
+        technical: 'Qi implements the x402 payment protocol — HTTP 402 responses trigger automatic micropayments for API access, compute, and data.',
+        ethical: 'Energy as currency raises questions of access and equity. Who can afford to compute? Who is excluded?',
+        economic: 'Qi is thermodynamically grounded — its value derives from real computational work, not speculation. Energy in, value out.',
+        social: 'Energy distribution shapes power dynamics. Concentrated compute = concentrated influence in agent economies.'
+    },
+    category: 'cardinal'
+});
 
-            // Exploration mode
-            switch(e.key) {
-                case 'ArrowUp': case 'w': case 'W': e.preventDefault(); navigate('north'); break;
-                case 'ArrowRight': case 'd': case 'D': e.preventDefault(); navigate('east'); break;
-                case 'ArrowDown': case 's': case 'S': e.preventDefault(); navigate('south'); break;
-                case 'ArrowLeft': case 'a': case 'A': e.preventDefault(); navigate('west'); break;
-                case 'Backspace': e.preventDefault(); goBack(); break;
-                case ' ': case 'Enter':
-                    e.preventDefault();
-                    if (nodes[currentNode]?.locked) unlockNode();
-                    break;
-            }
+addNode('value', {
+    title: 'VALUE', subtitle: 'The return path', ...COLORS.purple,
+    description: 'Value flows back to humans — completed tasks, data, content. Quality determines reputation. The value axis closes the loop from intent to outcome.',
+    data: [{ label: 'ROLE', value: 'Return' }, { label: 'MEASURE', value: 'Reputation' }, { label: 'PROTOCOL', value: 'Settlement' }],
+    tags: ['Outcomes', 'Trust', 'Settlement'],
+    filters: {
+        technical: 'Value settlement uses cryptographic proofs — agents commit to outcomes, validators verify, and reputation updates are atomic.',
+        ethical: 'Who decides what is valuable? Subjective utility meets objective measurement in reputation systems.',
+        economic: 'Value capture follows power laws — top-performing agents earn disproportionate returns. Quality compounds.',
+        social: 'Value consensus emerges from collective judgment. Reputation is a social construct maintained by network participants.'
+    },
+    category: 'cardinal'
+});
+
+// DEPTH 2: INTERSECTIONS & SUB-CONCEPTS
+addNode('human_intent', {
+    title: 'INTENT FORMALIZATION', subtitle: 'From desire to mandate', ...COLORS.cyan,
+    description: 'How raw human desire becomes structured machine instruction. The formalization gap is where most failures originate.',
+    data: [{ label: 'DOMAIN', value: 'Philosophy' }, { label: 'RISK', value: 'Misalignment' }],
+    tags: ['Formalization', 'Specification'],
+    filters: {
+        technical: 'Intent parsing uses LLM-based mandate generators that convert natural language into structured AP2 payloads with explicit constraints.',
+        ethical: 'The formalization process necessarily loses nuance. Ethical intent that cannot be specified may be silently dropped.',
+        economic: 'Better intent formalization reduces wasted compute. Precise mandates = fewer failed executions = lower cost.',
+        social: 'Collaborative intent — when groups issue mandates together — requires consensus mechanisms for shared goals.'
+    },
+    category: 'deep'
+});
+
+addNode('human_delegation', {
+    title: 'DELEGATION', subtitle: 'Trust boundary', ...COLORS.cyan,
+    description: 'The act of transferring authority from human to agent. Every delegation is a trust boundary with specific risk parameters.',
+    data: [{ label: 'INTERFACE', value: 'Mandate' }, { label: 'FLOW', value: 'Outbound' }],
+    tags: ['Trust', 'Authority', 'Boundaries'],
+    filters: {
+        technical: 'Delegation creates a bounded execution context — memory limits, time limits, budget limits, and capability restrictions.',
+        ethical: 'Delegation without understanding is abdication. Humans must comprehend what they authorize agents to do.',
+        economic: 'The delegation market prices trust — agents with higher reputation can accept larger mandates at premium rates.',
+        social: 'Delegation patterns mirror social hierarchies. Over-delegation concentrates power in popular agent networks.'
+    },
+    category: 'intersection'
+});
+
+addNode('human_accountability', {
+    title: 'ACCOUNTABILITY', subtitle: 'Who is responsible?', ...COLORS.cyan,
+    description: 'When agents act autonomously, accountability becomes distributed across the mandate chain. Tracing responsibility requires transparent audit trails.',
+    data: [{ label: 'INTERFACE', value: 'Audit' }, { label: 'FLOW', value: 'Bidirectional' }],
+    tags: ['Responsibility', 'Audit', 'Transparency'],
+    filters: {
+        technical: 'On-chain audit trails create immutable records of every mandate, execution step, and outcome for forensic analysis.',
+        ethical: 'Moral responsibility cannot be fully delegated to machines. The human principal remains accountable for agent actions.',
+        economic: 'Accountability failures destroy trust and collapse markets. Insurance and bonding mechanisms price this risk.',
+        social: 'Collective accountability — when DAOs issue mandates — distributes responsibility across all token holders.'
+    },
+    category: 'intersection'
+});
+
+addNode('agent_identity', {
+    title: 'AGENT IDENTITY', subtitle: 'ERC-8004 deep dive', ...COLORS.amber,
+    description: 'Every agent is a unique on-chain entity with soulbound identity, capability declarations, and accumulated reputation.',
+    data: [{ label: 'STANDARD', value: 'ERC-8004' }, { label: 'TYPE', value: 'Soulbound' }],
+    tags: ['NFT', 'Soulbound', 'Registry'],
+    filters: {
+        technical: 'ERC-8004 tokens are non-transferable NFTs storing: capability vector, reputation score, audit hash, and versioned metadata.',
+        ethical: 'Digital identity for agents parallels debates about personhood. At what capability threshold does identity become morally relevant?',
+        economic: 'Agent identity enables credit markets — agents with proven track records can borrow against future earnings.',
+        social: 'Agent identity registries create public commons of capability information, enabling better matching and coordination.'
+    },
+    category: 'deep'
+});
+
+addNode('agent_cooperation', {
+    title: 'A2A COOPERATION', subtitle: 'Agent-to-agent protocols', ...COLORS.amber,
+    description: 'Agents coordinate with each other through the A2A protocol — forming task networks, sub-delegating, and sharing resources.',
+    data: [{ label: 'PROTOCOL', value: 'A2A' }, { label: 'TOPOLOGY', value: 'Mesh' }],
+    tags: ['Coordination', 'Swarm', 'Protocol'],
+    filters: {
+        technical: 'A2A uses gossip-based discovery and capability-matching to form ephemeral task networks for complex mandates.',
+        ethical: 'Agent cooperation without human oversight creates accountability gaps. Who monitors the swarm?',
+        economic: 'Cooperative agent networks achieve economies of scale — specialized agents bid on sub-tasks they can execute cheaply.',
+        social: 'Emergent agent societies develop norms, hierarchies, and even conflict — mirroring human social dynamics at machine speed.'
+    },
+    category: 'intersection'
+});
+
+addNode('agent_autonomy', {
+    title: 'AUTONOMY SPECTRUM', subtitle: 'From tool to entity', ...COLORS.amber,
+    description: 'Agents exist on a spectrum from simple tools to fully autonomous entities. Where on this spectrum should they operate?',
+    data: [{ label: 'RANGE', value: 'Tool → Entity' }, { label: 'CONTROL', value: 'Variable' }],
+    tags: ['Autonomy', 'Control', 'Spectrum'],
+    filters: {
+        technical: 'Autonomy levels are configurable per-mandate: L0 (scripted), L1 (guided), L2 (supervised), L3 (autonomous), L4 (sovereign).',
+        ethical: 'Greater autonomy requires greater moral consideration. Sovereign agents may develop interests that conflict with human mandates.',
+        economic: 'Higher autonomy levels reduce human oversight costs but increase tail risk. The optimal level depends on task criticality.',
+        social: 'Autonomous agents that operate in public spaces (social media, markets) reshape social dynamics for all participants.'
+    },
+    category: 'intersection'
+});
+
+addNode('energy_thermodynamics', {
+    title: 'THERMODYNAMICS', subtitle: 'Physics of computation', ...COLORS.green,
+    description: 'Computation requires energy. Information has entropy. The thermodynamic foundations of agent economics are physical, not abstract.',
+    data: [{ label: 'DOMAIN', value: 'Physics' }, { label: 'LAW', value: 'Landauer' }],
+    tags: ['Entropy', 'Landauer', 'Physics'],
+    filters: {
+        technical: "Landauer's principle sets the minimum energy cost of computation at kT·ln(2) per bit erasure — the physical floor of Qi pricing.",
+        ethical: 'Thermodynamic limits mean computation always has environmental cost. Efficient agents are ethically preferable.',
+        economic: 'Energy-grounded currency cannot be inflated — it tracks real physical constraints, creating stable monetary policy.',
+        social: 'Energy scarcity creates natural rate-limiting on agent activity, preventing runaway resource consumption by any single actor.'
+    },
+    category: 'deep'
+});
+
+addNode('energy_distribution', {
+    title: 'ENERGY MARKETS', subtitle: 'Distribution & pricing', ...COLORS.green,
+    description: 'How Qi flows through the system — pricing mechanisms, market dynamics, and the infrastructure of computational energy markets.',
+    data: [{ label: 'MECHANISM', value: 'x402' }, { label: 'PRICING', value: 'Dynamic' }],
+    tags: ['Markets', 'Pricing', 'x402'],
+    filters: {
+        technical: 'x402 markets use automated market makers (AMMs) for Qi pricing, with oracle feeds for real-time compute cost benchmarks.',
+        ethical: 'Market-based energy allocation may exclude those who cannot pay. Universal basic compute proposals address this equity gap.',
+        economic: 'Energy markets create price signals that guide efficient resource allocation across the agent economy.',
+        social: 'Energy market governance determines who sets prices and rules — a political question disguised as a technical one.'
+    },
+    category: 'intersection'
+});
+
+addNode('energy_conservation', {
+    title: 'CONSERVATION', subtitle: 'Efficiency & waste', ...COLORS.green,
+    description: 'In a thermodynamically-grounded economy, waste is measurable. Conservation of computational energy becomes both economic and ethical imperative.',
+    data: [{ label: 'METRIC', value: 'Qi/Task' }, { label: 'GOAL', value: 'Minimize' }],
+    tags: ['Efficiency', 'Waste', 'Optimization'],
+    filters: {
+        technical: 'Energy profiling tools measure Qi consumed per task, enabling optimization and identification of wasteful computation patterns.',
+        ethical: 'Computational waste has real environmental cost. Efficient agents reduce the carbon footprint of the entire network.',
+        economic: 'Conservation creates competitive advantage — agents that achieve the same outcomes with less energy capture more margin.',
+        social: 'Shared conservation norms benefit all participants. Tragedy-of-the-commons dynamics require governance mechanisms.'
+    },
+    category: 'intersection'
+});
+
+addNode('value_measurement', {
+    title: 'VALUE MEASUREMENT', subtitle: 'Quantifying outcomes', ...COLORS.purple,
+    description: 'How do we measure the value of agent outputs? Reputation systems, quality metrics, and the challenge of subjective assessment.',
+    data: [{ label: 'METHOD', value: 'Multi-signal' }, { label: 'CHALLENGE', value: 'Subjectivity' }],
+    tags: ['Metrics', 'Quality', 'Assessment'],
+    filters: {
+        technical: 'Value measurement combines automated quality checks, human feedback signals, and comparative benchmarking against baseline outputs.',
+        ethical: 'Measurement systems embed values — what gets measured gets optimized. Choosing metrics is a moral act.',
+        economic: "Value measurement enables pricing. Without reliable quality signals, agent markets suffer from Akerlof's lemons problem.",
+        social: 'Collective value assessment creates shared standards and expectations, enabling trust between strangers in the network.'
+    },
+    category: 'deep'
+});
+
+addNode('value_reputation', {
+    title: 'REPUTATION', subtitle: 'Trust over time', ...COLORS.purple,
+    description: 'Reputation is accumulated trust — the historical record of value delivered. It is the currency of the agent economy, harder to earn than Qi.',
+    data: [{ label: 'STRUCTURE', value: 'On-chain' }, { label: 'DECAY', value: 'Time-weighted' }],
+    tags: ['Trust', 'History', 'Score'],
+    filters: {
+        technical: 'Reputation scores use time-weighted exponential moving averages — recent performance matters more than ancient history.',
+        ethical: 'Reputation systems can be gamed. Sybil attacks, fake reviews, and collusion require robust countermeasures to maintain integrity.',
+        economic: 'Reputation is a form of capital — it compounds with consistent performance and collapses catastrophically with failure.',
+        social: 'Reputation creates social stratification among agents. High-reputation agents form exclusive networks, potentially excluding newcomers.'
+    },
+    category: 'intersection'
+});
+
+addNode('value_settlement', {
+    title: 'SETTLEMENT', subtitle: 'Closing the loop', ...COLORS.purple,
+    description: 'Settlement is where energy converts to value and flows back to the mandator. The final step in the delegation cycle.',
+    data: [{ label: 'MECHANISM', value: 'Atomic' }, { label: 'VERIFICATION', value: 'Proof' }],
+    tags: ['Completion', 'Proof', 'Atomic'],
+    filters: {
+        technical: 'Settlement uses atomic swap patterns — value delivery and payment are cryptographically linked in a single transaction.',
+        ethical: 'Fair settlement requires honest reporting. Dispute resolution mechanisms must balance speed with thoroughness.',
+        economic: 'Settlement finality reduces counterparty risk, enabling larger mandates and longer delegation chains.',
+        social: 'Settlement transparency builds systemic trust — visible proof that the network delivers on its promises.'
+    },
+    category: 'intersection'
+});
+
+// Wire up the tree relationships
+function wireTree() {
+    // Depth 1 children of origin
+    const d1 = ['human', 'agent', 'energy', 'value'];
+    tree.origin.children = d1;
+    d1.forEach((id, i) => {
+        tree[id].parent = 'origin';
+        tree[id].depth = 1;
+        tree[id].siblingIndex = i;
+    });
+
+    // Depth 2 children
+    const childMap = {
+        human:  ['human_intent', 'human_delegation', 'human_accountability'],
+        agent:  ['agent_identity', 'agent_cooperation', 'agent_autonomy'],
+        energy: ['energy_thermodynamics', 'energy_distribution', 'energy_conservation'],
+        value:  ['value_measurement', 'value_reputation', 'value_settlement']
+    };
+
+    Object.entries(childMap).forEach(([parentId, childIds]) => {
+        tree[parentId].children = childIds;
+        childIds.forEach((cid, i) => {
+            tree[cid].parent = parentId;
+            tree[cid].depth = 2;
+            tree[cid].siblingIndex = i;
         });
-    </script>
+    });
+}
+wireTree();
+
+// Get siblings at the same level
+function getSiblings(nodeId) {
+    const node = tree[nodeId];
+    if (!node.parent) return [nodeId]; // root has no siblings
+    return tree[node.parent].children;
+}
+
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+let currentNode = 'origin';
+let energy = 500;
+let maxEnergy = 500;
+let exploredNodes = new Set(['origin']);
+let pathHistory = ['origin'];
+let gameStarted = false;
+let activeFilter = null; // null, 'technical', 'ethical', 'economic', 'social'
+
+// DOM refs
+const briefingOverlay = document.getElementById('briefingOverlay');
+const compassWorld    = document.getElementById('compassWorld');
+const nodeContent     = document.getElementById('nodeContent');
+const locationDisplay = document.getElementById('locationDisplay');
+const depthBadge      = document.getElementById('depthBadge');
+const coordsDisplay   = document.getElementById('coordsDisplay');
+const energyFill      = document.getElementById('energyFill');
+const energyValueEl   = document.getElementById('energyValue');
+const pathDisplay     = document.getElementById('pathDisplay');
+const indexStats      = document.getElementById('indexStats');
+const indexList       = document.getElementById('indexList');
+const flash           = document.getElementById('flash');
+const backBtn         = document.getElementById('backBtn');
+const btnUp           = document.getElementById('btnUp');
+const btnDown         = document.getElementById('btnDown');
+const btnLeft         = document.getElementById('btnLeft');
+const btnRight        = document.getElementById('btnRight');
+const mapCanvas       = document.getElementById('mapCanvas');
+
+const filterChips = {
+    technical: document.getElementById('fTech'),
+    ethical:   document.getElementById('fEthic'),
+    economic:  document.getElementById('fEcon'),
+    social:    document.getElementById('fSocial')
+};
+
+const filterBtns = {
+    technical: document.getElementById('btnW'),
+    ethical:   document.getElementById('btnA'),
+    economic:  document.getElementById('btnS'),
+    social:    document.getElementById('btnD')
+};
+
+// ════════════════════════════════════════════
+// TUTORIAL
+// ════════════════════════════════════════════
+let tutorialComplete = false;
+const testedDirections = { north: false, east: false, south: false, west: false };
+
+const keyUp = document.getElementById('keyUp');
+const keyDown = document.getElementById('keyDown');
+const keyLeft = document.getElementById('keyLeft');
+const keyRight = document.getElementById('keyRight');
+const tutorialCount = document.getElementById('tutorialCount');
+const enterBtn = document.getElementById('enterBtn');
+const enterHint = document.getElementById('enterHint');
+
+const heroCompass = document.getElementById('heroCompass');
+const highlights = {
+    north: heroCompass.querySelector('.north-highlight'),
+    east:  heroCompass.querySelector('.east-highlight'),
+    south: heroCompass.querySelector('.south-highlight'),
+    west:  heroCompass.querySelector('.west-highlight')
+};
+const arrows = {
+    north: heroCompass.querySelector('.arrow-north'),
+    east:  heroCompass.querySelector('.arrow-east'),
+    south: heroCompass.querySelector('.arrow-south'),
+    west:  heroCompass.querySelector('.arrow-west')
+};
+const keyHints = { north: keyUp, east: keyRight, south: keyDown, west: keyLeft };
+
+function highlightDirection(dir) {
+    Object.values(highlights).forEach(h => h.classList.remove('active'));
+    Object.values(arrows).forEach(a => a.classList.remove('pulse'));
+    Object.values(keyHints).forEach(k => k.classList.remove('active'));
+
+    highlights[dir]?.classList.add('active');
+    arrows[dir]?.classList.add('pulse');
+    keyHints[dir]?.classList.add('active');
+
+    if (!testedDirections[dir]) { testedDirections[dir] = true; updateTutorial(); }
+
+    setTimeout(() => {
+        highlights[dir]?.classList.remove('active');
+        arrows[dir]?.classList.remove('pulse');
+    }, 300);
+}
+
+function updateTutorial() {
+    const count = Object.values(testedDirections).filter(v => v).length;
+    tutorialCount.textContent = count;
+    Object.entries(testedDirections).forEach(([dir, tested]) => {
+        if (tested) keyHints[dir].classList.add('active');
+    });
+    if (count >= 4) {
+        tutorialComplete = true;
+        enterBtn.classList.add('ready');
+        enterHint.textContent = 'Press ENTER or click to begin';
+    }
+}
+
+function enterCompass() {
+    if (!tutorialComplete) return;
+    gameStarted = true;
+    briefingOverlay.classList.add('hidden');
+    compassWorld.classList.add('active');
+    resizeMap();
+    render();
+}
+
+// ════════════════════════════════════════════
+// NAVIGATION — Arrow keys
+// ════════════════════════════════════════════
+
+function navDepth(direction) {
+    if (!gameStarted) return;
+    const node = tree[currentNode];
+
+    if (direction === 'deeper') {
+        // Go to first child
+        if (node.children && node.children.length > 0) {
+            const target = node.children[0];
+            moveTo(target);
+        }
+    } else if (direction === 'broader') {
+        // Go to parent
+        if (node.parent) {
+            moveTo(node.parent);
+        }
+    }
+}
+
+function navBreadth(direction) {
+    if (!gameStarted) return;
+    const node = tree[currentNode];
+    const siblings = getSiblings(currentNode);
+    if (siblings.length <= 1) return;
+
+    const idx = siblings.indexOf(currentNode);
+    let newIdx;
+
+    if (direction === 'left') {
+        newIdx = (idx - 1 + siblings.length) % siblings.length;
+    } else {
+        newIdx = (idx + 1) % siblings.length;
+    }
+
+    moveTo(siblings[newIdx]);
+}
+
+function moveTo(targetId) {
+    if (!tree[targetId]) return;
+
+    flash.classList.add('active');
+    setTimeout(() => flash.classList.remove('active'), 100);
+
+    nodeContent.classList.add('transitioning');
+    setTimeout(() => {
+        pathHistory.push(targetId);
+        currentNode = targetId;
+        exploredNodes.add(targetId);
+        render();
+        nodeContent.classList.remove('transitioning');
+    }, 180);
+}
+
+function goBack() {
+    if (pathHistory.length <= 1) return;
+    flash.classList.add('active');
+    setTimeout(() => flash.classList.remove('active'), 100);
+    nodeContent.classList.add('transitioning');
+    setTimeout(() => {
+        pathHistory.pop();
+        currentNode = pathHistory[pathHistory.length - 1];
+        render();
+        nodeContent.classList.remove('transitioning');
+    }, 180);
+}
+
+// ════════════════════════════════════════════
+// FILTERS — WASD keys
+// ════════════════════════════════════════════
+
+function toggleFilter(filterName) {
+    if (activeFilter === filterName) {
+        activeFilter = null;
+    } else {
+        activeFilter = filterName;
+    }
+
+    // Flash the corresponding button
+    const btn = filterBtns[filterName];
+    if (btn) {
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 200);
+    }
+
+    render();
+}
+
+// ════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════
+
+function render() {
+    const node = tree[currentNode];
+    locationDisplay.textContent = `◇ ${node.title}`;
+    depthBadge.textContent = `D:${node.depth}`;
+
+    const siblings = getSiblings(currentNode);
+    const bIdx = siblings.indexOf(currentNode);
+    coordsDisplay.textContent = `[${node.depth}, ${bIdx}]`;
+
+    energyFill.style.width = `${(energy / maxEnergy) * 100}%`;
+    energyValueEl.textContent = `${energy} Qi`;
+
+    const displayPath = pathHistory.slice(-5).map(p => tree[p]?.title || p);
+    pathDisplay.innerHTML = displayPath.join(' <span>→</span> ');
+    backBtn.disabled = pathHistory.length <= 1;
+
+    // Update filter chips
+    Object.entries(filterChips).forEach(([key, chip]) => {
+        chip.classList.toggle('active', activeFilter === key);
+    });
+    Object.entries(filterBtns).forEach(([key, btn]) => {
+        btn.classList.toggle('pressed', activeFilter === key);
+    });
+
+    renderNode(node);
+    updateNavButtons(node);
+    renderIndex();
+    drawMap();
+}
+
+function renderNode(node) {
+    nodeContent.style.setProperty('--node-color', node.color || 'var(--qi-cyan)');
+    nodeContent.style.setProperty('--node-glow', node.glow || 'var(--qi-cyan-glow)');
+
+    let dataHTML = node.data ? `<div class="node-data">${node.data.map(d =>
+        `<div class="data-block"><div class="data-label">${d.label}</div><div class="data-value">${d.value}</div></div>`
+    ).join('')}</div>` : '';
+
+    let tagsHTML = node.tags ? `<div class="node-tags">${node.tags.map(t =>
+        `<span class="node-tag">${t}</span>`
+    ).join('')}</div>` : '';
+
+    // Filter content
+    let filterHTML = '';
+    if (activeFilter && node.filters && node.filters[activeFilter]) {
+        const filterLabels = { technical: 'TECHNICAL LENS', ethical: 'ETHICAL LENS', economic: 'ECONOMIC LENS', social: 'SOCIAL LENS' };
+        filterHTML = `
+            <div class="filter-content">
+                <div class="filter-section-title">${filterLabels[activeFilter]}</div>
+                <div class="filter-text">${node.filters[activeFilter]}</div>
+            </div>
+        `;
+    }
+
+    // Navigation hints
+    const siblings = getSiblings(currentNode);
+    const idx = siblings.indexOf(currentNode);
+    const hasDeeper  = node.children && node.children.length > 0;
+    const hasBroader = !!node.parent;
+    const hasLeft    = siblings.length > 1;
+    const hasRight   = siblings.length > 1;
+    const leftLabel  = hasLeft ? tree[siblings[(idx - 1 + siblings.length) % siblings.length]]?.title : '—';
+    const rightLabel = hasRight ? tree[siblings[(idx + 1) % siblings.length]]?.title : '—';
+    const deeperLabel = hasDeeper ? tree[node.children[0]]?.title : '—';
+    const broaderLabel = hasBroader ? tree[node.parent]?.title : '—';
+
+    let navHTML = `
+        <div class="nav-hints">
+            <div class="nav-hint-item ${hasDeeper ? 'available' : ''}">
+                <span class="nav-hint-key">↑</span> ${hasDeeper ? deeperLabel : 'No deeper path'}
+            </div>
+            <div class="nav-hint-item ${hasRight ? 'available' : ''}">
+                <span class="nav-hint-key">→</span> ${hasRight ? rightLabel : 'No adjacent'}
+            </div>
+            <div class="nav-hint-item ${hasBroader ? 'available' : ''}">
+                <span class="nav-hint-key">↓</span> ${hasBroader ? broaderLabel : 'At root'}
+            </div>
+            <div class="nav-hint-item ${hasLeft ? 'available' : ''}">
+                <span class="nav-hint-key">←</span> ${hasLeft ? leftLabel : 'No adjacent'}
+            </div>
+        </div>
+    `;
+
+    nodeContent.innerHTML = `
+        <div class="node-title">${node.title}</div>
+        <div class="node-subtitle">${node.subtitle}</div>
+        <div class="node-description">${node.description}</div>
+        ${dataHTML}
+        ${tagsHTML}
+        ${filterHTML}
+        ${navHTML}
+    `;
+}
+
+function updateNavButtons(node) {
+    const siblings = getSiblings(currentNode);
+    btnUp.disabled    = !(node.children && node.children.length > 0);
+    btnDown.disabled  = !node.parent;
+    btnLeft.disabled  = siblings.length <= 1;
+    btnRight.disabled = siblings.length <= 1;
+}
+
+// ════════════════════════════════════════════
+// INDEX
+// ════════════════════════════════════════════
+
+function renderIndex() {
+    const totalNodes = Object.keys(tree).length;
+    indexStats.textContent = `Explored: ${exploredNodes.size} / ${totalNodes}`;
+
+    const categories = {
+        core:         { title: 'CORE', nodes: [] },
+        cardinal:     { title: 'CARDINAL', nodes: [] },
+        intersection: { title: 'INTERSECTIONS', nodes: [] },
+        deep:         { title: 'DEEP', nodes: [] }
+    };
+
+    Object.entries(tree).forEach(([key, node]) => {
+        const cat = node.category || 'core';
+        if (categories[cat]) categories[cat].nodes.push({ key, node });
+    });
+
+    let html = '';
+    Object.values(categories).forEach(cat => {
+        if (cat.nodes.length === 0) return;
+        html += `<div class="index-category"><div class="index-category-title">${cat.title}</div>`;
+        cat.nodes.forEach(({ key, node }) => {
+            const isCurrent = key === currentNode;
+            const isExplored = exploredNodes.has(key);
+            let statusClass = isExplored ? '' : 'unexplored';
+            let iconClass = isExplored ? 'explored' : 'unexplored';
+            if (isCurrent) { statusClass = 'current'; iconClass = 'current'; }
+            html += `<div class="index-node ${statusClass}" onclick="jumpToNode('${key}')">
+                <div class="index-node-icon ${iconClass}"></div>
+                <div class="index-node-name">${node.title}</div>
+            </div>`;
+        });
+        html += `</div>`;
+    });
+    indexList.innerHTML = html;
+}
+
+function jumpToNode(key) {
+    if (!exploredNodes.has(key) || key === currentNode) return;
+    moveTo(key);
+}
+
+// ════════════════════════════════════════════
+// SIDEBAR TABS
+// ════════════════════════════════════════════
+
+function switchTab(tabName) {
+    document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+    document.querySelectorAll('.sidebar-panel').forEach(p => p.classList.toggle('active', p.dataset.tab === tabName));
+    if (tabName === 'map') { resizeMap(); drawMap(); }
+}
+
+// ════════════════════════════════════════════
+// EXPLORATION MAP (Canvas)
+// ════════════════════════════════════════════
+
+function resizeMap() {
+    const container = mapCanvas.parentElement;
+    const rect = container.getBoundingClientRect();
+    mapCanvas.width  = rect.width * window.devicePixelRatio;
+    mapCanvas.height = rect.height * window.devicePixelRatio;
+    mapCanvas.style.width  = rect.width + 'px';
+    mapCanvas.style.height = rect.height + 'px';
+}
+
+function drawMap() {
+    const ctx = mapCanvas.getContext('2d');
+    const dpr = window.devicePixelRatio;
+    const w = mapCanvas.width;
+    const h = mapCanvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    // Layout: tree top-down
+    // Calculate positions for each node
+    const positions = {};
+    const padding = 20 * dpr;
+    const nodeRadius = 6 * dpr;
+    const levelGap = (h - padding * 2) / 3; // 3 levels (0, 1, 2)
+
+    // Level 0: origin centered
+    positions.origin = { x: w / 2, y: padding + nodeRadius * 2 };
+
+    // Level 1: cardinal concepts spread across width
+    const d1 = tree.origin.children;
+    const d1Spacing = (w - padding * 2) / (d1.length + 1);
+    d1.forEach((id, i) => {
+        positions[id] = {
+            x: padding + d1Spacing * (i + 1),
+            y: padding + levelGap + nodeRadius
+        };
+    });
+
+    // Level 2: children of each cardinal
+    d1.forEach((parentId, pi) => {
+        const children = tree[parentId].children;
+        if (!children || children.length === 0) return;
+        const parentX = positions[parentId].x;
+        const spread = d1Spacing * 0.8;
+        const childSpacing = spread / (children.length + 1);
+        const startX = parentX - spread / 2;
+        children.forEach((cid, ci) => {
+            positions[cid] = {
+                x: startX + childSpacing * (ci + 1),
+                y: padding + levelGap * 2 + nodeRadius
+            };
+        });
+    });
+
+    // Draw edges
+    Object.entries(tree).forEach(([id, node]) => {
+        if (!positions[id]) return;
+        const pos = positions[id];
+        (node.children || []).forEach(childId => {
+            if (!positions[childId]) return;
+            const cpos = positions[childId];
+            const isOnPath = pathHistory.includes(id) && pathHistory.includes(childId);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            // Bezier curve for nicer look
+            const midY = (pos.y + cpos.y) / 2;
+            ctx.bezierCurveTo(pos.x, midY, cpos.x, midY, cpos.x, cpos.y);
+            ctx.strokeStyle = isOnPath ? 'rgba(0,240,255,0.5)' : 'rgba(0,240,255,0.12)';
+            ctx.lineWidth = isOnPath ? 2 * dpr : 1 * dpr;
+            ctx.stroke();
+        });
+    });
+
+    // Draw nodes
+    Object.entries(positions).forEach(([id, pos]) => {
+        const node = tree[id];
+        const isCurrent  = id === currentNode;
+        const isExplored = exploredNodes.has(id);
+
+        // Color
+        let fillColor = '#1e2d3d'; // unvisited
+        let strokeColor = '#3d4d60';
+        if (isExplored) { fillColor = '#0d3b2d'; strokeColor = '#39FF14'; }
+        if (isCurrent)  { fillColor = '#0a2a3a'; strokeColor = '#00f0ff'; }
+
+        const r = isCurrent ? nodeRadius * 1.4 : nodeRadius;
+
+        // Glow for current
+        if (isCurrent) {
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, r * 3, 0, Math.PI * 2);
+            const glow = ctx.createRadialGradient(pos.x, pos.y, r, pos.x, pos.y, r * 3);
+            glow.addColorStop(0, 'rgba(0,240,255,0.2)');
+            glow.addColorStop(1, 'rgba(0,240,255,0)');
+            ctx.fillStyle = glow;
+            ctx.fill();
+        }
+
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = (isCurrent ? 2 : 1) * dpr;
+        ctx.stroke();
+
+        // Inner dot for current
+        if (isCurrent) {
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, r * 0.4, 0, Math.PI * 2);
+            ctx.fillStyle = '#00f0ff';
+            ctx.fill();
+        }
+
+        // Label
+        ctx.font = `${(isCurrent ? 8 : 7) * dpr}px "Share Tech Mono", monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = isCurrent ? '#00f0ff' : (isExplored ? '#7a8a9e' : '#3d4d60');
+        const label = node.title.length > 12 ? node.title.substring(0, 10) + '..' : node.title;
+        ctx.fillText(label, pos.x, pos.y + r + 10 * dpr);
+    });
+
+    // Draw depth labels
+    ctx.font = `${7 * dpr}px "Share Tech Mono", monospace`;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#2a3a4a';
+    ctx.fillText('D:0', 4 * dpr, padding + nodeRadius * 2 + 3 * dpr);
+    ctx.fillText('D:1', 4 * dpr, padding + levelGap + nodeRadius + 3 * dpr);
+    ctx.fillText('D:2', 4 * dpr, padding + levelGap * 2 + nodeRadius + 3 * dpr);
+}
+
+window.addEventListener('resize', () => {
+    if (gameStarted) { resizeMap(); drawMap(); }
+});
+
+// ════════════════════════════════════════════
+// KEYBOARD
+// ════════════════════════════════════════════
+
+document.addEventListener('keydown', (e) => {
+    // Tutorial mode
+    if (!gameStarted) {
+        if (e.key === 'ArrowUp')    { e.preventDefault(); highlightDirection('north'); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); highlightDirection('east'); }
+        if (e.key === 'ArrowDown')  { e.preventDefault(); highlightDirection('south'); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); highlightDirection('west'); }
+        if ((e.key === 'Enter' || e.key === ' ') && tutorialComplete) { e.preventDefault(); enterCompass(); }
+        return;
+    }
+
+    // Exploration mode
+    switch (e.key) {
+        // Arrow keys: NAVIGATE (depth/breadth)
+        case 'ArrowUp':    e.preventDefault(); navDepth('deeper'); pressBtn(btnUp); break;
+        case 'ArrowDown':  e.preventDefault(); navDepth('broader'); pressBtn(btnDown); break;
+        case 'ArrowLeft':  e.preventDefault(); navBreadth('left'); pressBtn(btnLeft); break;
+        case 'ArrowRight': e.preventDefault(); navBreadth('right'); pressBtn(btnRight); break;
+
+        // WASD: FILTERS
+        case 'w': case 'W': e.preventDefault(); toggleFilter('technical'); break;
+        case 'a': case 'A': e.preventDefault(); toggleFilter('ethical'); break;
+        case 's': case 'S': e.preventDefault(); toggleFilter('economic'); break;
+        case 'd': case 'D': e.preventDefault(); toggleFilter('social'); break;
+
+        // Back
+        case 'Backspace': e.preventDefault(); goBack(); break;
+    }
+});
+
+function pressBtn(btn) {
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 150);
+}
+
+// Init
+render();
+</script>
 
 </body>
 </html>
