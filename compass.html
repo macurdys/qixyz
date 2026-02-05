@@ -22,6 +22,15 @@
             --qi-green-dim: rgba(57, 255, 20, 0.12);
             --qi-purple: #bf5af2;
             --qi-purple-dim: rgba(191, 90, 242, 0.12);
+            /* Per-filter lens colors */
+            --filter-tech: #00f0ff;
+            --filter-tech-dim: rgba(0, 240, 255, 0.10);
+            --filter-ethic: #bf5af2;
+            --filter-ethic-dim: rgba(191, 90, 242, 0.10);
+            --filter-econ: #39FF14;
+            --filter-econ-dim: rgba(57, 255, 20, 0.10);
+            --filter-social: #ffb800;
+            --filter-social-dim: rgba(255, 184, 0, 0.10);
             --bg-deep: #06080d;
             --bg-panel: #0c1018;
             --bg-card: #111822;
@@ -43,8 +52,8 @@
             font-family: var(--font-body);
             background: var(--bg-deep);
             color: var(--text-primary);
-            font-size: 16px;
-            line-height: 1.5;
+            font-size: 18px;
+            line-height: 1.6;
         }
 
         /* Scanlines */
@@ -94,27 +103,27 @@
         }
         .briefing-title {
             font-family: var(--font-display);
-            font-size: clamp(18px, 3.5vw, 30px);
+            font-size: clamp(26px, 5vw, 48px);
             font-weight: 700;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             color: var(--qi-cyan);
-            text-shadow: 0 0 40px var(--qi-cyan-glow);
+            text-shadow: 0 0 60px var(--qi-cyan-glow), 0 0 120px rgba(0,240,255,0.15);
             white-space: nowrap;
         }
         .briefing-subtitle {
             font-family: var(--font-mono);
-            font-size: 10px;
+            font-size: 14px;
             color: var(--text-secondary);
-            letter-spacing: 3px;
-            margin-top: 6px;
+            letter-spacing: 5px;
+            margin-top: 10px;
         }
 
         /* Compass hero */
         .compass-hero {
             position: relative;
-            width: min(55vmin, 320px);
+            width: min(65vmin, 440px);
             flex-shrink: 0;
-            margin-bottom: 2vh;
+            margin-bottom: 3vh;
         }
         .compass-svg { width: 100%; height: auto; }
         .compass-svg .dir-highlight { opacity: 0; transition: opacity 0.15s; }
@@ -132,19 +141,20 @@
         .tutorial-prompt { text-align: center; margin-bottom: 2vh; flex-shrink: 0; }
         .tutorial-text {
             font-family: var(--font-mono);
-            font-size: 11px;
+            font-size: 15px;
             color: var(--text-secondary);
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
         }
-        .tutorial-keys { display: flex; justify-content: center; gap: 6px; margin-bottom: 8px; }
+        .tutorial-keys { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
         .key-hint {
-            width: 36px; height: 36px;
+            width: 50px; height: 50px;
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
+            border-radius: 6px;
             display: flex; align-items: center; justify-content: center;
             font-family: var(--font-mono);
-            font-size: 13px;
+            font-size: 18px;
             color: var(--text-dim);
             transition: all 0.15s;
         }
@@ -153,7 +163,7 @@
         .key-hint.east.active  { border-color: var(--qi-amber); color: var(--qi-amber); box-shadow: 0 0 12px rgba(255,184,0,0.4); }
         .key-hint.south.active { border-color: var(--qi-green); color: var(--qi-green); box-shadow: 0 0 12px rgba(57,255,20,0.4); }
         .key-hint.west.active  { border-color: var(--qi-purple); color: var(--qi-purple); box-shadow: 0 0 12px rgba(191,90,242,0.4); }
-        .tutorial-progress { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+        .tutorial-progress { font-family: var(--font-mono); font-size: 13px; color: var(--text-dim); letter-spacing: 1px; }
         .tutorial-progress span { color: var(--qi-cyan); }
 
         .tutorial-phase { transition: opacity 0.4s, transform 0.4s; }
@@ -164,15 +174,15 @@
             border-color: var(--qi-amber); color: var(--qi-amber);
             box-shadow: 0 0 12px rgba(255,184,0,0.4); background: var(--qi-amber-dim);
         }
-        .tutorial-phase-status { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; }
+        .tutorial-phase-status { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
         .phase-dot {
-            width: 8px; height: 8px; border-radius: 50%;
+            width: 10px; height: 10px; border-radius: 50%;
             background: var(--qi-cyan); box-shadow: 0 0 8px var(--qi-cyan-glow); transition: all 0.3s;
         }
         .phase-dot.dim { background: var(--text-dim); box-shadow: none; }
         .phase-dot.complete { background: var(--qi-green); box-shadow: 0 0 8px rgba(57,255,20,0.4); }
         .phase-dot.active-phase { background: var(--qi-amber); box-shadow: 0 0 8px rgba(255,184,0,0.4); }
-        .phase-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px; color: var(--qi-cyan); margin-right: 6px; }
+        .phase-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; color: var(--qi-cyan); margin-right: 6px; }
         .phase-label.dim { color: var(--text-dim); }
         .phase-label.complete { color: var(--qi-green); }
         .phase-label.active-phase { color: var(--qi-amber); }
@@ -181,38 +191,38 @@
         .briefing-info {
             background: var(--bg-panel);
             border: 1px solid var(--border-dim);
-            padding: 14px 18px;
-            max-width: 480px;
+            padding: 20px 24px;
+            max-width: 560px;
             width: 100%;
             margin-bottom: 2vh;
             flex-shrink: 0;
         }
         .briefing-info h3 {
             font-family: var(--font-display);
-            font-size: 9px; letter-spacing: 3px; color: var(--qi-amber); margin-bottom: 10px;
+            font-size: 12px; letter-spacing: 4px; color: var(--qi-amber); margin-bottom: 14px;
         }
-        .briefing-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .briefing-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .briefing-col-title {
             font-family: var(--font-display);
-            font-size: 8px; letter-spacing: 2px; color: var(--qi-cyan);
-            margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid var(--border-dim);
+            font-size: 10px; letter-spacing: 3px; color: var(--qi-cyan);
+            margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim);
         }
         .briefing-info ul {
-            list-style: none; font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary);
+            list-style: none; font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);
         }
-        .briefing-info li { padding: 3px 0; display: flex; align-items: baseline; gap: 6px; }
-        .briefing-info li::before { content: '◇'; color: var(--qi-cyan); font-size: 7px; flex-shrink: 0; }
+        .briefing-info li { padding: 4px 0; display: flex; align-items: baseline; gap: 8px; }
+        .briefing-info li::before { content: '◇'; color: var(--qi-cyan); font-size: 9px; flex-shrink: 0; }
         .briefing-info .key-label {
-            font-family: var(--font-display); font-size: 9px; color: var(--qi-cyan);
-            background: var(--bg-card); padding: 1px 5px; border: 1px solid var(--border-dim);
-            flex-shrink: 0; min-width: 20px; text-align: center;
+            font-family: var(--font-display); font-size: 11px; color: var(--qi-cyan);
+            background: var(--bg-card); padding: 2px 7px; border: 1px solid var(--border-dim);
+            border-radius: 3px; flex-shrink: 0; min-width: 24px; text-align: center;
         }
         .briefing-info .key-label.amber { color: var(--qi-amber); }
 
         .briefing-enter {
             font-family: var(--font-display);
-            font-size: 11px; letter-spacing: 4px;
-            padding: 14px 44px; background: transparent;
+            font-size: 14px; letter-spacing: 5px;
+            padding: 18px 56px; background: transparent;
             border: 2px solid var(--qi-cyan); color: var(--qi-cyan);
             cursor: pointer; transition: all 0.3s;
             opacity: 0.3; pointer-events: none; flex-shrink: 0;
@@ -220,8 +230,8 @@
         .briefing-enter.ready { opacity: 1; pointer-events: auto; }
         .briefing-enter.ready:hover { background: var(--qi-cyan); color: var(--bg-deep); box-shadow: 0 0 40px var(--qi-cyan-glow); }
         .briefing-enter-hint {
-            font-family: var(--font-mono); font-size: 9px; color: var(--text-dim);
-            margin-top: 10px; letter-spacing: 1px; flex-shrink: 0;
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);
+            margin-top: 14px; letter-spacing: 1px; flex-shrink: 0;
         }
 
         /* ═══════════════ MAIN EXPLORATION ═══════════════ */
@@ -240,22 +250,22 @@
         /* HUD Top → now controls bar */
         .hud-controls {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 16px; border-bottom: 1px solid var(--border-dim);
+            padding: 10px 20px; border-bottom: 1px solid var(--border-dim);
             background: rgba(6,8,13,0.95); z-index: 10;
         }
         .location-display {
             font-family: var(--font-display);
-            font-size: clamp(9px, 1.4vw, 12px); letter-spacing: 3px;
+            font-size: clamp(12px, 1.6vw, 16px); letter-spacing: 3px;
             color: var(--qi-cyan); text-shadow: 0 0 20px var(--qi-cyan-glow);
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 12px;
         }
         .depth-badge {
-            font-family: var(--font-mono); font-size: 9px;
-            padding: 2px 8px; border: 1px solid var(--border-dim);
+            font-family: var(--font-mono); font-size: 12px;
+            padding: 3px 10px; border: 1px solid var(--border-dim);
             background: var(--bg-card); color: var(--text-secondary); letter-spacing: 1px;
         }
         .coords-display {
-            font-family: var(--font-mono); font-size: 9px;
+            font-family: var(--font-mono); font-size: 12px;
             color: var(--text-dim); letter-spacing: 1px;
         }
 
@@ -264,8 +274,9 @@
         /* Filter stack display */
         .filter-stack-display { display: flex; align-items: center; gap: 3px; }
         .filter-chip {
-            font-family: var(--font-mono); font-size: 8px; letter-spacing: 1px;
-            padding: 3px 8px; border: 1px solid var(--border-dim);
+            font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+            padding: 5px 10px; border: 1px solid var(--border-dim);
+            border-radius: 3px;
             background: var(--bg-card); color: var(--text-dim);
             cursor: pointer; transition: all 0.2s; position: relative;
         }
@@ -274,22 +285,23 @@
             background: var(--qi-amber-dim); box-shadow: 0 0 8px rgba(255,184,0,0.2);
         }
         .filter-chip .stack-order {
-            position: absolute; top: -6px; right: -4px;
-            font-family: var(--font-display); font-size: 7px;
+            position: absolute; top: -7px; right: -5px;
+            font-family: var(--font-display); font-size: 9px;
             background: var(--qi-amber); color: var(--bg-deep);
-            width: 12px; height: 12px; border-radius: 50%;
+            width: 16px; height: 16px; border-radius: 50%;
             display: none; align-items: center; justify-content: center;
             line-height: 1;
         }
         .filter-chip.active .stack-order { display: flex; }
         .filter-stack-arrow {
-            font-family: var(--font-mono); font-size: 8px;
+            font-family: var(--font-mono); font-size: 11px;
             color: var(--qi-amber); opacity: 0; transition: opacity 0.2s;
         }
         .filter-stack-arrow.visible { opacity: 0.6; }
         .filter-stack-clear {
-            font-family: var(--font-mono); font-size: 8px;
-            padding: 3px 6px; border: 1px solid var(--border-dim);
+            font-family: var(--font-mono); font-size: 11px;
+            padding: 5px 8px; border: 1px solid var(--border-dim);
+            border-radius: 3px;
             background: var(--bg-card); color: var(--text-dim);
             cursor: pointer; transition: all 0.2s; opacity: 0; pointer-events: none;
         }
@@ -312,32 +324,34 @@
         }
         .map-main-canvas { width: 100%; height: 100%; display: block; }
         .map-main-legend {
-            position: absolute; bottom: 8px; right: 12px;
-            display: flex; gap: 14px; flex-wrap: wrap;
-            padding: 6px 12px;
-            background: rgba(6,8,13,0.8);
+            position: absolute; bottom: 10px; right: 14px;
+            display: flex; gap: 16px; flex-wrap: wrap;
+            padding: 8px 14px;
+            background: rgba(6,8,13,0.85);
             border: 1px solid var(--border-dim);
+            border-radius: 4px;
         }
 
         /* Node card → de-emphasized floating corner panel */
         .node-container {
             position: absolute;
-            bottom: 16px; left: 16px;
-            width: 320px; max-height: 45vh;
+            bottom: 20px; left: 20px;
+            width: 420px; max-height: 50vh;
             z-index: 20; pointer-events: auto;
         }
         .node-content {
-            background: rgba(12,16,24,0.88);
+            background: rgba(12,16,24,0.92);
             border: 1px solid var(--border-dim);
-            padding: 16px 18px;
+            padding: 22px 24px;
             position: relative;
-            opacity: 0.85;
+            opacity: 0.88;
             transform: scale(1);
             transition: opacity 0.25s, transform 0.2s;
-            max-height: 45vh; overflow-y: auto;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            font-size: 13px;
+            max-height: 50vh; overflow-y: auto;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            font-size: 15px;
+            border-radius: 6px;
         }
         .node-content:hover { opacity: 1; }
         .node-content.transitioning { opacity: 0; transform: scale(0.96); }
@@ -353,26 +367,26 @@
 
         .node-title {
             font-family: var(--font-display);
-            font-size: clamp(12px, 1.8vw, 16px); font-weight: 700;
-            letter-spacing: 3px; margin-bottom: 2px;
+            font-size: clamp(16px, 2.2vw, 22px); font-weight: 700;
+            letter-spacing: 4px; margin-bottom: 4px;
             color: var(--node-color, var(--qi-cyan));
-            text-shadow: 0 0 18px var(--node-glow, var(--qi-cyan-glow));
+            text-shadow: 0 0 24px var(--node-glow, var(--qi-cyan-glow));
         }
         .node-subtitle {
-            font-family: var(--font-mono); font-size: 9px;
-            color: var(--text-secondary); letter-spacing: 1.5px;
-            margin-bottom: 10px; text-transform: uppercase;
+            font-family: var(--font-mono); font-size: 12px;
+            color: var(--text-secondary); letter-spacing: 2px;
+            margin-bottom: 14px; text-transform: uppercase;
         }
-        .node-description { font-size: 12px; color: var(--text-primary); line-height: 1.65; margin-bottom: 10px; opacity: 0.85; }
-        .node-data { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 5px; margin-bottom: 10px; }
-        .data-block { background: var(--bg-card); border: 1px solid var(--border-dim); padding: 5px 6px; }
-        .data-label { font-family: var(--font-mono); font-size: 7px; color: var(--text-dim); letter-spacing: 1.5px; margin-bottom: 1px; }
-        .data-value { font-family: var(--font-display); font-size: 10px; color: var(--node-color, var(--qi-cyan)); }
-        .node-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+        .node-description { font-size: 14px; color: var(--text-primary); line-height: 1.7; margin-bottom: 14px; opacity: 0.9; }
+        .node-data { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 14px; }
+        .data-block { background: var(--bg-card); border: 1px solid var(--border-dim); padding: 8px 10px; border-radius: 4px; }
+        .data-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 2px; }
+        .data-value { font-family: var(--font-display); font-size: 13px; color: var(--node-color, var(--qi-cyan)); }
+        .node-tags { display: flex; flex-wrap: wrap; gap: 6px; }
         .node-tag {
-            font-family: var(--font-mono); font-size: 7px; letter-spacing: 1px;
-            padding: 2px 5px; background: var(--qi-cyan-dim);
-            border: 1px solid var(--border-dim); color: var(--qi-cyan);
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
+            padding: 3px 8px; background: var(--qi-cyan-dim);
+            border: 1px solid var(--border-dim); color: var(--qi-cyan); border-radius: 3px;
         }
 
         /* Filter content layers */
@@ -386,12 +400,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .filter-section-title {
-            font-family: var(--font-display); font-size: 7px;
-            letter-spacing: 2px; color: var(--qi-amber); margin-bottom: 5px;
+            font-family: var(--font-display); font-size: 9px;
+            letter-spacing: 2px; color: var(--qi-amber); margin-bottom: 6px;
         }
         .filter-text {
-            font-size: 11px; color: var(--qi-amber);
-            line-height: 1.55; font-style: italic; opacity: 0.8;
+            font-size: 13px; color: var(--qi-amber);
+            line-height: 1.6; font-style: italic; opacity: 0.85;
         }
 
         /* Composite filter insight */
@@ -412,16 +426,16 @@
             background: linear-gradient(90deg, transparent, var(--qi-amber), transparent);
         }
         .composite-label {
-            font-family: var(--font-display); font-size: 7px;
-            letter-spacing: 2px; color: var(--qi-amber); margin-bottom: 5px;
-            display: flex; align-items: center; gap: 5px;
+            font-family: var(--font-display); font-size: 9px;
+            letter-spacing: 2px; color: var(--qi-amber); margin-bottom: 6px;
+            display: flex; align-items: center; gap: 6px;
         }
         .composite-label .combo-icon {
-            font-size: 9px; opacity: 0.7;
+            font-size: 12px; opacity: 0.7;
         }
         .composite-text {
-            font-size: 12px; color: #ffd466;
-            line-height: 1.6; font-weight: 500;
+            font-size: 14px; color: #ffd466;
+            line-height: 1.65; font-weight: 500;
         }
 
         /* Discovery notification */
@@ -430,25 +444,26 @@
             transform: translate(-50%, -50%) scale(0.8);
             background: rgba(6, 8, 13, 0.95);
             border: 2px solid var(--qi-amber);
-            padding: 24px 40px; text-align: center;
+            padding: 32px 52px; text-align: center;
+            border-radius: 8px;
             z-index: 500; pointer-events: none;
             opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 0 60px rgba(255, 184, 0, 0.3), inset 0 0 40px rgba(255, 184, 0, 0.05);
+            box-shadow: 0 0 80px rgba(255, 184, 0, 0.3), inset 0 0 60px rgba(255, 184, 0, 0.05);
         }
         .discovery-notification.active {
             opacity: 1; transform: translate(-50%, -50%) scale(1);
         }
         .discovery-icon {
-            font-family: var(--font-display); font-size: 11px;
-            letter-spacing: 4px; color: var(--qi-amber); margin-bottom: 8px; opacity: 0.6;
+            font-family: var(--font-display); font-size: 14px;
+            letter-spacing: 5px; color: var(--qi-amber); margin-bottom: 10px; opacity: 0.6;
         }
         .discovery-title {
-            font-family: var(--font-display); font-size: 16px;
-            letter-spacing: 3px; color: var(--qi-amber);
-            text-shadow: 0 0 20px rgba(255,184,0,0.5); margin-bottom: 4px;
+            font-family: var(--font-display); font-size: 22px;
+            letter-spacing: 4px; color: var(--qi-amber);
+            text-shadow: 0 0 30px rgba(255,184,0,0.5); margin-bottom: 6px;
         }
         .discovery-sub {
-            font-family: var(--font-mono); font-size: 10px;
+            font-family: var(--font-mono); font-size: 13px;
             color: var(--text-secondary); letter-spacing: 1px;
         }
 
@@ -457,42 +472,43 @@
             display: flex; flex-direction: column; align-items: center;
             justify-content: center; padding: 28px; text-align: center;
         }
-        .locked-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+        .locked-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.5; }
         .locked-title {
-            font-family: var(--font-display); font-size: 13px;
-            letter-spacing: 4px; color: var(--qi-amber); margin-bottom: 8px;
+            font-family: var(--font-display); font-size: 16px;
+            letter-spacing: 5px; color: var(--qi-amber); margin-bottom: 10px;
         }
         .locked-desc {
-            font-family: var(--font-mono); font-size: 11px;
-            color: var(--text-secondary); margin-bottom: 16px; max-width: 260px; line-height: 1.7;
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--text-secondary); margin-bottom: 18px; max-width: 300px; line-height: 1.7;
         }
         .unlock-btn {
-            font-family: var(--font-display); font-size: 9px;
-            letter-spacing: 2px; padding: 10px 22px;
+            font-family: var(--font-display); font-size: 11px;
+            letter-spacing: 3px; padding: 12px 26px;
             background: transparent; border: 1px solid var(--qi-amber);
             color: var(--qi-amber); cursor: pointer; transition: all 0.3s;
         }
         .unlock-btn:hover:not(:disabled) { background: var(--qi-amber); color: var(--bg-deep); }
         .unlock-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .unlock-cost { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-top: 8px; }
+        .unlock-cost { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-top: 10px; }
 
         /* Nav hints */
         .nav-hints {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
-            margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-dim);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+            margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-dim);
         }
         .nav-hint-item {
-            display: flex; align-items: center; gap: 4px;
-            font-family: var(--font-mono); font-size: 8px;
+            display: flex; align-items: center; gap: 6px;
+            font-family: var(--font-mono); font-size: 11px;
             color: var(--text-dim); letter-spacing: 0.5px;
         }
         .nav-hint-item.available { color: var(--text-secondary); }
         .nav-hint-item.revealed { color: var(--qi-amber); }
         .nav-hint-key {
-            font-family: var(--font-display); font-size: 8px;
-            width: 20px; height: 20px;
+            font-family: var(--font-display); font-size: 11px;
+            width: 26px; height: 26px;
             display: flex; align-items: center; justify-content: center;
             border: 1px solid var(--border-dim); background: var(--bg-card); flex-shrink: 0;
+            border-radius: 3px;
         }
         .nav-hint-item.available .nav-hint-key { border-color: var(--border-bright); color: var(--qi-cyan); }
         .nav-hint-item.revealed .nav-hint-key { border-color: var(--qi-amber); color: var(--qi-amber); }
@@ -514,13 +530,13 @@
 
         .map-container { flex: 1; position: relative; overflow: hidden; }
         .map-canvas { width: 100%; height: 100%; }
-        .map-legend { padding: 8px 12px; border-top: 1px solid var(--border-dim); display: flex; gap: 12px; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.5px; }
-        .legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .map-legend { padding: 10px 14px; border-top: 1px solid var(--border-dim); display: flex; gap: 14px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.5px; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        .index-header { padding: 10px 12px; border-bottom: 1px solid var(--border-dim); flex-shrink: 0; }
-        .index-title { font-family: var(--font-display); font-size: 9px; letter-spacing: 3px; color: var(--qi-cyan); margin-bottom: 2px; }
-        .index-stats { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
+        .index-header { padding: 12px 14px; border-bottom: 1px solid var(--border-dim); flex-shrink: 0; }
+        .index-title { font-family: var(--font-display); font-size: 11px; letter-spacing: 3px; color: var(--qi-cyan); margin-bottom: 3px; }
+        .index-stats { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
         .index-list { flex: 1; overflow-y: auto; padding: 6px; }
         .index-category { margin-bottom: 10px; }
         .index-category-title {
@@ -547,25 +563,26 @@
         /* ═══════════════ HUD BOTTOM → info bar ═══════════════ */
         .hud-info {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 16px; border-top: 1px solid var(--border-dim);
-            background: rgba(6,8,13,0.95); z-index: 10; gap: 12px;
+            padding: 10px 20px; border-top: 1px solid var(--border-dim);
+            background: rgba(6,8,13,0.95); z-index: 10; gap: 16px;
         }
-        .controls-group { display: flex; align-items: center; gap: 16px; }
-        .control-cluster { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .cluster-label { font-family: var(--font-display); font-size: 7px; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 2px; }
+        .controls-group { display: flex; align-items: center; gap: 18px; }
+        .control-cluster { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .cluster-label { font-family: var(--font-display); font-size: 9px; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 3px; }
         .cluster-label.arrows { color: var(--qi-cyan); }
         .cluster-label.wasd { color: var(--qi-amber); }
 
-        .dpad { display: grid; grid-template-columns: repeat(3, 26px); grid-template-rows: repeat(2, 26px); gap: 2px; }
+        .dpad { display: grid; grid-template-columns: repeat(3, 34px); grid-template-rows: repeat(2, 34px); gap: 3px; }
         .dpad .ctrl-btn:nth-child(1) { grid-column: 2; grid-row: 1; }
         .dpad .ctrl-btn:nth-child(2) { grid-column: 1; grid-row: 2; }
         .dpad .ctrl-btn:nth-child(3) { grid-column: 2; grid-row: 2; }
         .dpad .ctrl-btn:nth-child(4) { grid-column: 3; grid-row: 2; }
 
         .ctrl-btn {
-            font-family: var(--font-display); font-size: 9px;
-            width: 26px; height: 26px;
+            font-family: var(--font-display); font-size: 12px;
+            width: 34px; height: 34px;
             background: var(--bg-card); border: 1px solid var(--border-dim);
+            border-radius: 4px;
             color: var(--qi-cyan); cursor: pointer; transition: all 0.15s;
             display: flex; align-items: center; justify-content: center;
         }
@@ -582,23 +599,24 @@
         .ctrl-divider { width: 1px; height: 40px; background: var(--border-dim); }
 
         .back-btn {
-            font-family: var(--font-display); font-size: 9px;
-            padding: 6px 12px; background: var(--bg-card);
+            font-family: var(--font-display); font-size: 11px;
+            padding: 8px 16px; background: var(--bg-card);
             border: 1px solid var(--border-dim); color: var(--text-secondary);
+            border-radius: 4px;
             cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
         }
         .back-btn:hover:not(:disabled) { border-color: var(--border-bright); color: var(--text-primary); }
         .back-btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
         .path-display {
-            font-family: var(--font-mono); font-size: 9px; color: var(--text-dim);
-            letter-spacing: 0.5px; max-width: 240px; overflow: hidden;
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);
+            letter-spacing: 0.5px; max-width: 300px; overflow: hidden;
             text-overflow: ellipsis; white-space: nowrap;
         }
         .path-display span { color: var(--qi-cyan); }
 
         .back-link {
-            font-family: var(--font-mono); font-size: 9px;
+            font-family: var(--font-mono); font-size: 12px;
             color: var(--text-dim); text-decoration: none;
             letter-spacing: 2px; transition: color 0.3s; flex-shrink: 0;
         }
@@ -617,9 +635,10 @@
             display: flex; gap: 2px;
         }
         .view-toggle-btn {
-            font-family: var(--font-display); font-size: 8px;
-            letter-spacing: 2px; padding: 6px 14px;
+            font-family: var(--font-display); font-size: 10px;
+            letter-spacing: 2px; padding: 8px 18px;
             background: var(--bg-card); border: 1px solid var(--border-dim);
+            border-radius: 4px;
             color: var(--text-dim); cursor: pointer; transition: all 0.2s;
         }
         .view-toggle-btn:first-child { border-radius: 0; }
@@ -630,7 +649,7 @@
         }
         .view-toggle-btn:hover:not(.active) { border-color: var(--border-bright); color: var(--text-secondary); }
         .view-toggle-hint {
-            font-family: var(--font-mono); font-size: 8px;
+            font-family: var(--font-mono); font-size: 10px;
             color: var(--text-dim); padding: 8px 0 0 4px;
             align-self: center;
         }
@@ -645,20 +664,163 @@
         .map-main-container { z-index: 4; transition: opacity 0.3s; }
         .map-main-container.hidden { opacity: 0; pointer-events: none; }
 
+        /* ═══════════════ DIRECTIONAL NAV ANIMATIONS ═══════════════ */
+        .node-content.slide-up    { animation: slideFromBelow 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+        .node-content.slide-down  { animation: slideFromAbove 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+        .node-content.slide-left  { animation: slideFromLeft 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+        .node-content.slide-right { animation: slideFromRight 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+        @keyframes slideFromBelow {
+            0%   { opacity: 0; transform: translateY(18px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideFromAbove {
+            0%   { opacity: 0; transform: translateY(-18px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideFromLeft {
+            0%   { opacity: 0; transform: translateX(-18px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideFromRight {
+            0%   { opacity: 0; transform: translateX(18px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Directional sweep overlay on compass canvas */
+        .compass-canvas-wrap .nav-sweep {
+            position: absolute; pointer-events: none; z-index: 6;
+            opacity: 0; transition: none;
+        }
+        .compass-canvas-wrap .nav-sweep.sweep-up {
+            top: 0; left: 0; right: 0; height: 40%;
+            background: linear-gradient(to bottom, rgba(0,240,255,0.08), transparent);
+            animation: sweepFade 0.35s ease-out;
+        }
+        .compass-canvas-wrap .nav-sweep.sweep-down {
+            bottom: 0; left: 0; right: 0; height: 40%;
+            background: linear-gradient(to top, rgba(0,240,255,0.08), transparent);
+            animation: sweepFade 0.35s ease-out;
+        }
+        .compass-canvas-wrap .nav-sweep.sweep-left {
+            top: 0; left: 0; bottom: 0; width: 40%;
+            background: linear-gradient(to right, rgba(0,240,255,0.08), transparent);
+            animation: sweepFade 0.35s ease-out;
+        }
+        .compass-canvas-wrap .nav-sweep.sweep-right {
+            top: 0; right: 0; bottom: 0; width: 40%;
+            background: linear-gradient(to left, rgba(0,240,255,0.08), transparent);
+            animation: sweepFade 0.35s ease-out;
+        }
+        @keyframes sweepFade {
+            0%   { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* ═══════════════ PER-FILTER COLORS ═══════════════ */
+        .filter-chip[data-filter="technical"].active {
+            border-color: var(--filter-tech); color: var(--filter-tech);
+            background: var(--filter-tech-dim); box-shadow: 0 0 8px rgba(0,240,255,0.2);
+        }
+        .filter-chip[data-filter="ethical"].active {
+            border-color: var(--filter-ethic); color: var(--filter-ethic);
+            background: var(--filter-ethic-dim); box-shadow: 0 0 8px rgba(191,90,242,0.2);
+        }
+        .filter-chip[data-filter="economic"].active {
+            border-color: var(--filter-econ); color: var(--filter-econ);
+            background: var(--filter-econ-dim); box-shadow: 0 0 8px rgba(57,255,20,0.2);
+        }
+        .filter-chip[data-filter="social"].active {
+            border-color: var(--filter-social); color: var(--filter-social);
+            background: var(--filter-social-dim); box-shadow: 0 0 8px rgba(255,184,0,0.2);
+        }
+        .filter-chip[data-filter="technical"].active .stack-order { background: var(--filter-tech); }
+        .filter-chip[data-filter="ethical"].active .stack-order { background: var(--filter-ethic); }
+        .filter-chip[data-filter="economic"].active .stack-order { background: var(--filter-econ); }
+        .filter-chip[data-filter="social"].active .stack-order { background: var(--filter-social); }
+
+        /* Per-filter WASD button colors */
+        .ctrl-btn.wasd-btn.filter-tech { color: var(--filter-tech); }
+        .ctrl-btn.wasd-btn.filter-ethic { color: var(--filter-ethic); }
+        .ctrl-btn.wasd-btn.filter-econ { color: var(--filter-econ); }
+        .ctrl-btn.wasd-btn.filter-social { color: var(--filter-social); }
+        .ctrl-btn.wasd-btn.filter-tech:hover:not(:disabled) { background: var(--filter-tech-dim); border-color: var(--filter-tech); }
+        .ctrl-btn.wasd-btn.filter-ethic:hover:not(:disabled) { background: var(--filter-ethic-dim); border-color: var(--filter-ethic); }
+        .ctrl-btn.wasd-btn.filter-econ:hover:not(:disabled) { background: var(--filter-econ-dim); border-color: var(--filter-econ); }
+        .ctrl-btn.wasd-btn.filter-social:hover:not(:disabled) { background: var(--filter-social-dim); border-color: var(--filter-social); }
+        .ctrl-btn.wasd-btn.filter-tech.stack-active, .ctrl-btn.wasd-btn.filter-tech.pressed {
+            background: var(--filter-tech-dim); border-color: var(--filter-tech); box-shadow: 0 0 10px rgba(0,240,255,0.3);
+        }
+        .ctrl-btn.wasd-btn.filter-ethic.stack-active, .ctrl-btn.wasd-btn.filter-ethic.pressed {
+            background: var(--filter-ethic-dim); border-color: var(--filter-ethic); box-shadow: 0 0 10px rgba(191,90,242,0.3);
+        }
+        .ctrl-btn.wasd-btn.filter-econ.stack-active, .ctrl-btn.wasd-btn.filter-econ.pressed {
+            background: var(--filter-econ-dim); border-color: var(--filter-econ); box-shadow: 0 0 10px rgba(57,255,20,0.3);
+        }
+        .ctrl-btn.wasd-btn.filter-social.stack-active, .ctrl-btn.wasd-btn.filter-social.pressed {
+            background: var(--filter-social-dim); border-color: var(--filter-social); box-shadow: 0 0 10px rgba(255,184,0,0.3);
+        }
+
+        /* ═══════════════ HUD FILTER LEGEND ═══════════════ */
+        .filter-legend {
+            display: flex; align-items: center; gap: 14px;
+            font-family: var(--font-mono); font-size: 11px;
+            padding-left: 14px; border-left: 1px solid var(--border-dim);
+            margin-left: 4px;
+        }
+        .filter-legend-item {
+            display: flex; align-items: center; gap: 5px;
+            color: var(--text-dim); letter-spacing: 0.5px;
+            transition: color 0.2s, opacity 0.2s;
+            opacity: 0.5;
+        }
+        .filter-legend-item.active { opacity: 1; }
+        .filter-legend-item.active[data-legend="technical"] { color: var(--filter-tech); }
+        .filter-legend-item.active[data-legend="ethical"] { color: var(--filter-ethic); }
+        .filter-legend-item.active[data-legend="economic"] { color: var(--filter-econ); }
+        .filter-legend-item.active[data-legend="social"] { color: var(--filter-social); }
+        .filter-legend-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--text-dim); transition: all 0.2s;
+            box-shadow: none;
+        }
+        .filter-legend-item.active[data-legend="technical"] .filter-legend-dot {
+            background: var(--filter-tech); box-shadow: 0 0 6px rgba(0,240,255,0.4);
+        }
+        .filter-legend-item.active[data-legend="ethical"] .filter-legend-dot {
+            background: var(--filter-ethic); box-shadow: 0 0 6px rgba(191,90,242,0.4);
+        }
+        .filter-legend-item.active[data-legend="economic"] .filter-legend-dot {
+            background: var(--filter-econ); box-shadow: 0 0 6px rgba(57,255,20,0.4);
+        }
+        .filter-legend-item.active[data-legend="social"] .filter-legend-dot {
+            background: var(--filter-social); box-shadow: 0 0 6px rgba(255,184,0,0.4);
+        }
+        .filter-legend-combo {
+            display: none; align-items: center; gap: 5px;
+            color: var(--text-dim); letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
+        .filter-legend-combo.active { display: flex; }
+        .filter-legend-combo-swatch {
+            width: 16px; height: 8px; border-radius: 3px;
+            transition: all 0.3s;
+        }
+
         /* ═══════════════ RESPONSIVE ═══════════════ */
         @media (max-width: 900px) {
             .main-area { grid-template-columns: 1fr; }
-            .node-container { width: 260px; }
+            .node-container { width: 360px; }
         }
         @media (max-width: 600px) {
             .path-display { display: none; }
             .hud-controls { padding: 6px 10px; }
             .hud-info { padding: 6px 10px; }
             .filter-stack-display { display: none; }
-            .node-container { width: 200px; max-height: 35vh; bottom: 8px; left: 8px; }
-            .node-content { padding: 10px 12px; font-size: 11px; }
-            .node-title { font-size: 11px !important; letter-spacing: 2px; }
-            .node-description { font-size: 10px; }
+            .filter-legend { display: none; }
+            .node-container { width: 280px; max-height: 40vh; bottom: 10px; left: 10px; }
+            .node-content { padding: 14px 16px; font-size: 13px; }
+            .node-title { font-size: 14px !important; letter-spacing: 2px; }
+            .node-description { font-size: 12px; }
         }
     </style>
 </head>
@@ -853,10 +1015,10 @@
             <div class="control-cluster">
                 <div class="cluster-label wasd">FILTER STACK</div>
                 <div class="dpad">
-                    <button class="ctrl-btn wasd-btn" id="btnW" onclick="toggleFilter('technical')">W</button>
-                    <button class="ctrl-btn wasd-btn" id="btnA" onclick="toggleFilter('ethical')">A</button>
-                    <button class="ctrl-btn wasd-btn" id="btnS" onclick="toggleFilter('economic')">S</button>
-                    <button class="ctrl-btn wasd-btn" id="btnD" onclick="toggleFilter('social')">D</button>
+                    <button class="ctrl-btn wasd-btn filter-tech" id="btnW" onclick="toggleFilter('technical')">W</button>
+                    <button class="ctrl-btn wasd-btn filter-ethic" id="btnA" onclick="toggleFilter('ethical')">A</button>
+                    <button class="ctrl-btn wasd-btn filter-econ" id="btnS" onclick="toggleFilter('economic')">S</button>
+                    <button class="ctrl-btn wasd-btn filter-social" id="btnD" onclick="toggleFilter('social')">D</button>
                 </div>
             </div>
         </div>
@@ -871,6 +1033,7 @@
             <!-- Compass View (zoomed in — default) -->
             <div class="compass-canvas-wrap" id="compassViewWrap">
                 <canvas class="compass-view-canvas" id="compassCanvas"></canvas>
+                <div class="nav-sweep" id="navSweep"></div>
             </div>
             <!-- Tree View (branch overview) -->
             <div class="map-main-container hidden" id="treeViewWrap">
@@ -895,7 +1058,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM: Location, filters (no price) -->
+    <!-- BOTTOM: Location, filters, legend -->
     <div class="hud-info">
         <div class="location-display">
             <span id="locationDisplay">◇ ORIGIN</span>
@@ -912,6 +1075,13 @@
                 <span class="filter-stack-arrow" id="arrow2">→</span>
                 <div class="filter-chip" data-filter="social" id="fSocial" onclick="toggleFilter('social')">D:SOCIAL<span class="stack-order" id="soSocial"></span></div>
                 <div class="filter-stack-clear" id="filterClear" onclick="clearFilters()" title="Clear all filters (Q)">✕</div>
+            </div>
+            <div class="filter-legend" id="filterLegend">
+                <div class="filter-legend-item" data-legend="technical" id="legTech"><span class="filter-legend-dot"></span>Tech</div>
+                <div class="filter-legend-item" data-legend="ethical" id="legEthic"><span class="filter-legend-dot"></span>Ethic</div>
+                <div class="filter-legend-item" data-legend="economic" id="legEcon"><span class="filter-legend-dot"></span>Econ</div>
+                <div class="filter-legend-item" data-legend="social" id="legSocial"><span class="filter-legend-dot"></span>Social</div>
+                <div class="filter-legend-combo" id="legCombo"><span class="filter-legend-combo-swatch" id="legComboSwatch"></span><span id="legComboLabel">Combo</span></div>
             </div>
         </div>
     </div>
@@ -1562,14 +1732,55 @@ function enterCompass() {
 // NAVIGATION
 // ════════════════════════════════════════════
 
+// Filter color mapping
+const FILTER_COLORS = {
+    technical: { color: '#00f0ff', dim: 'rgba(0,240,255,0.10)', glow: 'rgba(0,240,255,' },
+    ethical:   { color: '#bf5af2', dim: 'rgba(191,90,242,0.10)', glow: 'rgba(191,90,242,' },
+    economic:  { color: '#39FF14', dim: 'rgba(57,255,20,0.10)',  glow: 'rgba(57,255,20,' },
+    social:    { color: '#ffb800', dim: 'rgba(255,184,0,0.10)',  glow: 'rgba(255,184,0,' },
+};
+
+function getCompositeColor(stack) {
+    if (stack.length === 0) return null;
+    if (stack.length === 1) return FILTER_COLORS[stack[0]].color;
+    // Blend RGB values of active filters
+    let r = 0, g = 0, b = 0;
+    const hexToRgb = hex => { const n = parseInt(hex.slice(1), 16); return [(n>>16)&255, (n>>8)&255, n&255]; };
+    stack.forEach(f => { const [cr,cg,cb] = hexToRgb(FILTER_COLORS[f].color); r += cr; g += cg; b += cb; });
+    r = Math.round(r / stack.length); g = Math.round(g / stack.length); b = Math.round(b / stack.length);
+    return `rgb(${r},${g},${b})`;
+}
+
+// Direction tracking for animations
+let lastNavDirection = null;
+const navSweep = document.getElementById('navSweep');
+
+function triggerNavAnimation(direction) {
+    lastNavDirection = direction;
+    // Sweep overlay on compass
+    navSweep.className = 'nav-sweep';
+    void navSweep.offsetWidth; // force reflow
+    const sweepMap = { deeper: 'sweep-up', broader: 'sweep-down', left: 'sweep-left', right: 'sweep-right' };
+    navSweep.classList.add(sweepMap[direction] || 'sweep-up');
+    setTimeout(() => { navSweep.className = 'nav-sweep'; }, 360);
+}
+
+function applySlideAnimation(direction) {
+    nodeContent.classList.remove('slide-up','slide-down','slide-left','slide-right');
+    void nodeContent.offsetWidth;
+    const slideMap = { deeper: 'slide-up', broader: 'slide-down', left: 'slide-right', right: 'slide-left' };
+    nodeContent.classList.add(slideMap[direction] || 'slide-up');
+    setTimeout(() => nodeContent.classList.remove('slide-up','slide-down','slide-left','slide-right'), 300);
+}
+
 function navDepth(direction) {
     if (!gameStarted) return;
     const node = tree[currentNode];
     if (direction === 'deeper') {
         const visibleChildren = getVisibleChildren(currentNode);
-        if (visibleChildren.length > 0) moveTo(visibleChildren[0]);
+        if (visibleChildren.length > 0) moveToDirectional(visibleChildren[0], 'deeper');
     } else if (direction === 'broader') {
-        if (node.parent) moveTo(node.parent);
+        if (node.parent) moveToDirectional(node.parent, 'broader');
     }
 }
 
@@ -1581,7 +1792,7 @@ function navBreadth(direction) {
     let newIdx = direction === 'left'
         ? (idx - 1 + siblings.length) % siblings.length
         : (idx + 1) % siblings.length;
-    moveTo(siblings[newIdx]);
+    moveToDirectional(siblings[newIdx], direction);
 }
 
 function getVisibleChildren(nodeId) {
@@ -1596,10 +1807,9 @@ function getVisibleSiblings(nodeId) {
     return tree[node.parent].children.filter(cid => !tree[cid].hidden);
 }
 
-function moveTo(targetId) {
+function moveToDirectional(targetId, direction) {
     if (!tree[targetId] || tree[targetId].hidden) return;
-    flash.classList.add('active');
-    setTimeout(() => flash.classList.remove('active'), 100);
+    triggerNavAnimation(direction);
     nodeContent.classList.add('transitioning');
     setTimeout(() => {
         pathHistory.push(targetId);
@@ -1608,13 +1818,17 @@ function moveTo(targetId) {
         checkReveals();
         render();
         nodeContent.classList.remove('transitioning');
-    }, 180);
+        applySlideAnimation(direction);
+    }, 160);
+}
+
+function moveTo(targetId) {
+    moveToDirectional(targetId, 'deeper');
 }
 
 function goBack() {
     if (pathHistory.length <= 1) return;
-    flash.classList.add('active');
-    setTimeout(() => flash.classList.remove('active'), 100);
+    triggerNavAnimation('broader');
     nodeContent.classList.add('transitioning');
     setTimeout(() => {
         pathHistory.pop();
@@ -1622,7 +1836,8 @@ function goBack() {
         checkReveals();
         render();
         nodeContent.classList.remove('transitioning');
-    }, 180);
+        applySlideAnimation('broader');
+    }, 160);
 }
 
 // ════════════════════════════════════════════
@@ -1744,15 +1959,13 @@ function renderFilterStack() {
         }
     });
 
-    // Show arrows between consecutive stack items
+    // Show arrows between consecutive stack items — colored by last active filter
     stackArrows.forEach((arrow, i) => {
-        const allFilters = ['technical', 'ethical', 'economic', 'social'];
-        // Find which chip positions have active items
-        let activePositions = [];
-        allFilters.forEach((name, pos) => {
-            if (filterStack.includes(name)) activePositions.push(pos);
-        });
         arrow.classList.toggle('visible', filterStack.length > 1 && i < 3);
+        if (filterStack.length > 1) {
+            const comboColor = getCompositeColor(filterStack);
+            arrow.style.color = comboColor;
+        }
     });
 
     filterClearBtn.classList.toggle('visible', filterStack.length > 0);
@@ -1761,6 +1974,31 @@ function renderFilterStack() {
     Object.entries(filterBtns).forEach(([name, btn]) => {
         btn.classList.toggle('stack-active', filterStack.includes(name));
     });
+
+    // Update filter legend
+    const legendItems = {
+        technical: document.getElementById('legTech'),
+        ethical: document.getElementById('legEthic'),
+        economic: document.getElementById('legEcon'),
+        social: document.getElementById('legSocial'),
+    };
+    filterNames.forEach(name => {
+        legendItems[name]?.classList.toggle('active', filterStack.includes(name));
+    });
+
+    // Combo legend swatch
+    const legCombo = document.getElementById('legCombo');
+    const legComboSwatch = document.getElementById('legComboSwatch');
+    const legComboLabel = document.getElementById('legComboLabel');
+    if (filterStack.length >= 2) {
+        legCombo.classList.add('active');
+        const comboColor = getCompositeColor(filterStack);
+        legComboSwatch.style.background = `linear-gradient(90deg, ${filterStack.map(f => FILTER_COLORS[f].color).join(', ')})`;
+        legComboLabel.textContent = filterStack.map(f => f.slice(0,4).toUpperCase()).join('×');
+        legComboLabel.style.color = comboColor;
+    } else {
+        legCombo.classList.remove('active');
+    }
 }
 
 function renderNode(node) {
@@ -1781,10 +2019,11 @@ function renderNode(node) {
         const filterLabels = { technical: 'TECHNICAL LENS', ethical: 'ETHICAL LENS', economic: 'ECONOMIC LENS', social: 'SOCIAL LENS' };
         filterStack.forEach((fname, i) => {
             if (node.filters[fname]) {
+                const fc = FILTER_COLORS[fname];
                 filterHTML += `
-                    <div class="filter-content" style="animation-delay: ${i * 0.1}s">
-                        <div class="filter-section-title">${i + 1}. ${filterLabels[fname]}</div>
-                        <div class="filter-text">${node.filters[fname]}</div>
+                    <div class="filter-content" style="animation-delay: ${i * 0.1}s; border-top-color: ${fc.color}22;">
+                        <div class="filter-section-title" style="color: ${fc.color}">${i + 1}. ${filterLabels[fname]}</div>
+                        <div class="filter-text" style="color: ${fc.color}; opacity: 0.85;">${node.filters[fname]}</div>
                     </div>`;
             }
         });
@@ -1795,12 +2034,15 @@ function renderNode(node) {
     const compositeText = getCompositeContent(node, filterStack);
     if (compositeText) {
         const comboLabel = filterStack.map(f => f.toUpperCase().slice(0, 4)).join(' × ');
+        const comboColor = getCompositeColor(filterStack);
+        const gradColors = filterStack.map(f => FILTER_COLORS[f].color).join(', ');
         compositeHTML = `
-            <div class="composite-content">
-                <div class="composite-label">
+            <div class="composite-content" style="border-color: ${comboColor}; background: ${comboColor}08;">
+                <div class="composite-label" style="color: ${comboColor}">
                     <span class="combo-icon">◈</span> COMPOSITE INSIGHT: ${comboLabel}
                 </div>
-                <div class="composite-text">${compositeText}</div>
+                <div class="composite-text" style="color: ${comboColor}; filter: brightness(1.3);">${compositeText}</div>
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg, transparent, ${gradColors}, transparent);"></div>
             </div>`;
     }
 
@@ -1927,7 +2169,7 @@ function drawCompassView() {
     const node = tree[currentNode];
     const cx = w / 2;
     const cy = h / 2;
-    const radius = Math.min(w, h) * 0.35;
+    const radius = Math.min(w, h) * 0.38;
     const nodeHex = node.hex || '#00f0ff';
 
     // ── Background grid ──
@@ -1938,13 +2180,46 @@ function drawCompassView() {
     for (let y = 0; y < h; y += gs) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
 
     // ── Compass rings ──
-    [0.9, 0.65, 0.35].forEach((s, i) => {
+    [0.92, 0.68, 0.38].forEach((s, i) => {
         ctx.beginPath();
         ctx.arc(cx, cy, radius * s, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(0, 240, 255, ${0.04 + i * 0.02})`;
         ctx.lineWidth = 1;
         ctx.stroke();
     });
+
+    // ── Filter-colored aura ring ──
+    if (filterStack.length > 0) {
+        const comboColor = getCompositeColor(filterStack);
+        // Outer aura
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 0.98, 0, Math.PI * 2);
+        ctx.strokeStyle = comboColor;
+        ctx.globalAlpha = 0.2 + filterStack.length * 0.06;
+        ctx.lineWidth = (2 + filterStack.length) * dpr;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        // Pulsing glow
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 0.98, 0, Math.PI * 2);
+        const auraGlow = ctx.createRadialGradient(cx, cy, radius * 0.9, cx, cy, radius * 1.1);
+        auraGlow.addColorStop(0, 'transparent');
+        auraGlow.addColorStop(0.5, comboColor.replace(')', ',0.06)').replace('rgb', 'rgba'));
+        auraGlow.addColorStop(1, 'transparent');
+        ctx.fillStyle = auraGlow;
+        ctx.fill();
+        // Segment arcs per-filter (each gets a colored arc section)
+        const arcPer = (Math.PI * 2) / filterStack.length;
+        filterStack.forEach((fname, i) => {
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius * 1.02, -Math.PI/2 + i * arcPer, -Math.PI/2 + (i+1) * arcPer);
+            ctx.strokeStyle = FILTER_COLORS[fname].color;
+            ctx.globalAlpha = 0.5;
+            ctx.lineWidth = 3 * dpr;
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+        });
+    }
 
     // ── Cross-hair lines ──
     ctx.strokeStyle = 'rgba(0, 240, 255, 0.06)';
@@ -1955,15 +2230,15 @@ function drawCompassView() {
     ctx.setLineDash([]);
 
     // ── Direction labels (faint) ──
-    ctx.font = `${7 * dpr}px "Orbitron", monospace`;
+    ctx.font = `${9 * dpr}px "Orbitron", monospace`;
     ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(0, 240, 255, 0.15)';
-    ctx.fillText('▲ DEEPER', cx, cy - radius * 1.0 - 14 * dpr);
-    ctx.fillText('▼ BROADER', cx, cy + radius * 1.0 + 22 * dpr);
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.2)';
+    ctx.fillText('▲ DEEPER', cx, cy - radius * 1.0 - 16 * dpr);
+    ctx.fillText('▼ BROADER', cx, cy + radius * 1.0 + 26 * dpr);
     ctx.textAlign = 'right';
-    ctx.fillText('◀ LEFT', cx - radius * 1.0 - 10 * dpr, cy + 3 * dpr);
+    ctx.fillText('◀ LEFT', cx - radius * 1.0 - 12 * dpr, cy + 3 * dpr);
     ctx.textAlign = 'left';
-    ctx.fillText('RIGHT ▶', cx + radius * 1.0 + 10 * dpr, cy + 3 * dpr);
+    ctx.fillText('RIGHT ▶', cx + radius * 1.0 + 12 * dpr, cy + 3 * dpr);
 
     // ── Get neighbors ──
     const visibleChildren = getVisibleChildren(currentNode);
@@ -1989,13 +2264,13 @@ function drawCompassView() {
         if (!targetNode) {
             // Empty slot — show dim placeholder
             ctx.beginPath();
-            ctx.arc(x, y, 14 * dpr, 0, Math.PI * 2);
+            ctx.arc(x, y, 18 * dpr, 0, Math.PI * 2);
             ctx.strokeStyle = 'rgba(0,240,255,0.06)';
             ctx.lineWidth = 1;
             ctx.setLineDash([3 * dpr, 3 * dpr]);
             ctx.stroke();
             ctx.setLineDash([]);
-            ctx.font = `${7 * dpr}px "Share Tech Mono", monospace`;
+            ctx.font = `${9 * dpr}px "Share Tech Mono", monospace`;
             ctx.textAlign = 'center';
             ctx.fillStyle = 'rgba(0,240,255,0.1)';
             ctx.fillText('—', x, y + 3 * dpr);
@@ -2006,7 +2281,7 @@ function drawCompassView() {
         const cm = colorMap[nh] || colorMap['#00f0ff'];
         const explored = exploredNodes.has(targetNode.id);
         const isRevealed = !!targetNode.revealCondition;
-        const nr = 18 * dpr;
+        const nr = 24 * dpr;
 
         // Connection line from center
         ctx.beginPath();
@@ -2036,18 +2311,18 @@ function drawCompassView() {
         ctx.stroke();
 
         // Label
-        ctx.font = `bold ${9 * dpr}px "Share Tech Mono", monospace`;
+        ctx.font = `bold ${12 * dpr}px "Share Tech Mono", monospace`;
         ctx.textAlign = 'center';
         ctx.fillStyle = explored ? nh : (isRevealed ? '#ffb800' : '#5a6a7e');
         const label = targetNode.title.length > 14 ? targetNode.title.substring(0, 12) + '..' : targetNode.title;
-        ctx.fillText(label, x, y + nr + 14 * dpr);
+        ctx.fillText(label, x, y + nr + 16 * dpr);
 
         // Subtitle
         if (targetNode.subtitle) {
-            ctx.font = `${6.5 * dpr}px "Share Tech Mono", monospace`;
+            ctx.font = `${8.5 * dpr}px "Share Tech Mono", monospace`;
             ctx.fillStyle = explored ? (gc + '0.5)') : 'rgba(0,240,255,0.2)';
             const sub = targetNode.subtitle.length > 20 ? targetNode.subtitle.substring(0, 18) + '..' : targetNode.subtitle;
-            ctx.fillText(sub, x, y + nr + 24 * dpr);
+            ctx.fillText(sub, x, y + nr + 28 * dpr);
         }
 
         // Explored indicator
@@ -2062,7 +2337,7 @@ function drawCompassView() {
     }
 
     // ── Draw neighbor nodes at cardinal positions ──
-    const dist = radius * 0.72;
+    const dist = radius * 0.75;
     drawNeighborNode(cx, cy - dist, northNode, 'DEEPER');
     drawNeighborNode(cx, cy + dist, southNode, 'BROADER');
     drawNeighborNode(cx - dist, cy, leftNode, 'LEFT');
@@ -2070,13 +2345,13 @@ function drawCompassView() {
 
     // ── Draw extra children fanning near north ──
     if (extraChildren.length > 0) {
-        const fanSpread = Math.min(radius * 0.5, extraChildren.length * 30 * dpr);
+        const fanSpread = Math.min(radius * 0.5, extraChildren.length * 35 * dpr);
         extraChildren.forEach((child, i) => {
             const angle = -Math.PI / 2 + ((i + 1) / (extraChildren.length + 1) - 0.5) * 0.8;
             const fx = cx + Math.cos(angle) * dist * 0.95 + (i + 1) * (fanSpread / (extraChildren.length + 1)) - fanSpread / 2;
             const fy = cy - dist * 0.65 - 15 * dpr;
             // Mini nodes
-            const miniR = 10 * dpr;
+            const miniR = 13 * dpr;
             const explored = exploredNodes.has(child.id);
             const ch = child.hex || '#00f0ff';
             const ccm = colorMap[ch] || colorMap['#00f0ff'];
@@ -2097,19 +2372,20 @@ function drawCompassView() {
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            ctx.font = `${7 * dpr}px "Share Tech Mono", monospace`;
+            ctx.font = `${9 * dpr}px "Share Tech Mono", monospace`;
             ctx.textAlign = 'center';
             ctx.fillStyle = explored ? ch : '#3d4d60';
             const ml = child.title.length > 10 ? child.title.substring(0, 8) + '..' : child.title;
-            ctx.fillText(ml, fx, fy + miniR + 10 * dpr);
+            ctx.fillText(ml, fx, fy + miniR + 12 * dpr);
         });
     }
 
     // ── Center node (current) ──
-    const centerR = 28 * dpr;
+    const centerR = 36 * dpr;
     const cm = colorMap[nodeHex] || colorMap['#00f0ff'];
 
-    // Big glow
+    // Big glow — tinted by filter combo if active
+    const glowBase = filterStack.length > 0 ? getCompositeColor(filterStack) : null;
     ctx.beginPath();
     ctx.arc(cx, cy, centerR * 3.5, 0, Math.PI * 2);
     const cGlow = ctx.createRadialGradient(cx, cy, centerR, cx, cy, centerR * 3.5);
@@ -2119,12 +2395,36 @@ function drawCompassView() {
     ctx.fillStyle = cGlow;
     ctx.fill();
 
+    // Filter indicator orbit dots around center
+    if (filterStack.length > 0) {
+        const orbitR = centerR * 1.6;
+        filterStack.forEach((fname, i) => {
+            const angle = -Math.PI/2 + (i / filterStack.length) * Math.PI * 2;
+            const dx = cx + Math.cos(angle) * orbitR;
+            const dy = cy + Math.sin(angle) * orbitR;
+            ctx.beginPath();
+            ctx.arc(dx, dy, 5 * dpr, 0, Math.PI * 2);
+            ctx.fillStyle = FILTER_COLORS[fname].color;
+            ctx.globalAlpha = 0.7;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            // Small glow
+            ctx.beginPath();
+            ctx.arc(dx, dy, 10 * dpr, 0, Math.PI * 2);
+            const dGlow = ctx.createRadialGradient(dx, dy, 3*dpr, dx, dy, 10*dpr);
+            dGlow.addColorStop(0, FILTER_COLORS[fname].glow + '0.3)');
+            dGlow.addColorStop(1, FILTER_COLORS[fname].glow + '0)');
+            ctx.fillStyle = dGlow;
+            ctx.fill();
+        });
+    }
+
     // Node body
     ctx.beginPath();
     ctx.arc(cx, cy, centerR, 0, Math.PI * 2);
     ctx.fillStyle = cm.fill;
     ctx.fill();
-    ctx.strokeStyle = nodeHex;
+    ctx.strokeStyle = filterStack.length > 0 ? getCompositeColor(filterStack) : nodeHex;
     ctx.lineWidth = 2.5 * dpr;
     ctx.stroke();
 
@@ -2137,38 +2437,50 @@ function drawCompassView() {
     ctx.globalAlpha = 1;
 
     // Center label
-    ctx.font = `bold ${11 * dpr}px "Orbitron", monospace`;
+    ctx.font = `bold ${14 * dpr}px "Orbitron", monospace`;
     ctx.textAlign = 'center';
     ctx.fillStyle = nodeHex;
-    ctx.fillText(node.title, cx, cy + centerR + 18 * dpr);
+    ctx.fillText(node.title, cx, cy + centerR + 22 * dpr);
 
     // Subtitle
     if (node.subtitle) {
-        ctx.font = `${7 * dpr}px "Share Tech Mono", monospace`;
+        ctx.font = `${9 * dpr}px "Share Tech Mono", monospace`;
         ctx.fillStyle = cm.glow + '0.6)';
-        ctx.fillText(node.subtitle.toUpperCase(), cx, cy + centerR + 30 * dpr);
+        ctx.fillText(node.subtitle.toUpperCase(), cx, cy + centerR + 36 * dpr);
     }
 
     // Depth indicator
-    ctx.font = `${7 * dpr}px "Orbitron", monospace`;
+    ctx.font = `${9 * dpr}px "Orbitron", monospace`;
     ctx.fillStyle = 'rgba(0,240,255,0.2)';
-    ctx.fillText(`DEPTH ${node.depth}`, cx, cy + centerR + 42 * dpr);
+    ctx.fillText(`DEPTH ${node.depth}`, cx, cy + centerR + 50 * dpr);
 
     // ── Hidden path hints ──
     const hiddenCount = countHiddenNearby();
     if (hiddenCount > 0) {
-        ctx.font = `${8 * dpr}px "Share Tech Mono", monospace`;
-        ctx.fillStyle = 'rgba(255,184,0,0.4)';
-        ctx.fillText(`◇ ${hiddenCount} hidden path${hiddenCount > 1 ? 's' : ''} nearby — try filter combos`, cx, h - 20 * dpr);
+        ctx.font = `${10 * dpr}px "Share Tech Mono", monospace`;
+        ctx.fillStyle = 'rgba(255,184,0,0.45)';
+        ctx.fillText(`◇ ${hiddenCount} hidden path${hiddenCount > 1 ? 's' : ''} nearby — try filter combos`, cx, h - 24 * dpr);
     }
 
     // ── Explored count ──
     const visibleNodes = Object.values(tree).filter(n => !n.hidden);
     const hiddenTotal = Object.values(tree).filter(n => n.hidden).length;
-    ctx.font = `${7 * dpr}px "Share Tech Mono", monospace`;
+    ctx.font = `${9 * dpr}px "Share Tech Mono", monospace`;
     ctx.textAlign = 'left';
-    ctx.fillStyle = 'rgba(0,240,255,0.15)';
-    ctx.fillText(`EXPLORED: ${exploredNodes.size} / ${visibleNodes.length}${hiddenTotal > 0 ? ' + ???' : ''}`, 12 * dpr, h - 12 * dpr);
+    ctx.fillStyle = 'rgba(0,240,255,0.2)';
+    ctx.fillText(`EXPLORED: ${exploredNodes.size} / ${visibleNodes.length}${hiddenTotal > 0 ? ' + ???' : ''}`, 14 * dpr, h - 14 * dpr);
+
+    // ── Active filters indicator (top-right) ──
+    if (filterStack.length > 0) {
+        ctx.textAlign = 'right';
+        ctx.font = `bold ${9 * dpr}px "Orbitron", monospace`;
+        filterStack.forEach((fname, i) => {
+            ctx.fillStyle = FILTER_COLORS[fname].color;
+            ctx.globalAlpha = 0.6;
+            ctx.fillText(fname.toUpperCase().slice(0,4), w - 14 * dpr, (18 + i * 16) * dpr);
+        });
+        ctx.globalAlpha = 1;
+    }
 }
 
 // ════════════════════════════════════════════
@@ -2210,7 +2522,7 @@ function drawMap() {
 
     const positions = {};
     const padding = 50 * dpr;
-    const nodeRadius = 12 * dpr;
+    const nodeRadius = 16 * dpr;
 
     // Count max depth
     let maxDepth = 0;
@@ -2380,29 +2692,29 @@ function drawMap() {
         }
 
         // ── Labels ──
-        const fontSize = isCurrent ? 10 : (isExplored ? 9 : 8);
+        const fontSize = isCurrent ? 13 : (isExplored ? 11 : 10);
         ctx.font = `bold ${fontSize * dpr}px "Share Tech Mono", monospace`;
         ctx.textAlign = 'center';
         ctx.fillStyle = isCurrent ? strokeColor : (isExplored ? strokeColor : (isRevealed ? '#ffb800' : '#3d4d60'));
         const label = node.title.length > 16 ? node.title.substring(0, 14) + '..' : node.title;
-        ctx.fillText(label, pos.x, pos.y + r + 14 * dpr);
+        ctx.fillText(label, pos.x, pos.y + r + 18 * dpr);
 
         // Depth / subtitle for current node
         if (isCurrent) {
-            ctx.font = `${7 * dpr}px "Share Tech Mono", monospace`;
+            ctx.font = `${9 * dpr}px "Share Tech Mono", monospace`;
             ctx.fillStyle = 'rgba(0,240,255,0.5)';
             const sub = node.subtitle || '';
-            if (sub) ctx.fillText(sub.toUpperCase(), pos.x, pos.y + r + 24 * dpr);
+            if (sub) ctx.fillText(sub.toUpperCase(), pos.x, pos.y + r + 30 * dpr);
         }
     });
 
     // ── Draw depth level indicators on left side ──
-    ctx.font = `${7 * dpr}px "Orbitron", monospace`;
+    ctx.font = `${9 * dpr}px "Orbitron", monospace`;
     ctx.textAlign = 'left';
-    ctx.fillStyle = 'rgba(0,240,255,0.15)';
+    ctx.fillStyle = 'rgba(0,240,255,0.18)';
     for (let d = 0; d <= maxDepth; d++) {
         const y = padding + levelGap * d + nodeRadius * 2;
-        ctx.fillText(`D:${d}`, 8 * dpr, y);
+        ctx.fillText(`D:${d}`, 10 * dpr, y);
         ctx.beginPath();
         ctx.moveTo(0, y - 4 * dpr);
         ctx.lineTo(w, y - 4 * dpr);
