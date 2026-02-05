@@ -155,6 +155,72 @@
         .tutorial-progress { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
         .tutorial-progress span { color: var(--qi-cyan); }
 
+        /* Tutorial phases */
+        .tutorial-phase {
+            transition: opacity 0.4s, transform 0.4s;
+        }
+        .tutorial-phase.phase-hidden {
+            display: none;
+        }
+        .tutorial-phase.phase-complete {
+            opacity: 0.3;
+            transform: scale(0.9);
+            pointer-events: none;
+            display: none;
+        }
+        .key-hint.wasd-key {
+            color: var(--text-dim);
+            border-color: var(--border-dim);
+        }
+        .key-hint.wasd-key.active {
+            border-color: var(--qi-amber);
+            color: var(--qi-amber);
+            box-shadow: 0 0 12px rgba(255,184,0,0.4);
+            background: var(--qi-amber-dim);
+        }
+        .tutorial-phase-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .phase-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--qi-cyan);
+            box-shadow: 0 0 8px var(--qi-cyan-glow);
+            transition: all 0.3s;
+        }
+        .phase-dot.dim {
+            background: var(--text-dim);
+            box-shadow: none;
+        }
+        .phase-dot.complete {
+            background: var(--qi-green);
+            box-shadow: 0 0 8px rgba(57,255,20,0.4);
+        }
+        .phase-dot.active-phase {
+            background: var(--qi-amber);
+            box-shadow: 0 0 8px rgba(255,184,0,0.4);
+        }
+        .phase-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--qi-cyan);
+            margin-right: 6px;
+        }
+        .phase-label.dim {
+            color: var(--text-dim);
+        }
+        .phase-label.complete {
+            color: var(--qi-green);
+        }
+        .phase-label.active-phase {
+            color: var(--qi-amber);
+        }
+
         /* Briefing info */
         .briefing-info {
             background: var(--bg-panel);
@@ -838,16 +904,39 @@
     </div>
 
     <div class="tutorial-prompt">
-        <p class="tutorial-text">PRESS EACH DIRECTION TO CALIBRATE</p>
-        <div class="tutorial-keys">
-            <div class="key-hint north" id="keyUp">↑</div>
+        <!-- Phase 1: Arrow keys -->
+        <div class="tutorial-phase" id="tutPhase1">
+            <p class="tutorial-text">PHASE 1 — NAVIGATE ↑↓←→</p>
+            <div class="tutorial-keys">
+                <div class="key-hint north" id="keyUp">↑</div>
+            </div>
+            <div class="tutorial-keys">
+                <div class="key-hint west" id="keyLeft">←</div>
+                <div class="key-hint south" id="keyDown">↓</div>
+                <div class="key-hint east" id="keyRight">→</div>
+            </div>
+            <p class="tutorial-progress"><span id="tutorialCount">0</span> / 4 directions</p>
         </div>
-        <div class="tutorial-keys">
-            <div class="key-hint west" id="keyLeft">←</div>
-            <div class="key-hint south" id="keyDown">↓</div>
-            <div class="key-hint east" id="keyRight">→</div>
+        <!-- Phase 2: WASD filters -->
+        <div class="tutorial-phase phase-hidden" id="tutPhase2">
+            <p class="tutorial-text" style="color:var(--qi-amber)">PHASE 2 — FILTER W A S D</p>
+            <div class="tutorial-keys">
+                <div class="key-hint wasd-key" id="keyW">W</div>
+            </div>
+            <div class="tutorial-keys">
+                <div class="key-hint wasd-key" id="keyA">A</div>
+                <div class="key-hint wasd-key" id="keyS">S</div>
+                <div class="key-hint wasd-key" id="keyD">D</div>
+            </div>
+            <p class="tutorial-progress"><span id="tutorialCount2">0</span> / 4 lenses</p>
         </div>
-        <p class="tutorial-progress"><span id="tutorialCount">0</span> / 4 calibrated</p>
+        <!-- Combined status -->
+        <div class="tutorial-phase-status" id="phaseStatus">
+            <span class="phase-dot" id="phaseDot1"></span>
+            <span class="phase-label">NAVIGATE</span>
+            <span class="phase-dot dim" id="phaseDot2"></span>
+            <span class="phase-label dim" id="phaseLabel2">FILTER</span>
+        </div>
     </div>
 
     <div class="briefing-info">
@@ -874,7 +963,7 @@
     </div>
 
     <button class="briefing-enter" id="enterBtn" onclick="enterCompass()">BEGIN EXPLORATION</button>
-    <p class="briefing-enter-hint" id="enterHint">Complete calibration to unlock</p>
+    <p class="briefing-enter-hint" id="enterHint">Complete both calibration phases to unlock</p>
 </div>
 
 <!-- ═══════════════ MAIN EXPLORATION ═══════════════ -->
@@ -1326,15 +1415,27 @@ const filterBtns = {
 // TUTORIAL
 // ════════════════════════════════════════════
 let tutorialComplete = false;
+let tutorialPhase = 1; // 1 = arrows, 2 = WASD
 const testedDirections = { north: false, east: false, south: false, west: false };
+const testedFilters = { w: false, a: false, s: false, d: false };
 
 const keyUp = document.getElementById('keyUp');
 const keyDown = document.getElementById('keyDown');
 const keyLeft = document.getElementById('keyLeft');
 const keyRight = document.getElementById('keyRight');
+const keyW = document.getElementById('keyW');
+const keyA = document.getElementById('keyA');
+const keyS = document.getElementById('keyS');
+const keyD = document.getElementById('keyD');
 const tutorialCount = document.getElementById('tutorialCount');
+const tutorialCount2 = document.getElementById('tutorialCount2');
 const enterBtn = document.getElementById('enterBtn');
 const enterHint = document.getElementById('enterHint');
+const tutPhase1 = document.getElementById('tutPhase1');
+const tutPhase2 = document.getElementById('tutPhase2');
+const phaseDot1 = document.getElementById('phaseDot1');
+const phaseDot2 = document.getElementById('phaseDot2');
+const phaseLabel2 = document.getElementById('phaseLabel2');
 
 const heroCompass = document.getElementById('heroCompass');
 const highlights = {
@@ -1354,13 +1455,13 @@ const keyHints = { north: keyUp, east: keyRight, south: keyDown, west: keyLeft }
 function highlightDirection(dir) {
     Object.values(highlights).forEach(h => h.classList.remove('active'));
     Object.values(arrows).forEach(a => a.classList.remove('pulse'));
-    Object.values(keyHints).forEach(k => k.classList.remove('active'));
-
+    // Don't clear persistent active states on arrow keys
+    
     highlights[dir]?.classList.add('active');
     arrows[dir]?.classList.add('pulse');
     keyHints[dir]?.classList.add('active');
 
-    if (!testedDirections[dir]) { testedDirections[dir] = true; updateTutorial(); }
+    if (!testedDirections[dir]) { testedDirections[dir] = true; updateTutorialPhase1(); }
 
     setTimeout(() => {
         highlights[dir]?.classList.remove('active');
@@ -1368,14 +1469,51 @@ function highlightDirection(dir) {
     }, 300);
 }
 
-function updateTutorial() {
+function highlightFilter(key) {
+    const filterKeyMap = { w: keyW, a: keyA, s: keyS, d: keyD };
+    const filterDirMap = { w: 'north', a: 'west', s: 'south', d: 'east' };
+    
+    // Flash the compass direction too for visual feedback
+    const dir = filterDirMap[key];
+    if (highlights[dir]) {
+        highlights[dir].classList.add('active');
+        setTimeout(() => highlights[dir].classList.remove('active'), 300);
+    }
+    
+    filterKeyMap[key]?.classList.add('active');
+    if (!testedFilters[key]) { testedFilters[key] = true; updateTutorialPhase2(); }
+}
+
+function updateTutorialPhase1() {
     const count = Object.values(testedDirections).filter(v => v).length;
     tutorialCount.textContent = count;
     Object.entries(testedDirections).forEach(([dir, tested]) => {
         if (tested) keyHints[dir].classList.add('active');
     });
+    if (count >= 4 && tutorialPhase === 1) {
+        // Phase 1 complete → transition to phase 2
+        tutorialPhase = 2;
+        setTimeout(() => {
+            tutPhase1.classList.add('phase-complete');
+            tutPhase2.classList.remove('phase-hidden');
+            phaseDot1.classList.add('complete');
+            phaseDot2.classList.remove('dim');
+            phaseDot2.classList.add('active-phase');
+            phaseLabel2.classList.remove('dim');
+            phaseLabel2.classList.add('active-phase');
+        }, 400);
+    }
+}
+
+function updateTutorialPhase2() {
+    const count = Object.values(testedFilters).filter(v => v).length;
+    tutorialCount2.textContent = count;
     if (count >= 4) {
         tutorialComplete = true;
+        phaseDot2.classList.remove('active-phase');
+        phaseDot2.classList.add('complete');
+        phaseLabel2.classList.remove('active-phase');
+        phaseLabel2.classList.add('complete');
         enterBtn.classList.add('ready');
         enterHint.textContent = 'Press ENTER or click to begin';
     }
@@ -1786,10 +1924,18 @@ window.addEventListener('resize', () => {
 document.addEventListener('keydown', (e) => {
     // Tutorial mode
     if (!gameStarted) {
+        // Arrow keys (phase 1)
         if (e.key === 'ArrowUp')    { e.preventDefault(); highlightDirection('north'); }
         if (e.key === 'ArrowRight') { e.preventDefault(); highlightDirection('east'); }
         if (e.key === 'ArrowDown')  { e.preventDefault(); highlightDirection('south'); }
         if (e.key === 'ArrowLeft')  { e.preventDefault(); highlightDirection('west'); }
+        // WASD keys (phase 2)
+        if (tutorialPhase >= 2) {
+            if (e.key === 'w' || e.key === 'W') { e.preventDefault(); highlightFilter('w'); }
+            if (e.key === 'a' || e.key === 'A') { e.preventDefault(); highlightFilter('a'); }
+            if (e.key === 's' || e.key === 'S') { e.preventDefault(); highlightFilter('s'); }
+            if (e.key === 'd' || e.key === 'D') { e.preventDefault(); highlightFilter('d'); }
+        }
         if ((e.key === 'Enter' || e.key === ' ') && tutorialComplete) { e.preventDefault(); enterCompass(); }
         return;
     }
