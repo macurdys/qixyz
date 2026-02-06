@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Biggest Fish — Qi.xyz</title>
+    <meta name="description" content="Every empire, every corporation, every blockchain — all are downstream of the same source: solar energy. Why the sun is the only monopoly that matters.">
+    <meta property="og:title" content="The Biggest Fish — Qi.xyz">
+    <meta property="og:description" content="Every empire, corporation, and blockchain is downstream of the same source: solar energy. Why the sun is the only monopoly that matters.">
+    <meta property="og:image" content="solar-fish.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --qi-solar: #FFD700;
+            --qi-solar-dim: rgba(255, 215, 0, 0.12);
+            --qi-solar-glow: rgba(255, 215, 0, 0.4);
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 18px; line-height: 1.75; overflow-x: hidden; }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-cyan-glow); }
+        .nav-back { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s, text-shadow 0.3s; display: flex; align-items: center; gap: 8px; }
+        .nav-back:hover { color: var(--qi-cyan); text-shadow: 0 0 10px var(--qi-cyan-glow); }
+
+        /* ===== HERO IMAGE ===== */
+        .blog-hero {
+            position: relative;
+            width: 100%;
+            min-height: 50vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+        .blog-hero img {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5) saturate(0.8);
+        }
+        .blog-hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(6,8,13,0.2) 0%, rgba(6,8,13,0.85) 80%, var(--bg-deep) 100%);
+        }
+        .blog-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 40px 24px 48px;
+            text-align: center;
+        }
+        .blog-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--qi-solar);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 4px 12px;
+            margin-bottom: 20px;
+            background: rgba(255, 215, 0, 0.08);
+        }
+        .blog-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        .blog-hero h1 .highlight { color: var(--qi-solar); text-shadow: 0 0 40px var(--qi-solar-glow); }
+        .blog-date {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+        .blog-date span { color: var(--qi-cyan); }
+
+        /* ===== ARTICLE BODY ===== */
+        .blog-body {
+            position: relative;
+            z-index: 1;
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 60px 24px 120px;
+        }
+
+        .blog-body h2 {
+            font-family: var(--font-display);
+            font-size: clamp(18px, 3vw, 24px);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--qi-solar);
+            margin: 56px 0 20px;
+            padding-top: 24px;
+            border-top: 1px solid var(--qi-solar-dim);
+        }
+        .blog-body h2:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+
+        .blog-body h3 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--qi-cyan);
+            margin: 40px 0 16px;
+        }
+
+        .blog-body p {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.85;
+            margin-bottom: 24px;
+        }
+
+        .blog-body p strong { color: var(--text-primary); font-weight: 600; }
+        .blog-body p em { color: var(--qi-cyan); font-style: italic; }
+
+        .blog-body a {
+            color: var(--qi-cyan);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+            transition: border-color 0.3s, text-shadow 0.3s;
+        }
+        .blog-body a:hover {
+            border-color: var(--qi-cyan);
+            text-shadow: 0 0 8px var(--qi-cyan-glow);
+        }
+
+        /* Callout / Blockquote */
+        .blog-body blockquote {
+            border-left: 2px solid var(--qi-solar);
+            margin: 40px 0;
+            padding: 24px 28px;
+            background: rgba(255, 215, 0, 0.04);
+            font-family: var(--font-body);
+            font-size: 19px;
+            font-weight: 300;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        .blog-body blockquote cite {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-top: 12px;
+            font-style: normal;
+        }
+
+        /* Data / Key Figure Boxes */
+        .key-figure {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin: 32px 0;
+            padding: 24px;
+            border: 1px solid var(--border-dim);
+            background: var(--bg-card);
+        }
+        .key-figure .number {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--qi-solar);
+            white-space: nowrap;
+        }
+        .key-figure .label {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+
+        /* Section divider */
+        .section-rule {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--qi-solar), transparent);
+            margin: 64px 0;
+            opacity: 0.3;
+        }
+
+        /* ===== BOTTOM CTA ===== */
+        .blog-footer-cta {
+            position: relative; z-index: 1;
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+            text-align: center;
+        }
+        .blog-footer-cta .cta-box {
+            border: 1px solid var(--border-dim);
+            background: var(--bg-card);
+            padding: 48px 32px;
+        }
+        .blog-footer-cta h3 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--qi-cyan);
+            margin-bottom: 12px;
+        }
+        .blog-footer-cta p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+        .btn { font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; padding: 14px 32px; transition: all 0.3s; cursor: pointer; display: inline-block; }
+        .btn-primary { background: var(--qi-cyan); color: var(--bg-deep); border: 1px solid var(--qi-cyan); box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.1); }
+        .btn-primary:hover { box-shadow: 0 0 40px rgba(0, 240, 255, 0.4), inset 0 0 30px rgba(0, 240, 255, 0.2); transform: translateY(-2px); }
+        .btn-ghost { background: transparent; color: var(--qi-cyan); border: 1px solid var(--border-bright); }
+        .btn-ghost:hover { background: var(--qi-cyan-dim); border-color: var(--qi-cyan); }
+
+        /* ===== FOOTER ===== */
+        footer { position: relative; z-index: 1; border-top: 1px solid var(--border-dim); padding: 40px; display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; }
+        .footer-logo { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--qi-cyan); letter-spacing: 4px; text-shadow: 0 0 10px var(--qi-cyan-glow); }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--qi-cyan); }
+        .footer-copy { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .blog-hero { min-height: 40vh; }
+            .blog-body { padding: 40px 20px 80px; }
+            .key-figure { flex-direction: column; gap: 8px; }
+            footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="index.html" class="nav-logo">QI</a>
+        <a href="index.html" class="nav-back">‹ Back to Station</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="blog-hero">
+        <img src="solar-fish.png" alt="Big fish eats little fish — Tesla absorbs SpaceX absorbs xAI" />
+        <div class="blog-hero-overlay"></div>
+        <div class="blog-hero-content">
+            <div class="blog-tag">☀ Solar Thesis</div>
+            <h1>The <span class="highlight">Biggest Fish</span> Is the Sun</h1>
+            <div class="blog-date">Qi.xyz — <span>February 2026</span></div>
+        </div>
+    </section>
+
+    <!-- ARTICLE -->
+    <article class="blog-body">
+
+        <h2>Corporate Food Chains Are Energy Food Chains</h2>
+
+        <p>
+            A drawing has been making the rounds: a small fish labeled <strong>xAI</strong> being swallowed by a larger fish labeled <strong>SpaceX</strong>, itself disappearing into the gaping mouth of the biggest fish — <strong>Tesla</strong>. It's a cartoon about corporate consolidation, market cap hierarchy, the usual predator-prey logic of big business. But look closer and you'll see a much older structure hiding inside the joke.
+        </p>
+
+        <p>
+            Every one of those fish runs on energy. xAI's GPU clusters consume megawatts. SpaceX converts kerosene and methane into orbit. Tesla manufactures machines that convert stored electrochemical energy into motion. The cartoon is a food chain — and all food chains terminate at the same place.
+        </p>
+
+        <blockquote>
+            "The sun is the ultimate energy monopoly. Every other power source on Earth — fossil fuels, wind, hydro, biomass — is just solar energy with extra steps."
+        </blockquote>
+
+        <h2>Every Joule Has a Solar Origin Story</h2>
+
+        <p>
+            This is not metaphor. It is thermodynamics. Coal is compressed ancient sunlight — photosynthesis locked into carbon bonds 300 million years ago and pressure-cooked underground. Oil is the same: dead marine organisms that fed on solar-driven plankton, concentrated over geological time. Natural gas, peat, biomass — all stored solar flux, accessed on different timescales.
+        </p>
+
+        <p>
+            Wind is a solar derivative. Differential heating of the Earth's surface creates pressure gradients that move air. Hydroelectric power is solar energy that evaporated water, lifted it to altitude, and let gravity return it through turbines. Even the food you eat is a solar energy transduction chain — photons → glucose → ATP → thought.
+        </p>
+
+        <div class="key-figure">
+            <div class="number">173,000 TW</div>
+            <div class="label">Total solar power intercepted by Earth — roughly 10,000× current global human energy consumption</div>
+        </div>
+
+        <p>
+            Nuclear fission and geothermal are the only significant exceptions — energy from stellar nucleosynthesis and planetary formation respectively. But on the surface economy, the economy humans actually live inside, <strong>the sun is the sole upstream supplier</strong>.
+        </p>
+
+        <h2>The Thermodynamic Stack</h2>
+
+        <p>
+            Thermoeconomics gives us a framework for seeing this clearly. Every economic actor is an <em>energy transducer</em> — an entity that takes in low-entropy energy, extracts useful work, and exports high-entropy waste heat. Corporations, blockchains, governments, organisms — they're all the same thing at the thermodynamic level. They differ only in what kind of work they extract and on what timescale.
+        </p>
+
+        <p>
+            The cartoon's food chain (xAI → SpaceX → Tesla) maps directly onto a <strong>free energy cascade</strong>. Each fish absorbs the useful work-product of the fish below it. But the cascade has to start somewhere. Trace it far enough and you're always staring at fusion reactions inside a G-type main-sequence star 93 million miles away.
+        </p>
+
+        <h3>The Real Hierarchy</h3>
+
+        <p>
+            So the cartoon needs one more fish. Behind Tesla — behind every corporation, every nation-state, every blockchain — there is a fish so large it doesn't fit in the frame. The sun. It has been the sole proprietor of Earth's energy budget for 4.5 billion years and it will continue to be for another 5 billion. No leveraged buyout is forthcoming.
+        </p>
+
+        <p>
+            This is why <strong>proof-of-work matters</strong>. A consensus mechanism anchored to energy expenditure is anchored, ultimately, to solar flux. The security of the chain is not an abstraction — it's a direct accounting of thermodynamic work, denominated in the only currency the universe actually recognizes: entropy production.
+        </p>
+
+        <hr class="section-rule">
+
+        <h2>What This Means for Energy Money</h2>
+
+        <p>
+            If money is supposed to represent value, and value is the capacity to do useful work, then money <em>is</em> an energy claim. Fiat currencies are energy IOUs backed by political promises. Proof-of-work tokens are energy receipts backed by physics. The question for the next century isn't whether money will be energy-denominated — it already is, implicitly. The question is whether we'll make the accounting <em>explicit</em>.
+        </p>
+
+        <p>
+            Every watt produced on Earth either came from the sun recently (solar, wind, hydro, biomass) or from the sun anciently (fossil fuels). A monetary system that acknowledges this — that prices value in units of thermodynamic work — is not a radical new invention. It's a correction. It's aligning the map to the territory.
+        </p>
+
+        <div class="key-figure">
+            <div class="number">E = money</div>
+            <div class="label">When energy is the unit of account, economic law and physical law converge. No more printing your way out of thermodynamic debt.</div>
+        </div>
+
+        <p>
+            The biggest fish isn't Tesla. It isn't any corporation. The biggest fish is the 1.4 million kilometer wide thermonuclear reactor that writes every check the Earth cashes. Build your money on <em>that</em>, and you've built on bedrock.
+        </p>
+
+    </article>
+
+    <!-- BOTTOM CTA -->
+    <div class="blog-footer-cta">
+        <div class="cta-box">
+            <h3>Go Deeper</h3>
+            <p>Explore the thermoeconomic framework connecting energy, entropy, and money.</p>
+            <a href="https://thermoeconomics.info" target="_blank" class="btn btn-primary">Thermoeconomics.info</a>
+            &nbsp;&nbsp;
+            <a href="index.html" class="btn btn-ghost">Back to Station</a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">QI.XYZ</div>
+        <div class="footer-links">
+            <a href="https://thermoeconomics.info" target="_blank">Thermoeconomics</a>
+            <a href="https://americanenergymoney.com" target="_blank">AEM</a>
+        </div>
+        <div class="footer-copy">© 2026 Qi.xyz</div>
+    </footer>
+
+</body>
+</html>
