@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Light — The First Solar Farm Is in Production</title>
+    <meta name="description" content="The first solar-powered proof-of-work mining farm is live. American Energy Money and AlphaMine turn theory into watts, hashes, and Qi.">
+    <meta property="og:title" content="First Light — The First Solar Farm Is in Production">
+    <meta property="og:description" content="The sun is mining. The first AlphaMine × American Energy Money solar farm is live and producing Qi.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-amber-glow: rgba(255, 184, 0, 0.4);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-green-dim: rgba(57, 255, 20, 0.15);
+            --qi-green-glow: rgba(57, 255, 20, 0.4);
+            --qi-purple: #bf5af2;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-cyan-glow); }
+        .nav-back { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; display: flex; align-items: center; gap: 8px; }
+        .nav-back:hover { color: var(--qi-cyan); }
+
+        /* HERO */
+        .blog-hero {
+            position: relative; z-index: 1;
+            min-height: 75vh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            overflow: hidden;
+        }
+
+        .blog-hero-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Animated sun rays */
+        .sun-visual {
+            position: absolute;
+            top: -30%; right: -10%;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(255, 184, 0, 0.12) 0%,
+                rgba(255, 184, 0, 0.05) 30%,
+                transparent 70%
+            );
+            animation: sun-pulse 8s ease-in-out infinite;
+        }
+        @keyframes sun-pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .sun-rays {
+            position: absolute;
+            top: -20%; right: 5%;
+            width: 400px; height: 400px;
+            opacity: 0.04;
+            animation: sun-rotate 60s linear infinite;
+        }
+        @keyframes sun-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .sun-rays .ray {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 2px; height: 200px;
+            background: linear-gradient(to top, transparent, var(--qi-amber));
+            transform-origin: bottom center;
+        }
+
+        /* Solar panel grid pattern */
+        .solar-grid {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 30%;
+            background:
+                repeating-linear-gradient(90deg, rgba(0, 240, 255, 0.03) 0px, rgba(0, 240, 255, 0.03) 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.03) 0px, rgba(0, 240, 255, 0.03) 1px, transparent 1px, transparent 40px);
+            opacity: 0.5;
+        }
+
+        .blog-hero-bg::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg,
+                rgba(6, 8, 13, 0.3) 0%,
+                rgba(6, 8, 13, 0.5) 40%,
+                rgba(6, 8, 13, 0.95) 100%
+            );
+            z-index: 1;
+        }
+
+        .blog-hero-content {
+            position: relative; z-index: 2;
+            max-width: 800px;
+        }
+
+        .blog-meta {
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--qi-green); letter-spacing: 3px;
+            text-transform: uppercase; margin-bottom: 24px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.2s;
+        }
+        .blog-meta::before { content: '◆ '; animation: blink 2s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .live-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px;
+            border: 1px solid var(--qi-green);
+            background: rgba(57, 255, 20, 0.06);
+            font-family: var(--font-mono); font-size: 11px;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: var(--qi-green);
+            margin-bottom: 28px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.3s;
+        }
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--qi-green);
+            box-shadow: 0 0 12px rgba(57, 255, 20, 0.6);
+            animation: pulse-green 2s ease-in-out infinite;
+        }
+        @keyframes pulse-green { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .blog-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 6vw, 64px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.4s;
+        }
+        .blog-hero h1 .highlight-amber { color: var(--qi-amber); text-shadow: 0 0 30px var(--qi-amber-glow); }
+        .blog-hero h1 .highlight-green { color: var(--qi-green); text-shadow: 0 0 30px var(--qi-green-glow); }
+
+        .blog-hero-sub {
+            font-family: var(--font-body); font-size: 20px;
+            font-weight: 300; color: var(--text-secondary);
+            max-width: 600px; margin: 0 auto;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.6s;
+        }
+
+        @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CONTENT */
+        .blog-content {
+            position: relative; z-index: 1;
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 60px 24px 120px;
+        }
+
+        .blog-content h2 {
+            font-family: var(--font-display);
+            font-size: 22px; font-weight: 700;
+            letter-spacing: 2px; margin: 64px 0 20px;
+            color: var(--qi-amber);
+        }
+
+        .blog-content p {
+            font-size: 18px; font-weight: 300;
+            color: var(--text-secondary); line-height: 1.9;
+            margin-bottom: 24px;
+        }
+
+        .blog-content a {
+            color: var(--qi-cyan);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            transition: border-color 0.3s;
+        }
+        .blog-content a:hover { border-color: var(--qi-cyan); }
+
+        .blog-content strong { color: var(--text-primary); font-weight: 600; }
+
+        /* Status Panel */
+        .status-panel {
+            border: 1px solid rgba(57, 255, 20, 0.2);
+            background: var(--bg-panel);
+            padding: 36px 32px;
+            margin: 48px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-panel::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-green), var(--qi-amber), transparent);
+        }
+        .status-panel-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px;
+        }
+        .status-panel-header .indicator {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--qi-green);
+            box-shadow: 0 0 12px rgba(57, 255, 20, 0.6);
+            animation: pulse-green 2s ease-in-out infinite;
+        }
+        .status-panel-header .label {
+            font-family: var(--font-mono); font-size: 12px;
+            color: var(--qi-green); letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .status-panel .stat-row {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 24px; margin-top: 16px;
+        }
+        .status-panel .stat {
+            padding: 16px;
+            border: 1px solid var(--border-dim);
+            background: var(--bg-card);
+        }
+        .status-panel .stat-label {
+            font-family: var(--font-mono); font-size: 9px;
+            letter-spacing: 2px; color: var(--text-dim);
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .status-panel .stat-value {
+            font-family: var(--font-display); font-size: 22px;
+            font-weight: 700; letter-spacing: 2px;
+        }
+        .status-panel .stat-value.green { color: var(--qi-green); }
+        .status-panel .stat-value.amber { color: var(--qi-amber); }
+        .status-panel .stat-value.cyan { color: var(--qi-cyan); }
+
+        /* Pull Quote */
+        .pull-quote {
+            border-left: 3px solid var(--qi-amber);
+            padding: 28px 32px;
+            margin: 48px 0;
+            background: var(--bg-panel);
+        }
+        .pull-quote p {
+            font-size: 20px; font-weight: 400;
+            color: var(--text-primary); font-style: italic;
+            line-height: 1.7; margin-bottom: 12px;
+        }
+        .pull-quote .quote-attr {
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--text-dim); letter-spacing: 2px;
+            text-transform: uppercase; font-style: normal;
+        }
+        .pull-quote .quote-attr strong { color: var(--qi-amber); }
+
+        /* Mission reminder */
+        .mission-reminder {
+            border: 1px solid var(--border-dim);
+            background: var(--bg-card);
+            padding: 32px;
+            margin: 40px 0;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .mission-col {
+            padding: 20px;
+            border: 1px solid var(--border-dim);
+        }
+        .mission-col.amber { border-top: 2px solid var(--qi-amber); }
+        .mission-col.cyan { border-top: 2px solid var(--qi-cyan); }
+        .mission-col-label {
+            font-family: var(--font-mono); font-size: 9px;
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .mission-col.amber .mission-col-label { color: var(--qi-amber); }
+        .mission-col.cyan .mission-col-label { color: var(--qi-cyan); }
+        .mission-col p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin: 0; }
+
+        /* CTA */
+        .blog-cta {
+            display: flex; gap: 16px; flex-wrap: wrap;
+            margin: 48px 0;
+        }
+
+        .btn { font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; padding: 14px 32px; transition: all 0.3s; cursor: pointer; display: inline-block; }
+        .btn-green { background: var(--qi-green); color: var(--bg-deep); border: 1px solid var(--qi-green); box-shadow: 0 0 20px rgba(57, 255, 20, 0.2); }
+        .btn-green:hover { box-shadow: 0 0 40px rgba(57, 255, 20, 0.4); transform: translateY(-2px); }
+        .btn-amber { background: var(--qi-amber); color: var(--bg-deep); border: 1px solid var(--qi-amber); box-shadow: 0 0 20px rgba(255, 184, 0, 0.2); }
+        .btn-amber:hover { box-shadow: 0 0 40px rgba(255, 184, 0, 0.4); transform: translateY(-2px); }
+        .btn-ghost { background: transparent; color: var(--qi-cyan); border: 1px solid var(--border-bright); }
+        .btn-ghost:hover { background: var(--qi-cyan-dim); border-color: var(--qi-cyan); }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+            margin: 64px 0;
+        }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+        .tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--border-dim); color: var(--text-dim); }
+        .tag.cyan { border-color: rgba(0, 240, 255, 0.25); color: var(--qi-cyan); }
+        .tag.amber { border-color: rgba(255, 184, 0, 0.25); color: var(--qi-amber); }
+        .tag.green { border-color: rgba(57, 255, 20, 0.25); color: var(--qi-green); }
+
+        /* Footer */
+        footer { position: relative; z-index: 1; border-top: 1px solid var(--border-dim); padding: 40px; display: flex; align-items: center; justify-content: space-between; max-width: 780px; margin: 0 auto; }
+        .footer-logo { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--qi-cyan); letter-spacing: 4px; }
+        .footer-copy { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .blog-hero { min-height: 60vh; padding: 100px 20px 60px; }
+            .blog-content { padding: 40px 20px 80px; }
+            .pull-quote { padding: 20px 24px; }
+            .status-panel { padding: 28px 24px; }
+            .status-panel .stat-row { grid-template-columns: 1fr; }
+            .mission-reminder { grid-template-columns: 1fr; }
+            .blog-cta { flex-direction: column; }
+            footer { flex-direction: column; gap: 12px; text-align: center; padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="index.html" class="nav-logo">QI</a>
+        <a href="index.html" class="nav-back">‹ Back to Station</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="blog-hero">
+        <div class="blog-hero-bg">
+            <div class="sun-visual"></div>
+            <div class="sun-rays">
+                <div class="ray" style="transform: rotate(0deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(30deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(60deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(90deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(120deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(150deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(180deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(210deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(240deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(270deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(300deg) translateX(-50%);"></div>
+                <div class="ray" style="transform: rotate(330deg) translateX(-50%);"></div>
+            </div>
+            <div class="solar-grid"></div>
+        </div>
+
+        <div class="blog-hero-content">
+            <div class="blog-meta">Production Update · 2025</div>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                FARM ONLINE
+            </div>
+            <h1>
+                <span class="highlight-amber">First Light</span>
+            </h1>
+            <p class="blog-hero-sub">The first solar farm is in production. The sun is mining Qi.</p>
+        </div>
+    </section>
+
+    <!-- CONTENT -->
+    <div class="blog-content">
+
+        <div class="tag-row">
+            <span class="tag green">Production</span>
+            <span class="tag amber">Solar Farm</span>
+            <span class="tag cyan">Mining</span>
+            <span class="tag">Qi</span>
+            <span class="tag amber">AlphaMine</span>
+        </div>
+
+        <h2>The Sun Is Mining</h2>
+
+        <p>
+            This is the announcement we've been building toward. <strong>The first solar farm is in production.</strong>
+        </p>
+
+        <p>
+            Not on a whiteboard. Not in a pitch deck. Not in a spreadsheet model. In the physical world — panels facing the sky, ASICs running hot, hashes hitting the network, and Qi flowing into wallets. The thermodynamic loop from photon to proof-of-work is live and producing.
+        </p>
+
+        <p>
+            This is the result of the <a href="alphamine-partnership.html">AlphaMine × American Energy Money partnership</a> — the convergence of the theoretical framework for energy-based money with the industrial infrastructure to mine it directly from sunlight. What began as a shared thesis is now a shared power grid.
+        </p>
+
+        <div class="status-panel">
+            <div class="status-panel-header">
+                <div class="indicator"></div>
+                <div class="label">Farm Status: Online</div>
+            </div>
+            <div class="stat-row">
+                <div class="stat">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value green">PRODUCING</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Energy Source</div>
+                    <div class="stat-value amber">SOLAR</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Network</div>
+                    <div class="stat-value cyan">PROOF-OF-WORK</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Output</div>
+                    <div class="stat-value green">QI</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h2>Why This Matters</h2>
+
+        <p>
+            Every proof-of-work token is an energy receipt — a cryptographic attestation that real work was performed in the physical world. But not all energy is equal. Solar-mined Qi represents the cleanest possible version of this truth: energy captured directly from the most abundant source in our solar system, converted with zero combustion into permanent, immutable, thermodynamically-grounded money.
+        </p>
+
+        <p>
+            <a href="https://www.americanenergymoney.com/" target="_blank">AmericanEnergyMoney.com</a> is a bold mission statement and call to action. The American status as "world numeraire" doesn't have to fade into oblivion. But changes need to be made — quickly and responsibly — and adopting real <strong>Energy Based Money</strong> is a solution. It's bold, proud, and reasonable, and it supports proof-of-work networks like <strong>Bitcoin</strong>, <strong>Quai Network</strong> (founded in America), and others.
+        </p>
+
+        <p>
+            <a href="https://alphapool.tech/" target="_blank">AlphaMine's</a> mission is to <strong>turn sunlight into Qi</strong> — and with this first farm, that mission is no longer aspirational. It's operational. Every day the sun rises, the farm produces. It's the most natural mining operation on Earth: photons become electrons become hashes become Qi.
+        </p>
+
+        <div class="section-divider"></div>
+
+        <h2>The Missions — Aligned</h2>
+
+        <div class="mission-reminder">
+            <div class="mission-col amber">
+                <div class="mission-col-label">American Energy Money</div>
+                <p>Leading the transition to American Energy Based money. Bold, proud, and reasonable — building the economic thesis that real money must be backed by real energy, supporting proof-of-work networks built in and for America.</p>
+            </div>
+            <div class="mission-col cyan">
+                <div class="mission-col-label">AlphaMine</div>
+                <p>Turn sunlight into Qi. Purpose-built solar mining infrastructure converting the most abundant energy source on Earth into cryptographic proof-of-work. The shortest path from photon to money.</p>
+            </div>
+        </div>
+
+        <h2>What's Next</h2>
+
+        <p>
+            First light is just first light. The roadmap extends from this single farm into a network — scaling solar capacity, diversifying proof-of-work targets, and publishing transparent production data so the community can watch the sun mine in real time. This is the beginning of a new kind of energy infrastructure: one where the power grid and the monetary network are the same thing.
+        </p>
+
+        <p>
+            More details on capacity, hash rate, and output metrics will be shared as we move from initial production into sustained operations. Stay connected.
+        </p>
+
+        <div class="blog-cta">
+            <a href="https://alphapool.tech/" target="_blank" class="btn btn-green">AlphaMine</a>
+            <a href="https://www.americanenergymoney.com/" target="_blank" class="btn btn-amber">American Energy Money</a>
+            <a href="alphamine-partnership.html" class="btn btn-ghost">Read Partnership Post</a>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">QI.XYZ</div>
+        <div class="footer-copy">© 2025 Qi.xyz — Energy Money Docking Station</div>
+    </footer>
+
+</body>
+</html>
