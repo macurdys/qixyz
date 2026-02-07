@@ -197,6 +197,22 @@
 
         .blog-content strong { color: var(--text-primary); font-weight: 600; }
 
+        .blog-inline-img {
+            display: block;
+            max-width: 340px;
+            margin: 48px auto;
+            border: 1px solid var(--border-dim);
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+        .blog-inline-img:hover {
+            border-color: var(--qi-cyan);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+            transform: translateY(-4px);
+        }
+        .blog-inline-img img {
+            width: 100%; height: auto; display: block;
+        }
+
         .blog-content em { color: var(--qi-amber); font-style: normal; }
 
         /* Blockquote / Pull Quote */
@@ -371,6 +387,12 @@
         <p>
             As the partnership expands, the plan is to scale hashrate, reduce power costs, and find the most profitable strategies — powering energy-based monetary systems by harvesting the sun's energy. There are large partners already in the pipeline. The infrastructure is there, the agreements are in place, and the expansion plan is funded. This isn't speculative — it's a matter of execution on a timeline that's already underway.
         </p>
+
+        <div class="section-divider"></div>
+
+        <a href="https://alphamine.tech" target="_blank" class="blog-inline-img">
+            <img src="alphamine-teal.png" alt="AlphaMine" />
+        </a>
 
         <div class="section-divider"></div>
 
