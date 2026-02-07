@@ -592,15 +592,23 @@
 
     <!-- PODCAST FEATURE -->
     <section class="reveal" style="padding-top:0; padding-bottom:40px;">
-        <div style="background:var(--bg-panel);border:1px solid var(--border-dim);padding:36px 40px;position:relative;overflow:hidden;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+        <div style="background:var(--bg-panel);border:1px solid var(--border-dim);position:relative;overflow:hidden;">
             <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--qi-amber),var(--qi-green),var(--qi-cyan));"></div>
-            <div style="font-size:48px;flex-shrink:0;">🎙️</div>
-            <div style="flex:1;min-width:240px;">
-                <div style="font-family:var(--font-mono);font-size:10px;color:var(--qi-amber);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Featured Podcast</div>
-                <div style="font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:1px;margin-bottom:8px;">Permaculture at Farm of Qi</div>
-                <div style="font-size:15px;color:var(--text-secondary);line-height:1.7;font-weight:300;">The story behind the farm — thermodynamic agriculture, closed-loop food systems, and why permaculture is proof-of-work for the biological layer.</div>
+            <div style="display:flex;flex-wrap:wrap;align-items:stretch;">
+                <!-- Video Embed -->
+                <div style="flex:1.4;min-width:300px;position:relative;background:#000;">
+                    <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
+                        <iframe src="https://www.youtube.com/embed/SrpxIwGgeh0" title="Permaculture at Farm of Qi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+                    </div>
+                </div>
+                <!-- Info Panel -->
+                <div style="flex:1;min-width:260px;padding:32px 36px;display:flex;flex-direction:column;justify-content:center;gap:12px;">
+                    <div style="font-family:var(--font-mono);font-size:10px;color:var(--qi-amber);letter-spacing:3px;text-transform:uppercase;">Featured Podcast</div>
+                    <div style="font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:1px;">Permaculture at Farm of Qi</div>
+                    <div style="font-size:15px;color:var(--text-secondary);line-height:1.7;font-weight:300;">The story behind the farm — thermodynamic agriculture, closed-loop food systems, and why permaculture is proof-of-work for the biological layer.</div>
+                    <a href="https://www.youtube.com/watch?v=SrpxIwGgeh0&t" target="_blank" class="btn btn-primary" style="align-self:flex-start;margin-top:8px;">▶ Watch on YouTube</a>
+                </div>
             </div>
-            <a href="https://www.youtube.com/watch?v=SrpxIwGgeh0&t" target="_blank" class="btn btn-primary" style="flex-shrink:0;">▶ Watch on YouTube</a>
         </div>
     </section>
 
@@ -1101,6 +1109,16 @@
                 <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Condensed ecology and regulatory constraints summary — soil, wetlands, hydrology, native species, and site data.</div>
             </div>
             <a href="site-ecology-report.pdf" target="_blank" class="btn btn-ghost" style="flex-shrink:0;">📄 View Report (PDF)</a>
+        </div>
+
+        <!-- TimberFish Report Link -->
+        <div style="background:var(--bg-panel);border:1px solid var(--border-dim);padding:24px 28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:12px;">
+            <div style="font-size:32px;flex-shrink:0;">🐟</div>
+            <div style="flex:1;min-width:200px;">
+                <div style="font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:1px;margin-bottom:4px;">TimberFish Expansion Plan</div>
+                <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Permaculture aquaponics &amp; clean water integration — founder history, small-scale system design, and phased expansion proposal.</div>
+            </div>
+            <a href="timberfish-expansion-report.pdf" target="_blank" class="btn btn-ghost" style="flex-shrink:0;">📄 View Report (PDF)</a>
         </div>
     </section>
 
