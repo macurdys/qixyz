@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +8,13 @@
     <meta name="description" content="American Energy Money and AlphaMine partner on solar-powered proof-of-work mining, multi-algorithm operations, and energy infrastructure expansion.">
     <meta property="og:title" content="AlphaMine × American Energy Money — Partnership">
     <meta property="og:description" content="Mining company meets development company. Solar expansion, lower electricity rates, multi-algorithm mining, and immediate scale.">
+    <meta property="og:image" content="https://qi.xyz/og-alphamine-partnership.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://qi.xyz/alphamine-partnership.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://qi.xyz/og-alphamine-partnership.png">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,53 +91,14 @@
         .blog-hero-bg {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             z-index: 0;
-        }
-
-        .blog-hero-bg .partnership-visual {
-            width: 100%; height: 100%;
-            position: relative;
             overflow: hidden;
         }
 
-        /* American flag stripes — subtle background pattern */
-        .flag-stripes {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; flex-direction: column;
-            opacity: 0.06;
-        }
-        .flag-stripes div {
-            flex: 1;
-        }
-        .flag-stripes div:nth-child(odd) { background: #ff3366; }
-        .flag-stripes div:nth-child(even) { background: transparent; }
-
-        /* Star field */
-        .star-field {
-            position: absolute; top: 0; left: 0;
-            width: 40%; height: 55%;
-            background: rgba(0, 20, 80, 0.15);
-            display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-            gap: 12px; padding: 20px;
-        }
-        .star-field .star {
-            width: 4px; height: 4px; background: var(--qi-cyan);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            opacity: 0.3;
-            animation: twinkle 3s ease-in-out infinite;
-        }
-        .star-field .star:nth-child(3n) { animation-delay: 1s; }
-        .star-field .star:nth-child(5n) { animation-delay: 2s; }
-        @keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.6; } }
-
-        /* AlphaMine logo overlay */
-        .hero-logo-overlay {
-            position: absolute; bottom: 10%; right: 8%;
-            width: 220px; height: 220px;
-            opacity: 0.12;
-            filter: grayscale(0.5) brightness(1.5);
-        }
-        .hero-logo-overlay img {
-            width: 100%; height: 100%; object-fit: contain;
+        .blog-hero-bg img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            display: block;
         }
 
         /* Gradient overlay */
@@ -139,9 +106,9 @@
             content: '';
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(180deg,
-                rgba(6, 8, 13, 0.4) 0%,
-                rgba(6, 8, 13, 0.6) 40%,
-                rgba(6, 8, 13, 0.95) 100%
+                rgba(6, 8, 13, 0.3) 0%,
+                rgba(6, 8, 13, 0.45) 40%,
+                rgba(6, 8, 13, 0.92) 100%
             );
             z-index: 1;
         }
@@ -328,7 +295,6 @@
             .mission-block { padding: 28px 24px; }
             .blog-cta { flex-direction: column; }
             footer { flex-direction: column; gap: 12px; text-align: center; padding: 40px 20px; }
-            .hero-logo-overlay { width: 120px; height: 120px; right: 4%; bottom: 5%; }
         }
     </style>
 </head>
@@ -345,31 +311,7 @@
     <!-- HERO -->
     <section class="blog-hero">
         <div class="blog-hero-bg">
-            <div class="partnership-visual">
-                <!-- American flag subtle stripes -->
-                <div class="flag-stripes">
-                    <div></div><div></div><div></div><div></div><div></div>
-                    <div></div><div></div><div></div><div></div><div></div>
-                    <div></div><div></div><div></div>
-                </div>
-                <!-- Star field -->
-                <div class="star-field">
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                    <div class="star"></div><div class="star"></div><div class="star"></div>
-                </div>
-                <!-- AlphaMine logo -->
-                <div class="hero-logo-overlay">
-                    <img src="alphamine.png" alt="AlphaMine" />
-                </div>
-            </div>
+            <img src="alphamine-hero.jpg" alt="AlphaMine × American Energy Money" />
         </div>
 
         <div class="blog-hero-content">
@@ -378,7 +320,7 @@
                 <span class="highlight-cyan">AlphaMine</span>
                 <br>× <span class="highlight-amber">AmericanEM</span>
             </h1>
-            <p class="blog-hero-sub">AlphaMine joins American Energy Money to build solar arrays and mine Quai Network.</p>
+            <p class="blog-hero-sub">A mining company and a development company aligning on solar energy expansion, multi-algorithm proof-of-work, and lower electricity costs.</p>
             <div class="partnership-badge">
                 American Energy Money <span class="x-mark">×</span> AlphaMine
             </div>
@@ -399,10 +341,23 @@
         <h2>Mining Meets Development</h2>
 
         <p>
-            <a href="https://alphapool.tech/" target="_blank">AlphaMine</a> is a mining operation with deep technical expertise in logistics and strategy across a range of systems; solar, battery, proof-of-work, zk-proving, and mining pools. <a href="https://www.americanenergymoney.com/" target="_blank">American Energy Money</a> is a newly established infrastructure devevelopment corp focused on the expansion strategy and economics of energy-based monetary systems. Together, their partnership will focus on physical expansiono of solar production and mining operations. Development will occur on a 3-acre site in <strong>Southampton, NJ</strong>. 
+            <a href="https://alphapool.tech/" target="_blank">AlphaMine</a> is an established mining company with deep expertise in operations, logistics, and profitability across solar energy, battery storage, proof-of-work mining, zk-proving, and the <strong>Quai Qi Network</strong>. <a href="https://www.americanenergymoney.com/" target="_blank">American Energy Money</a> is a development company focused on the economics, investment strategy, and expansion of energy-based money systems. The two are now working together. AlphaMine brings the hardware, the facilities, and the operational know-how. American Energy Money brings capital strategy, solar energy development, and a network of partners ready to scale.
+        </p>
 
         <p>
-            The timing makes sense. Since the release of the Subsidized, Open-Market Allocation Protocol (S.O.A.P), proof-of-work economics has changed significantly. AlphaMine has already optimized the operational side. American Energy Money is now expanding solar energy infrastructure on top of that operational foundation, which pushes those electricity costs even lower and creates a long-term hedge against rate volatility.
+            The timing makes sense. Proof-of-work mining profitability depends on a small number of variables — electricity cost, hash rate efficiency, network difficulty, and token price. AlphaMine has already optimized the operational side: they run multi-algorithm mining across SHA-256 and other proof-of-work networks, which means they can shift hash power to the most profitable chain at any given time rather than being locked into a single asset. They've also secured electricity rates that are well below national average, which directly improves margins on every hash produced. American Energy Money is now layering solar energy infrastructure on top of that foundation, which pushes those electricity costs even lower and creates a long-term hedge against rate volatility.
+        </p>
+
+        <div class="section-divider"></div>
+
+        <h2>Solar Expansion</h2>
+
+        <p>
+            The solar mining expansion is already underway, powering on at a site in <strong>Southampton, NJ</strong>. That's not a roadmap item — it's operational. Solar panels generating electricity that feeds directly into mining hardware, reducing grid dependence and locking in energy costs for the long term. The economics are straightforward: solar has no fuel cost after installation, the hardware is warrantied for decades, and the output is predictable. When you combine that with proof-of-work mining, you get a business where the primary input cost trends toward zero over time while the output retains thermodynamic value on the network.
+        </p>
+
+        <p>
+            Beyond electricity generation, there are practical advantages to co-locating solar with mining facilities. Mining hardware produces significant heat, and HVAC is typically one of the larger ongoing expenses for any mining operation. Proper thermal management — including heat recapture and intelligent cooling design — can meaningfully reduce overhead. AlphaMine already manages this at their existing sites, and the solar expansion is being designed with these thermal considerations built in from the start rather than retrofitted after the fact.
         </p>
 
         <div class="section-divider"></div>
@@ -410,11 +365,11 @@
         <h2>Why Now</h2>
 
         <p>
-            The market conditions for this kind of alignment are unusually favorable right now. The investment thesis is simple: lower energy costs, expand mining hardware + algorithms, and expand future capacity through solar. AlphaMine has the operational track record and the existing partnerships to scale immediately. American Energy Money has the capital strategy to fund that expansion.
+            The market conditions for this kind of alignment are unusually favorable right now. Electricity rates for industrial consumers are volatile, and locking in solar-based generation provides stability that grid-only operations can't match. Multi-algorithm flexibility means the operation isn't dependent on any single network's difficulty or price cycle — if one chain becomes less profitable, hash power moves to another. The investment thesis is simple: lower energy costs, diversified mining output, established infrastructure, and a clear path to expand capacity through solar. AlphaMine has the operational track record and the existing partnerships to scale immediately. American Energy Money has the development framework and the capital strategy to fund that expansion.
         </p>
 
         <p>
-            As the partnership expands, the plan is to find the most profitable strategies and power energy-based monetary systems by harvesting the sun's energy. It's time to build.
+            As the partnership expands, the plan is to scale hashrate, reduce power costs, and find the most profitable strategies — powering energy-based monetary systems by harvesting the sun's energy. There are large partners already in the pipeline. The infrastructure is there, the agreements are in place, and the expansion plan is funded. This isn't speculative — it's a matter of execution on a timeline that's already underway.
         </p>
 
         <div class="section-divider"></div>
@@ -422,7 +377,7 @@
         <h2>Get in Touch</h2>
 
         <p>
-            If you're interested in AmericanEnergyMoney mining operations, AlphaMine pools, or partnership opportunities, reach out directly at <a href="/cdn-cgi/l/email-protection#d5b8bcbbbcbbb295b4b8b0a7bcb6b4bbb0bbb0a7b2acb8babbb0acfbb6bab8"><strong><span class="__cf_email__" data-cfemail="0b66626562656c4b6a666e7962686a656e656e796c726664656e7225686466">[email&#160;protected]</span></strong></a>.
+            If you're interested in the mining operation, the solar expansion, or partnership opportunities, reach out directly at <a href="/cdn-cgi/l/email-protection#d5b8bcbbbcbbb295b4b8b0a7bcb6b4bbb0bbb0a7b2acb8babbb0acfbb6bab8"><strong><span class="__cf_email__" data-cfemail="0b66626562656c4b6a666e7962686a656e656e796c726664656e7225686466">[email&#160;protected]</span></strong></a>.
         </p>
 
         <div class="blog-cta">
