@@ -346,6 +346,7 @@
 
         @media (max-width: 900px) {
             .site-map-wrap { grid-template-columns: 1fr; }
+            .land-two-col { grid-template-columns: 1fr !important; }
         }
 
         /* FAUCET */
@@ -514,6 +515,7 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="#life-systems" class="active">Life Systems</a></li>
             <li><a href="#permaculture">Permaculture</a></li>
+            <li><a href="#land">Land</a></li>
             <li><a href="#faucet">Faucet</a></li>
             <li><a href="#events">Events</a></li>
             <li><a href="#dao">DAO</a></li>
@@ -965,6 +967,140 @@
                     <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Thermodynamic farm audit — full energy balance</span></div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- LAND & ECOLOGY -->
+    <section id="land" class="reveal">
+        <div class="section-label">Land & Ecology</div>
+        <div class="section-title">Site Ecology — Soil, Water & Wetlands</div>
+        <div class="section-desc">Three acres of coastal plain hardwood swamp. The land speaks through its soil, hydrology, and native species — here's what the environmental survey found.</div>
+
+        <!-- Key Site Data -->
+        <div class="life-grid" style="margin-bottom:32px;">
+            <div class="life-card" style="border-top:2px solid var(--qi-earth);">
+                <div class="life-icon">🌍</div>
+                <div class="life-label">Total Acreage</div>
+                <div class="life-value" style="color:var(--qi-earth);">~3 acres</div>
+                <div class="life-sub">Block 1801, Lot 15 — Southampton Twp</div>
+            </div>
+            <div class="life-card" style="border-top:2px solid var(--qi-soil);">
+                <div class="life-icon">🪨</div>
+                <div class="life-label">Soil Type</div>
+                <div class="life-value" style="color:#c9a84c;font-size:18px;">Mullica FSL</div>
+                <div class="life-sub">Fine sandy loam, 0-2% slope, hydric</div>
+            </div>
+            <div class="life-card" style="border-top:2px solid var(--qi-water);">
+                <div class="life-icon">💧</div>
+                <div class="life-label">Water Table Depth</div>
+                <div class="life-value" style="color:var(--qi-water);">0 in</div>
+                <div class="life-sub">At surface — very poorly drained</div>
+            </div>
+            <div class="life-card" style="border-top:2px solid var(--qi-green);">
+                <div class="life-icon">🌿</div>
+                <div class="life-label">Wetlands Coverage</div>
+                <div class="life-value" style="color:var(--qi-green);">100%</div>
+                <div class="life-sub">Entire site — regulated freshwater wetlands</div>
+            </div>
+            <div class="life-card" style="border-top:2px solid var(--qi-cyan);">
+                <div class="life-icon">🏔️</div>
+                <div class="life-label">Geology</div>
+                <div class="life-value" style="color:var(--qi-cyan);font-size:16px;">Pleistocene</div>
+                <div class="life-sub">Stream terrace deposits, sand & gravel, ~20ft deep</div>
+            </div>
+            <div class="life-card" style="border-top:2px solid var(--qi-purple);">
+                <div class="life-icon">🦎</div>
+                <div class="life-label">T&E Species</div>
+                <div class="life-value" style="color:var(--qi-purple);">None</div>
+                <div class="life-sub">No threatened/endangered species mapped</div>
+            </div>
+        </div>
+
+        <!-- Soil Profile -->
+        <div class="land-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;">
+            <div style="background:var(--bg-card);border:1px solid var(--border-dim);padding:28px;position:relative;overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#8B6914,transparent);opacity:0.6;"></div>
+                <div style="font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:1px;margin-bottom:16px;color:#c9a84c;">Soil Profile</div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="width:60px;height:32px;background:linear-gradient(180deg,#6B5B3A,#5C4A30);border-radius:2px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-primary);letter-spacing:1px;">Ap — 0 to 10"</div>
+                            <div style="font-size:12px;color:var(--text-secondary);">Fine sandy loam</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="width:60px;height:24px;background:linear-gradient(180deg,#7A7A6E,#8A8A7E);border-radius:2px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-primary);letter-spacing:1px;">Eg — 10 to 15"</div>
+                            <div style="font-size:12px;color:var(--text-secondary);">Fine sandy loam (gleyed)</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="width:60px;height:40px;background:linear-gradient(180deg,#6E6E5A,#5E5E4A);border-radius:2px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-primary);letter-spacing:1px;">Btg — 15 to 28"</div>
+                            <div style="font-size:12px;color:var(--text-secondary);">Fine sandy loam (argillic)</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="width:60px;height:48px;background:linear-gradient(180deg,#B8A87A,#C8B88A);border-radius:2px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-primary);letter-spacing:1px;">2Cg — 28 to 60"</div>
+                            <div style="font-size:12px;color:var(--text-secondary);">Stratified sand to sandy loam</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:14px;letter-spacing:1px;">KSAT: 0.60–6.00 IN/HR  •  HYDROLOGIC GROUP: A/D</div>
+            </div>
+
+            <div style="background:var(--bg-card);border:1px solid var(--border-dim);padding:28px;position:relative;overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--qi-water),transparent);opacity:0.6;"></div>
+                <div style="font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:1px;margin-bottom:16px;color:var(--qi-water);">Hydrology & Water Flow</div>
+                <div style="font-size:14px;color:var(--text-secondary);line-height:1.8;font-weight:300;">
+                    An onsite tributary of Beaverdam Creek drains approximately <span style="color:var(--qi-water);font-weight:600;">0.2 sq miles</span> at its confluence with the site. The watercourse is classified <span style="font-family:var(--font-mono);font-size:12px;color:var(--qi-cyan);">FW2-NT</span> (freshwater, non-trout) with a <span style="color:var(--qi-water);font-weight:600;">50-foot riparian zone</span> buffer.
+                </div>
+                <div style="margin-top:14px;padding:14px;background:rgba(33,150,243,0.06);border:1px solid rgba(33,150,243,0.15);">
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--qi-water);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">FEMA Flood Zone</div>
+                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Most of the site falls within the <span style="color:var(--qi-water);font-weight:600;">100-year floodplain (Zone A)</span> per FIRM Map 34005C0267F. Floodplain elevation not delineated. The cleared portion may be outside the floodplain.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Native Species -->
+        <div style="background:var(--bg-card);border:1px solid var(--border-dim);padding:28px;position:relative;overflow:hidden;margin-bottom:32px;">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--qi-green),var(--qi-leaf),transparent);opacity:0.6;"></div>
+            <div style="font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:1px;margin-bottom:20px;color:var(--qi-green);">Native Species & Ecological Community</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+                <div style="padding:16px;background:rgba(57,255,20,0.03);border:1px solid rgba(57,255,20,0.08);">
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--qi-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">🌳 Canopy Trees</div>
+                    <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">Red maple (<em>Acer rubrum</em>), Sweet gum (<em>Liquidambar styraciflua</em>)</div>
+                </div>
+                <div style="padding:16px;background:rgba(57,255,20,0.03);border:1px solid rgba(57,255,20,0.08);">
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--qi-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">🌲 Understory</div>
+                    <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">American holly (<em>Ilex opaca</em>)</div>
+                </div>
+                <div style="padding:16px;background:rgba(57,255,20,0.03);border:1px solid rgba(57,255,20,0.08);">
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--qi-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">🌾 Wetland Obligates</div>
+                    <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">Common rush (<em>Juncus effusus</em>), Wool grass — Atlantic Gulf Coastal Plain obligate species</div>
+                </div>
+                <div style="padding:16px;background:rgba(57,255,20,0.03);border:1px solid rgba(57,255,20,0.08);">
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--qi-green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">🏕️ Ecological Community</div>
+                    <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">Coastal Plain Hardwood Swamp — deciduous wooded freshwater wetlands of southern NJ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Link -->
+        <div style="background:var(--bg-panel);border:1px solid var(--border-dim);padding:24px 28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+            <div style="font-size:32px;flex-shrink:0;">📋</div>
+            <div style="flex:1;min-width:200px;">
+                <div style="font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:1px;margin-bottom:4px;">Environmental Site Report</div>
+                <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Condensed ecology and regulatory constraints summary — soil, wetlands, hydrology, native species, and site data.</div>
+            </div>
+            <a href="site-ecology-report.pdf" target="_blank" class="btn btn-ghost" style="flex-shrink:0;">📄 View Report (PDF)</a>
         </div>
     </section>
 
