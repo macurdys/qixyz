@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -214,6 +215,139 @@
         .life-chart-wrap::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--qi-green), var(--qi-amber), var(--qi-cyan), transparent); opacity: 0.5; }
         .life-chart-container { height: 280px; position: relative; }
 
+        /* PERMACULTURE PLANNING */
+        .site-map-wrap {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+            margin-bottom: 48px; align-items: start;
+        }
+        .site-map-img-wrap {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 16px; position: relative; overflow: hidden;
+        }
+        .site-map-img-wrap::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--qi-green), var(--qi-amber), transparent); opacity: 0.6; }
+        .site-map-img-wrap img { width: 100%; height: auto; display: block; border: 1px solid rgba(255,255,255,0.04); }
+        .site-map-img-wrap .map-caption {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase; margin-top: 12px;
+            text-align: center;
+        }
+
+        .site-map-legend {
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .legend-item {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 16px 20px; display: flex; align-items: flex-start; gap: 14px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .legend-item:hover { border-color: var(--border-bright); transform: translateX(4px); }
+        .legend-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+        .legend-content {}
+        .legend-name { font-family: var(--font-display); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 2px; }
+        .legend-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; font-weight: 300; }
+
+        /* ZONE CARDS */
+        .zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-bottom: 48px; }
+        .zone-card {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 0; overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+        .zone-card:hover { border-color: var(--border-bright); transform: translateY(-3px); box-shadow: 0 4px 24px rgba(57,255,20,0.04); }
+        .zone-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            display: flex; align-items: center; gap: 14px;
+        }
+        .zone-number {
+            font-family: var(--font-display); font-size: 28px; font-weight: 900;
+            letter-spacing: 2px; line-height: 1; flex-shrink: 0;
+            width: 48px; height: 48px;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid;
+        }
+        .zone-header-text {}
+        .zone-header-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: 1px; }
+        .zone-header-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; margin-top: 2px; }
+        .zone-body { padding: 16px 24px 24px; }
+        .zone-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; font-weight: 300; margin-bottom: 12px; }
+        .zone-items { list-style: none; }
+        .zone-items li {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+            letter-spacing: 0.5px; padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .zone-items li:last-child { border-bottom: none; }
+        .zone-items li::before { content: ''; width: 4px; height: 4px; flex-shrink: 0; }
+
+        .zone-card.z0 .zone-number { color: var(--qi-amber); border-color: rgba(255,184,0,0.4); }
+        .zone-card.z0 .zone-items li::before { background: var(--qi-amber); box-shadow: 0 0 4px rgba(255,184,0,0.4); }
+        .zone-card.z1 .zone-number { color: var(--qi-green); border-color: rgba(57,255,20,0.4); }
+        .zone-card.z1 .zone-items li::before { background: var(--qi-green); box-shadow: 0 0 4px rgba(57,255,20,0.4); }
+        .zone-card.z2 .zone-number { color: var(--qi-cyan); border-color: rgba(0,240,255,0.4); }
+        .zone-card.z2 .zone-items li::before { background: var(--qi-cyan); box-shadow: 0 0 4px rgba(0,240,255,0.4); }
+        .zone-card.z3 .zone-number { color: var(--qi-purple); border-color: rgba(191,90,242,0.4); }
+        .zone-card.z3 .zone-items li::before { background: var(--qi-purple); box-shadow: 0 0 4px rgba(191,90,242,0.4); }
+        .zone-card.z4 .zone-number { color: #c9a84c; border-color: rgba(201,168,76,0.4); }
+        .zone-card.z4 .zone-items li::before { background: #c9a84c; box-shadow: 0 0 4px rgba(201,168,76,0.4); }
+        .zone-card.z5 .zone-number { color: var(--text-dim); border-color: rgba(74,85,104,0.4); }
+        .zone-card.z5 .zone-items li::before { background: var(--text-dim); }
+
+        /* 5-YEAR ROADMAP */
+        .roadmap { position: relative; }
+        .roadmap-year {
+            position: relative; padding-left: 48px; margin-bottom: 40px;
+        }
+        .roadmap-year:last-child { margin-bottom: 0; }
+        .roadmap-year::before {
+            content: ''; position: absolute; left: 18px; top: 40px; bottom: -40px;
+            width: 1px;
+            background: linear-gradient(180deg, var(--qi-green), var(--qi-cyan));
+            opacity: 0.3;
+        }
+        .roadmap-year:last-child::before { display: none; }
+        .roadmap-year-badge {
+            position: absolute; left: 0; top: 0;
+            width: 38px; height: 38px;
+            font-family: var(--font-display); font-size: 11px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            letter-spacing: 1px;
+            border: 2px solid;
+        }
+        .roadmap-year-title {
+            font-family: var(--font-display); font-size: 17px; font-weight: 700;
+            letter-spacing: 2px; margin-bottom: 4px;
+        }
+        .roadmap-year-theme {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px;
+        }
+        .roadmap-items {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+        }
+        .roadmap-item {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 14px 18px; display: flex; align-items: flex-start; gap: 10px;
+            transition: border-color 0.3s;
+        }
+        .roadmap-item:hover { border-color: var(--border-bright); }
+        .roadmap-check { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+        .roadmap-item-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; font-weight: 400; }
+        .roadmap-item.done { opacity: 0.55; }
+        .roadmap-item.done .roadmap-item-text { text-decoration: line-through; }
+
+        .year-1 .roadmap-year-badge { color: var(--qi-green); border-color: rgba(57,255,20,0.4); }
+        .year-2 .roadmap-year-badge { color: var(--qi-cyan); border-color: rgba(0,240,255,0.4); }
+        .year-3 .roadmap-year-badge { color: var(--qi-amber); border-color: rgba(255,184,0,0.4); }
+        .year-4 .roadmap-year-badge { color: var(--qi-purple); border-color: rgba(191,90,242,0.4); }
+        .year-5 .roadmap-year-badge { color: #c9a84c; border-color: rgba(201,168,76,0.4); }
+
+        @media (max-width: 900px) {
+            .site-map-wrap { grid-template-columns: 1fr; }
+        }
+
         /* FAUCET */
         .faucet-panel {
             background: var(--bg-panel); border: 1px solid var(--border-dim);
@@ -348,6 +482,7 @@
         </div>
         <ul class="nav-links" id="navLinks">
             <li><a href="#life-systems" class="active">Life Systems</a></li>
+            <li><a href="#permaculture">Permaculture</a></li>
             <li><a href="#faucet">Faucet</a></li>
             <li><a href="#events">Events</a></li>
             <li><a href="#dao">DAO</a></li>
@@ -488,7 +623,306 @@
 
     <div class="divider"></div>
 
-    <!-- FAUCET -->
+    <!-- PERMACULTURE PLANNING -->
+    <section id="permaculture" class="reveal">
+        <div class="section-label">Permaculture Design</div>
+        <div class="section-title">Site Map — Southampton, NJ</div>
+        <div class="section-desc">The property mapped through a permaculture lens. Every structure, waterway, and canopy is an input-output node in a living thermodynamic system. Zone planning guides where energy flows and where it settles.</div>
+
+        <!-- SITE MAP + LEGEND -->
+        <div class="site-map-wrap">
+            <div class="site-map-img-wrap">
+                <img src="farm-site-map.png" alt="Farm of Qi Site Map — Southampton, NJ" />
+                <div class="map-caption">Farm of Qi — Southampton, NJ — Site Survey v1.0</div>
+            </div>
+            <div class="site-map-legend">
+                <div class="legend-item">
+                    <div class="legend-icon">🏠</div>
+                    <div class="legend-content">
+                        <div class="legend-name" style="color:var(--qi-amber);">Cabin + Solar Array</div>
+                        <div class="legend-desc">Zone 0 — Home base, mining rigs, solar panels, kitchen, seed storage</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">🔥</div>
+                    <div class="legend-content">
+                        <div class="legend-name" style="color:var(--qi-amber);">Fire Pit + Gathering Area</div>
+                        <div class="legend-desc">Event space for fireside talks, workshops, and community meals</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">🛠️</div>
+                    <div class="legend-content">
+                        <div class="legend-name" style="color:var(--qi-cyan);">Wood / Tools / Materials Storage</div>
+                        <div class="legend-desc">West edge infrastructure — lumber, hand tools, building materials, supplies</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">💧</div>
+                    <div class="legend-content">
+                        <div class="legend-name" style="color:var(--qi-water);">Pond + Creek System</div>
+                        <div class="legend-desc">Natural water features — biofilter, aquaculture potential, irrigation source</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">🌲</div>
+                    <div class="legend-content">
+                        <div class="legend-name" style="color:var(--qi-green);">Forest Canopy</div>
+                        <div class="legend-desc">Mixed hardwood — Zone 4/5, mushroom logs, wildlife corridor, carbon sink</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">🅿️</div>
+                    <div class="legend-content">
+                        <div class="legend-name" style="color:var(--text-secondary);">Parking Loop (9 spots)</div>
+                        <div class="legend-desc">Circular driveway with numbered bays — event access and daily use</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">🌿</div>
+                    <div class="legend-content">
+                        <div class="legend-name" style="color:var(--qi-green);">Open Meadow / South Field</div>
+                        <div class="legend-desc">Primary growing zone — annual gardens, event overflow, future greenhouse site</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERMACULTURE ZONES -->
+        <div style="margin-bottom:16px;">
+            <span class="section-label">Permaculture Zones 0–5</span>
+        </div>
+        <div class="zone-grid">
+            <!-- Zone 0 -->
+            <div class="zone-card z0">
+                <div class="zone-header">
+                    <div class="zone-number">Z0</div>
+                    <div class="zone-header-text">
+                        <div class="zone-header-title">The Cabin</div>
+                        <div class="zone-header-sub">Home base — highest energy, daily use</div>
+                    </div>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-desc">The center of the system. The cabin is where energy converts — solar powers the mining rigs, the kitchen processes harvests, and the seed library stores genetic capital.</div>
+                    <ul class="zone-items">
+                        <li>Solar array (12kW) + battery bank</li>
+                        <li>SHA-256 mining rigs (solar-powered)</li>
+                        <li>Kitchen / food processing</li>
+                        <li>Seed library + propagation station</li>
+                        <li>Water filtration + hot water</li>
+                        <li>Tool charging + workshop bench</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Zone 1 -->
+            <div class="zone-card z1">
+                <div class="zone-header">
+                    <div class="zone-number">Z1</div>
+                    <div class="zone-header-text">
+                        <div class="zone-header-title">Inner Garden</div>
+                        <div class="zone-header-sub">Visited daily — herbs, chickens, compost</div>
+                    </div>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-desc">Immediately surrounding the cabin. High-attention crops and animals that need daily interaction. The fire pit and gathering area anchor the social energy here.</div>
+                    <ul class="zone-items">
+                        <li>Herb spiral + kitchen garden</li>
+                        <li>Chicken coop + run (18 hens)</li>
+                        <li>Compost system (3-bin hot compost)</li>
+                        <li>Fire pit + seating circle</li>
+                        <li>Cold frames + season extenders</li>
+                        <li>Rainwater collection (cabin runoff)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Zone 2 -->
+            <div class="zone-card z2">
+                <div class="zone-header">
+                    <div class="zone-number">Z2</div>
+                    <div class="zone-header-text">
+                        <div class="zone-header-title">Annual Gardens + Greenhouse</div>
+                        <div class="zone-header-sub">Visited frequently — main food production</div>
+                    </div>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-desc">The south field and meadow edge. Main vegetable production, mushroom cultivation, and the future greenhouse. Irrigated from the creek system.</div>
+                    <ul class="zone-items">
+                        <li>Raised bed annual gardens</li>
+                        <li>Mushroom fruiting house (oyster + shiitake)</li>
+                        <li>Greenhouse (planned Year 2)</li>
+                        <li>Drip irrigation from creek</li>
+                        <li>Berry hedgerows (blackberry, blueberry)</li>
+                        <li>Pollinator strips + cover crops</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Zone 3 -->
+            <div class="zone-card z3">
+                <div class="zone-header">
+                    <div class="zone-number">Z3</div>
+                    <div class="zone-header-text">
+                        <div class="zone-header-title">Orchard + Pond Edge</div>
+                        <div class="zone-header-sub">Weekly attention — perennials, aquaculture</div>
+                    </div>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-desc">The pond, creek edge, and orchard plantings. Perennial food systems that build over years. Less daily labor, more long-term yield stacking.</div>
+                    <ul class="zone-items">
+                        <li>Fruit trees — apple, pear, peach, fig</li>
+                        <li>Nut trees — chestnut, hazelnut</li>
+                        <li>Pond edge — aquaculture potential</li>
+                        <li>Creek-side biofilter plantings</li>
+                        <li>Nitrogen-fixing support species</li>
+                        <li>Duck integration (planned Year 3)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Zone 4 -->
+            <div class="zone-card z4">
+                <div class="zone-header">
+                    <div class="zone-number">Z4</div>
+                    <div class="zone-header-text">
+                        <div class="zone-header-title">Managed Forest</div>
+                        <div class="zone-header-sub">Seasonal visits — timber, mushroom logs, foraging</div>
+                    </div>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-desc">The woodland edges and managed canopy. Selective thinning for mushroom log production, firewood, and wildlife habitat improvement. Low-intervention, high yield over time.</div>
+                    <ul class="zone-items">
+                        <li>Shiitake log inoculation yards</li>
+                        <li>Firewood coppice + woodlot</li>
+                        <li>Wild edible foraging zones</li>
+                        <li>Lumber storage (west edge)</li>
+                        <li>Wildlife corridors + nesting boxes</li>
+                        <li>Maple tapping (seasonal)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Zone 5 -->
+            <div class="zone-card z5">
+                <div class="zone-header">
+                    <div class="zone-number">Z5</div>
+                    <div class="zone-header-text">
+                        <div class="zone-header-title">Wild Zone</div>
+                        <div class="zone-header-sub">Observation only — the untouched reference</div>
+                    </div>
+                </div>
+                <div class="zone-body">
+                    <div class="zone-desc">The deep forest and undisturbed areas. No intervention — this is the control, the reference ecosystem. Observe, learn, and let nature demonstrate what climax looks like.</div>
+                    <ul class="zone-items">
+                        <li>Unmanaged deep forest canopy</li>
+                        <li>Wildlife observation + camera traps</li>
+                        <li>Soil biology reference samples</li>
+                        <li>Biodiversity audit (annual)</li>
+                        <li>Carbon sequestration baseline</li>
+                        <li>Meditation + forest bathing trails</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-YEAR ROADMAP -->
+        <div style="margin-bottom:16px;">
+            <span class="section-label">5-Year Permaculture Roadmap</span>
+        </div>
+        <div class="section-desc" style="margin-bottom:32px;">From site assessment to food forest maturity. Each year builds on the last — stacking functions, adding perennials, deepening soil, and expanding the energy-money loop.</div>
+
+        <div class="roadmap">
+            <!-- Year 1 -->
+            <div class="roadmap-year year-1">
+                <div class="roadmap-year-badge">Y1</div>
+                <div class="roadmap-year-title" style="color:var(--qi-green);">2025 — Foundation</div>
+                <div class="roadmap-year-theme">Observe, Map, Build Core Infrastructure</div>
+                <div class="roadmap-items">
+                    <div class="roadmap-item done"><span class="roadmap-check">✅</span><span class="roadmap-item-text">Complete site survey + base map</span></div>
+                    <div class="roadmap-item done"><span class="roadmap-check">✅</span><span class="roadmap-item-text">Install solar array (12kW)</span></div>
+                    <div class="roadmap-item done"><span class="roadmap-check">✅</span><span class="roadmap-item-text">Establish chicken coop (18 hens)</span></div>
+                    <div class="roadmap-item done"><span class="roadmap-check">✅</span><span class="roadmap-item-text">Build 3-bin compost system</span></div>
+                    <div class="roadmap-item done"><span class="roadmap-check">✅</span><span class="roadmap-item-text">Set up mining rigs on solar power</span></div>
+                    <div class="roadmap-item done"><span class="roadmap-check">✅</span><span class="roadmap-item-text">First mushroom log inoculation</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Full-season soil tests (all zones)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Water flow mapping (rain + creek)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Plant first berry hedgerows</span></div>
+                </div>
+            </div>
+
+            <!-- Year 2 -->
+            <div class="roadmap-year year-2">
+                <div class="roadmap-year-badge">Y2</div>
+                <div class="roadmap-year-title" style="color:var(--qi-cyan);">2026 — Growing Systems</div>
+                <div class="roadmap-year-theme">Annual Production + Greenhouse + Water Management</div>
+                <div class="roadmap-items">
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Build greenhouse on south field</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Install rainwater harvesting tanks</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Expand raised beds — full annual garden</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Creek biofilter installation</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Mushroom fruiting house (indoor)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Plant 20 fruit + nut trees (Zone 3)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Drip irrigation from creek to gardens</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Expand chicken run to 30 hens</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Host first Spring Equinox Market</span></div>
+                </div>
+            </div>
+
+            <!-- Year 3 -->
+            <div class="roadmap-year year-3">
+                <div class="roadmap-year-badge">Y3</div>
+                <div class="roadmap-year-title" style="color:var(--qi-amber);">2027 — Perennial Stacking</div>
+                <div class="roadmap-year-theme">Food Forest Layers + Aquaculture + Animal Integration</div>
+                <div class="roadmap-items">
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Establish food forest guild plantings</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Introduce ducks to pond system</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Aquaponics greenhouse module</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Undersow nitrogen-fixers in orchard</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Bee hives — 4 colonies minimum</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">First maple tap season (Zone 4)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Expand solar to 20kW + battery</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Open-source farm dashboard live</span></div>
+                </div>
+            </div>
+
+            <!-- Year 4 -->
+            <div class="roadmap-year year-4">
+                <div class="roadmap-year-badge">Y4</div>
+                <div class="roadmap-year-title" style="color:var(--qi-purple);">2028 — Yield Maturity</div>
+                <div class="roadmap-year-theme">First Significant Harvests + Revenue Streams</div>
+                <div class="roadmap-items">
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">First fruit tree harvests (apple, peach)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Mushroom production at commercial scale</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Farm-to-table events (monthly)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">CSA / farm share program launch</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Honey harvest — first extraction</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Apprenticeship program (Qi-funded)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Value-add products: dried mushrooms, preserves</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Annual biodiversity audit (Zone 5)</span></div>
+                </div>
+            </div>
+
+            <!-- Year 5 -->
+            <div class="roadmap-year year-5">
+                <div class="roadmap-year-badge">Y5</div>
+                <div class="roadmap-year-title" style="color:#c9a84c;">2029 — Closed Loop</div>
+                <div class="roadmap-year-theme">Self-Sustaining System + Replicate the Model</div>
+                <div class="roadmap-items">
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Farm operating costs covered by yield + Qi</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Full food forest canopy established</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Net-zero energy (solar + mining revenue)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Water system fully closed loop</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Publish Farm of Qi playbook (open source)</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Scout second site for replication</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">DAO treasury self-funding via farm revenue</span></div>
+                    <div class="roadmap-item"><span class="roadmap-check">🔲</span><span class="roadmap-item-text">Thermodynamic farm audit — full energy balance</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
     <section id="faucet" class="reveal">
         <div class="section-label">Farm Faucet</div>
         <div class="section-title">Earn Qi by Farming</div>
