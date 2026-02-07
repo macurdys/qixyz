@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm of Qi — Permaculture × Energy Money</title>
+    <meta name="description" content="Event space. Permaculture farm. DAO guild hall. Grow life systems, earn Qi, gather around the fire.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='12' font-weight='bold' fill='%2339FF14'%3E🌱%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-green-dim: rgba(57, 255, 20, 0.12);
+            --qi-green-glow: rgba(57, 255, 20, 0.4);
+            --qi-purple: #bf5af2;
+            --qi-earth: #8B6914;
+            --qi-earth-dim: rgba(139, 105, 20, 0.15);
+            --qi-soil: #5C4033;
+            --qi-leaf: #4CAF50;
+            --qi-water: #2196F3;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(57, 255, 20, 0.10);
+            --border-bright: rgba(57, 255, 20, 0.28);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-green) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(57, 255, 20, 0.006) 2px, rgba(57, 255, 20, 0.006) 4px);
+            pointer-events: none; z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(57,255,20,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(57,255,20,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.4; z-index: 0; pointer-events: none;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.88); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-left { display: flex; align-items: center; gap: 20px; }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-green); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-green-glow); }
+        .nav-divider { width: 1px; height: 24px; background: var(--border-bright); }
+        .nav-subtitle { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); letter-spacing: 3px; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 28px; list-style: none; }
+        .nav-links a { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--qi-green); text-shadow: 0 0 10px var(--qi-green-glow); }
+        .nav-toggle { display: none; background: none; border: 1px solid var(--border-bright); color: var(--qi-green); padding: 6px 12px; font-family: var(--font-mono); font-size: 11px; cursor: pointer; letter-spacing: 2px; }
+
+        /* HERO */
+        .hero {
+            position: relative; z-index: 1;
+            min-height: 90vh;
+            display: flex; align-items: flex-end;
+            overflow: hidden;
+        }
+        .hero-img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: center 30%;
+            filter: brightness(0.55) saturate(1.1);
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg,
+                rgba(6,8,13,0.2) 0%,
+                rgba(6,8,13,0.1) 40%,
+                rgba(6,8,13,0.6) 70%,
+                rgba(6,8,13,0.97) 92%,
+                rgba(6,8,13,1) 100%
+            );
+        }
+        .hero-content {
+            position: relative; z-index: 2;
+            width: 100%; max-width: 1400px; margin: 0 auto;
+            padding: 0 40px 64px;
+        }
+        .hero-tag {
+            font-family: var(--font-mono); font-size: 11px; color: var(--qi-green);
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.2s;
+        }
+        .hero-tag::before { content: '🌱'; font-size: 14px; }
+        .hero h1 {
+            font-family: var(--font-display); font-size: clamp(40px, 7vw, 80px);
+            font-weight: 900; letter-spacing: 8px; line-height: 1.05; margin-bottom: 16px;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.4s;
+        }
+        .hero h1 .accent { color: var(--qi-green); text-shadow: 0 0 40px var(--qi-green-glow), 0 0 80px rgba(57,255,20,0.15); }
+        .hero h1 .amber { color: var(--qi-amber); text-shadow: 0 0 30px rgba(255,184,0,0.3); }
+        .hero-desc {
+            font-size: clamp(16px, 2vw, 20px); font-weight: 300; color: var(--text-secondary);
+            max-width: 650px; line-height: 1.7; margin-bottom: 28px;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.6s;
+        }
+        .hero-ctas {
+            display: flex; gap: 14px; flex-wrap: wrap;
+            opacity: 0; animation: fadeUp 0.7s ease forwards 0.8s;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; padding: 12px 28px; transition: all 0.3s; cursor: pointer; display: inline-block; }
+        .btn-primary { background: var(--qi-green); color: var(--bg-deep); border: 1px solid var(--qi-green); box-shadow: 0 0 20px rgba(57,255,20,0.2); font-weight: 700; }
+        .btn-primary:hover { box-shadow: 0 0 40px rgba(57,255,20,0.4); transform: translateY(-2px); }
+        .btn-ghost { background: transparent; color: var(--qi-green); border: 1px solid var(--border-bright); }
+        .btn-ghost:hover { background: var(--qi-green-dim); border-color: var(--qi-green); }
+        .btn-amber { background: transparent; color: var(--qi-amber); border: 1px solid rgba(255,184,0,0.3); }
+        .btn-amber:hover { background: var(--qi-amber-dim); border-color: var(--qi-amber); }
+
+        /* SECTION COMMON */
+        .divider { max-width: 1400px; margin: 0 auto; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); position: relative; z-index: 1; }
+        section { position: relative; z-index: 1; padding: 80px 40px; max-width: 1400px; margin: 0 auto; }
+        .section-label { font-family: var(--font-mono); font-size: 11px; color: var(--qi-green); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+        .section-label::before { content: '// '; color: var(--text-dim); }
+        .section-title { font-family: var(--font-display); font-size: clamp(24px, 3.5vw, 40px); font-weight: 700; letter-spacing: 2px; margin-bottom: 16px; line-height: 1.2; }
+        .section-desc { font-size: 17px; font-weight: 300; color: var(--text-secondary); max-width: 680px; margin-bottom: 48px; line-height: 1.8; }
+
+        /* MISSION PILLARS */
+        .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .pillar {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 32px 28px; position: relative; overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+        .pillar::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; opacity: 0.6; }
+        .pillar:hover { border-color: var(--border-bright); transform: translateY(-4px); box-shadow: 0 0 30px rgba(57,255,20,0.05); }
+        .pillar.green::before { background: linear-gradient(90deg, transparent, var(--qi-green), transparent); }
+        .pillar.amber::before { background: linear-gradient(90deg, transparent, var(--qi-amber), transparent); }
+        .pillar.cyan::before { background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); }
+        .pillar.purple::before { background: linear-gradient(90deg, transparent, var(--qi-purple), transparent); }
+        .pillar-icon { font-size: 28px; margin-bottom: 16px; }
+        .pillar h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; }
+        .pillar p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; font-weight: 300; }
+        .pillar-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+        .ptag { font-family: var(--font-mono); font-size: 8px; letter-spacing: 2px; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--border-dim); color: var(--text-dim); }
+        .ptag.green { border-color: rgba(57,255,20,0.25); color: var(--qi-green); }
+        .ptag.amber { border-color: rgba(255,184,0,0.25); color: var(--qi-amber); }
+        .ptag.cyan { border-color: rgba(0,240,255,0.25); color: var(--qi-cyan); }
+        .ptag.purple { border-color: rgba(191,90,242,0.25); color: var(--qi-purple); }
+
+        /* LIFE SYSTEMS DASHBOARD */
+        .life-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .life-card {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 24px 20px; position: relative; overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .life-card:hover { border-color: var(--border-bright); }
+        .life-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; }
+        .life-icon { font-size: 24px; margin-bottom: 10px; }
+        .life-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }
+        .life-value { font-family: var(--font-display); font-size: 26px; font-weight: 700; letter-spacing: 1px; }
+        .life-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
+        .life-bar { height: 3px; background: rgba(255,255,255,0.04); margin-top: 12px; border-radius: 2px; overflow: hidden; }
+        .life-bar-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+
+        .life-card.mushroom::before { background: linear-gradient(90deg, transparent, #8B6914, transparent); }
+        .life-card.mushroom .life-value { color: #c9a84c; }
+        .life-card.mushroom .life-bar-fill { background: #c9a84c; }
+
+        .life-card.eggs::before { background: linear-gradient(90deg, transparent, var(--qi-amber), transparent); }
+        .life-card.eggs .life-value { color: var(--qi-amber); }
+        .life-card.eggs .life-bar-fill { background: var(--qi-amber); }
+
+        .life-card.water::before { background: linear-gradient(90deg, transparent, var(--qi-water), transparent); }
+        .life-card.water .life-value { color: var(--qi-water); }
+        .life-card.water .life-bar-fill { background: var(--qi-water); }
+
+        .life-card.solar::before { background: linear-gradient(90deg, transparent, var(--qi-amber), transparent); }
+        .life-card.solar .life-value { color: var(--qi-amber); }
+        .life-card.solar .life-bar-fill { background: var(--qi-amber); }
+
+        .life-card.qi-mined::before { background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); }
+        .life-card.qi-mined .life-value { color: var(--qi-cyan); }
+        .life-card.qi-mined .life-bar-fill { background: var(--qi-cyan); }
+
+        .life-card.visitors::before { background: linear-gradient(90deg, transparent, var(--qi-green), transparent); }
+        .life-card.visitors .life-value { color: var(--qi-green); }
+        .life-card.visitors .life-bar-fill { background: var(--qi-green); }
+
+        /* LIFE SYSTEMS CHART */
+        .life-chart-wrap {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 24px; position: relative; overflow: hidden;
+        }
+        .life-chart-wrap::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--qi-green), var(--qi-amber), var(--qi-cyan), transparent); opacity: 0.5; }
+        .life-chart-container { height: 280px; position: relative; }
+
+        /* FAUCET */
+        .faucet-panel {
+            background: var(--bg-panel); border: 1px solid var(--border-dim);
+            padding: 40px; position: relative; overflow: hidden;
+        }
+        .faucet-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--qi-green), var(--qi-cyan), var(--qi-amber)); }
+        .faucet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+        .faucet-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+        .faucet-balance {
+            font-family: var(--font-display); font-size: 18px; font-weight: 700;
+            color: var(--qi-cyan); letter-spacing: 1px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .faucet-balance .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--qi-green); box-shadow: 0 0 8px var(--qi-green-glow); animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+        .earn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+        .earn-card {
+            border: 1px solid var(--border-dim); padding: 24px;
+            background: var(--bg-card); transition: all 0.3s; cursor: pointer;
+        }
+        .earn-card:hover { border-color: var(--qi-green); background: var(--qi-green-dim); transform: translateY(-2px); }
+        .earn-emoji { font-size: 24px; margin-bottom: 10px; }
+        .earn-action { font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: 1px; margin-bottom: 6px; }
+        .earn-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; font-weight: 300; margin-bottom: 10px; }
+        .earn-reward { font-family: var(--font-mono); font-size: 12px; color: var(--qi-green); letter-spacing: 1px; }
+
+        /* EVENTS SCHEDULE */
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+        .event-card {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 0; overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+        .event-card:hover { border-color: var(--border-bright); transform: translateY(-4px); box-shadow: 0 4px 30px rgba(57,255,20,0.06); }
+        .event-accent { height: 3px; }
+        .event-accent.green { background: var(--qi-green); }
+        .event-accent.amber { background: var(--qi-amber); }
+        .event-accent.cyan { background: var(--qi-cyan); }
+        .event-accent.purple { background: var(--qi-purple); }
+        .event-body { padding: 24px; }
+        .event-date-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .event-date { font-family: var(--font-mono); font-size: 11px; color: var(--qi-green); letter-spacing: 2px; }
+        .event-type {
+            font-family: var(--font-mono); font-size: 8px; letter-spacing: 2px;
+            text-transform: uppercase; padding: 3px 10px;
+            border: 1px solid var(--border-dim); color: var(--text-dim);
+        }
+        .event-type.workshop { border-color: rgba(57,255,20,0.3); color: var(--qi-green); }
+        .event-type.social { border-color: rgba(255,184,0,0.3); color: var(--qi-amber); }
+        .event-type.dao { border-color: rgba(0,240,255,0.3); color: var(--qi-cyan); }
+        .event-type.market { border-color: rgba(191,90,242,0.3); color: var(--qi-purple); }
+        .event-type.demo { border-color: rgba(255,51,102,0.3); color: var(--qi-red); }
+        .event-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
+        .event-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; font-weight: 300; margin-bottom: 14px; }
+        .event-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+        .event-meta-item { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        /* DAO ACTIVITY */
+        .dao-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .dao-panel {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 28px 24px; position: relative; overflow: hidden;
+        }
+        .dao-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--qi-purple), transparent); opacity: 0.5; }
+        .dao-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px; color: var(--qi-purple); text-transform: uppercase; margin-bottom: 16px; }
+        .dao-title::before { content: '// '; color: var(--text-dim); }
+        .proposal {
+            padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .proposal:last-child { border-bottom: none; }
+        .proposal-name { font-family: var(--font-body); font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+        .proposal-meta { display: flex; gap: 12px; align-items: center; }
+        .proposal-status { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; padding: 2px 8px; }
+        .proposal-status.active { border: 1px solid rgba(57,255,20,0.3); color: var(--qi-green); }
+        .proposal-status.passed { border: 1px solid rgba(0,240,255,0.3); color: var(--qi-cyan); }
+        .proposal-status.pending { border: 1px solid rgba(255,184,0,0.3); color: var(--qi-amber); }
+        .proposal-votes { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        .treasury-stat { margin-bottom: 20px; }
+        .treasury-stat:last-child { margin-bottom: 0; }
+        .treasury-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; }
+        .treasury-value { font-family: var(--font-display); font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+        .treasury-bar { height: 3px; background: rgba(255,255,255,0.04); margin-top: 8px; border-radius: 2px; overflow: hidden; }
+        .treasury-bar-fill { height: 100%; border-radius: 2px; }
+
+        /* FOOTER */
+        footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border-dim);
+            padding: 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1400px; margin: 0 auto;
+        }
+        .footer-logo { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--qi-green); letter-spacing: 4px; text-shadow: 0 0 10px var(--qi-green-glow); }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--qi-green); }
+        .footer-copy { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .dao-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: rgba(6,8,13,0.95); backdrop-filter: blur(20px); padding: 24px; gap: 20px; border-bottom: 1px solid var(--border-dim); }
+            .nav-toggle { display: block; }
+            .nav-subtitle { display: none; }
+            section { padding: 60px 20px; }
+            .hero-content { padding: 0 20px 48px; }
+            .events-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+        }
+
+        /* SCROLL ANIMATIONS */
+        .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-left">
+            <a href="#" class="nav-logo">🌱 FoQ</a>
+            <div class="nav-divider"></div>
+            <span class="nav-subtitle">Farm of Qi</span>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#life-systems" class="active">Life Systems</a></li>
+            <li><a href="#faucet">Faucet</a></li>
+            <li><a href="#events">Events</a></li>
+            <li><a href="#dao">DAO</a></li>
+        </ul>
+        <button class="nav-toggle" id="navToggle">MENU</button>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" style="padding: 0; max-width: none;">
+        <img src="farm-of-qi.png" alt="Farm of Qi — Gathering around the fire" class="hero-img" />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-tag">Proto-11 — Permaculture × Energy Money</div>
+            <h1>FARM OF <span class="accent">QI</span></h1>
+            <p class="hero-desc">Event space. Permaculture farm. DAO guild hall. Where life systems meet energy money — grow food, mine Qi, and gather around the fire.</p>
+            <div class="hero-ctas">
+                <a href="#events" class="btn btn-primary">Upcoming Events</a>
+                <a href="#faucet" class="btn btn-ghost">Earn Qi</a>
+                <a href="#life-systems" class="btn btn-amber">Life Systems ↓</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSION PILLARS -->
+    <section class="reveal">
+        <div class="section-label">What Is Farm of Qi?</div>
+        <div class="section-title">Four Pillars of the Farm</div>
+        <div class="section-desc">A living laboratory where thermodynamic principles meet dirt, sunlight, and community. Every output is measured, every input honored.</div>
+        <div class="pillars">
+            <div class="pillar green">
+                <div class="pillar-icon">🌿</div>
+                <h3>Permaculture Farm</h3>
+                <p>Closed-loop food production — mushrooms, chickens, composting, aquaponics. Learn regenerative growing systems rooted in thermodynamic efficiency.</p>
+                <div class="pillar-tags">
+                    <span class="ptag green">Mushrooms</span>
+                    <span class="ptag green">Chickens</span>
+                    <span class="ptag green">Aquaponics</span>
+                    <span class="ptag">Composting</span>
+                </div>
+            </div>
+            <div class="pillar amber">
+                <div class="pillar-icon">🔥</div>
+                <h3>Event Space</h3>
+                <p>Campfire talks, hackathons, workshops, seasonal markets. A gathering point for ecosystem builders, farmers, and founders alike.</p>
+                <div class="pillar-tags">
+                    <span class="ptag amber">Fireside Talks</span>
+                    <span class="ptag amber">Hackathons</span>
+                    <span class="ptag">Workshops</span>
+                </div>
+            </div>
+            <div class="pillar cyan">
+                <div class="pillar-icon">⛏️</div>
+                <h3>Energy Infrastructure</h3>
+                <p>Solar arrays power mining rigs and farm systems. The sun grows the food and mines the money. One energy source, two outputs.</p>
+                <div class="pillar-tags">
+                    <span class="ptag cyan">Solar</span>
+                    <span class="ptag cyan">Mining</span>
+                    <span class="ptag">Grid-Tied</span>
+                </div>
+            </div>
+            <div class="pillar purple">
+                <div class="pillar-icon">🏛️</div>
+                <h3>DAO Governance</h3>
+                <p>Community-governed treasury. Proposals for farm expansion, event programming, and product launches. Qi holders vote, the farm grows.</p>
+                <div class="pillar-tags">
+                    <span class="ptag purple">Treasury</span>
+                    <span class="ptag purple">Proposals</span>
+                    <span class="ptag">Voting</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- LIFE SYSTEMS -->
+    <section id="life-systems" class="reveal">
+        <div class="section-label">Life Systems Output</div>
+        <div class="section-title">What the Farm Produces</div>
+        <div class="section-desc">Every system measured. Biological yield, energy capture, water treatment, and human connection — tracked monthly like a balance sheet for life.</div>
+
+        <div class="life-grid">
+            <div class="life-card mushroom">
+                <div class="life-icon">🍄</div>
+                <div class="life-label">Mushroom Yield</div>
+                <div class="life-value">184 lbs</div>
+                <div class="life-sub">Feb 2026 — Oyster + Shiitake</div>
+                <div class="life-bar"><div class="life-bar-fill" style="width:72%;background:#c9a84c;"></div></div>
+            </div>
+            <div class="life-card eggs">
+                <div class="life-icon">🥚</div>
+                <div class="life-label">Chicken Eggs</div>
+                <div class="life-value">1,240</div>
+                <div class="life-sub">Feb 2026 — 18 hens active</div>
+                <div class="life-bar"><div class="life-bar-fill" style="width:85%;background:var(--qi-amber);"></div></div>
+            </div>
+            <div class="life-card water">
+                <div class="life-icon">💧</div>
+                <div class="life-label">Water Cleaned</div>
+                <div class="life-value">8,400 gal</div>
+                <div class="life-sub">Feb 2026 — Biofilter system</div>
+                <div class="life-bar"><div class="life-bar-fill" style="width:68%;background:var(--qi-water);"></div></div>
+            </div>
+            <div class="life-card solar">
+                <div class="life-icon">☀️</div>
+                <div class="life-label">Solar kWh Produced</div>
+                <div class="life-value">3,180 kWh</div>
+                <div class="life-sub">Feb 2026 — 12kW array</div>
+                <div class="life-bar"><div class="life-bar-fill" style="width:58%;background:var(--qi-amber);"></div></div>
+            </div>
+            <div class="life-card qi-mined">
+                <div class="life-icon">⛏️</div>
+                <div class="life-label">Qi Mined</div>
+                <div class="life-value">42,800 QI</div>
+                <div class="life-sub">Feb 2026 — Solar-powered PoW</div>
+                <div class="life-bar"><div class="life-bar-fill" style="width:77%;background:var(--qi-cyan);"></div></div>
+            </div>
+            <div class="life-card visitors">
+                <div class="life-icon">👥</div>
+                <div class="life-label">Human Visitors</div>
+                <div class="life-value">312</div>
+                <div class="life-sub">Feb 2026 — Events + drop-ins</div>
+                <div class="life-bar"><div class="life-bar-fill" style="width:64%;background:var(--qi-green);"></div></div>
+            </div>
+        </div>
+
+        <!-- Life Systems Multi-Month Chart -->
+        <div class="life-chart-wrap">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--qi-green);letter-spacing:3px;text-transform:uppercase;">Monthly Output — 6 Month Trend</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:1px;">SEPT 2025 → FEB 2026</span>
+            </div>
+            <div class="life-chart-container">
+                <canvas id="lifeChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FAUCET -->
+    <section id="faucet" class="reveal">
+        <div class="section-label">Farm Faucet</div>
+        <div class="section-title">Earn Qi by Farming</div>
+        <div class="section-desc">The faucet rewards real-world contribution. Show up, grow something, build something, teach something — earn Qi for adding energy to the system.</div>
+
+        <div class="faucet-panel">
+            <div class="faucet-header">
+                <div class="faucet-title">🚰 Qi Faucet — Season 3</div>
+                <div class="faucet-balance">
+                    <span class="pulse"></span>
+                    Pool: 500,000 QI remaining
+                </div>
+            </div>
+            <div class="earn-grid">
+                <div class="earn-card">
+                    <div class="earn-emoji">🌱</div>
+                    <div class="earn-action">Plant & Harvest</div>
+                    <div class="earn-desc">Contribute to a growing cycle. Plant seedlings, tend beds, harvest produce. Verified by farm stewards.</div>
+                    <div class="earn-reward">+50 QI / session</div>
+                </div>
+                <div class="earn-card">
+                    <div class="earn-emoji">🎤</div>
+                    <div class="earn-action">Host a Fireside Talk</div>
+                    <div class="earn-desc">Lead a campfire session on any topic — crypto, farming, philosophy, building. Community votes on quality.</div>
+                    <div class="earn-reward">+200 QI / talk</div>
+                </div>
+                <div class="earn-card">
+                    <div class="earn-emoji">🛠️</div>
+                    <div class="earn-action">Build Infrastructure</div>
+                    <div class="earn-desc">Install solar panels, fix irrigation, build chicken coops, wire mining rigs. Physical proof-of-work.</div>
+                    <div class="earn-reward">+300 QI / project</div>
+                </div>
+                <div class="earn-card">
+                    <div class="earn-emoji">📚</div>
+                    <div class="earn-action">Teach a Workshop</div>
+                    <div class="earn-desc">Run a hands-on class — mushroom cultivation, composting, basic electronics, thermoeconomics 101.</div>
+                    <div class="earn-reward">+150 QI / class</div>
+                </div>
+                <div class="earn-card">
+                    <div class="earn-emoji">🧹</div>
+                    <div class="earn-action">Farm Stewardship</div>
+                    <div class="earn-desc">Daily chores — feed chickens, check water filters, monitor solar output, compost runs. Keep the farm alive.</div>
+                    <div class="earn-reward">+25 QI / day</div>
+                </div>
+                <div class="earn-card">
+                    <div class="earn-emoji">🤝</div>
+                    <div class="earn-action">Bring a New Visitor</div>
+                    <div class="earn-desc">Introduce someone new to the Farm of Qi. First-timers get a guided tour and both of you earn Qi.</div>
+                    <div class="earn-reward">+75 QI / referral</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- EVENTS SCHEDULE -->
+    <section id="events" class="reveal">
+        <div class="section-label">Upcoming Events</div>
+        <div class="section-title">The Gathering Calendar</div>
+        <div class="section-desc">Seasonal markets, fireside talks, hackathons, and workshops. Every event is a node in the social graph — come build, learn, and earn.</div>
+
+        <div class="events-grid" id="eventsGrid"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- DAO ACTIVITY -->
+    <section id="dao" class="reveal">
+        <div class="section-label">DAO Governance</div>
+        <div class="section-title">Community Decides</div>
+        <div class="section-desc">Qi holders govern the farm's direction — from new crop rotations to event budgets. Every proposal on-chain, every vote transparent.</div>
+
+        <div class="dao-row">
+            <div class="dao-panel">
+                <div class="dao-title">Active Proposals</div>
+                <div id="proposalsList"></div>
+            </div>
+            <div class="dao-panel">
+                <div class="dao-title">Farm Treasury</div>
+                <div class="treasury-stat">
+                    <div class="treasury-label">Total Holdings</div>
+                    <div class="treasury-value" style="color: var(--qi-cyan);">1,240,000 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:100%;background:var(--qi-cyan);"></div></div>
+                </div>
+                <div class="treasury-stat">
+                    <div class="treasury-label">Allocated This Season</div>
+                    <div class="treasury-value" style="color: var(--qi-amber);">380,000 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:30.6%;background:var(--qi-amber);"></div></div>
+                </div>
+                <div class="treasury-stat">
+                    <div class="treasury-label">Faucet Pool Remaining</div>
+                    <div class="treasury-value" style="color: var(--qi-green);">500,000 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:40.3%;background:var(--qi-green);"></div></div>
+                </div>
+                <div class="treasury-stat">
+                    <div class="treasury-label">Staked by Members</div>
+                    <div class="treasury-value" style="color: var(--qi-purple);">820,000 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:66.1%;background:var(--qi-purple);"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <span class="footer-logo">FARM OF QI</span>
+        <div class="footer-links">
+            <a href="#">Qi.xyz</a>
+            <a href="#">Thermoeconomics</a>
+            <a href="#">American Energy Money</a>
+        </div>
+        <span class="footer-copy">Permaculture × Energy Money — Since 2025</span>
+    </footer>
+
+    <script>
+    // ========================================
+    // DATA
+    // ========================================
+
+    const EVENTS = [
+        { date: 'FEB 15, 2026', time: '6:00 PM', title: 'Fireside: Thermoeconomics 101', desc: 'Introduction to energy-based monetary theory. Why thermodynamics is the foundation of sound money. Campfire format, bring questions.', type: 'social', color: 'amber', capacity: '30 seats', location: 'Main Fire Pit' },
+        { date: 'FEB 22, 2026', time: '10:00 AM', title: 'Mushroom Cultivation Workshop', desc: 'Hands-on oyster mushroom growing — substrate prep, inoculation, fruiting chamber construction. Take home a grow bag.', type: 'workshop', color: 'green', capacity: '15 seats', location: 'Greenhouse' },
+        { date: 'MAR 01, 2026', time: '2:00 PM', title: 'DAO Town Hall — Season 4 Planning', desc: 'Community vote on next season\'s priorities. Farm expansion proposals, event calendar, and faucet pool allocation.', type: 'dao', color: 'cyan', capacity: 'Open', location: 'Barn + Virtual' },
+        { date: 'MAR 08, 2026', time: '9:00 AM', title: 'Spring Equinox Market', desc: 'Seasonal farmers market — farm produce, local crafts, Qi-native vendors. Live music, food trucks, and solar-powered mining demo.', type: 'market', color: 'purple', capacity: '200+', location: 'South Field' },
+        { date: 'MAR 15, 2026', time: '10:00 AM', title: 'Solar + Mining Build Day', desc: 'Hands-on infrastructure day. Help install new solar panels and wire mining rigs. Physical proof-of-work, earn 300 Qi.', type: 'workshop', color: 'green', capacity: '20 spots', location: 'Energy Barn' },
+        { date: 'MAR 22, 2026', time: '5:00 PM', title: 'Ecosystem Demo Night', desc: 'Builders showcase products and prototypes built on Quai/Qi. Pitch format, community feedback, followed by campfire.', type: 'demo', color: 'amber', capacity: '50 seats', location: 'Main Barn' },
+        { date: 'APR 05, 2026', time: '11:00 AM', title: 'Permaculture Design Intensive', desc: 'Full-day course on closed-loop food systems design. Soil biology, water management, companion planting, and energy flows.', type: 'workshop', color: 'green', capacity: '12 seats', location: 'Classroom + Fields' },
+        { date: 'APR 19, 2026', time: '6:00 PM', title: 'Fireside: From Big Bang to Blockchain', desc: 'Watch party + discussion of the video series with Dr. Karl Kreder. From cosmology to consensus under the stars.', type: 'social', color: 'amber', capacity: '40 seats', location: 'Main Fire Pit' },
+    ];
+
+    const PROPOSALS = [
+        { name: 'FoQ-12: Expand chicken run to 30 hens', status: 'active', votes: '1,840 / 2,500 QI' },
+        { name: 'FoQ-11: Fund Spring Equinox Market ($2,400)', status: 'passed', votes: '3,100 / 3,100 QI' },
+        { name: 'FoQ-10: Install rainwater harvesting tanks', status: 'active', votes: '980 / 2,000 QI' },
+        { name: 'FoQ-09: Open source farm dashboard code', status: 'passed', votes: '2,700 / 2,700 QI' },
+        { name: 'FoQ-08: Add aquaponics greenhouse module', status: 'pending', votes: 'Voting opens Mar 1' },
+    ];
+
+    // Life Systems Monthly Data (6 months)
+    const MONTHS = ['Sep 25', 'Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26'];
+    const LIFE_DATA = {
+        mushrooms: [120, 145, 130, 160, 172, 184],
+        eggs:      [980, 1050, 1100, 1180, 1210, 1240],
+        water:     [6200, 6800, 7100, 7500, 8000, 8400],
+        solar:     [4200, 3800, 2900, 2400, 2800, 3180],
+        qi:        [28000, 32000, 35000, 38000, 40200, 42800],
+        visitors:  [180, 210, 195, 240, 280, 312],
+    };
+
+    // ========================================
+    // RENDER: Events
+    // ========================================
+    const eventsGrid = document.getElementById('eventsGrid');
+    EVENTS.forEach(e => {
+        eventsGrid.innerHTML += `
+            <div class="event-card">
+                <div class="event-accent ${e.color}"></div>
+                <div class="event-body">
+                    <div class="event-date-row">
+                        <span class="event-date">${e.date} · ${e.time}</span>
+                        <span class="event-type ${e.type}">${e.type}</span>
+                    </div>
+                    <div class="event-title">${e.title}</div>
+                    <div class="event-desc">${e.desc}</div>
+                    <div class="event-meta">
+                        <span class="event-meta-item">📍 ${e.location}</span>
+                        <span class="event-meta-item">🪑 ${e.capacity}</span>
+                    </div>
+                </div>
+            </div>`;
+    });
+
+    // ========================================
+    // RENDER: Proposals
+    // ========================================
+    const proposalsList = document.getElementById('proposalsList');
+    PROPOSALS.forEach(p => {
+        proposalsList.innerHTML += `
+            <div class="proposal">
+                <div class="proposal-name">${p.name}</div>
+                <div class="proposal-meta">
+                    <span class="proposal-status ${p.status}">${p.status.toUpperCase()}</span>
+                    <span class="proposal-votes">${p.votes}</span>
+                </div>
+            </div>`;
+    });
+
+    // ========================================
+    // CHART: Life Systems Trend
+    // ========================================
+    const lifeCtx = document.getElementById('lifeChart').getContext('2d');
+    new Chart(lifeCtx, {
+        type: 'bar',
+        data: {
+            labels: MONTHS,
+            datasets: [
+                {
+                    label: 'Mushrooms (lbs)',
+                    data: LIFE_DATA.mushrooms,
+                    backgroundColor: 'rgba(201, 168, 76, 0.7)',
+                    borderColor: '#c9a84c',
+                    borderWidth: 1,
+                    borderRadius: 2,
+                },
+                {
+                    label: 'Eggs (÷10)',
+                    data: LIFE_DATA.eggs.map(v => v / 10),
+                    backgroundColor: 'rgba(255, 184, 0, 0.6)',
+                    borderColor: '#ffb800',
+                    borderWidth: 1,
+                    borderRadius: 2,
+                },
+                {
+                    label: 'Visitors',
+                    data: LIFE_DATA.visitors,
+                    backgroundColor: 'rgba(57, 255, 20, 0.5)',
+                    borderColor: '#39FF14',
+                    borderWidth: 1,
+                    borderRadius: 2,
+                },
+                {
+                    label: 'Solar kWh (÷10)',
+                    data: LIFE_DATA.solar.map(v => v / 10),
+                    backgroundColor: 'rgba(255, 184, 0, 0.3)',
+                    borderColor: 'rgba(255, 184, 0, 0.6)',
+                    borderWidth: 1,
+                    borderRadius: 2,
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    position: 'top', align: 'end',
+                    labels: {
+                        color: '#4a5568',
+                        font: { family: "'Share Tech Mono', monospace", size: 10 },
+                        boxWidth: 10, boxHeight: 10, padding: 14, usePointStyle: true,
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(12, 16, 24, 0.95)',
+                    borderColor: 'rgba(57, 255, 20, 0.3)',
+                    borderWidth: 1,
+                    titleFont: { family: "'Share Tech Mono', monospace", size: 11 },
+                    bodyFont: { family: "'Share Tech Mono', monospace", size: 12 },
+                    titleColor: '#7a8a9e',
+                    bodyColor: '#e8ecf0',
+                    padding: 12,
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(57, 255, 20, 0.04)', drawBorder: false },
+                    ticks: { color: '#4a5568', font: { family: "'Share Tech Mono', monospace", size: 10 } }
+                },
+                y: {
+                    grid: { color: 'rgba(57, 255, 20, 0.04)', drawBorder: false },
+                    ticks: { color: '#4a5568', font: { family: "'Share Tech Mono', monospace", size: 10 } }
+                }
+            }
+        }
+    });
+
+    // ========================================
+    // SCROLL REVEAL
+    // ========================================
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Nav toggle
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+        document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('.nav-links a, .btn').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href?.startsWith('#')) {
+                e.preventDefault();
+                document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>
