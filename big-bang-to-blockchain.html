@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -640,31 +641,7 @@
 
             <h2>The Thermodynamic Operator</h2>
 
-            <p>The generalized Boltzmann distribution is the only distribution for which the Gibbs-Shannon entropy equals the thermodynamic entropy. There are two well known ways to derive the Boltzmann distribution: the micro-canonical derivation, and the maximum entropy principle derivation.</p>
-
-            <p>The core object of study in information theory is the entropy, which quantifies how uncertain we, as observers, are about the state of a variable we are observing. Inference, then, is typically understood as the process of minimizing entropy by understanding how information about the variable in question is disclosed by both its own statistics, and related variables.</p>
-
-            <p>Maximum entropy is a procedure for inference which posits that the best model for any data, and hence the best model of (the outputs of) a process generating that data, is that which maximises the differential Shannon entropy subject to prior constraints on the possible probabilities of states.</p>
-
-            <h3>Bitcoin and Proof of Work</h3>
-
-            <p>Bitcoin uses a consensus mechanism called "proof of work" which literally defines a threshold constraint on the outputs of the hashes so as to determine an ordering/sequencing method. Whichever hash has the longer set of leading zeros in hexadecimal, it will be considered valid and accepted, if seen before any other valid block. While this works, it requires a ten minute block interval and leaves sequential ordering under exploited.</p>
-
-            <h3>Quai Network and Proof of Entropy Minima</h3>
-
-            <p>Quai Network uses a consensus mechanism called "proof of entropy minima" which literally defines the total intrinsic work of any hash output, defined by the Shannon entropy minimization.</p>
-
-            <p>"Hashing" is the act of running SHA-256 on a set of transaction data to produce an output that is 256 bits in length. It is a one way function, so it's easy to verify with the transaction data but hard to fake.</p>
-
-            <p>If there are 256 states of possible 1s and 0s in a single output, then we could classify the Shannon entropy of an output as "minimized" relative to a simple rule/constraint, which is the difficulty threshold. Quai Network takes an output, calculates the number of states removed, and adds the number of bits removed to its long-running tally called "Total Entropy" beginning with the genesis block of the blockchain. This is what gives the blockchain its ordering.</p>
-
-            <p>It is simple, but powerful, because it can order outputs from any miner in any geographic location deterministically (objectively), so long as the miners are being incentivized to propagate their hash outputs.</p>
-
-            <p>"Uncertainty" is being removed from each successive valid hash output and is being accumulated to determine the heaviest (longest/most valid) blockchain. This mechanism of state preservation across time is what allows any miner to go offline and come back online at a later block height and sync to the accurate blockchain.</p>
-
-            <h3>The Free Energy Principle Connection</h3>
-
-            <p>Minimization of entropy reduces uncertainty. Reducing uncertainty means easier ordering. Easier ordering means faster consensus. Faster consensus means more capacity. More capacity means more utility. More utility means more value. More value means attractive to use.</p>
+            <p>The next paper formalizes the thermodynamic operator — connecting Boltzmann distributions, Shannon entropy minimization, proof-of-work consensus, mutual information, and the Free Energy Principle into a unified framework. <a href="Jordan_Hall_-_Big_Bang_to_Blockchain.pdf" target="_blank" style="color:var(--qi-cyan);text-decoration:underline;text-underline-offset:3px;">Read the full paper: Thermodynamic Operator V5 →</a></p>
 
         </div>
     </section>
