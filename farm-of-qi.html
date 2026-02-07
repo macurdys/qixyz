@@ -349,6 +349,37 @@
         }
 
         /* FAUCET */
+        .wallet-input-wrap {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 28px; margin-bottom: 24px;
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        }
+        .wallet-input-wrap label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan);
+            letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0;
+        }
+        .wallet-input {
+            flex: 1; min-width: 280px;
+            background: var(--bg-deep); border: 1px solid var(--border-dim);
+            color: var(--text-primary); font-family: var(--font-mono); font-size: 13px;
+            letter-spacing: 0.5px; padding: 12px 16px;
+            outline: none; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .wallet-input::placeholder { color: var(--text-dim); }
+        .wallet-input:focus { border-color: var(--qi-cyan); box-shadow: 0 0 15px rgba(0,240,255,0.1); }
+        .wallet-submit {
+            font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px;
+            text-transform: uppercase; padding: 12px 24px;
+            background: var(--qi-green); color: var(--bg-deep); border: 1px solid var(--qi-green);
+            cursor: pointer; font-weight: 700;
+            transition: all 0.3s;
+        }
+        .wallet-submit:hover { box-shadow: 0 0 20px rgba(57,255,20,0.3); transform: translateY(-1px); }
+        .wallet-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .wallet-status {
+            width: 100%; font-family: var(--font-mono); font-size: 11px;
+            letter-spacing: 1px; margin-top: 4px; min-height: 18px;
+        }
         .faucet-panel {
             background: var(--bg-panel); border: 1px solid var(--border-dim);
             padding: 40px; position: relative; overflow: hidden;
@@ -501,7 +532,8 @@
             <div class="hero-ctas">
                 <a href="#events" class="btn btn-primary">Upcoming Events</a>
                 <a href="#faucet" class="btn btn-ghost">Earn Qi</a>
-                <a href="#life-systems" class="btn btn-amber">Life Systems ↓</a>
+                <a href="https://www.youtube.com/watch?v=SrpxIwGgeh0&t" target="_blank" class="btn btn-amber">▶ Watch the Podcast</a>
+                <a href="#life-systems" class="btn btn-ghost" style="color:var(--text-secondary);border-color:var(--border-dim);">Life Systems ↓</a>
             </div>
         </div>
     </section>
@@ -556,6 +588,20 @@
         </div>
     </section>
 
+    <!-- PODCAST FEATURE -->
+    <section class="reveal" style="padding-top:0; padding-bottom:40px;">
+        <div style="background:var(--bg-panel);border:1px solid var(--border-dim);padding:36px 40px;position:relative;overflow:hidden;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--qi-amber),var(--qi-green),var(--qi-cyan));"></div>
+            <div style="font-size:48px;flex-shrink:0;">🎙️</div>
+            <div style="flex:1;min-width:240px;">
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--qi-amber);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Featured Podcast</div>
+                <div style="font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:1px;margin-bottom:8px;">Permaculture at Farm of Qi</div>
+                <div style="font-size:15px;color:var(--text-secondary);line-height:1.7;font-weight:300;">The story behind the farm — thermodynamic agriculture, closed-loop food systems, and why permaculture is proof-of-work for the biological layer.</div>
+            </div>
+            <a href="https://www.youtube.com/watch?v=SrpxIwGgeh0&t" target="_blank" class="btn btn-primary" style="flex-shrink:0;">▶ Watch on YouTube</a>
+        </div>
+    </section>
+
     <div class="divider"></div>
 
     <!-- LIFE SYSTEMS -->
@@ -596,9 +642,9 @@
             <div class="life-card qi-mined">
                 <div class="life-icon">⛏️</div>
                 <div class="life-label">Qi Mined</div>
-                <div class="life-value">42,800 QI</div>
+                <div class="life-value">0 QI</div>
                 <div class="life-sub">Feb 2026 — Solar-powered PoW</div>
-                <div class="life-bar"><div class="life-bar-fill" style="width:77%;background:var(--qi-cyan);"></div></div>
+                <div class="life-bar"><div class="life-bar-fill" style="width:0%;background:var(--qi-cyan);"></div></div>
             </div>
             <div class="life-card visitors">
                 <div class="life-icon">👥</div>
@@ -933,8 +979,14 @@
                 <div class="faucet-title">🚰 Qi Faucet — Season 3</div>
                 <div class="faucet-balance">
                     <span class="pulse"></span>
-                    Pool: 500,000 QI remaining
+                    Pool: 0 QI — Awaiting Funding
                 </div>
+            </div>
+            <div class="wallet-input-wrap">
+                <label for="walletAddr">Your Wallet</label>
+                <input type="text" id="walletAddr" class="wallet-input" placeholder="Paste your Quai wallet address (0x...)" spellcheck="false" autocomplete="off" />
+                <button class="wallet-submit" id="walletSubmit">Connect</button>
+                <div class="wallet-status" id="walletStatus"></div>
             </div>
             <div class="earn-grid">
                 <div class="earn-card">
@@ -995,6 +1047,9 @@
         <div class="section-label">DAO Governance</div>
         <div class="section-title">Community Decides</div>
         <div class="section-desc">Qi holders govern the farm's direction — from new crop rotations to event budgets. Every proposal on-chain, every vote transparent.</div>
+        <div style="margin-bottom:32px;">
+            <a href="https://app.vdao.io/vpass" target="_blank" class="btn btn-ghost" style="border-color:rgba(191,90,242,0.3);color:var(--qi-purple);">🏛️ Enter VDAO — Get Your VPass</a>
+        </div>
 
         <div class="dao-row">
             <div class="dao-panel">
@@ -1005,23 +1060,23 @@
                 <div class="dao-title">Farm Treasury</div>
                 <div class="treasury-stat">
                     <div class="treasury-label">Total Holdings</div>
-                    <div class="treasury-value" style="color: var(--qi-cyan);">1,240,000 QI</div>
-                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:100%;background:var(--qi-cyan);"></div></div>
+                    <div class="treasury-value" style="color: var(--qi-cyan);">0 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:0%;background:var(--qi-cyan);"></div></div>
                 </div>
                 <div class="treasury-stat">
                     <div class="treasury-label">Allocated This Season</div>
-                    <div class="treasury-value" style="color: var(--qi-amber);">380,000 QI</div>
-                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:30.6%;background:var(--qi-amber);"></div></div>
+                    <div class="treasury-value" style="color: var(--qi-amber);">0 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:0%;background:var(--qi-amber);"></div></div>
                 </div>
                 <div class="treasury-stat">
                     <div class="treasury-label">Faucet Pool Remaining</div>
-                    <div class="treasury-value" style="color: var(--qi-green);">500,000 QI</div>
-                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:40.3%;background:var(--qi-green);"></div></div>
+                    <div class="treasury-value" style="color: var(--qi-green);">0 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:0%;background:var(--qi-green);"></div></div>
                 </div>
                 <div class="treasury-stat">
                     <div class="treasury-label">Staked by Members</div>
-                    <div class="treasury-value" style="color: var(--qi-purple);">820,000 QI</div>
-                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:66.1%;background:var(--qi-purple);"></div></div>
+                    <div class="treasury-value" style="color: var(--qi-purple);">0 QI</div>
+                    <div class="treasury-bar"><div class="treasury-bar-fill" style="width:0%;background:var(--qi-purple);"></div></div>
                 </div>
             </div>
         </div>
@@ -1069,7 +1124,7 @@
         eggs:      [980, 1050, 1100, 1180, 1210, 1240],
         water:     [6200, 6800, 7100, 7500, 8000, 8400],
         solar:     [4200, 3800, 2900, 2400, 2800, 3180],
-        qi:        [28000, 32000, 35000, 38000, 40200, 42800],
+        qi:        [0, 0, 0, 0, 0, 0],
         visitors:  [180, 210, 195, 240, 280, 312],
     };
 
@@ -1218,6 +1273,38 @@
                 document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
             }
         });
+    });
+
+    // Wallet input
+    const walletInput = document.getElementById('walletAddr');
+    const walletBtn = document.getElementById('walletSubmit');
+    const walletStatus = document.getElementById('walletStatus');
+
+    walletBtn.addEventListener('click', () => {
+        const addr = walletInput.value.trim();
+        if (!addr) {
+            walletStatus.innerHTML = '<span style="color:var(--qi-red);">Please paste a wallet address</span>';
+            return;
+        }
+        if (!/^0x[a-fA-F0-9]{40}$/.test(addr)) {
+            walletStatus.innerHTML = '<span style="color:var(--qi-amber);">⚠ Address format not recognized — expected 0x... (42 chars)</span>';
+            return;
+        }
+        walletBtn.disabled = true;
+        walletBtn.textContent = '...';
+        walletStatus.innerHTML = '<span style="color:var(--text-dim);">Registering wallet...</span>';
+        setTimeout(() => {
+            walletBtn.textContent = 'CONNECTED';
+            walletBtn.style.background = 'transparent';
+            walletBtn.style.color = 'var(--qi-green)';
+            walletBtn.style.borderColor = 'var(--qi-green)';
+            walletInput.style.borderColor = 'rgba(57,255,20,0.3)';
+            walletStatus.innerHTML = '<span style="color:var(--qi-green);">✓ Wallet registered — ' + addr.slice(0,6) + '...' + addr.slice(-4) + ' — Earn Qi by completing farm tasks below</span>';
+        }, 1200);
+    });
+
+    walletInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') walletBtn.click();
     });
     </script>
 
