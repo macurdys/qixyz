@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mining Calculator — Qi.xyz</title>
+    <meta name="description" content="Compare BTC vs QUAI mining profitability. Same hardware, different networks.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --qi-orange: #fb923c;
+            --qi-emerald: #10b981;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-cyan-glow); }
+        .nav-back { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; display: flex; align-items: center; gap: 8px; }
+        .nav-back:hover { color: var(--qi-cyan); }
+
+        /* MAIN */
+        .main-container {
+            position: relative; z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 84px 24px 60px;
+        }
+
+        /* HEADER */
+        .page-header { margin-bottom: 32px; }
+        .page-label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan);
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px;
+        }
+        .page-label::before { content: '// '; color: var(--text-dim); }
+        .page-title {
+            font-family: var(--font-display); font-size: clamp(24px, 4vw, 40px);
+            font-weight: 800; letter-spacing: 3px; margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--qi-orange), var(--qi-emerald));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .page-subtitle { font-family: var(--font-body); font-size: 18px; color: var(--text-secondary); font-weight: 300; }
+
+        /* LAYOUT */
+        .calc-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent);
+            opacity: 0.3;
+        }
+
+        .card-btc {
+            background: rgba(124, 45, 18, 0.1);
+            border-color: rgba(251, 146, 60, 0.25);
+        }
+        .card-btc::before { background: linear-gradient(90deg, transparent, var(--qi-orange), transparent); opacity: 0.5; }
+
+        .card-quai {
+            background: rgba(6, 78, 59, 0.1);
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+        .card-quai::before { background: linear-gradient(90deg, transparent, var(--qi-emerald), transparent); opacity: 0.5; }
+
+        .card-header {
+            font-family: var(--font-display);
+            font-size: 13px; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .card-header .dot {
+            width: 6px; height: 6px;
+            box-shadow: 0 0 8px;
+        }
+
+        /* INPUTS */
+        .input-group { margin-bottom: 14px; }
+        .input-label {
+            font-family: var(--font-mono); font-size: 10px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: var(--text-dim); display: block; margin-bottom: 4px;
+        }
+        .input-field {
+            width: 100%; background: var(--bg-deep);
+            border: 1px solid var(--border-dim);
+            padding: 10px 14px;
+            color: var(--text-primary);
+            font-family: var(--font-mono); font-size: 14px;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+        .input-field:focus { border-color: var(--qi-cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1); }
+
+        /* HERO CARD */
+        .hero-result {
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.3), rgba(22, 101, 52, 0.3));
+            border-color: rgba(16, 185, 129, 0.4);
+            text-align: center;
+            padding: 32px;
+        }
+        .hero-result::before { background: linear-gradient(90deg, transparent, var(--qi-emerald), transparent); opacity: 0.6; }
+        .hero-result-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+        .hero-result-value { font-family: var(--font-display); font-size: clamp(40px, 6vw, 56px); font-weight: 900; color: var(--qi-emerald); letter-spacing: 2px; text-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
+        .hero-result-sub { font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); margin-top: 8px; letter-spacing: 1px; }
+
+        /* METRICS GRID */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .metric-card { padding: 16px; }
+        .metric-label {
+            font-family: var(--font-mono); font-size: 9px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: var(--text-dim); margin-bottom: 10px;
+        }
+        .metric-btc { font-family: var(--font-mono); font-size: 14px; color: var(--qi-orange); margin-bottom: 4px; }
+        .metric-quai { font-family: var(--font-mono); font-size: 14px; color: var(--qi-emerald); }
+
+        /* SIDE BY SIDE */
+        .side-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        .share-value {
+            font-family: var(--font-display); font-size: 18px; font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .share-label {
+            font-family: var(--font-mono); font-size: 10px;
+            color: var(--text-dim); letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 4px;
+        }
+
+        /* DAILY BREAKDOWN */
+        .daily-row {
+            display: flex; justify-content: space-between;
+            padding: 6px 0; font-size: 14px;
+        }
+        .daily-row-label { color: var(--text-dim); font-family: var(--font-mono); font-size: 12px; }
+        .daily-row-value { font-family: var(--font-mono); font-size: 13px; }
+        .daily-row.total {
+            border-top: 1px solid var(--border-dim);
+            padding-top: 10px; margin-top: 4px;
+        }
+
+        /* TABLE */
+        .projection-table {
+            width: 100%; border-collapse: collapse;
+            font-family: var(--font-mono); font-size: 12px;
+        }
+        .projection-table thead th {
+            font-family: var(--font-mono); font-size: 9px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: var(--text-dim); text-align: right;
+            padding: 10px 8px; border-bottom: 1px solid var(--border-dim);
+        }
+        .projection-table thead th:first-child { text-align: left; }
+        .projection-table tbody td {
+            padding: 10px 8px; text-align: right;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.04);
+            font-size: 12px;
+        }
+        .projection-table tbody td:first-child { text-align: left; color: var(--text-dim); }
+        .projection-table tbody tr:hover { background: rgba(0, 240, 255, 0.03); }
+        .val-btc { color: var(--qi-orange); }
+        .val-quai { color: var(--qi-emerald); }
+
+        /* FOOTER NOTE */
+        .formula-note {
+            font-family: var(--font-mono); font-size: 10px;
+            color: var(--text-dim); text-align: center;
+            letter-spacing: 1px; margin-top: 32px;
+            padding: 16px; border-top: 1px solid var(--border-dim);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .calc-layout { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            nav { padding: 0 20px; }
+        }
+        @media (max-width: 500px) {
+            .side-grid { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <nav>
+        <a href="index.html" class="nav-logo">QI</a>
+        <a href="index.html" class="nav-back">‹ Back to Station</a>
+    </nav>
+
+    <div class="main-container">
+
+        <div class="page-header">
+            <div class="page-label">Tool — Mining Profitability</div>
+            <div class="page-title">Mining Calculator</div>
+            <div class="page-subtitle">BTC vs QUAI — Same Hardware, Different Networks</div>
+        </div>
+
+        <div class="calc-layout">
+
+            <!-- ===== INPUTS PANEL ===== -->
+            <div style="display:flex;flex-direction:column;gap:16px;">
+
+                <div class="card">
+                    <div class="card-header" style="color:var(--qi-cyan);">
+                        <span class="dot" style="background:var(--qi-cyan);box-shadow:0 0 8px var(--qi-cyan-glow);"></span>
+                        Hardware
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Hashrate (TH/s)</label>
+                        <input type="number" class="input-field" id="hashrateTH" value="318">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Power Draw (kW)</label>
+                        <input type="number" class="input-field" id="powerKW" value="3.5" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Unit Cost ($)</label>
+                        <input type="number" class="input-field" id="capexUSD" value="4950">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="color:var(--qi-cyan);">
+                        <span class="dot" style="background:var(--qi-cyan);box-shadow:0 0 8px var(--qi-cyan-glow);"></span>
+                        Operating
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Electricity ($/kWh)</label>
+                        <input type="number" class="input-field" id="powerCost" value="0.08" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Pool Fee (%)</label>
+                        <input type="number" class="input-field" id="poolFee" value="2" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Projection (Months)</label>
+                        <input type="number" class="input-field" id="months" value="12">
+                    </div>
+                </div>
+
+                <div class="card card-btc">
+                    <div class="card-header" style="color:var(--qi-orange);">
+                        <span class="dot" style="background:var(--qi-orange);box-shadow:0 0 8px rgba(251,146,60,0.5);"></span>
+                        ₿ BTC Network
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">BTC Price ($)</label>
+                        <input type="number" class="input-field" id="btcPrice" value="105000">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Network Hashrate (EH/s)</label>
+                        <input type="number" class="input-field" id="btcNetworkEH" value="800">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Block Reward (BTC)</label>
+                        <input type="number" class="input-field" id="btcBlockReward" value="3.125" step="0.001">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Monthly Diff Growth (%)</label>
+                        <input type="number" class="input-field" id="btcDiffGrowth" value="2" step="0.5">
+                    </div>
+                </div>
+
+                <div class="card card-quai">
+                    <div class="card-header" style="color:var(--qi-emerald);">
+                        <span class="dot" style="background:var(--qi-emerald);box-shadow:0 0 8px rgba(16,185,129,0.5);"></span>
+                        ◈ QUAI Network
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">QUAI Price ($)</label>
+                        <input type="number" class="input-field" id="quaiPrice" value="0.10" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Network Hashrate (PH/s)</label>
+                        <input type="number" class="input-field" id="quaiNetworkPH" value="15.9" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Daily Emission (QUAI)</label>
+                        <input type="number" class="input-field" id="quaiDailyEmission" value="139000">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Monthly Diff Growth (%)</label>
+                        <input type="number" class="input-field" id="quaiDiffGrowth" value="2" step="0.5">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== RESULTS PANEL ===== -->
+            <div style="display:flex;flex-direction:column;gap:16px;">
+
+                <!-- Hero -->
+                <div class="card hero-result" id="heroCard">
+                    <div class="hero-result-label">QUAI Profit Advantage</div>
+                    <div class="hero-result-value" id="heroValue">—</div>
+                    <div class="hero-result-sub" id="heroSub"></div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="metrics-grid">
+                    <div class="card metric-card">
+                        <div class="metric-label">Monthly Profit</div>
+                        <div class="metric-btc" id="metricBtcProfit">—</div>
+                        <div class="metric-quai" id="metricQuaiProfit">—</div>
+                    </div>
+                    <div class="card metric-card">
+                        <div class="metric-label">Payback Period</div>
+                        <div class="metric-btc" id="metricBtcPayback">—</div>
+                        <div class="metric-quai" id="metricQuaiPayback">—</div>
+                    </div>
+                    <div class="card metric-card">
+                        <div class="metric-label" id="metricNetLabel">12-Mo Net Income</div>
+                        <div class="metric-btc" id="metricBtcNet">—</div>
+                        <div class="metric-quai" id="metricQuaiNet">—</div>
+                    </div>
+                    <div class="card metric-card">
+                        <div class="metric-label">Net After Capex</div>
+                        <div class="metric-btc" id="metricBtcCapex">—</div>
+                        <div class="metric-quai" id="metricQuaiCapex">—</div>
+                    </div>
+                </div>
+
+                <!-- Network Share -->
+                <div class="card">
+                    <div class="card-header" style="color:var(--text-secondary);">Why the Difference?</div>
+                    <div class="side-grid">
+                        <div class="card card-btc" style="padding:14px;">
+                            <div class="share-label">Your BTC Network Share</div>
+                            <div class="share-value" style="color:var(--qi-orange);" id="btcShare">—</div>
+                        </div>
+                        <div class="card card-quai" style="padding:14px;">
+                            <div class="share-label">Your QUAI Network Share</div>
+                            <div class="share-value" style="color:var(--qi-emerald);" id="quaiShare">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Breakdown -->
+                <div class="card">
+                    <div class="card-header" style="color:var(--text-secondary);">Daily Unit Economics</div>
+                    <div class="side-grid">
+                        <div>
+                            <div style="color:var(--qi-orange);font-family:var(--font-display);font-size:12px;letter-spacing:2px;margin-bottom:10px;font-weight:600;">₿ BTC</div>
+                            <div class="daily-row"><span class="daily-row-label">Daily Coins</span><span class="daily-row-value" id="btcDailyCoins">—</span></div>
+                            <div class="daily-row"><span class="daily-row-label">Revenue</span><span class="daily-row-value" id="btcDailyRev">—</span></div>
+                            <div class="daily-row"><span class="daily-row-label">Power</span><span class="daily-row-value" id="btcDailyPower">—</span></div>
+                            <div class="daily-row total"><span class="daily-row-label">Profit</span><span class="daily-row-value" style="color:var(--qi-orange);" id="btcDailyProfit">—</span></div>
+                        </div>
+                        <div>
+                            <div style="color:var(--qi-emerald);font-family:var(--font-display);font-size:12px;letter-spacing:2px;margin-bottom:10px;font-weight:600;">◈ QUAI</div>
+                            <div class="daily-row"><span class="daily-row-label">Daily Coins</span><span class="daily-row-value" id="quaiDailyCoins">—</span></div>
+                            <div class="daily-row"><span class="daily-row-label">Revenue</span><span class="daily-row-value" id="quaiDailyRev">—</span></div>
+                            <div class="daily-row"><span class="daily-row-label">Power</span><span class="daily-row-value" id="quaiDailyPower">—</span></div>
+                            <div class="daily-row total"><span class="daily-row-label">Profit</span><span class="daily-row-value" style="color:var(--qi-emerald);" id="quaiDailyProfit">—</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projection Table -->
+                <div class="card">
+                    <div class="card-header" style="color:var(--text-secondary);">Monthly Projection</div>
+                    <div style="overflow-x:auto;">
+                        <table class="projection-table">
+                            <thead>
+                                <tr>
+                                    <th>Mo</th>
+                                    <th>BTC Coins</th>
+                                    <th>BTC Profit</th>
+                                    <th>QUAI Coins</th>
+                                    <th>QUAI Profit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectionBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="formula-note">
+                    Formula: Daily Coins = (Your Hashrate ÷ Network Hashrate) × Daily Emission
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BLOCKS_PER_DAY = 144;
+        const DAYS_PER_MONTH = 30;
+
+        const fields = [
+            'hashrateTH', 'powerKW', 'capexUSD', 'powerCost', 'poolFee', 'months',
+            'btcPrice', 'btcNetworkEH', 'btcBlockReward', 'btcDiffGrowth',
+            'quaiPrice', 'quaiNetworkPH', 'quaiDailyEmission', 'quaiDiffGrowth'
+        ];
+
+        function getInputs() {
+            const p = {};
+            fields.forEach(f => { p[f] = parseFloat(document.getElementById(f).value) || 0; });
+            return p;
+        }
+
+        function formatCurrency(num) {
+            if (Math.abs(num) >= 1e6) return (num < 0 ? '-' : '') + '$' + (Math.abs(num) / 1e6).toFixed(1) + 'M';
+            if (Math.abs(num) >= 1e3) return (num < 0 ? '-' : '') + '$' + (Math.abs(num) / 1e3).toFixed(1) + 'K';
+            return (num < 0 ? '-' : '') + '$' + Math.abs(num).toFixed(0);
+        }
+
+        function formatNumber(num, dec) {
+            if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+            if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+            return num.toFixed(dec);
+        }
+
+        function calculate() {
+            const p = getInputs();
+
+            const btcNetworkTH = p.btcNetworkEH * 1e6;
+            const quaiNetworkTH = p.quaiNetworkPH * 1e3;
+
+            const btcShare = p.hashrateTH / btcNetworkTH;
+            const quaiShare = p.hashrateTH / quaiNetworkTH;
+
+            const btcDailyEmission = BLOCKS_PER_DAY * p.btcBlockReward;
+            const btcDailyCoins = btcShare * btcDailyEmission;
+            const quaiDailyCoins = quaiShare * p.quaiDailyEmission;
+
+            const dailyPowerCost = p.powerKW * 24 * p.powerCost;
+
+            const btcDailyRevenue = btcDailyCoins * p.btcPrice;
+            const quaiDailyRevenue = quaiDailyCoins * p.quaiPrice;
+
+            const btcDailyProfit = btcDailyRevenue * (1 - p.poolFee / 100) - dailyPowerCost;
+            const quaiDailyProfit = quaiDailyRevenue * (1 - p.poolFee / 100) - dailyPowerCost;
+
+            const btcMonthlyProfit = btcDailyProfit * DAYS_PER_MONTH;
+            const quaiMonthlyProfit = quaiDailyProfit * DAYS_PER_MONTH;
+
+            const btcPayback = btcMonthlyProfit > 0 ? p.capexUSD / btcMonthlyProfit : 999;
+            const quaiPayback = quaiMonthlyProfit > 0 ? p.capexUSD / quaiMonthlyProfit : 999;
+
+            const profitMultiple = btcMonthlyProfit > 0 ? quaiMonthlyProfit / btcMonthlyProfit : 999;
+
+            // Projection
+            let btcCumProfit = -p.capexUSD;
+            let quaiCumProfit = -p.capexUSD;
+            let btcTotalNet = 0;
+            let quaiTotalNet = 0;
+            const rows = [];
+
+            for (let month = 1; month <= p.months; month++) {
+                const btcDiffMult = Math.pow(1 + p.btcDiffGrowth / 100, month);
+                const quaiDiffMult = Math.pow(1 + p.quaiDiffGrowth / 100, month);
+
+                const mBtcCoins = (btcDailyCoins / btcDiffMult) * DAYS_PER_MONTH;
+                const mQuaiCoins = (quaiDailyCoins / quaiDiffMult) * DAYS_PER_MONTH;
+
+                const mBtcRev = mBtcCoins * p.btcPrice;
+                const mQuaiRev = mQuaiCoins * p.quaiPrice;
+
+                const mPower = dailyPowerCost * DAYS_PER_MONTH;
+
+                const mBtcProfit = mBtcRev * (1 - p.poolFee / 100) - mPower;
+                const mQuaiProfit = mQuaiRev * (1 - p.poolFee / 100) - mPower;
+
+                btcCumProfit += mBtcProfit;
+                quaiCumProfit += mQuaiProfit;
+                btcTotalNet += mBtcProfit;
+                quaiTotalNet += mQuaiProfit;
+
+                rows.push({ month, btcCoins: mBtcCoins, btcProfit: mBtcProfit, quaiCoins: mQuaiCoins, quaiProfit: mQuaiProfit });
+            }
+
+            // --- Update DOM ---
+
+            // Hero
+            document.getElementById('heroValue').textContent = profitMultiple.toFixed(1) + 'x';
+            document.getElementById('heroSub').textContent = formatCurrency(quaiMonthlyProfit - btcMonthlyProfit) + ' more per month';
+
+            // Metrics
+            document.getElementById('metricBtcProfit').textContent = formatCurrency(btcMonthlyProfit) + ' BTC';
+            document.getElementById('metricQuaiProfit').textContent = formatCurrency(quaiMonthlyProfit) + ' QUAI';
+            document.getElementById('metricBtcPayback').textContent = btcPayback.toFixed(1) + ' mo BTC';
+            document.getElementById('metricQuaiPayback').textContent = quaiPayback.toFixed(1) + ' mo QUAI';
+            document.getElementById('metricNetLabel').textContent = p.months + '-Mo Net Income';
+            document.getElementById('metricBtcNet').textContent = formatCurrency(btcTotalNet) + ' BTC';
+            document.getElementById('metricQuaiNet').textContent = formatCurrency(quaiTotalNet) + ' QUAI';
+            document.getElementById('metricBtcCapex').textContent = formatCurrency(btcCumProfit) + ' BTC';
+            document.getElementById('metricQuaiCapex').textContent = formatCurrency(quaiCumProfit) + ' QUAI';
+
+            // Shares
+            document.getElementById('btcShare').textContent = (btcShare * 100).toExponential(2) + '%';
+            document.getElementById('quaiShare').textContent = (quaiShare * 100).toFixed(4) + '%';
+
+            // Daily
+            document.getElementById('btcDailyCoins').textContent = btcDailyCoins.toFixed(8);
+            document.getElementById('btcDailyRev').textContent = formatCurrency(btcDailyRevenue);
+            document.getElementById('btcDailyPower').textContent = formatCurrency(dailyPowerCost);
+            document.getElementById('btcDailyProfit').textContent = formatCurrency(btcDailyProfit);
+
+            document.getElementById('quaiDailyCoins').textContent = formatNumber(quaiDailyCoins, 2);
+            document.getElementById('quaiDailyRev').textContent = formatCurrency(quaiDailyRevenue);
+            document.getElementById('quaiDailyPower').textContent = formatCurrency(dailyPowerCost);
+            document.getElementById('quaiDailyProfit').textContent = formatCurrency(quaiDailyProfit);
+
+            // Projection table
+            const tbody = document.getElementById('projectionBody');
+            tbody.innerHTML = rows.map(r => `
+                <tr>
+                    <td>${r.month}</td>
+                    <td class="val-btc">${r.btcCoins.toFixed(6)}</td>
+                    <td class="val-btc">${formatCurrency(r.btcProfit)}</td>
+                    <td class="val-quai">${formatNumber(r.quaiCoins, 0)}</td>
+                    <td class="val-quai">${formatCurrency(r.quaiProfit)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Bind all inputs
+        fields.forEach(f => {
+            document.getElementById(f).addEventListener('input', calculate);
+        });
+
+        // Initial calc
+        calculate();
+    </script>
+
+</body>
+</html>
