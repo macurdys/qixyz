@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harrogate Ventures — Investment Portfolio</title>
+    <meta name="description" content="Harrogate Ventures. On-chain capital allocation tracker. Telling the story of every satoshi.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='14' font-weight='bold' fill='%2300f0ff'%3EHV%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --qi-blue: #4a90d9;
+            --qi-orange: #ff6b35;
+            --qi-pink: #ff69b4;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.88); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-cyan-glow); }
+        .nav-divider { width: 1px; height: 24px; background: var(--border-bright); }
+        .nav-subtitle { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); letter-spacing: 3px; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s, text-shadow 0.3s; }
+        .nav-links a:hover { color: var(--qi-cyan); text-shadow: 0 0 10px var(--qi-cyan-glow); }
+        .nav-links a.active { color: var(--qi-cyan); }
+
+        /* HERO HEADER */
+        .portfolio-hero {
+            position: relative; z-index: 1;
+            padding: 100px 40px 48px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .hero-top-bar {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            margin-bottom: 12px; flex-wrap: wrap; gap: 16px;
+        }
+        .hero-label { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; }
+        .hero-label::before { content: '◆ '; animation: blink 2s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .hero-title { font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); font-weight: 900; letter-spacing: 6px; line-height: 1.1; }
+        .hero-title span { color: var(--qi-amber); text-shadow: 0 0 30px rgba(255, 184, 0, 0.3); }
+
+        .hero-meta {
+            display: flex; gap: 32px; margin-top: 16px; flex-wrap: wrap;
+        }
+        .hero-meta-item {
+            display: flex; flex-direction: column;
+        }
+        .hero-meta-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; }
+        .hero-meta-value { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 1px; }
+        .hero-meta-value.green { color: var(--qi-green); }
+        .hero-meta-value.amber { color: var(--qi-amber); }
+        .hero-meta-value.cyan { color: var(--qi-cyan); }
+
+        .portfolio-nav-value {
+            text-align: right;
+        }
+        .portfolio-nav-value .big-number {
+            font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); font-weight: 900;
+            color: var(--qi-green); letter-spacing: 2px;
+            text-shadow: 0 0 40px rgba(57, 255, 20, 0.2);
+        }
+        .portfolio-nav-value .subtitle {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        .divider { max-width: 1400px; margin: 0 auto; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); position: relative; z-index: 1; }
+
+        /* STATS ROW */
+        .stats-row {
+            position: relative; z-index: 1;
+            max-width: 1400px; margin: 0 auto;
+            padding: 32px 40px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px;
+        }
+        .stat-card {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 24px 20px; position: relative; overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .stat-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent);
+            opacity: 0.5;
+        }
+        .stat-card:hover { border-color: var(--border-bright); box-shadow: 0 0 20px rgba(0, 240, 255, 0.05); }
+        .stat-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px; }
+        .stat-value { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+        .stat-value.cyan { color: var(--qi-cyan); }
+        .stat-value.green { color: var(--qi-green); }
+        .stat-value.amber { color: var(--qi-amber); }
+        .stat-value.red { color: var(--qi-red); }
+        .stat-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
+
+        /* MAIN GRID */
+        .dashboard {
+            position: relative; z-index: 1;
+            max-width: 1400px; margin: 0 auto;
+            padding: 24px 40px 80px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            position: relative; overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .panel:hover { border-color: var(--border-bright); }
+        .panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent);
+            opacity: 0.4;
+        }
+        .panel-header {
+            padding: 20px 24px 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .panel-title { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 4px; text-transform: uppercase; }
+        .panel-title::before { content: '// '; color: var(--text-dim); }
+        .panel-body { padding: 20px 24px 28px; }
+
+        .panel-tabs {
+            display: flex; gap: 4px;
+        }
+        .panel-tab {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
+            text-transform: uppercase; padding: 4px 12px;
+            background: none; border: 1px solid var(--border-dim);
+            color: var(--text-dim); cursor: pointer;
+            transition: all 0.3s;
+        }
+        .panel-tab.active { border-color: var(--qi-cyan); color: var(--qi-cyan); background: var(--qi-cyan-dim); }
+        .panel-tab:hover { border-color: var(--border-bright); color: var(--text-secondary); }
+
+        /* CHART CONTAINERS */
+        .chart-container { position: relative; width: 100%; }
+        .chart-container.line-chart { height: 320px; }
+        .chart-container.pie-chart { height: 280px; display: flex; align-items: center; justify-content: center; }
+
+        /* ALLOCATION LEGEND */
+        .alloc-legend { margin-top: 16px; }
+        .alloc-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .alloc-item:last-child { border-bottom: none; }
+        .alloc-left { display: flex; align-items: center; gap: 10px; }
+        .alloc-dot { width: 8px; height: 8px; border-radius: 1px; }
+        .alloc-name { font-family: var(--font-body); font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+        .alloc-right { display: flex; align-items: center; gap: 12px; }
+        .alloc-pct { font-family: var(--font-mono); font-size: 13px; color: var(--text-primary); letter-spacing: 1px; }
+        .alloc-val { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+
+        /* MILESTONE TIMELINE */
+        .timeline { position: relative; padding-left: 24px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 4px; top: 8px; bottom: 8px;
+            width: 1px; background: linear-gradient(180deg, var(--qi-cyan), var(--qi-amber), var(--qi-green), var(--qi-purple));
+            opacity: 0.4;
+        }
+        .milestone {
+            position: relative; padding: 0 0 28px 24px;
+        }
+        .milestone:last-child { padding-bottom: 0; }
+        .milestone::before {
+            content: ''; position: absolute; left: -23px; top: 6px;
+            width: 10px; height: 10px; border: 2px solid var(--qi-cyan);
+            background: var(--bg-deep);
+        }
+        .milestone.major::before { background: var(--qi-cyan); box-shadow: 0 0 10px var(--qi-cyan-glow); }
+        .milestone.amber::before { border-color: var(--qi-amber); }
+        .milestone.amber.major::before { background: var(--qi-amber); box-shadow: 0 0 10px rgba(255,184,0,0.4); }
+        .milestone.green::before { border-color: var(--qi-green); }
+        .milestone.green.major::before { background: var(--qi-green); box-shadow: 0 0 10px rgba(57,255,20,0.4); }
+        .milestone.purple::before { border-color: var(--qi-purple); }
+
+        .milestone-date { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+        .milestone-title { font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; }
+        .milestone-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
+        .milestone-tag {
+            display: inline-block; font-family: var(--font-mono); font-size: 9px;
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 2px 8px; border: 1px solid var(--border-dim);
+            color: var(--text-dim); margin-top: 6px;
+        }
+        .milestone-tag.inflow { border-color: rgba(57,255,20,0.3); color: var(--qi-green); }
+        .milestone-tag.outflow { border-color: rgba(255,51,102,0.3); color: var(--qi-red); }
+        .milestone-tag.rebalance { border-color: rgba(0,240,255,0.3); color: var(--qi-cyan); }
+
+        /* ON-CHAIN FLOWS */
+        .flow-table { width: 100%; border-collapse: collapse; }
+        .flow-table th {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--text-dim); text-align: left;
+            padding: 8px 12px; border-bottom: 1px solid var(--border-dim);
+        }
+        .flow-table td {
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);
+            padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.03);
+            letter-spacing: 0.5px;
+        }
+        .flow-table tr:hover td { color: var(--text-primary); background: rgba(0,240,255,0.02); }
+        .flow-dir { display: inline-block; padding: 2px 6px; font-size: 9px; letter-spacing: 1px; }
+        .flow-dir.in { color: var(--qi-green); border: 1px solid rgba(57,255,20,0.3); }
+        .flow-dir.out { color: var(--qi-red); border: 1px solid rgba(255,51,102,0.3); }
+        .flow-dir.swap { color: var(--qi-purple); border: 1px solid rgba(191,90,242,0.3); }
+        .flow-hash { color: var(--qi-cyan); opacity: 0.7; cursor: pointer; transition: opacity 0.3s; }
+        .flow-hash:hover { opacity: 1; }
+        .flow-status { display: inline-block; width: 6px; height: 6px; border-radius: 50; }
+        .flow-status.confirmed { background: var(--qi-green); box-shadow: 0 0 6px rgba(57,255,20,0.4); }
+        .flow-status.pending { background: var(--qi-amber); box-shadow: 0 0 6px rgba(255,184,0,0.4); animation: pulse-amber 2s infinite; }
+        @keyframes pulse-amber { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+        .chain-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px;
+            padding: 2px 8px; border: 1px solid var(--border-dim); color: var(--text-dim);
+        }
+        .chain-badge.btc { border-color: rgba(255,184,0,0.3); color: var(--qi-amber); }
+        .chain-badge.quai { border-color: rgba(0,240,255,0.3); color: var(--qi-cyan); }
+        .chain-badge.eth { border-color: rgba(191,90,242,0.3); color: var(--qi-purple); }
+
+        /* LIVE INDICATOR */
+        .live-indicator {
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 2px;
+        }
+        .live-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--qi-green);
+            box-shadow: 0 0 8px rgba(57,255,20,0.5);
+            animation: pulse-green 2s ease-in-out infinite;
+        }
+        @keyframes pulse-green { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+        /* FULL WIDTH SECTIONS */
+        .full-section {
+            position: relative; z-index: 1;
+            max-width: 1400px; margin: 0 auto;
+            padding: 0 40px 24px;
+        }
+
+        /* DATES PANEL */
+        .dates-bar {
+            display: flex; align-items: center; gap: 32px; flex-wrap: wrap;
+            padding: 16px 24px;
+        }
+        .date-group { display: flex; flex-direction: column; }
+        .date-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 2px; }
+        .date-value { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--text-primary); letter-spacing: 1px; }
+        .date-separator { width: 1px; height: 32px; background: var(--border-dim); }
+        .date-duration { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 1px; }
+
+        /* FOOTER */
+        footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border-dim);
+            padding: 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1400px; margin: 0 auto;
+        }
+        .footer-logo { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--qi-amber); letter-spacing: 4px; }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--qi-cyan); }
+        .footer-copy { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .dashboard { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-subtitle { display: none; }
+            .portfolio-hero { padding: 80px 20px 32px; }
+            .stats-row { padding: 24px 20px; }
+            .dashboard { padding: 16px 20px 60px; }
+            .full-section { padding: 0 20px 16px; }
+            .hero-top-bar { flex-direction: column; align-items: flex-start; }
+            .portfolio-nav-value { text-align: left; }
+            footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+        }
+
+        /* ANIMATIONS */
+        .fade-in { opacity: 0; transform: translateY(16px); animation: fadeIn 0.6s ease forwards; }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        .fade-in-d1 { animation-delay: 0.1s; }
+        .fade-in-d2 { animation-delay: 0.2s; }
+        .fade-in-d3 { animation-delay: 0.3s; }
+        .fade-in-d4 { animation-delay: 0.4s; }
+        .fade-in-d5 { animation-delay: 0.5s; }
+        .fade-in-d6 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-left">
+            <a href="#" class="nav-logo" style="color: var(--qi-amber); text-shadow: 0 0 20px rgba(255,184,0,0.3);">HV</a>
+            <div class="nav-divider"></div>
+            <span class="nav-subtitle">Harrogate Ventures</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#overview" class="active">Portfolio</a></li>
+            <li><a href="#flows">On-Chain</a></li>
+            <li><a href="#milestones">Timeline</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="portfolio-hero" id="overview">
+        <div class="hero-top-bar">
+            <div>
+                <div class="hero-label">Investment Portfolio</div>
+                <h1 class="hero-title fade-in">HARROGATE <span>VENTURES</span></h1>
+                <div class="hero-meta fade-in fade-in-d2">
+                    <div class="hero-meta-item">
+                        <span class="hero-meta-label">Strategy</span>
+                        <span class="hero-meta-value cyan">Energy Money + PoW Infrastructure</span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <span class="hero-meta-label">Thesis</span>
+                        <span class="hero-meta-value">Thermodynamic Sound Money</span>
+                    </div>
+                </div>
+            </div>
+            <div class="portfolio-nav-value fade-in fade-in-d3">
+                <div class="big-number" id="totalValue">$148,230</div>
+                <div class="subtitle">Total Portfolio Value</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- DATE IN / DATE OUT BAR -->
+    <div class="full-section fade-in fade-in-d2">
+        <div class="panel">
+            <div class="dates-bar">
+                <div class="date-group">
+                    <span class="date-label">Date In (Inception)</span>
+                    <span class="date-value" style="color: var(--qi-green);">2024-03-15</span>
+                </div>
+                <div class="date-separator"></div>
+                <div class="date-group">
+                    <span class="date-label">Date Out (Current)</span>
+                    <span class="date-value" style="color: var(--qi-cyan);">2026-02-07</span>
+                </div>
+                <div class="date-separator"></div>
+                <div class="date-group">
+                    <span class="date-label">Duration</span>
+                    <span class="date-duration">694 DAYS — 1Y 10M 23D</span>
+                </div>
+                <div class="date-separator"></div>
+                <div class="date-group">
+                    <span class="date-label">Status</span>
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        ACTIVE
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+        <div class="stat-card fade-in fade-in-d1">
+            <div class="stat-label">Capital Deployed</div>
+            <div class="stat-value amber">$112,500</div>
+            <div class="stat-sub">Across 4 chains</div>
+        </div>
+        <div class="stat-card fade-in fade-in-d2">
+            <div class="stat-label">Unrealized P&L</div>
+            <div class="stat-value green">+$35,730</div>
+            <div class="stat-sub">+31.76% Total Return</div>
+        </div>
+        <div class="stat-card fade-in fade-in-d3">
+            <div class="stat-label">Mining Revenue (YTD)</div>
+            <div class="stat-value cyan">$18,420</div>
+            <div class="stat-sub">318 TH/s SHA-256</div>
+        </div>
+        <div class="stat-card fade-in fade-in-d4">
+            <div class="stat-label">On-Chain Txns</div>
+            <div class="stat-value" style="color: var(--qi-purple);">247</div>
+            <div class="stat-sub">Last 30d: 34 txns</div>
+        </div>
+        <div class="stat-card fade-in fade-in-d5">
+            <div class="stat-label">Best Performer</div>
+            <div class="stat-value green">QUAI</div>
+            <div class="stat-sub">+68.4% since entry</div>
+        </div>
+        <div class="stat-card fade-in fade-in-d6">
+            <div class="stat-label">Yield / Month</div>
+            <div class="stat-value cyan">$1,920</div>
+            <div class="stat-sub">Mining + staking avg</div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="dashboard">
+        <!-- LEFT COLUMN -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- PORTFOLIO VALUE OVER TIME -->
+            <div class="panel fade-in fade-in-d3">
+                <div class="panel-header">
+                    <span class="panel-title">Portfolio Value Over Time</span>
+                    <div class="panel-tabs">
+                        <button class="panel-tab active" data-range="all">All</button>
+                        <button class="panel-tab" data-range="1y">1Y</button>
+                        <button class="panel-tab" data-range="6m">6M</button>
+                        <button class="panel-tab" data-range="1m">1M</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-container line-chart">
+                        <canvas id="valueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ON-CHAIN FLOWS TABLE -->
+            <div class="panel fade-in fade-in-d4" id="flows">
+                <div class="panel-header">
+                    <span class="panel-title">On-Chain Capital Flows</span>
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        LIVE
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-top: 12px;">
+                    <div style="overflow-x: auto;">
+                        <table class="flow-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Chain</th>
+                                    <th>Asset</th>
+                                    <th>Amount</th>
+                                    <th>USD Value</th>
+                                    <th>Tx Hash</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="flowTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- PIE CHART: ALLOCATION -->
+            <div class="panel fade-in fade-in-d3">
+                <div class="panel-header">
+                    <span class="panel-title">Allocation</span>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-container pie-chart">
+                        <canvas id="allocChart"></canvas>
+                    </div>
+                    <div class="alloc-legend" id="allocLegend"></div>
+                </div>
+            </div>
+
+            <!-- MILESTONES -->
+            <div class="panel fade-in fade-in-d5" id="milestones">
+                <div class="panel-header">
+                    <span class="panel-title">Capital Story</span>
+                </div>
+                <div class="panel-body">
+                    <div class="timeline" id="timeline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <span class="footer-logo">HARROGATE VENTURES</span>
+        <div class="footer-links">
+            <a href="#">Qi.xyz</a>
+            <a href="#">Thermoeconomics</a>
+            <a href="#">American Energy Money</a>
+        </div>
+        <span class="footer-copy">On-chain capital allocation since 2024</span>
+    </footer>
+
+    <script>
+    // ========================================
+    // DATA — Replace with live blockchain feeds
+    // ========================================
+
+    const PORTFOLIO = {
+        inception: '2024-03-15',
+        current: '2026-02-07',
+        totalDeployed: 112500,
+        totalValue: 148230,
+    };
+
+    const ALLOCATION = [
+        { name: 'Bitcoin (BTC)',     pct: 38, value: 56328, color: '#ffb800' },
+        { name: 'Quai Network',      pct: 28, value: 41504, color: '#00f0ff' },
+        { name: 'Mining Hardware',   pct: 18, value: 26681, color: '#39FF14' },
+        { name: 'Qi Token',          pct: 9,  value: 13341, color: '#bf5af2' },
+        { name: 'Stablecoins',       pct: 4,  value: 5929,  color: '#4a5568' },
+        { name: 'Other (ETH/SOL)',   pct: 3,  value: 4447,  color: '#ff6b35' },
+    ];
+
+    // Monthly portfolio value snapshots
+    const VALUE_HISTORY = [
+        { date: '2024-03', value: 25000 },
+        { date: '2024-04', value: 38000 },
+        { date: '2024-05', value: 42500 },
+        { date: '2024-06', value: 51000 },
+        { date: '2024-07', value: 48200 },
+        { date: '2024-08', value: 53800 },
+        { date: '2024-09', value: 62000 },
+        { date: '2024-10', value: 58900 },
+        { date: '2024-11', value: 71200 },
+        { date: '2024-12', value: 82500 },
+        { date: '2025-01', value: 79800 },
+        { date: '2025-02', value: 88000 },
+        { date: '2025-03', value: 95200 },
+        { date: '2025-04', value: 92100 },
+        { date: '2025-05', value: 99800 },
+        { date: '2025-06', value: 105400 },
+        { date: '2025-07', value: 112000 },
+        { date: '2025-08', value: 108500 },
+        { date: '2025-09', value: 118200 },
+        { date: '2025-10', value: 125600 },
+        { date: '2025-11', value: 131000 },
+        { date: '2025-12', value: 138700 },
+        { date: '2026-01', value: 142100 },
+        { date: '2026-02', value: 148230 },
+    ];
+
+    // Cost basis line (cumulative capital deployed)
+    const COST_BASIS = [
+        { date: '2024-03', value: 25000 },
+        { date: '2024-04', value: 35000 },
+        { date: '2024-05', value: 35000 },
+        { date: '2024-06', value: 50000 },
+        { date: '2024-07', value: 50000 },
+        { date: '2024-08', value: 50000 },
+        { date: '2024-09', value: 60000 },
+        { date: '2024-10', value: 60000 },
+        { date: '2024-11', value: 72000 },
+        { date: '2024-12', value: 72000 },
+        { date: '2025-01', value: 72000 },
+        { date: '2025-02', value: 85000 },
+        { date: '2025-03', value: 85000 },
+        { date: '2025-04', value: 85000 },
+        { date: '2025-05', value: 95000 },
+        { date: '2025-06', value: 95000 },
+        { date: '2025-07', value: 105000 },
+        { date: '2025-08', value: 105000 },
+        { date: '2025-09', value: 105000 },
+        { date: '2025-10', value: 112500 },
+        { date: '2025-11', value: 112500 },
+        { date: '2025-12', value: 112500 },
+        { date: '2026-01', value: 112500 },
+        { date: '2026-02', value: 112500 },
+    ];
+
+    const MILESTONES = [
+        { date: '2024-03-15', title: 'Portfolio Inception', desc: 'Initial capital deployment — 0.25 BTC + Quai mining rig purchase.', type: 'major', color: 'green', tag: 'inflow' },
+        { date: '2024-06-01', title: 'Second Tranche Deployed', desc: '$25K additional. Expanded BTC position, began Quai testnet mining.', type: 'major', color: 'amber', tag: 'inflow' },
+        { date: '2024-09-12', title: 'Mining Rig Online', desc: '318 TH/s SHA-256 hardware fully operational. AlphaMine partnership active.', type: 'major', color: '', tag: 'rebalance' },
+        { date: '2024-11-08', title: 'Quai Mainnet Launch', desc: 'Mainnet goes live. Early miner rewards begin accruing. Qi token activated.', type: 'major', color: 'green', tag: 'inflow' },
+        { date: '2025-02-14', title: 'BTC Position Increased', desc: 'Dollar-cost averaged another $13K into BTC at ~$96K.', type: '', color: 'amber', tag: 'inflow' },
+        { date: '2025-05-20', title: 'First Profit Take', desc: 'Trimmed 5% of Quai position. Rotated into stablecoins as reserve.', type: '', color: '', tag: 'outflow' },
+        { date: '2025-07-01', title: 'Hardware Expansion', desc: 'Added second mining unit. Total hashrate capacity doubled.', type: 'major', color: 'green', tag: 'inflow' },
+        { date: '2025-10-15', title: 'Final Tranche', desc: 'Last scheduled capital deployment. Portfolio fully funded.', type: 'major', color: 'amber', tag: 'inflow' },
+        { date: '2026-01-10', title: 'ATH Portfolio Value', desc: 'Portfolio crossed $140K for the first time. BTC + Quai driving gains.', type: '', color: 'green', tag: '' },
+        { date: '2026-02-07', title: 'Current Snapshot', desc: 'Portfolio at $148,230. Actively tracking all flows on-chain.', type: '', color: '', tag: 'rebalance' },
+    ];
+
+    const ON_CHAIN_FLOWS = [
+        { date: '2026-02-05', type: 'in', chain: 'btc', asset: 'BTC', amount: '0.012', usd: '$1,164', hash: '3a7f...c91d', status: 'confirmed' },
+        { date: '2026-02-03', type: 'swap', chain: 'quai', asset: 'QUAI→QI', amount: '5,000', usd: '$890', hash: 'b2e1...48fa', status: 'confirmed' },
+        { date: '2026-01-28', type: 'in', chain: 'quai', asset: 'QUAI', amount: '12,400', usd: '$2,208', hash: '91cd...3ef7', status: 'confirmed' },
+        { date: '2026-01-22', type: 'out', chain: 'btc', asset: 'BTC', amount: '0.005', usd: '$486', hash: 'f4a2...7b19', status: 'confirmed' },
+        { date: '2026-01-15', type: 'in', chain: 'quai', asset: 'QUAI', amount: '8,200', usd: '$1,460', hash: 'c83d...a502', status: 'confirmed' },
+        { date: '2026-01-10', type: 'in', chain: 'btc', asset: 'BTC', amount: '0.032', usd: '$3,104', hash: '2e7a...d1f8', status: 'confirmed' },
+        { date: '2026-01-05', type: 'swap', chain: 'eth', asset: 'ETH→USDC', amount: '0.8', usd: '$2,640', hash: 'a19f...c347', status: 'confirmed' },
+        { date: '2025-12-28', type: 'in', chain: 'quai', asset: 'QI', amount: '45,000', usd: '$1,350', hash: 'e5b4...82cd', status: 'confirmed' },
+        { date: '2025-12-20', type: 'in', chain: 'btc', asset: 'BTC', amount: '0.018', usd: '$1,746', hash: '7c2f...a93b', status: 'confirmed' },
+        { date: '2025-12-15', type: 'out', chain: 'quai', asset: 'QUAI', amount: '3,000', usd: '$534', hash: 'd81e...f250', status: 'confirmed' },
+    ];
+
+
+    // ========================================
+    // CHARTS
+    // ========================================
+
+    // Portfolio Value Line Chart
+    const valueCtx = document.getElementById('valueChart').getContext('2d');
+    const valueGradient = valueCtx.createLinearGradient(0, 0, 0, 320);
+    valueGradient.addColorStop(0, 'rgba(0, 240, 255, 0.15)');
+    valueGradient.addColorStop(1, 'rgba(0, 240, 255, 0.0)');
+
+    const costGradient = valueCtx.createLinearGradient(0, 0, 0, 320);
+    costGradient.addColorStop(0, 'rgba(255, 184, 0, 0.08)');
+    costGradient.addColorStop(1, 'rgba(255, 184, 0, 0.0)');
+
+    new Chart(valueCtx, {
+        type: 'line',
+        data: {
+            labels: VALUE_HISTORY.map(d => d.date),
+            datasets: [
+                {
+                    label: 'Portfolio Value',
+                    data: VALUE_HISTORY.map(d => d.value),
+                    borderColor: '#00f0ff',
+                    backgroundColor: valueGradient,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: '#00f0ff',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 2,
+                },
+                {
+                    label: 'Cost Basis',
+                    data: COST_BASIS.map(d => d.value),
+                    borderColor: 'rgba(255, 184, 0, 0.5)',
+                    backgroundColor: costGradient,
+                    borderWidth: 1.5,
+                    borderDash: [6, 4],
+                    fill: true,
+                    tension: 0.05,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    pointHoverBackgroundColor: '#ffb800',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'end',
+                    labels: {
+                        color: '#4a5568',
+                        font: { family: "'Share Tech Mono', monospace", size: 10 },
+                        boxWidth: 12, boxHeight: 2, padding: 16,
+                        usePointStyle: false,
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(12, 16, 24, 0.95)',
+                    borderColor: 'rgba(0, 240, 255, 0.3)',
+                    borderWidth: 1,
+                    titleFont: { family: "'Share Tech Mono', monospace", size: 11 },
+                    bodyFont: { family: "'Share Tech Mono', monospace", size: 12 },
+                    titleColor: '#7a8a9e',
+                    bodyColor: '#e8ecf0',
+                    padding: 12,
+                    displayColors: true,
+                    callbacks: {
+                        label: ctx => `${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()}`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(0, 240, 255, 0.04)', drawBorder: false },
+                    ticks: {
+                        color: '#4a5568',
+                        font: { family: "'Share Tech Mono', monospace", size: 10 },
+                        maxRotation: 0,
+                        maxTicksLimit: 8,
+                    }
+                },
+                y: {
+                    grid: { color: 'rgba(0, 240, 255, 0.04)', drawBorder: false },
+                    ticks: {
+                        color: '#4a5568',
+                        font: { family: "'Share Tech Mono', monospace", size: 10 },
+                        callback: v => '$' + (v / 1000) + 'K'
+                    }
+                }
+            }
+        }
+    });
+
+    // Allocation Pie Chart
+    const allocCtx = document.getElementById('allocChart').getContext('2d');
+    new Chart(allocCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ALLOCATION.map(a => a.name),
+            datasets: [{
+                data: ALLOCATION.map(a => a.pct),
+                backgroundColor: ALLOCATION.map(a => a.color),
+                borderColor: '#111822',
+                borderWidth: 2,
+                hoverBorderColor: '#e8ecf0',
+                hoverBorderWidth: 2,
+                hoverOffset: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '62%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(12, 16, 24, 0.95)',
+                    borderColor: 'rgba(0, 240, 255, 0.3)',
+                    borderWidth: 1,
+                    titleFont: { family: "'Share Tech Mono', monospace", size: 11 },
+                    bodyFont: { family: "'Share Tech Mono', monospace", size: 12 },
+                    titleColor: '#7a8a9e',
+                    bodyColor: '#e8ecf0',
+                    padding: 12,
+                    callbacks: {
+                        label: ctx => `${ctx.label}: ${ctx.parsed}% — $${ALLOCATION[ctx.dataIndex].value.toLocaleString()}`
+                    }
+                }
+            }
+        }
+    });
+
+    // ========================================
+    // RENDER: Allocation Legend
+    // ========================================
+    const legendEl = document.getElementById('allocLegend');
+    ALLOCATION.forEach(a => {
+        legendEl.innerHTML += `
+            <div class="alloc-item">
+                <div class="alloc-left">
+                    <div class="alloc-dot" style="background:${a.color};box-shadow:0 0 6px ${a.color}40;"></div>
+                    <span class="alloc-name">${a.name}</span>
+                </div>
+                <div class="alloc-right">
+                    <span class="alloc-val">$${a.value.toLocaleString()}</span>
+                    <span class="alloc-pct">${a.pct}%</span>
+                </div>
+            </div>`;
+    });
+
+    // ========================================
+    // RENDER: Milestones Timeline
+    // ========================================
+    const timelineEl = document.getElementById('timeline');
+    MILESTONES.forEach(m => {
+        const majorClass = m.type === 'major' ? ' major' : '';
+        const colorClass = m.color ? ` ${m.color}` : '';
+        let tagHtml = '';
+        if (m.tag) {
+            tagHtml = `<span class="milestone-tag ${m.tag}">${m.tag}</span>`;
+        }
+        timelineEl.innerHTML += `
+            <div class="milestone${majorClass}${colorClass}">
+                <div class="milestone-date">${m.date}</div>
+                <div class="milestone-title">${m.title}</div>
+                <div class="milestone-desc">${m.desc}</div>
+                ${tagHtml}
+            </div>`;
+    });
+
+    // ========================================
+    // RENDER: On-Chain Flow Table
+    // ========================================
+    const flowBody = document.getElementById('flowTableBody');
+    ON_CHAIN_FLOWS.forEach(f => {
+        const dirClass = f.type === 'in' ? 'in' : f.type === 'out' ? 'out' : 'swap';
+        const dirLabel = f.type === 'in' ? '↓ IN' : f.type === 'out' ? '↑ OUT' : '⇄ SWAP';
+        const chainClass = f.chain;
+        flowBody.innerHTML += `
+            <tr>
+                <td>${f.date}</td>
+                <td><span class="flow-dir ${dirClass}">${dirLabel}</span></td>
+                <td><span class="chain-badge ${chainClass}">${f.chain.toUpperCase()}</span></td>
+                <td>${f.asset}</td>
+                <td>${f.amount}</td>
+                <td style="color: var(--text-primary);">${f.usd}</td>
+                <td><span class="flow-hash" title="Click to copy">${f.hash}</span></td>
+                <td><span class="flow-status ${f.status}" style="display:inline-block;width:6px;height:6px;border-radius:50%;"></span></td>
+            </tr>`;
+    });
+
+    // Copy tx hash on click
+    document.querySelectorAll('.flow-hash').forEach(el => {
+        el.addEventListener('click', () => {
+            navigator.clipboard?.writeText(el.textContent);
+            const orig = el.textContent;
+            el.textContent = 'copied!';
+            el.style.color = 'var(--qi-green)';
+            setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 1200);
+        });
+    });
+
+    // Tab switching (range filter)
+    document.querySelectorAll('.panel-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            tab.parentElement.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            // TODO: filter chart data by range
+        });
+    });
+
+    // Smooth scroll nav
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>
