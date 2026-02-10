@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quai Lore — Weekly Animation Series</title>
+    <meta name="description" content="Open-source animated series building the Quai Network origin story. Fork the lore, build on the universe.">
+    <meta property="og:title" content="Quai Lore — Global Energy Reimagined">
+    <meta property="og:description" content="Weekly animation series + open-source asset packs. Build on the Quai universe.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-red-dim: rgba(255, 51, 102, 0.12);
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-cyan-glow); }
+        .nav-back { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; display: flex; align-items: center; gap: 8px; }
+        .nav-back:hover { color: var(--qi-cyan); }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            min-height: 80vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+            padding: 100px 24px 60px;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .hero-bg-image {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('quai-lore-hero.png') center center / cover no-repeat;
+            opacity: 0.15;
+            filter: blur(2px);
+        }
+        .hero-bg-gradient {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg,
+                rgba(6, 8, 13, 0.4) 0%,
+                rgba(6, 8, 13, 0.6) 40%,
+                rgba(6, 8, 13, 0.95) 85%,
+                var(--bg-deep) 100%
+            );
+        }
+
+        .hero-content { position: relative; z-index: 2; }
+
+        .hero-badge {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--qi-red);
+            border: 1px solid var(--qi-red-dim);
+            padding: 6px 16px;
+            display: inline-block;
+            margin-bottom: 32px;
+            animation: fade-up 0.6s ease forwards;
+        }
+        .hero-badge::before {
+            content: '● ';
+            animation: blink-red 2s step-end infinite;
+        }
+        @keyframes blink-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 7vw, 72px);
+            font-weight: 900;
+            letter-spacing: 8px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 0.2s;
+        }
+        .hero h1 .accent { color: var(--qi-red); text-shadow: 0 0 40px rgba(255, 51, 102, 0.4); }
+
+        .hero-sub {
+            font-family: var(--font-body);
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: 300;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 16px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 0.4s;
+        }
+
+        .hero-meta {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--qi-cyan);
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 0.5s;
+            margin-bottom: 40px;
+        }
+
+        @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== VIDEO PLAYER ===== */
+        .video-section {
+            position: relative; z-index: 1;
+            max-width: 1000px;
+            margin: -40px auto 0;
+            padding: 0 24px;
+        }
+
+        .video-container {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            position: relative;
+            overflow: hidden;
+        }
+        .video-container::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-red), var(--qi-cyan), transparent);
+            z-index: 2;
+        }
+
+        .video-embed {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Placeholder state — swap this for iframe/video when ready */
+        .video-placeholder {
+            text-align: center;
+            padding: 40px;
+        }
+        .video-placeholder .play-icon {
+            width: 80px; height: 80px;
+            border: 2px solid var(--qi-red);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .video-placeholder .play-icon::after {
+            content: '';
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 14px 0 14px 24px;
+            border-color: transparent transparent transparent var(--qi-red);
+            margin-left: 4px;
+        }
+        .video-placeholder .play-icon:hover {
+            background: var(--qi-red-dim);
+            box-shadow: 0 0 40px rgba(255, 51, 102, 0.3);
+            transform: scale(1.05);
+        }
+        .video-placeholder .play-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .video-info {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-dim);
+        }
+        .video-episode {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        .video-date {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+
+        /* ===== EPISODE ARCHIVE ===== */
+        .archive-section {
+            position: relative; z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--qi-cyan);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .section-label::before { content: '// '; color: var(--text-dim); }
+
+        .episode-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .episode-row {
+            display: grid;
+            grid-template-columns: 60px 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .episode-row:hover {
+            border-color: var(--qi-cyan);
+            background: rgba(0, 240, 255, 0.03);
+            transform: translateX(4px);
+        }
+
+        .episode-num {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--qi-red);
+            letter-spacing: 1px;
+        }
+        .episode-title {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .episode-title span {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .episode-date {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+        .episode-status {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+        }
+        .episode-status.live { background: var(--qi-green); box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); }
+        .episode-status.upcoming { background: var(--qi-amber); box-shadow: 0 0 8px rgba(255, 184, 0, 0.5); }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+            position: relative; z-index: 1;
+        }
+
+        /* ===== OPEN SOURCE ASSETS ===== */
+        .assets-section {
+            position: relative; z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(22px, 3vw, 32px);
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-desc {
+            font-size: 17px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 48px;
+            line-height: 1.8;
+        }
+
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .asset-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 32px 28px;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        .asset-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-red), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .asset-card:hover {
+            border-color: var(--border-bright);
+            transform: translateY(-4px);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+        }
+        .asset-card:hover::before { opacity: 1; }
+
+        .asset-icon {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--qi-red);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .asset-icon .dot {
+            width: 6px; height: 6px;
+            background: var(--qi-red);
+            box-shadow: 0 0 8px rgba(255, 51, 102, 0.5);
+        }
+
+        .asset-card h3 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .asset-card p {
+            font-size: 14px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .asset-file-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .asset-file-list li {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            padding: 6px 10px;
+            background: rgba(0, 240, 255, 0.03);
+            border: 1px solid rgba(0, 240, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .asset-file-list li::before {
+            content: '↓';
+            color: var(--qi-cyan);
+            font-size: 12px;
+        }
+        .asset-file-list li a {
+            color: var(--qi-cyan);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .asset-file-list li a:hover {
+            color: var(--text-primary);
+        }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border: 1px solid var(--border-dim);
+            color: var(--text-dim);
+        }
+        .tag.red { border-color: rgba(255, 51, 102, 0.25); color: var(--qi-red); }
+        .tag.cyan { border-color: rgba(0, 240, 255, 0.25); color: var(--qi-cyan); }
+        .tag.amber { border-color: rgba(255, 184, 0, 0.25); color: var(--qi-amber); }
+
+        /* ===== CHARACTER SHEET ===== */
+        .character-section {
+            position: relative; z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            overflow: hidden;
+        }
+        .character-portrait {
+            background: var(--bg-panel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .character-portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .character-portrait .portrait-placeholder {
+            text-align: center;
+            padding: 20px;
+        }
+        .character-portrait .portrait-placeholder .glyph {
+            font-family: var(--font-display);
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--qi-red);
+            opacity: 0.2;
+        }
+        .character-portrait .portrait-placeholder .label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .character-details {
+            padding: 40px 36px 40px 0;
+        }
+        .character-name {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 4px;
+        }
+        .character-role {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--qi-red);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .char-stat-group {
+            margin-bottom: 24px;
+        }
+        .char-stat-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .char-stat-value {
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .char-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        /* ===== PROMPT SECTION ===== */
+        .prompt-section {
+            position: relative; z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .prompt-block {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .prompt-block::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--qi-red), var(--qi-cyan));
+        }
+
+        .prompt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .prompt-header-label {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        .prompt-copy-btn {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--qi-cyan);
+            background: transparent;
+            border: 1px solid var(--border-bright);
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .prompt-copy-btn:hover {
+            background: var(--qi-cyan-dim);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+        }
+
+        .prompt-body {
+            padding: 24px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .prompt-body::-webkit-scrollbar { width: 4px; }
+        .prompt-body::-webkit-scrollbar-track { background: var(--bg-panel); }
+        .prompt-body::-webkit-scrollbar-thumb { background: var(--border-bright); }
+
+        /* ===== LORE BIBLE ===== */
+        .lore-section {
+            position: relative; z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .lore-timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        .lore-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 15px;
+            width: 1px;
+            background: linear-gradient(180deg, var(--qi-red), var(--qi-cyan), transparent);
+        }
+
+        .lore-entry {
+            position: relative;
+            margin-bottom: 32px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            transition: all 0.3s;
+        }
+        .lore-entry:hover {
+            border-color: var(--border-bright);
+        }
+        .lore-entry::before {
+            content: '';
+            position: absolute;
+            left: -33px; top: 28px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--qi-red);
+            box-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
+            border: 2px solid var(--bg-deep);
+        }
+
+        .lore-entry-epoch {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--qi-red);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .lore-entry h4 {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .lore-entry p {
+            font-size: 14px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== CONTRIBUTE CTA ===== */
+        .contribute-section {
+            position: relative; z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 24px 120px;
+            text-align: center;
+        }
+
+        .contribute-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .contribute-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--qi-red), var(--qi-amber), var(--qi-cyan), var(--qi-green));
+        }
+
+        .contribute-box h3 {
+            font-family: var(--font-display);
+            font-size: clamp(20px, 3vw, 28px);
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+        }
+        .contribute-box p {
+            font-size: 16px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 14px 28px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--qi-red);
+            color: #fff;
+            border: 1px solid var(--qi-red);
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.2);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 40px rgba(255, 51, 102, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--qi-cyan);
+            border: 1px solid var(--border-bright);
+        }
+        .btn-ghost:hover {
+            background: var(--qi-cyan-dim);
+            border-color: var(--qi-cyan);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border-dim);
+            padding: 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1000px; margin: 0 auto;
+        }
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 14px; font-weight: 700;
+            color: var(--qi-cyan); letter-spacing: 4px;
+            text-shadow: 0 0 10px var(--qi-cyan-glow);
+        }
+        .footer-copy {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .character-grid { grid-template-columns: 1fr; }
+            .character-portrait { min-height: 250px; }
+            .character-details { padding: 28px 24px; }
+            .episode-row { grid-template-columns: 48px 1fr auto; gap: 12px; padding: 12px 16px; }
+            .episode-date { display: none; }
+            .asset-grid { grid-template-columns: 1fr; }
+            .video-info { flex-direction: column; gap: 8px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="index.html" class="nav-logo">Qi</a>
+        <a href="index.html" class="nav-back">‹ Back to Station</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-bg-image"></div>
+        <div class="hero-bg-gradient"></div>
+        <div class="hero-content">
+            <div class="hero-badge">Weekly Series</div>
+            <h1>QUAI <span class="accent">LORE</span></h1>
+            <p class="hero-sub">An open-source animated series building the Quai Network origin story. Every week, new episodes. Every asset, forkable.</p>
+            <p class="hero-meta">GLOBAL ENERGY REIMAGINED</p>
+        </div>
+    </div>
+
+    <!-- LATEST EPISODE VIDEO -->
+    <div class="video-section">
+        <div class="video-container">
+            <div class="video-embed">
+                <!--
+                    ════════════════════════════════════════════════
+                    SWAP THIS PLACEHOLDER WITH YOUR VIDEO EMBED:
+
+                    Option A — YouTube/Vimeo iframe:
+                    <iframe src="https://www.youtube.com/embed/VIDEO_ID"
+                            frameborder="0" allowfullscreen
+                            style="width:100%;height:100%;"></iframe>
+
+                    Option B — Self-hosted MP4:
+                    <video controls style="width:100%;height:100%;">
+                        <source src="episode-01.mp4" type="video/mp4">
+                    </video>
+                    ════════════════════════════════════════════════
+                -->
+                <div class="video-placeholder">
+                    <div class="play-icon" id="playBtn"></div>
+                    <div class="play-label">Episode Coming Soon</div>
+                </div>
+            </div>
+            <div class="video-info">
+                <span class="video-episode">EP. 01 — GENESIS HASH</span>
+                <span class="video-date">WEEK OF FEB 10, 2026</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- EPISODE ARCHIVE -->
+    <div class="archive-section">
+        <div class="section-label">Episode Archive</div>
+        <div class="episode-list">
+            <!--
+                ════════════════════════════════════════════════
+                ADD NEW EPISODES HERE — copy this template:
+
+                <a href="#" class="episode-row">
+                    <span class="episode-num">02</span>
+                    <div class="episode-title">
+                        Episode Title
+                        <span>Brief one-line description of this episode</span>
+                    </div>
+                    <span class="episode-date">FEB 17 2026</span>
+                    <span class="episode-status live"></span>
+                </a>
+                ════════════════════════════════════════════════
+            -->
+            <a href="#" class="episode-row">
+                <span class="episode-num">01</span>
+                <div class="episode-title">
+                    Genesis Hash
+                    <span>The first block. The first spark. Energy finds form.</span>
+                </div>
+                <span class="episode-date">FEB 10 2026</span>
+                <span class="episode-status upcoming"></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CHARACTER SHEET -->
+    <div class="character-section">
+        <div class="section-label">Character Bible</div>
+        <div class="section-title">THE OPERATOR</div>
+        <div class="section-desc">Primary protagonist of the Quai Lore universe. Fork this character or create your own.</div>
+
+        <div class="character-grid">
+            <div class="character-portrait">
+                <!--
+                    ════════════════════════════════════════════════
+                    Replace with character portrait image:
+                    <img src="operator-portrait.png" alt="The Operator" />
+                    ════════════════════════════════════════════════
+                -->
+                <div class="portrait-placeholder">
+                    <div class="glyph">Q</div>
+                    <div class="label">Portrait Pending</div>
+                </div>
+            </div>
+            <div class="character-details">
+                <div class="character-name">THE OPERATOR</div>
+                <div class="character-role">Thermodynamic Engineer / Network Architect</div>
+
+                <div class="char-stat-group">
+                    <div class="char-stat-label">Visual Identity</div>
+                    <div class="char-stat-value">Red Quai cap with "Q" emblem. Long hair, full beard. Lab coat over dark base layers. Aviator sunglasses with red-tinted lenses. Server room / data center environments.</div>
+                </div>
+
+                <div class="char-stat-group">
+                    <div class="char-stat-label">Archetype</div>
+                    <div class="char-stat-value">Part scientist, part builder, part cypherpunk. Harnesses raw computational energy to forge a new monetary system rooted in thermodynamic truth.</div>
+                </div>
+
+                <div class="char-stat-group">
+                    <div class="char-stat-label">Motivation</div>
+                    <div class="char-stat-value">Believes money must be backed by physical energy — not faith, not fiat, not consensus alone. Every hash is a vote cast in joules.</div>
+                </div>
+
+                <div class="char-stat-group">
+                    <div class="char-stat-label">Setting</div>
+                    <div class="char-stat-value">Near-future cyberpunk city. Q-branded skyscrapers. Lightning storms and energy beams. The grid is alive.</div>
+                </div>
+
+                <div class="char-traits">
+                    <span class="tag red">Proof-of-Work</span>
+                    <span class="tag cyan">Energy Money</span>
+                    <span class="tag amber">Cypherpunk</span>
+                    <span class="tag">Scientist</span>
+                    <span class="tag">Builder</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- OPEN SOURCE PROMPTS -->
+    <div class="prompt-section">
+        <div class="section-label">Generation Prompts</div>
+        <div class="section-title">FORK THE VISION</div>
+        <div class="section-desc">The exact prompts used to generate each episode's visuals and animations. Copy, modify, and build your own.</div>
+
+        <div class="prompt-block">
+            <div class="prompt-header">
+                <span class="prompt-header-label">EP. 01 — HERO IMAGE PROMPT</span>
+                <button class="prompt-copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-body" id="prompt-hero"><!-- ════════════════════════════════════════════════
+PASTE YOUR GENERATION PROMPT HERE
+
+Example:
+"Cyberpunk comic book illustration, wide cinematic shot. A bearded figure in a white lab coat stands atop a cracked concrete pedestal, holding a glowing purple crystalline cube aloft. Behind him: a dark futuristic cityscape with red 'Q' logos on skyscrapers, purple and pink energy beams shooting across the sky, lightning storms crackling. A massive red Quai logo circle in the upper right. Ground-level: a cracked red Quai emblem embedded in the fractured earth. Text banner at bottom reads 'QUAI NETWORK: GLOBAL ENERGY REIMAGINED'. Style: high-contrast comic art, deep blacks, neon highlights, dramatic perspective."
+════════════════════════════════════════════════ -->[Your generation prompt here — replace this placeholder]</div>
+        </div>
+
+        <div class="prompt-block">
+            <div class="prompt-header">
+                <span class="prompt-header-label">EP. 01 — ANIMATION PROMPT</span>
+                <button class="prompt-copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-body" id="prompt-anim"><!-- ════════════════════════════════════════════════
+PASTE YOUR VIDEO/ANIMATION GENERATION PROMPT HERE
+
+Include: tool used (Runway, Pika, Kling, etc.),
+motion settings, camera movements, duration,
+seed values, and any negative prompts.
+════════════════════════════════════════════════ -->[Your animation prompt here — replace this placeholder]</div>
+        </div>
+
+        <div class="prompt-block">
+            <div class="prompt-header">
+                <span class="prompt-header-label">STYLE GUIDE — CONSISTENT CHARACTER</span>
+                <button class="prompt-copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-body" id="prompt-style"><!-- ════════════════════════════════════════════════
+PASTE YOUR CHARACTER CONSISTENCY PROMPT HERE
+
+This should be the base prompt that keeps
+the character looking the same across frames.
+Include LoRA references, IP-Adapter settings,
+face reference images, etc.
+════════════════════════════════════════════════ -->[Your style consistency prompt here — replace this placeholder]</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- DOWNLOADABLE ASSETS -->
+    <div class="assets-section">
+        <div class="section-label">Asset Pack</div>
+        <div class="section-title">OPEN SOURCE KIT</div>
+        <div class="section-desc">Everything you need to build on the Quai Lore universe. All assets released under CC-BY-4.0 — attribute and remix freely.</div>
+
+        <div class="asset-grid">
+            <div class="asset-card">
+                <div class="asset-icon">
+                    <div class="dot"></div>
+                    Reference Images
+                </div>
+                <h3>Character Stills</h3>
+                <p>High-res reference images of The Operator in various poses and environments.</p>
+                <ul class="asset-file-list">
+                    <!--
+                        ════════════════════════════════════════════════
+                        Add download links as you create them:
+                        <li><a href="assets/operator-hero.png">operator-hero.png</a></li>
+                        ════════════════════════════════════════════════
+                    -->
+                    <li><a href="#">operator-comic-hero.png</a></li>
+                    <li><a href="#">operator-server-room.png</a></li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag red">PNG</span>
+                    <span class="tag">2048×2048</span>
+                </div>
+            </div>
+
+            <div class="asset-card">
+                <div class="asset-icon">
+                    <div class="dot"></div>
+                    Environment Art
+                </div>
+                <h3>World Backdrops</h3>
+                <p>Cityscape backgrounds, server rooms, energy grid interiors. Use as-is or composite into new scenes.</p>
+                <ul class="asset-file-list">
+                    <li><a href="#">cyberpunk-city-night.png</a></li>
+                    <li><a href="#">server-room-blue.png</a></li>
+                    <li><a href="#">energy-grid-storm.png</a></li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag red">PNG</span>
+                    <span class="tag cyan">Tileable</span>
+                </div>
+            </div>
+
+            <div class="asset-card">
+                <div class="asset-icon">
+                    <div class="dot"></div>
+                    Brand Elements
+                </div>
+                <h3>Quai Logo Kit</h3>
+                <p>Q emblem in various formats and color treatments. Glowing, flat, embossed, cracked.</p>
+                <ul class="asset-file-list">
+                    <li><a href="#">quai-q-red-glow.svg</a></li>
+                    <li><a href="#">quai-q-embossed.png</a></li>
+                    <li><a href="#">quai-wordmark.svg</a></li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag red">SVG</span>
+                    <span class="tag red">PNG</span>
+                </div>
+            </div>
+
+            <div class="asset-card">
+                <div class="asset-icon">
+                    <div class="dot"></div>
+                    Audio / SFX
+                </div>
+                <h3>Sound Design</h3>
+                <p>Background tracks, energy hum loops, lightning strikes, UI beeps. All royalty-free.</p>
+                <ul class="asset-file-list">
+                    <li><a href="#">ambient-grid-hum.mp3</a></li>
+                    <li><a href="#">lightning-crack.wav</a></li>
+                    <li><a href="#">ui-blip-pack.zip</a></li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag amber">MP3</span>
+                    <span class="tag amber">WAV</span>
+                </div>
+            </div>
+
+            <div class="asset-card">
+                <div class="asset-icon">
+                    <div class="dot"></div>
+                    Video Source
+                </div>
+                <h3>Raw Footage</h3>
+                <p>Unedited generation outputs, individual clips before compositing. Full resolution, no watermarks.</p>
+                <ul class="asset-file-list">
+                    <li><a href="#">ep01-raw-clips.zip</a></li>
+                    <li><a href="#">ep01-composited-notext.mp4</a></li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag red">MP4</span>
+                    <span class="tag">1080p</span>
+                </div>
+            </div>
+
+            <div class="asset-card">
+                <div class="asset-icon">
+                    <div class="dot"></div>
+                    Project Files
+                </div>
+                <h3>Editable Source</h3>
+                <p>After Effects / DaVinci Resolve project files, Photoshop PSDs, Figma links, and generation configs.</p>
+                <ul class="asset-file-list">
+                    <li><a href="#">ep01-project.zip</a></li>
+                    <li><a href="#">generation-config.json</a></li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag cyan">AEP</span>
+                    <span class="tag cyan">PSD</span>
+                    <span class="tag cyan">JSON</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- LORE BIBLE / TIMELINE -->
+    <div class="lore-section">
+        <div class="section-label">Lore Bible</div>
+        <div class="section-title">THE TIMELINE</div>
+        <div class="section-desc">Canonical events in the Quai Lore universe. Community contributions expand the timeline — submit yours via Discord.</div>
+
+        <div class="lore-timeline">
+            <!--
+                ════════════════════════════════════════════════
+                ADD NEW LORE ENTRIES — copy this template:
+
+                <div class="lore-entry">
+                    <div class="lore-entry-epoch">Epoch Name</div>
+                    <h4>Event Title</h4>
+                    <p>Description of the canonical event.</p>
+                </div>
+                ════════════════════════════════════════════════
+            -->
+            <div class="lore-entry">
+                <div class="lore-entry-epoch">Epoch 0 — The Thermodynamic Awakening</div>
+                <h4>The First Operator Emerges</h4>
+                <p>In a world drowning in fiat abstractions, one engineer discovers that money has always been energy — just mislabeled. The proof-of-work hash becomes the first honest price signal since the Big Bang.</p>
+            </div>
+
+            <div class="lore-entry">
+                <div class="lore-entry-epoch">Epoch 1 — The Grid Ignites</div>
+                <h4>Quai Network Genesis Block</h4>
+                <p>The merged-mined hierarchy goes live. Nine chains, one truth: entropy is the only authority. The Operator broadcasts the genesis hash from a solar-powered rig in the desert.</p>
+            </div>
+
+            <div class="lore-entry">
+                <div class="lore-entry-epoch">Epoch 2 — The City Transforms</div>
+                <h4>Q Towers Rise</h4>
+                <p>As energy money gains adoption, the skyline reshapes. Q-branded skyscrapers become the visible proof that the network's thermodynamic heartbeat now powers civilization itself.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CONTRIBUTE -->
+    <div class="contribute-section">
+        <div class="contribute-box">
+            <h3>BUILD ON THE LORE</h3>
+            <p>This universe is open source. Fork the character, remix the prompts, extend the timeline. Every contribution expands the Quai origin story.</p>
+            <div class="btn-row">
+                <a href="https://discord.gg/quai" target="_blank" class="btn btn-primary">Join Discord</a>
+                <a href="https://github.com" target="_blank" class="btn btn-ghost">GitHub Repo</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">Qi</div>
+        <div class="footer-copy">QUAI LORE — CC-BY-4.0 — 2026</div>
+    </footer>
+
+    <script>
+        function copyPrompt(btn) {
+            const body = btn.closest('.prompt-block').querySelector('.prompt-body');
+            navigator.clipboard.writeText(body.textContent.trim()).then(() => {
+                const original = btn.textContent;
+                btn.textContent = 'Copied';
+                btn.style.color = '#39FF14';
+                btn.style.borderColor = '#39FF14';
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            });
+        }
+    </script>
+
+</body>
+</html>
