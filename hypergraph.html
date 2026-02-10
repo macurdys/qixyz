@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hypergraph Visualizer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080c;
+    --panel: rgba(14,14,22,0.92);
+    --border: rgba(255,255,255,0.06);
+    --accent: #00e4ff;
+    --accent2: #ff3cac;
+    --accent3: #00ff88;
+    --text: #c8cad0;
+    --text-dim: #5a5e6a;
+    --glow: 0 0 20px rgba(0,228,255,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  canvas#main {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    cursor: crosshair;
+  }
+
+  /* ── Top Bar ── */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: linear-gradient(180deg, rgba(8,8,12,0.95) 0%, transparent 100%);
+    z-index: 100;
+    gap: 16px;
+  }
+
+  .topbar .logo {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .topbar .sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+  }
+
+  .topbar .stat {
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .topbar .stat b {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ── Side Panel ── */
+  .panel {
+    position: fixed;
+    top: 60px;
+    right: 12px;
+    width: 280px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.08) transparent;
+  }
+
+  .panel::-webkit-scrollbar { width: 4px; }
+  .panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+  .panel-section {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .section-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .control-row:last-child { margin-bottom: 0; }
+
+  .control-row label {
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  select, input[type="number"] {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  select:focus, input[type="number"]:focus {
+    border-color: rgba(0,228,255,0.3);
+  }
+  select { cursor: pointer; max-width: 140px; }
+  input[type="number"] { width: 72px; text-align: right; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 120px;
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0,228,255,0.4);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  button:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.12);
+  }
+  button.active {
+    background: rgba(0,228,255,0.1);
+    border-color: rgba(0,228,255,0.3);
+    color: var(--accent);
+  }
+  button.primary {
+    background: rgba(0,228,255,0.12);
+    border-color: rgba(0,228,255,0.25);
+    color: var(--accent);
+    flex: 1;
+  }
+  button.primary:hover {
+    background: rgba(0,228,255,0.2);
+  }
+  button.danger {
+    border-color: rgba(255,60,172,0.25);
+    color: var(--accent2);
+  }
+  button.danger:hover {
+    background: rgba(255,60,172,0.1);
+  }
+
+  .preset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .preset-grid button {
+    font-size: 10px;
+    padding: 5px 6px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Checkbox toggle ── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .toggle {
+    width: 32px; height: 16px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle.on { background: rgba(0,228,255,0.3); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    transition: all 0.2s;
+  }
+  .toggle.on::after {
+    left: 18px;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(0,228,255,0.5);
+  }
+
+  /* ── Bottom Info ── */
+  .bottom-info {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    font-size: 10px;
+    color: var(--text-dim);
+    z-index: 100;
+    line-height: 1.6;
+  }
+  .bottom-info kbd {
+    background: rgba(255,255,255,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    border: 1px solid var(--border);
+  }
+
+  /* Rule display */
+  .rule-display {
+    display: flex;
+    gap: 1px;
+    margin-top: 8px;
+    height: 28px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .rule-bit {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    cursor: pointer;
+    transition: all 0.1s;
+    position: relative;
+  }
+  .rule-bit.state { background: rgba(0,228,255,0.08); color: var(--accent); }
+  .rule-bit.state.on { background: rgba(0,228,255,0.35); }
+  .rule-bit.divide { background: rgba(255,60,172,0.08); color: var(--accent2); }
+  .rule-bit.divide.on { background: rgba(255,60,172,0.35); }
+  .rule-bit:hover { filter: brightness(1.5); }
+
+  .rule-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 8px;
+    color: var(--text-dim);
+  }
+</style>
+</head>
+<body>
+<canvas id="main"></canvas>
+
+<div class="topbar">
+  <div class="logo">Hypergraph</div>
+  <div class="sep"></div>
+  <div class="stat">nodes <b id="stat-nodes">10</b></div>
+  <div class="sep"></div>
+  <div class="stat">edges <b id="stat-edges">15</b></div>
+  <div class="sep"></div>
+  <div class="stat">gen <b id="stat-gen">0</b></div>
+  <div class="sep"></div>
+  <div class="stat">rule <b id="stat-rule">0x886</b></div>
+</div>
+
+<div class="panel">
+  <!-- Presets -->
+  <div class="panel-section">
+    <div class="section-label">Presets</div>
+    <div class="preset-grid" id="preset-grid"></div>
+  </div>
+
+  <!-- Rule -->
+  <div class="panel-section">
+    <div class="section-label">Rule (click bits to toggle)</div>
+    <div class="control-row">
+      <label>Rule #</label>
+      <input type="number" id="rule-input" value="2182" min="0" max="65535">
+    </div>
+    <div class="rule-display" id="rule-display"></div>
+    <div class="rule-labels">
+      <span style="color:var(--accent)">state update</span>
+      <span style="color:var(--accent2)">divide</span>
+    </div>
+  </div>
+
+  <!-- Growth -->
+  <div class="panel-section">
+    <div class="section-label">Growth</div>
+    <div class="btn-row" style="margin-bottom:8px;">
+      <button class="primary" id="btn-step">Step</button>
+      <button class="primary" id="btn-auto">▶ Auto</button>
+      <button class="danger" id="btn-reset">Reset</button>
+    </div>
+    <div class="control-row">
+      <label>Speed</label>
+      <input type="range" id="speed" min="1" max="20" value="4">
+    </div>
+    <div class="control-row">
+      <label>Max nodes</label>
+      <input type="number" id="max-nodes" value="5000" min="100" max="20000" step="100">
+    </div>
+    <div class="control-row">
+      <label>Flip prob</label>
+      <select id="flip-prob">
+        <option value="0">0</option>
+        <option value="0.00001">1e-5</option>
+        <option value="0.00005">5e-5</option>
+        <option value="0.0001">1e-4</option>
+        <option value="0.001">1e-3</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Visualization -->
+  <div class="panel-section">
+    <div class="section-label">Visualization</div>
+    <div class="toggle-row">
+      <label style="font-size:11px">Show hyperedges</label>
+      <div class="toggle on" id="tog-hyper"></div>
+    </div>
+    <div class="toggle-row">
+      <label style="font-size:11px">Show links</label>
+      <div class="toggle on" id="tog-links"></div>
+    </div>
+    <div class="toggle-row">
+      <label style="font-size:11px">Color by state</label>
+      <div class="toggle on" id="tog-state-color"></div>
+    </div>
+    <div class="toggle-row">
+      <label style="font-size:11px">Glow</label>
+      <div class="toggle on" id="tog-glow"></div>
+    </div>
+    <div class="control-row">
+      <label>Node size</label>
+      <input type="range" id="node-size" min="1" max="10" value="4" step="0.5">
+    </div>
+    <div class="control-row">
+      <label>Charge</label>
+      <input type="range" id="charge" min="-200" max="-5" value="-60">
+    </div>
+    <div class="control-row">
+      <label>Link dist</label>
+      <input type="range" id="link-dist" min="5" max="80" value="25">
+    </div>
+  </div>
+</div>
+
+<div class="bottom-info">
+  <kbd>scroll</kbd> zoom &nbsp; <kbd>drag</kbd> pan &nbsp; <kbd>space</kbd> step &nbsp; <kbd>r</kbd> reset
+</div>
+
+<script>
+"use strict";
+
+// ═══════════════════════════════════════════════
+// Growing Graph (from original repo)
+// ═══════════════════════════════════════════════
+const NN = 3;
+const CaseN = (NN + 1) * 2;
+
+function calcCases(nodes, states) {
+  return nodes.map((node, i) => {
+    const nc = node.reduce((a, j) => a + states[j], 0);
+    return nc + states[i] * (NN + 1);
+  });
+}
+
+class GrowingGraph {
+  constructor(rule = 2182) {
+    this.rule = rule;
+    this.flipProb = 0.0;
+    this.lastGen = 0;
+    // Petersen graph initial state
+    this.nodes = [
+      [9,1,2],[0,2,4],[1,3,0],[2,4,6],[3,5,1],
+      [4,6,8],[5,7,3],[6,8,9],[7,9,5],[8,0,7]
+    ];
+    this.states = [0,0,0,1,0,1,0,1,1,1];
+    this.dividing = [];
+    this.phase = 0;
+    this.nodes.forEach(n => { n.gen = 0; });
+    this.links = this.updateLinks();
+  }
+
+  get nodeN() { return this.nodes.length; }
+
+  updateLinks() {
+    const links = [];
+    for (let i = 0; i < this.nodes.length; ++i) {
+      for (const j of this.nodes[i]) {
+        if (i > j) continue;
+        links.push([i, j]);
+      }
+    }
+    return links;
+  }
+
+  reconnect(source, oldPeer, newPeer) {
+    const node = this.nodes[source];
+    node[node.indexOf(oldPeer)] = newPeer;
+  }
+
+  // Get hyperedges: for each node, emit the triangle (node, neighbor0, neighbor1), (node, neighbor1, neighbor2), etc.
+  getHyperedges() {
+    const edges = [];
+    const seen = new Set();
+    for (let i = 0; i < this.nodes.length; i++) {
+      const n = this.nodes[i];
+      // Each node has 3 neighbors, form triangles with consecutive pairs
+      for (let k = 0; k < n.length; k++) {
+        const a = i, b = n[k], c = n[(k + 1) % n.length];
+        const key = [a, b, c].sort().join(',');
+        if (!seen.has(key)) {
+          seen.add(key);
+          edges.push([a, b, c]);
+        }
+      }
+    }
+    return edges;
+  }
+
+  grow() {
+    const { nodes, states, rule, flipProb } = this;
+    if (this.phase === 0) {
+      calcCases(nodes, states).forEach((r, i) => {
+        this.states[i] = (rule >> r) & 1;
+        this.dividing[i] = (rule >> (r + CaseN)) & 1;
+        if (flipProb > 0.0 && Math.random() < flipProb) {
+          this.states[i] = 1 - this.states[i];
+        }
+      });
+    } else {
+      ++this.lastGen;
+      for (let i = 0; i < this.dividing.length; ++i) {
+        if (!this.dividing[i]) continue;
+        const [a, b, c] = nodes[i];
+        const j = nodes.length, k = j + 1;
+        Object.assign(nodes[i], [a, j, k]);
+        nodes.push([i, b, k]);
+        nodes.push([i, j, c]);
+        states.push(states[i], states[i]);
+        this.reconnect(b, i, j);
+        this.reconnect(c, i, k);
+        nodes[i].gen = nodes[j].gen = nodes[k].gen = this.lastGen;
+        this.dividing[i] = 0;
+      }
+      this.links = this.updateLinks();
+    }
+    this.phase = 1 - this.phase;
+    return this;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// Pure JS Force Layout (no WASM)
+// ═══════════════════════════════════════════════
+class ForceLayout {
+  constructor() {
+    this.pos = [];
+    this.vel = [];
+    this.charge = -60;
+    this.linkDist = 25;
+    this.linkStrength = 0.3;
+    this.damping = 0.85;
+    this.theta = 0.9; // Barnes-Hut threshold (not used in simple version)
+  }
+
+  ensureSize(n) {
+    while (this.pos.length < n) {
+      this.pos.push({ x: 0, y: 0 });
+      this.vel.push({ x: 0, y: 0 });
+    }
+  }
+
+  initNewNodes(graph, oldN) {
+    const n = graph.nodeN;
+    this.ensureSize(n);
+    for (let i = oldN; i < n; i++) {
+      let x = (Math.random() - 0.5) * 2;
+      let y = (Math.random() - 0.5) * 2;
+      let count = 0;
+      for (const j of graph.nodes[i]) {
+        if (j >= oldN) continue;
+        x += this.pos[j].x;
+        y += this.pos[j].y;
+        count++;
+      }
+      if (count > 0) { x /= count; y /= count; }
+      this.pos[i] = { x, y };
+      this.vel[i] = { x: 0, y: 0 };
+    }
+  }
+
+  tick(graph) {
+    const n = graph.nodeN;
+    if (n < 2) return;
+
+    // Charge forces (O(n^2) — fine up to ~5000 nodes)
+    const charge = this.charge;
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        let dx = this.pos[j].x - this.pos[i].x;
+        let dy = this.pos[j].y - this.pos[i].y;
+        let d2 = dx * dx + dy * dy + 1;
+        let d = Math.sqrt(d2);
+        let f = charge / d2;
+        let fx = f * dx / d;
+        let fy = f * dy / d;
+        this.vel[i].x += fx;
+        this.vel[i].y += fy;
+        this.vel[j].x -= fx;
+        this.vel[j].y -= fy;
+      }
+    }
+
+    // Link forces
+    for (const [i, j] of graph.links) {
+      let dx = this.pos[j].x - this.pos[i].x;
+      let dy = this.pos[j].y - this.pos[i].y;
+      let d = Math.sqrt(dx * dx + dy * dy) || 1;
+      let f = (d - this.linkDist) * this.linkStrength;
+      let fx = f * dx / d;
+      let fy = f * dy / d;
+      this.vel[i].x += fx;
+      this.vel[i].y += fy;
+      this.vel[j].x -= fx;
+      this.vel[j].y -= fy;
+    }
+
+    // Update positions
+    for (let i = 0; i < n; i++) {
+      this.vel[i].x *= this.damping;
+      this.vel[i].y *= this.damping;
+      this.pos[i].x += this.vel[i].x;
+      this.pos[i].y += this.vel[i].y;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════
+// Color utilities
+// ═══════════════════════════════════════════════
+function inferno(t) {
+  t = Math.max(0, Math.min(1, t));
+  const c0 = [0.001462, 0.000466, 0.013866];
+  const c1 = [0.087411, 0.044556, 0.224813];
+  const c2 = [0.258234, 0.038571, 0.406485];
+  const c3 = [0.416331, 0.090834, 0.432943];
+  const c4 = [0.578304, 0.148039, 0.404411];
+  const c5 = [0.735683, 0.215906, 0.329897];
+  const c6 = [0.865006, 0.316822, 0.226055];
+  const c7 = [0.954506, 0.468744, 0.099874];
+  const c8 = [0.993248, 0.652325, 0.013916];
+  const c9 = [0.988362, 0.998364, 0.644924];
+  const colors = [c0,c1,c2,c3,c4,c5,c6,c7,c8,c9];
+  const idx = t * (colors.length - 1);
+  const lo = Math.floor(idx);
+  const hi = Math.min(lo + 1, colors.length - 1);
+  const frac = idx - lo;
+  return [
+    colors[lo][0] + (colors[hi][0] - colors[lo][0]) * frac,
+    colors[lo][1] + (colors[hi][1] - colors[lo][1]) * frac,
+    colors[lo][2] + (colors[hi][2] - colors[lo][2]) * frac,
+  ];
+}
+
+function rgb(r, g, b, a = 1) {
+  return `rgba(${(r*255)|0},${(g*255)|0},${(b*255)|0},${a})`;
+}
+
+// ═══════════════════════════════════════════════
+// Main App
+// ═══════════════════════════════════════════════
+const canvas = document.getElementById('main');
+const ctx = canvas.getContext('2d');
+
+const presets = {
+  'quadratic':       { rule: 2182,  flipProb: 0 },
+  'quadratic+mut':   { rule: 2182,  flipProb: 5e-5 },
+  'two branches':    { rule: 3260,  flipProb: 0 },
+  'exp tree':        { rule: 2236,  flipProb: 0 },
+  'exp hyper':       { rule: 618,   flipProb: 0 },
+  'exp fractal':     { rule: 649,   flipProb: 0 },
+  'exp symmetry':    { rule: 1111,  flipProb: 0 },
+  'robust linear':   { rule: 22220, flipProb: 1e-3 },
+  'stable explode':  { rule: 8690,  flipProb: 1e-3 },
+  'fancy tentacles': { rule: 17953, flipProb: 5e-5 },
+};
+
+let graph = new GrowingGraph(2182);
+let layout = new ForceLayout();
+let prevNodeN = graph.nodeN;
+layout.initNewNodes(graph, 0);
+
+let autoGrow = false;
+let speed = 4;
+let maxNodes = 5000;
+
+let showHyperedges = true;
+let showLinks = true;
+let colorByState = true;
+let showGlow = true;
+let nodeSize = 4;
+
+// Camera
+let camX = 0, camY = 0, camZoom = 1;
+let dragging = false, dragStartX = 0, dragStartY = 0, camStartX = 0, camStartY = 0;
+
+// ── Presets Grid ──
+const presetGrid = document.getElementById('preset-grid');
+Object.keys(presets).forEach(name => {
+  const btn = document.createElement('button');
+  btn.textContent = name;
+  btn.addEventListener('click', () => {
+    const p = presets[name];
+    document.getElementById('rule-input').value = p.rule;
+    document.getElementById('flip-prob').value = p.flipProb;
+    resetGraph(p.rule, p.flipProb);
+  });
+  presetGrid.appendChild(btn);
+});
+
+// ── Rule bit display ──
+function updateRuleDisplay(rule) {
+  const container = document.getElementById('rule-display');
+  container.innerHTML = '';
+  const totalBits = CaseN * 2; // 16 bits: 8 state + 8 divide
+  for (let i = 0; i < totalBits; i++) {
+    const bit = document.createElement('div');
+    const isOn = (rule >> i) & 1;
+    const isDivide = i >= CaseN;
+    bit.className = `rule-bit ${isDivide ? 'divide' : 'state'} ${isOn ? 'on' : ''}`;
+    bit.textContent = isOn ? '1' : '0';
+    bit.title = `bit ${i} (${isDivide ? 'divide' : 'state'})`;
+    bit.addEventListener('click', () => {
+      const newRule = rule ^ (1 << i);
+      document.getElementById('rule-input').value = newRule;
+      resetGraph(newRule);
+    });
+    container.appendChild(bit);
+  }
+}
+
+function resetGraph(rule, flipProb) {
+  rule = rule || parseInt(document.getElementById('rule-input').value) || 2182;
+  flipProb = flipProb !== undefined ? flipProb : parseFloat(document.getElementById('flip-prob').value);
+  graph = new GrowingGraph(rule);
+  graph.flipProb = flipProb;
+  layout = new ForceLayout();
+  layout.charge = parseFloat(document.getElementById('charge').value);
+  layout.linkDist = parseFloat(document.getElementById('link-dist').value);
+  prevNodeN = graph.nodeN;
+  layout.initNewNodes(graph, 0);
+  updateRuleDisplay(rule);
+  updateStats();
+}
+
+function growStep() {
+  if (graph.nodeN > maxNodes) return;
+  const oldN = graph.nodeN;
+  graph.grow();
+  graph.grow(); // two phases = one full step
+  layout.initNewNodes(graph, oldN);
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('stat-nodes').textContent = graph.nodeN;
+  document.getElementById('stat-edges').textContent = graph.links.length;
+  document.getElementById('stat-gen').textContent = graph.lastGen;
+  document.getElementById('stat-rule').textContent = '0x' + graph.rule.toString(16);
+}
+
+// ── Controls ──
+document.getElementById('btn-step').addEventListener('click', growStep);
+document.getElementById('btn-auto').addEventListener('click', function() {
+  autoGrow = !autoGrow;
+  this.textContent = autoGrow ? '⏸ Pause' : '▶ Auto';
+  this.classList.toggle('active', autoGrow);
+});
+document.getElementById('btn-reset').addEventListener('click', () => resetGraph());
+document.getElementById('rule-input').addEventListener('change', function() { resetGraph(parseInt(this.value)); });
+document.getElementById('speed').addEventListener('input', function() { speed = parseInt(this.value); });
+document.getElementById('max-nodes').addEventListener('change', function() { maxNodes = parseInt(this.value); });
+document.getElementById('flip-prob').addEventListener('change', function() { graph.flipProb = parseFloat(this.value); });
+document.getElementById('charge').addEventListener('input', function() { layout.charge = parseFloat(this.value); });
+document.getElementById('link-dist').addEventListener('input', function() { layout.linkDist = parseFloat(this.value); });
+document.getElementById('node-size').addEventListener('input', function() { nodeSize = parseFloat(this.value); });
+
+// Toggles
+function setupToggle(id, initial, cb) {
+  const el = document.getElementById(id);
+  let val = initial;
+  if (val) el.classList.add('on'); else el.classList.remove('on');
+  el.addEventListener('click', () => {
+    val = !val;
+    el.classList.toggle('on', val);
+    cb(val);
+  });
+}
+setupToggle('tog-hyper', showHyperedges, v => showHyperedges = v);
+setupToggle('tog-links', showLinks, v => showLinks = v);
+setupToggle('tog-state-color', colorByState, v => colorByState = v);
+setupToggle('tog-glow', showGlow, v => showGlow = v);
+
+// ── Camera ──
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY > 0 ? 0.9 : 1.1;
+  camZoom *= factor;
+  camZoom = Math.max(0.01, Math.min(50, camZoom));
+}, { passive: false });
+
+canvas.addEventListener('mousedown', e => {
+  dragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  camStartX = camX;
+  camStartY = camY;
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  camX = camStartX + (e.clientX - dragStartX) / camZoom;
+  camY = camStartY + (e.clientY - dragStartY) / camZoom;
+});
+window.addEventListener('mouseup', () => dragging = false);
+
+// Keyboard
+window.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); growStep(); }
+  if (e.code === 'KeyR') resetGraph();
+});
+
+// ── Render ──
+function render() {
+  const dpr = devicePixelRatio;
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  const W = canvas.width, H = canvas.height;
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#08080c';
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid
+  ctx.save();
+  ctx.translate(W / 2, H / 2);
+  ctx.scale(dpr * camZoom, dpr * camZoom);
+  ctx.translate(camX, camY);
+
+  const n = graph.nodeN;
+  const maxGen = Math.max(graph.lastGen, 1);
+
+  // Draw hyperedges
+  if (showHyperedges && n < 4000) {
+    const hyperedges = graph.getHyperedges();
+    for (const [a, b, c] of hyperedges) {
+      if (a >= n || b >= n || c >= n) continue;
+      const pa = layout.pos[a], pb = layout.pos[b], pc = layout.pos[c];
+      if (!pa || !pb || !pc) continue;
+
+      const avgGen = ((graph.nodes[a].gen || 0) + (graph.nodes[b].gen || 0) + (graph.nodes[c].gen || 0)) / 3;
+      const t = avgGen / maxGen;
+      const [r, g, b2] = inferno(t);
+
+      ctx.beginPath();
+      ctx.moveTo(pa.x, pa.y);
+      ctx.lineTo(pb.x, pb.y);
+      ctx.lineTo(pc.x, pc.y);
+      ctx.closePath();
+      ctx.fillStyle = rgb(r, g, b2, 0.06);
+      ctx.strokeStyle = rgb(r, g, b2, 0.08);
+      ctx.lineWidth = 0.3;
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+
+  // Draw links
+  if (showLinks) {
+    ctx.lineWidth = 0.5;
+    for (const [i, j] of graph.links) {
+      const pi = layout.pos[i], pj = layout.pos[j];
+      if (!pi || !pj) continue;
+
+      const avgGen = ((graph.nodes[i].gen || 0) + (graph.nodes[j].gen || 0)) / 2;
+      const t = avgGen / maxGen;
+      const [r, g, b2] = inferno(t);
+
+      ctx.beginPath();
+      ctx.moveTo(pi.x, pi.y);
+      ctx.lineTo(pj.x, pj.y);
+      ctx.strokeStyle = rgb(r, g, b2, 0.35);
+      ctx.stroke();
+    }
+  }
+
+  // Draw nodes
+  if (showGlow) {
+    ctx.shadowBlur = 8;
+  }
+
+  for (let i = 0; i < n; i++) {
+    const p = layout.pos[i];
+    if (!p) continue;
+    const gen = graph.nodes[i].gen || 0;
+    const t = gen / maxGen;
+    const [r, g, b2] = inferno(t);
+
+    let nr = r, ng = g, nb = b2;
+    if (colorByState) {
+      const s = graph.states[i];
+      if (s === 1) {
+        nr = 0; ng = 0.9; nb = 0.53; // accent3 green
+      }
+    }
+
+    const sz = nodeSize * (1 + 0.5 * Math.max(0, 1 - (maxGen - gen) / 8));
+
+    if (showGlow) {
+      ctx.shadowColor = rgb(nr, ng, nb, 0.7);
+    }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, sz, 0, Math.PI * 2);
+    ctx.fillStyle = rgb(nr, ng, nb, 0.9);
+    ctx.fill();
+  }
+
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+// ── Main Loop ──
+let frameCount = 0;
+function frame() {
+  requestAnimationFrame(frame);
+
+  // Auto grow
+  if (autoGrow && graph.nodeN <= maxNodes) {
+    for (let i = 0; i < speed; i++) {
+      if (graph.nodeN > maxNodes) break;
+      const oldN = graph.nodeN;
+      graph.grow();
+      if (graph.phase === 0) { // just finished a divide phase
+        layout.initNewNodes(graph, oldN);
+      }
+    }
+    updateStats();
+  }
+
+  // Physics ticks
+  const ticks = graph.nodeN > 2000 ? 1 : 2;
+  for (let i = 0; i < ticks; i++) {
+    layout.tick(graph);
+  }
+
+  // Auto-fit camera on small graphs
+  if (graph.nodeN > 0 && graph.nodeN < 50 && !dragging && frameCount < 60) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let i = 0; i < graph.nodeN; i++) {
+      const p = layout.pos[i];
+      if (!p) continue;
+      minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+      minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+    }
+    const span = Math.max(maxX - minX, maxY - minY, 50);
+    const targetZoom = Math.min(window.innerWidth, window.innerHeight) / (span * 2.5);
+    camZoom += (targetZoom - camZoom) * 0.05;
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    camX += (-cx - camX) * 0.05;
+    camY += (-cy - camY) * 0.05;
+  }
+
+  render();
+  frameCount++;
+}
+
+// Init
+updateRuleDisplay(2182);
+updateStats();
+frame();
+</script>
+</body>
+</html>
