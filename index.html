@@ -606,8 +606,22 @@
 
                 <!-- 10 — QiSwap DEX -->
                 <a href="qi-swap.html" class="carousel-card" data-color="cyan">
-                    <div class="carousel-card-visual carousel-card-img">
-                        <img src="qiquai.png" alt="QiSwap — Qi Coin & Quai Coin with thermodynamic equations" />
+                    <div class="carousel-card-visual" style="background: linear-gradient(135deg, #0c1018 0%, #081018 50%, #0a1220 100%); position:relative;">
+                        <!-- Animated swap glyph -->
+                        <div style="position:relative;text-align:center;">
+                            <div style="font-family:var(--font-display);font-size:56px;font-weight:900;color:var(--qi-cyan);opacity:0.12;letter-spacing:6px;">⇄</div>
+                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;">
+                                <div style="width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(39,117,202,0.6);display:flex;align-items:center;justify-content:center;background:rgba(39,117,202,0.1);font-size:18px;color:#2775CA;">●</div>
+                                <div style="font-family:var(--font-mono);font-size:18px;color:var(--qi-cyan);opacity:0.6;">⇄</div>
+                                <div style="width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(199,80,80,0.6);display:flex;align-items:center;justify-content:center;background:rgba(199,80,80,0.1);font-size:18px;color:#C75050;">◆</div>
+                            </div>
+                        </div>
+                        <!-- Mini mock chart line -->
+                        <svg viewBox="0 0 420 60" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;width:100%;height:60px;opacity:0.3;">
+                            <defs><linearGradient id="qsg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#39FF14" stop-opacity="0.3"/><stop offset="100%" stop-color="#39FF14" stop-opacity="0"/></linearGradient></defs>
+                            <polygon points="0,60 0,40 30,35 60,38 90,30 120,32 150,20 180,25 210,18 240,22 270,15 300,19 330,12 360,16 390,8 420,12 420,60" fill="url(#qsg)"/>
+                            <polyline points="0,40 30,35 60,38 90,30 120,32 150,20 180,25 210,18 240,22 270,15 300,19 330,12 360,16 390,8 420,12" fill="none" stroke="#39FF14" stroke-width="1.5"/>
+                        </svg>
                         <span class="card-tag-top">DEX</span>
                         <span class="card-status concept"></span>
                     </div>
@@ -635,7 +649,7 @@
                 <!-- 11 — Hypergraph Visualizer -->
                 <a href="hypergraph.html" class="carousel-card" data-color="purple">
                     <div class="carousel-card-visual carousel-card-img">
-                        <img src="hypergraph-hero.png" alt="Hypergraph Visualizer — Growing Graph Rewriting Automata" />
+                        <img src="https://raw.githubusercontent.com/macurdys/qixyz/main/Adobe%20Express%20-%20Wolfram%20Causal%20Graphs.gif" alt="Hypergraph Visualizer — Growing Graph Rewriting Automata" />
                         <span class="card-tag-top">Proto-11</span>
                         <span class="card-status live"></span>
                     </div>
