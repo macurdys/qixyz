@@ -1,1053 +1,962 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QiSwap — Decentralized Exchange | Qi.xyz</title>
-    <meta name="description" content="Swap QUAI, Qi, and USD stablecoins. Decentralized exchange prototype built on Quai Network.">
+    <title>QiSwap — Qi · Quai · USD</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --qi-cyan: #00f0ff;
-            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
-            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
-            --qi-amber: #ffb800;
-            --qi-amber-dim: rgba(255, 184, 0, 0.15);
-            --qi-red: #ff3366;
-            --qi-green: #39FF14;
-            --qi-purple: #bf5af2;
-            --bg-deep: #06080d;
-            --bg-panel: #0c1018;
-            --bg-card: #111822;
-            --bg-input: #0a0e16;
-            --border-dim: rgba(0, 240, 255, 0.12);
-            --border-bright: rgba(0, 240, 255, 0.3);
-            --text-primary: #e8ecf0;
-            --text-secondary: #7a8a9e;
-            --text-dim: #4a5568;
-            --font-display: 'Orbitron', monospace;
-            --font-body: 'Rajdhani', sans-serif;
-            --font-mono: 'Share Tech Mono', monospace;
+            --cyan: #00f0ff;
+            --cyan-dim: rgba(0, 240, 255, 0.12);
+            --cyan-glow: rgba(0, 240, 255, 0.35);
+            --amber: #ffb800;
+            --red: #ff3366;
+            --green: #39FF14;
+            --bg: #06080d;
+            --bg-card: #0d1117;
+            --bg-input: #080c12;
+            --border: rgba(0, 240, 255, 0.10);
+            --border-focus: rgba(0, 240, 255, 0.30);
+            --text: #e4e8ec;
+            --text2: #8899ad;
+            --text3: #4a5e74;
+            --display: 'Orbitron', monospace;
+            --body: 'Rajdhani', sans-serif;
+            --mono: 'Share Tech Mono', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
         body {
-            font-family: var(--font-body);
-            background: var(--bg-deep);
-            color: var(--text-primary);
-            font-size: 16px;
-            line-height: 1.6;
-            overflow-x: hidden;
+            font-family: var(--body);
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Scanline overlay */
-        body::after {
+        body::before {
             content: '';
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.008) 2px, rgba(0, 240, 255, 0.008) 4px);
-            pointer-events: none; z-index: 9999;
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 80px 80px;
+            opacity: 0.15;
+            pointer-events: none;
         }
 
-        .grid-bg {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
-            background-size: 60px 60px;
-            opacity: 0.2; z-index: 0; pointer-events: none;
+        /* editable number inputs used everywhere */
+        .editable {
+            background: none;
+            border: none;
+            border-bottom: 1px dashed rgba(0,240,255,0.2);
+            outline: none;
+            font-family: var(--mono);
+            color: var(--text);
+            padding: 0 2px;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .editable:hover { border-color: rgba(0,240,255,0.4); }
+        .editable:focus {
+            border-color: var(--cyan);
+            background: rgba(0,240,255,0.04);
+            color: #fff;
         }
 
-        /* ===== NAV ===== */
+        /* ── NAV ── */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(6, 8, 13, 0.88); backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-dim);
-            padding: 0 24px; height: 56px;
-            display: flex; align-items: center; justify-content: space-between;
+            width: 100%;
+            padding: 0 28px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: rgba(6,8,13,0.92);
+            backdrop-filter: blur(16px);
+            position: sticky; top: 0; z-index: 100;
         }
-        .nav-logo {
-            font-family: var(--font-display); font-size: 18px; font-weight: 700;
-            color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px;
-            text-shadow: 0 0 20px var(--qi-cyan-glow);
+        .logo {
+            font-family: var(--display);
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--cyan);
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px var(--cyan-glow);
+            text-decoration: none;
         }
-        .nav-stats {
-            display: flex; gap: 0;
-        }
-        .nav-stat {
-            display: flex; flex-direction: column; gap: 1px;
-            padding: 4px 16px;
-            border-left: 1px solid var(--border-dim);
-        }
-        .nav-stat:last-child { border-right: 1px solid var(--border-dim); }
-        .nav-stat-label {
-            font-family: var(--font-mono); font-size: 9px;
-            color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase;
-        }
-        .nav-stat-value {
-            font-family: var(--font-mono); font-size: 12px; color: var(--text-primary);
-        }
-        .nav-stat-value.green { color: var(--qi-green); }
-        .nav-stat-value.red { color: var(--qi-red); }
-        .nav-right { display: flex; align-items: center; gap: 12px; }
-        .nav-back {
-            font-family: var(--font-mono); font-size: 11px;
-            color: var(--text-secondary); text-decoration: none; letter-spacing: 2px;
-            transition: color 0.3s;
-        }
-        .nav-back:hover { color: var(--qi-cyan); }
-        .btn-connect {
-            font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
-            text-transform: uppercase; padding: 8px 20px; cursor: pointer;
-            transition: all 0.3s; border: 1px solid var(--border-bright);
-            background: transparent; color: var(--qi-cyan);
-        }
-        .btn-connect:hover {
-            background: var(--qi-cyan-dim); box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
-        }
-        .btn-connect.connected {
-            background: rgba(57, 255, 20, 0.08); border-color: rgba(57, 255, 20, 0.3);
-            color: var(--qi-green);
-        }
-
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            position: fixed; top: 56px; left: 0; bottom: 0; width: 56px;
-            background: var(--bg-panel); border-right: 1px solid var(--border-dim);
-            display: flex; flex-direction: column; padding: 12px 0; z-index: 100;
-        }
-        .sidebar-item {
-            width: 100%; height: 48px; display: flex; align-items: center; justify-content: center;
-            background: none; border: none; color: var(--text-dim); font-size: 16px;
-            cursor: pointer; position: relative; transition: color 0.3s, background 0.3s;
-        }
-        .sidebar-item:hover { color: var(--text-secondary); background: rgba(0, 240, 255, 0.04); }
-        .sidebar-item.active { color: var(--qi-cyan); }
-        .sidebar-item.active::before {
-            content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 2px;
-            background: var(--qi-cyan); box-shadow: 0 0 8px var(--qi-cyan-glow);
-        }
-        .sidebar-sep { margin: 8px 12px; border: none; border-top: 1px solid var(--border-dim); }
-
-        /* ===== MAIN ===== */
-        .main {
-            margin-left: 56px; margin-top: 56px; padding: 32px 24px;
-            min-height: calc(100vh - 56px); position: relative; z-index: 1;
-        }
-        .main-inner { max-width: 1200px; margin: 0 auto; }
-
-        /* ===== PAGE HEADER ===== */
-        .page-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 24px;
-        }
-        .page-title {
-            font-family: var(--font-display); font-size: 24px; font-weight: 700;
-            letter-spacing: 3px; color: var(--text-primary);
-        }
-        .page-title span { color: var(--qi-cyan); }
-        .badge {
-            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
-            text-transform: uppercase; padding: 4px 10px; margin-left: 12px;
-        }
-        .badge-proto { border: 1px solid var(--qi-amber); color: var(--qi-amber); background: var(--qi-amber-dim); }
-        .badge-live { border: 1px solid var(--qi-green); color: var(--qi-green); background: rgba(57,255,20,0.08); }
-        .slippage-btn {
-            font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
-            padding: 6px 14px; background: var(--bg-card); border: 1px solid var(--border-dim);
-            color: var(--text-secondary); cursor: pointer; transition: all 0.3s;
-        }
-        .slippage-btn:hover { border-color: var(--qi-cyan); color: var(--qi-cyan); }
-        .slippage-panel {
-            margin-bottom: 16px; padding: 16px; background: var(--bg-card);
-            border: 1px solid var(--border-dim); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-        }
-        .slippage-opt {
-            font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
-            padding: 6px 14px; background: transparent; border: 1px solid var(--border-dim);
-            color: var(--text-secondary); cursor: pointer; transition: all 0.3s;
-        }
-        .slippage-opt:hover { border-color: var(--qi-cyan); color: var(--qi-cyan); }
-        .slippage-opt.active { background: var(--qi-cyan); color: var(--bg-deep); border-color: var(--qi-cyan); }
-
-        /* ===== THREE PANEL GRID ===== */
-        .panels {
-            display: grid; grid-template-columns: 1fr; gap: 20px;
-        }
-        @media (min-width: 1024px) {
-            .panels { grid-template-columns: 250px 1fr 380px; }
-        }
-
-        .panel {
-            background: var(--bg-card); border: 1px solid var(--border-dim);
-            position: relative; overflow: hidden;
-        }
-        .panel::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            opacity: 0; transition: opacity 0.3s;
-        }
-        .panel:hover::before { opacity: 1; }
-        .panel-cyan::before { background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); }
-        .panel-green::before { background: linear-gradient(90deg, transparent, var(--qi-green), transparent); }
-        .panel-amber::before { background: linear-gradient(90deg, transparent, var(--qi-amber), transparent); }
-
-        .panel-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 16px; background: var(--bg-panel);
-            border-bottom: 1px solid var(--border-dim);
-            font-family: var(--font-mono); font-size: 11px;
-            color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase;
-        }
-        .panel-body { padding: 20px 16px; }
-
-        /* ===== PAIR INFO PANEL ===== */
-        .pair-tokens {
-            display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
-        }
-        .token-icons { display: flex; }
-        .token-icon {
-            width: 32px; height: 32px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 14px;
-            border: 1.5px solid; flex-shrink: 0;
-        }
-        .token-icon + .token-icon { margin-left: -8px; }
-        .pair-name {
-            font-family: var(--font-display); font-size: 16px; font-weight: 600;
+        .nav-right { display: flex; align-items: center; gap: 18px; }
+        .nav-link {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
             letter-spacing: 2px;
+            color: var(--text2);
+            text-decoration: none;
         }
-        .pair-chain {
-            font-family: var(--font-mono); font-size: 10px;
-            color: var(--text-dim); letter-spacing: 1px;
+        .nav-link:hover { color: var(--cyan); }
+        .btn-connect {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 9px 22px;
+            border: 1px solid var(--border-focus);
+            background: transparent;
+            color: var(--cyan);
+            cursor: pointer;
+            transition: all 0.25s;
         }
-        .stat-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 6px 0; font-size: 13px;
+        .btn-connect:hover { background: var(--cyan-dim); }
+        .btn-connect.on {
+            border-color: rgba(57,255,20,0.3);
+            color: var(--green);
+            background: rgba(57,255,20,0.06);
         }
-        .stat-label { color: var(--text-dim); font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; }
-        .stat-value { color: var(--text-primary); font-family: var(--font-mono); font-size: 12px; }
-        .risk-pips { display: flex; gap: 4px; align-items: center; }
-        .pip {
-            width: 8px; height: 8px; transform: rotate(45deg);
-            border: 1px solid var(--qi-cyan);
-        }
-        .pip.filled { background: var(--qi-cyan); box-shadow: 0 0 6px var(--qi-cyan-glow); }
-        .change-badge {
-            font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
-            padding: 3px 8px; display: inline-block; margin-top: 8px;
-        }
-        .change-badge.up { background: rgba(57,255,20,0.1); color: var(--qi-green); border: 1px solid rgba(57,255,20,0.2); }
-        .change-badge.down { background: rgba(255,51,102,0.1); color: var(--qi-red); border: 1px solid rgba(255,51,102,0.2); }
 
-        /* ===== CHART PANEL ===== */
-        .chart-timeframes { display: flex; gap: 4px; }
-        .tf-btn {
-            font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
-            padding: 3px 10px; background: transparent; border: none;
-            color: var(--text-dim); cursor: pointer; transition: all 0.2s;
+        /* ── MAIN ── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 44px 16px 60px;
+            width: 100%;
+            max-width: 520px;
         }
-        .tf-btn:hover { color: var(--text-secondary); }
-        .tf-btn.active { background: var(--qi-cyan); color: var(--bg-deep); }
-        .chart-price {
-            font-family: var(--font-display); font-size: 28px; font-weight: 700;
-            letter-spacing: 2px; margin-bottom: 4px;
-        }
-        .chart-meta {
-            font-family: var(--font-mono); font-size: 11px;
-            color: var(--text-dim); letter-spacing: 1px; margin-bottom: 12px;
-        }
-        .chart-container { height: 200px; position: relative; }
-        .chart-container svg { width: 100%; height: 100%; }
 
-        /* ===== EXECUTE PANEL ===== */
-        .swap-input-box {
-            background: var(--bg-input); border: 1px solid var(--border-dim);
-            padding: 14px 16px; transition: border-color 0.3s;
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            align-self: flex-start;
         }
-        .swap-input-box:focus-within { border-color: var(--qi-cyan); }
-        .swap-row {
-            display: flex; align-items: center; gap: 12px;
+        .title {
+            font-family: var(--display);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 4px;
         }
-        .token-selector {
-            display: flex; align-items: center; gap: 8px;
-            cursor: pointer; flex-shrink: 0; transition: opacity 0.3s;
+        .title span { color: var(--cyan); }
+        .badge {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 4px 10px;
+            border: 1px solid var(--amber);
+            color: var(--amber);
+            background: rgba(255,184,0,0.08);
         }
-        .token-selector:hover { opacity: 0.7; }
-        .token-selector .symbol {
-            font-family: var(--font-display); font-size: 14px; font-weight: 600;
+
+        /* ── SWAP CARD ── */
+        .card {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .card::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--cyan);
+            box-shadow: 0 0 14px var(--cyan-glow);
+        }
+
+        .input-box {
+            padding: 22px 22px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+        .input-box:focus-within { background: rgba(0,240,255,0.02); }
+        .input-box.to-box { border-bottom: none; }
+        .input-label {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--text3);
+            margin-bottom: 10px;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .token-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            flex-shrink: 0;
+            background: none;
+            border: 1px solid var(--border);
+            padding: 8px 16px 8px 10px;
+            transition: border-color 0.2s;
+        }
+        .token-btn:hover { border-color: var(--border-focus); }
+        .token-dot {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            border: 2px solid;
+            flex-shrink: 0;
+        }
+        .token-sym {
+            font-family: var(--display);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--text);
+        }
+        .token-arrow {
+            font-size: 9px;
+            color: var(--text3);
+            margin-left: 2px;
+        }
+        .amt-input {
+            flex: 1;
+            text-align: right;
+            background: none;
+            border: none;
+            outline: none;
+            font-family: var(--display);
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: 2px;
+            min-width: 0;
+        }
+        .amt-input::placeholder { color: var(--text3); }
+
+        .amt-output {
+            flex: 1;
+            text-align: right;
+            font-family: var(--display);
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--text3);
+            letter-spacing: 2px;
+            background: none;
+            border: none;
+            outline: none;
+            min-width: 0;
+        }
+        .amt-output::placeholder { color: var(--text3); }
+        .amt-output.has-value { color: var(--text); }
+
+        .bal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text3);
             letter-spacing: 1px;
         }
-        .token-selector .chain-label {
-            font-family: var(--font-mono); font-size: 9px;
-            color: var(--text-dim); letter-spacing: 1px;
-        }
-        .token-selector .arrow {
-            font-size: 8px; color: var(--qi-cyan); margin-left: 2px;
-        }
-        .amount-input {
-            flex: 1; text-align: right; background: none; border: none; outline: none;
-            font-family: var(--font-display); font-size: 22px; font-weight: 600;
-            color: var(--text-primary); letter-spacing: 1px; min-width: 0;
-        }
-        .amount-input::placeholder { color: var(--text-dim); }
-        .amount-input:disabled { color: var(--text-dim); cursor: not-allowed; }
-        .balance-row {
-            display: flex; justify-content: space-between; margin-top: 8px;
-            font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 1px;
-        }
-        .pct-btns { display: flex; gap: 4px; }
+        .pct-btns { display: flex; gap: 6px; }
         .pct-btn {
-            font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
-            padding: 2px 8px; background: none; border: 1px solid var(--border-dim);
-            color: var(--text-dim); cursor: pointer; transition: all 0.2s;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text3);
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.15s;
         }
-        .pct-btn:hover { border-color: var(--qi-cyan); color: var(--qi-cyan); }
+        .pct-btn:hover { border-color: var(--cyan); color: var(--cyan); }
 
-        .flip-wrapper {
-            display: flex; align-items: center; justify-content: center;
-            margin: -8px 0; position: relative; z-index: 2;
+        /* flip */
+        .flip-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -1px 0;
+            position: relative;
+            z-index: 2;
         }
+        .flip-line { flex: 1; height: 1px; background: var(--border); }
         .flip-btn {
-            width: 36px; height: 36px; background: var(--bg-card);
-            border: 1px solid var(--border-dim); color: var(--qi-cyan);
-            font-size: 18px; cursor: pointer; display: flex;
-            align-items: center; justify-content: center; transition: all 0.3s;
+            width: 40px; height: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--cyan);
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
         .flip-btn:hover {
-            background: var(--qi-cyan-dim); border-color: var(--qi-cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
-        }
-        .flip-line {
-            flex: 1; height: 1px; background: var(--border-dim);
+            background: var(--cyan-dim);
+            border-color: var(--cyan);
+            box-shadow: 0 0 14px var(--cyan-dim);
         }
 
-        .swap-details {
-            margin-top: 16px; padding-top: 12px;
-            border-top: 1px solid var(--border-dim);
+        /* details */
+        .details {
+            padding: 16px 22px;
+            border-top: 1px solid var(--border);
         }
-        .detail-row {
-            display: flex; justify-content: space-between; padding: 4px 0;
-            font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+        .detail-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            font-family: var(--mono);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
-        .detail-label { color: var(--text-dim); }
-        .detail-value { color: var(--text-secondary); }
-        .detail-value.fee { color: var(--qi-red); }
+        .detail-line .lab { color: var(--text3); }
+        .detail-line .val { color: var(--text2); }
+        .detail-line .val.fee { color: var(--red); }
 
-        .swap-cta {
-            margin-top: 20px; width: 100%; height: 48px;
-            font-family: var(--font-mono); font-size: 12px; font-weight: 600;
-            letter-spacing: 3px; text-transform: uppercase; cursor: pointer;
-            transition: all 0.3s; border: none;
+        /* CTA */
+        .cta {
+            width: 100%;
+            height: 56px;
+            font-family: var(--mono);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
         }
-        .swap-cta.disabled {
-            background: var(--bg-panel); color: var(--text-dim);
-            border: 1px solid var(--border-dim); cursor: not-allowed;
+        .cta.off {
+            background: rgba(13,17,23,0.8);
+            color: var(--text3);
+            border-top: 1px solid var(--border);
+            cursor: not-allowed;
         }
-        .swap-cta.ready {
-            background: var(--qi-cyan); color: var(--bg-deep);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.1);
+        .cta.go {
+            background: var(--cyan);
+            color: var(--bg);
+            box-shadow: 0 0 28px rgba(0,240,255,0.25), inset 0 0 28px rgba(0,240,255,0.1);
         }
-        .swap-cta.ready:hover {
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.4), inset 0 0 30px rgba(0, 240, 255, 0.2);
+        .cta.go:hover {
+            box-shadow: 0 0 50px rgba(0,240,255,0.4), inset 0 0 36px rgba(0,240,255,0.15);
             transform: translateY(-1px);
         }
-        .swap-cta.done {
-            background: var(--qi-green); color: var(--bg-deep);
-            box-shadow: 0 0 20px rgba(57,255,20,0.2);
+        .cta.wait {
+            background: transparent;
+            color: var(--cyan);
+            border-top: 1px solid var(--cyan);
+            animation: pulse 1.5s ease-in-out infinite;
         }
-        .swap-cta.processing {
-            background: var(--bg-panel); color: var(--qi-cyan);
-            border: 1px solid var(--qi-cyan);
-            animation: pulse-border 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse-border {
-            0%, 100% { box-shadow: 0 0 5px rgba(0,240,255,0.1); }
-            50% { box-shadow: 0 0 20px rgba(0,240,255,0.3); }
+        .cta.done { background: var(--green); color: var(--bg); }
+        @keyframes pulse {
+            0%,100% { box-shadow: 0 0 4px rgba(0,240,255,0.1); }
+            50% { box-shadow: 0 0 24px rgba(0,240,255,0.3); }
         }
 
-        .panel-accent-bar {
-            position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+        /* ── POOLS TABLE ── */
+        .pools-section {
+            width: 100%;
+            margin-top: 32px;
         }
-        .panel-accent-bar.cyan { background: var(--qi-cyan); box-shadow: 0 0 8px var(--qi-cyan-glow); }
-        .panel-accent-bar.green { background: var(--qi-green); box-shadow: 0 0 8px rgba(57,255,20,0.4); }
-        .panel-accent-bar.amber { background: var(--qi-amber); box-shadow: 0 0 8px rgba(255,184,0,0.4); }
-
-        /* ===== PAIRS TABLE ===== */
-        .pairs-section { margin-top: 24px; }
-        .pairs-table {
-            width: 100%; border-collapse: collapse;
-            background: var(--bg-card); border: 1px solid var(--border-dim);
+        .pools-label {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--text3);
+            margin-bottom: 10px;
         }
-        .pairs-table thead {
-            background: var(--bg-panel);
+        .pools {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
         }
-        .pairs-table th {
-            font-family: var(--font-mono); font-size: 10px; font-weight: 400;
-            letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
-            padding: 12px 16px; text-align: left;
-            border-bottom: 1px solid var(--border-dim);
+        .pools th {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text3);
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-input);
         }
-        .pairs-table td {
-            font-family: var(--font-mono); font-size: 12px;
-            color: var(--text-secondary); padding: 12px 16px;
+        .pools td {
+            font-family: var(--mono);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text2);
+            padding: 12px 16px;
             border-bottom: 1px solid rgba(0,240,255,0.04);
         }
-        .pairs-table tr { cursor: pointer; transition: background 0.2s; }
-        .pairs-table tbody tr:hover { background: rgba(0, 240, 255, 0.04); }
-        .pair-cell { display: flex; align-items: center; gap: 8px; }
-        .pair-cell .pair-text { font-weight: 600; color: var(--text-primary); letter-spacing: 1px; }
-        .trade-tag {
-            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
-            padding: 3px 8px; border: 1px solid var(--border-bright);
-            color: var(--qi-cyan); transition: all 0.3s; text-transform: uppercase;
+        .pools tr { cursor: pointer; transition: background 0.15s; }
+        .pools tbody tr:hover { background: rgba(0,240,255,0.03); }
+        .pools .pair-name { color: var(--text); font-weight: 800; font-size: 16px; }
+        .pools .tag {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 3px 8px;
+            border: 1px solid var(--border-focus);
+            color: var(--cyan);
         }
-        tr:hover .trade-tag { background: var(--qi-cyan-dim); }
+        .pools tbody tr:hover .tag { background: var(--cyan-dim); }
+        .pools .editable {
+            font-size: 15px;
+            font-weight: 700;
+            width: 90px;
+            text-align: right;
+        }
 
-        /* ===== TOKEN SELECTOR MODAL ===== */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 2000;
-            background: rgba(6, 8, 13, 0.7); backdrop-filter: blur(6px);
-            display: none; align-items: center; justify-content: center;
+        /* ── TOKEN MODAL ── */
+        .modal-bg {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(6,8,13,0.75);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
-        .modal-overlay.open { display: flex; }
+        .modal-bg.open { display: flex; }
         .modal {
-            width: 380px; max-width: 90vw; background: var(--bg-card);
-            border: 1px solid var(--border-bright);
-            box-shadow: 0 0 60px rgba(0, 240, 255, 0.1);
+            width: 380px; max-width: 92vw;
+            background: var(--bg-card);
+            border: 1px solid var(--border-focus);
+            box-shadow: 0 0 60px rgba(0,240,255,0.1);
         }
         .modal-head {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px 20px; border-bottom: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
         }
         .modal-title {
-            font-family: var(--font-display); font-size: 14px; font-weight: 600;
-            letter-spacing: 2px; color: var(--qi-cyan);
+            font-family: var(--display);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--cyan);
         }
-        .modal-close {
-            background: none; border: none; color: var(--text-dim);
-            font-size: 18px; cursor: pointer; transition: color 0.2s;
+        .modal-x {
+            background: none; border: none;
+            color: var(--text3); font-size: 20px;
+            cursor: pointer;
         }
-        .modal-close:hover { color: var(--qi-cyan); }
-        .modal-search {
-            width: 100%; padding: 12px 20px; background: var(--bg-input);
-            border: none; border-bottom: 1px solid var(--border-dim);
-            font-family: var(--font-mono); font-size: 12px; letter-spacing: 1px;
-            color: var(--text-primary); outline: none;
+        .modal-x:hover { color: var(--cyan); }
+        .modal-list { padding: 8px; }
+        .modal-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s;
+            text-align: left;
         }
-        .modal-search::placeholder { color: var(--text-dim); }
-        .modal-list {
-            max-height: 300px; overflow-y: auto; padding: 8px;
+        .modal-item:hover { background: rgba(0,240,255,0.04); }
+        .modal-item .m-name {
+            font-family: var(--display);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
         }
-        .modal-token {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 12px; cursor: pointer; transition: background 0.2s;
-            border: none; background: none; width: 100%; text-align: left;
-            color: var(--text-primary);
+        .modal-item .m-sub {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text3);
         }
-        .modal-token:hover { background: rgba(0, 240, 255, 0.06); }
-        .modal-token .name { font-family: var(--font-display); font-size: 13px; letter-spacing: 1px; }
-        .modal-token .sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
-        .modal-token .price {
-            margin-left: auto; font-family: var(--font-mono);
-            font-size: 11px; color: var(--text-dim);
+        .modal-item .m-price {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text3);
         }
 
-        /* ===== FOOTER ===== */
-        .page-footer {
-            margin-top: 48px; padding: 24px 0;
-            border-top: 1px solid var(--border-dim);
-            display: flex; align-items: center; justify-content: space-between;
-            font-family: var(--font-mono); font-size: 10px;
-            color: var(--text-dim); letter-spacing: 2px;
+        /* ── API STATUS ── */
+        .api-status {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text3);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
-        .footer-links { display: flex; gap: 20px; }
-        .footer-links a { color: var(--text-dim); text-decoration: none; transition: color 0.3s; }
-        .footer-links a:hover { color: var(--qi-cyan); }
+        .api-status .status-row { display: flex; justify-content: space-between; }
+        .dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot.mock { background: var(--amber); box-shadow: 0 0 6px rgba(255,184,0,0.4); }
 
-        /* ===== SKELETON ===== */
-        .skel {
-            display: inline-block; height: 12px; width: 48px;
-            background: linear-gradient(90deg, var(--bg-panel), rgba(0,240,255,0.06), var(--bg-panel));
-            background-size: 200% 100%;
-            animation: skel-pulse 1.5s ease-in-out infinite;
+        /* ── FOOTER ── */
+        footer {
+            width: 100%;
+            max-width: 520px;
+            padding: 24px 0;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text3);
         }
-        @keyframes skel-pulse {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        .skel-lg { height: 24px; width: 80px; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main { margin-left: 0; }
-            .nav-stats { display: none; }
-            .panels { grid-template-columns: 1fr; }
-        }
+        footer a { color: var(--text3); text-decoration: none; }
+        footer a:hover { color: var(--cyan); }
     </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
-
-<!-- NAV -->
 <nav>
-    <a href="index.html" class="nav-logo">QI</a>
-    <div class="nav-stats" id="navStats">
-        <div class="nav-stat"><span class="nav-stat-label">TVL</span><span class="nav-stat-value" id="statTvl"><span class="skel"></span></span></div>
-        <div class="nav-stat"><span class="nav-stat-label">24H Vol</span><span class="nav-stat-value" id="statVol"><span class="skel"></span></span></div>
-        <div class="nav-stat"><span class="nav-stat-label">QUAI</span><span class="nav-stat-value green" id="statQuai"><span class="skel"></span></span></div>
-        <div class="nav-stat"><span class="nav-stat-label">QI</span><span class="nav-stat-value" id="statQi"><span class="skel"></span></span></div>
-    </div>
+    <a href="index.html" class="logo">QI</a>
     <div class="nav-right">
-        <a href="index.html" class="nav-back">← STATION</a>
+        <a href="index.html" class="nav-link">← STATION</a>
         <button class="btn-connect" id="connectBtn">CONNECT</button>
     </div>
 </nav>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <button class="sidebar-item active" title="Swap">⇄</button>
-    <button class="sidebar-item" title="Pools">◫</button>
-    <button class="sidebar-item" title="Stake">◆</button>
-    <hr class="sidebar-sep">
-    <button class="sidebar-item" title="Docs">◷</button>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-<div class="main-inner">
-
-    <!-- Page Header -->
-    <div class="page-header">
-        <div style="display:flex;align-items:center;">
-            <h1 class="page-title"><span>QI</span>SWAP</h1>
-            <span class="badge badge-proto">Prototype</span>
-        </div>
-        <button class="slippage-btn" id="slippageToggle">⚙ SLIPPAGE: 0.5%</button>
+<main>
+    <div class="title-row">
+        <h1 class="title"><span>QI</span>SWAP</h1>
+        <span class="badge">PROTOTYPE</span>
     </div>
 
-    <!-- Slippage Panel -->
-    <div class="slippage-panel" id="slippagePanel" style="display:none;">
-        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:2px;margin-right:8px;">TOLERANCE:</span>
-        <button class="slippage-opt" data-val="0.1">0.1%</button>
-        <button class="slippage-opt active" data-val="0.5">0.5%</button>
-        <button class="slippage-opt" data-val="1.0">1.0%</button>
-        <button class="slippage-opt" data-val="2.0">2.0%</button>
+    <div class="card">
+        <!-- FROM -->
+        <div class="input-box">
+            <div class="input-label">YOU PAY</div>
+            <div class="input-row">
+                <button class="token-btn" id="fromBtn">
+                    <div class="token-dot" id="fromDot">◇</div>
+                    <span class="token-sym" id="fromSym">QI</span>
+                    <span class="token-arrow">▼</span>
+                </button>
+                <input type="text" class="amt-input" id="fromAmt" placeholder="0.00" autocomplete="off" inputmode="decimal">
+            </div>
+            <div class="bal-row">
+                <span>BAL: <input class="editable" id="fromBal" value="50,000" style="width:80px;font-size:13px;font-weight:700;color:var(--text3);text-align:left;"></span>
+                <div class="pct-btns">
+                    <button class="pct-btn" data-p="25">25%</button>
+                    <button class="pct-btn" data-p="50">50%</button>
+                    <button class="pct-btn" data-p="100">MAX</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLIP -->
+        <div class="flip-row">
+            <div class="flip-line"></div>
+            <button class="flip-btn" id="flipBtn">↕</button>
+            <div class="flip-line"></div>
+        </div>
+
+        <!-- TO -->
+        <div class="input-box to-box">
+            <div class="input-label">YOU RECEIVE</div>
+            <div class="input-row">
+                <button class="token-btn" id="toBtn">
+                    <div class="token-dot" id="toDot">◆</div>
+                    <span class="token-sym" id="toSym">QUAI</span>
+                    <span class="token-arrow">▼</span>
+                </button>
+                <input type="text" class="amt-output" id="toAmt" placeholder="0.00" autocomplete="off" inputmode="decimal">
+            </div>
+            <div class="bal-row">
+                <span>BAL: <input class="editable" id="toBal" value="2,142.86" style="width:80px;font-size:13px;font-weight:700;color:var(--text3);text-align:left;"></span>
+                <span id="toUsd" style="font-size:14px;font-weight:700;"></span>
+            </div>
+        </div>
+
+        <!-- DETAILS -->
+        <div class="details">
+            <div class="detail-line"><span class="lab">RATE</span><span class="val" id="dRate">—</span></div>
+            <div class="detail-line"><span class="lab">FEE</span><span class="val fee" id="dFee">—</span></div>
+            <div class="detail-line"><span class="lab">MIN RECEIVED</span><span class="val" id="dMin">—</span></div>
+            <div class="detail-line"><span class="lab">ROUTE</span><span class="val" id="dRoute">—</span></div>
+        </div>
+
+        <button class="cta off" id="ctaBtn" disabled>ENTER AMOUNT</button>
     </div>
 
-    <!-- Three Panel Grid -->
-    <div class="panels">
-
-        <!-- Panel 1: Pair Info -->
-        <div class="panel panel-cyan">
-            <div class="panel-header">Pair Info</div>
-            <div class="panel-body">
-                <div class="pair-tokens">
-                    <div class="token-icons">
-                        <div class="token-icon" id="pairIcon1" style="background:rgba(39,117,202,0.15);border-color:rgba(39,117,202,0.5);color:#2775CA;">●</div>
-                        <div class="token-icon" id="pairIcon2" style="background:rgba(199,80,80,0.15);border-color:rgba(199,80,80,0.5);color:#C75050;">◆</div>
-                    </div>
-                    <div>
-                        <div class="pair-name" id="pairName">USDC/QUAI</div>
-                        <div class="pair-chain">QUAI NETWORK</div>
-                    </div>
-                </div>
-                <div style="border-top:1px solid var(--border-dim);margin-bottom:12px;"></div>
-                <div class="stat-row"><span class="stat-label">Rate</span><span class="stat-value" id="infoRate">1 USDC = 23.81 QUAI</span></div>
-                <div class="stat-row"><span class="stat-label">TVL</span><span class="stat-value" id="infoTvl">$2.4M</span></div>
-                <div class="stat-row"><span class="stat-label">24h Volume</span><span class="stat-value" id="infoVol">$312K</span></div>
-                <div class="stat-row"><span class="stat-label">Fee</span><span class="stat-value" id="infoFee">0.30%</span></div>
-                <div style="border-top:1px solid var(--border-dim);margin:12px 0;"></div>
-                <div class="stat-row">
-                    <span class="stat-label">Risk</span>
-                    <div class="risk-pips">
-                        <div class="pip filled"></div>
-                        <div class="pip filled"></div>
-                        <div class="pip"></div>
-                    </div>
-                </div>
-                <div class="change-badge up" id="changeBadge">24h: +2.41%</div>
-            </div>
-            <div class="panel-accent-bar amber"></div>
-        </div>
-
-        <!-- Panel 2: Chart -->
-        <div class="panel panel-green">
-            <div class="panel-header">
-                Price Chart
-                <div class="chart-timeframes">
-                    <button class="tf-btn">1H</button>
-                    <button class="tf-btn active">1D</button>
-                    <button class="tf-btn">1W</button>
-                </div>
-            </div>
-            <div class="panel-body">
-                <div class="chart-price" id="chartPrice">23.81</div>
-                <div class="chart-meta" id="chartMeta">QUAI/USDC · <span id="chartChange" style="color:var(--qi-green);">▲ 2.41%</span></div>
-                <div class="chart-container" id="chartContainer"></div>
-            </div>
-            <div class="panel-accent-bar green"></div>
-        </div>
-
-        <!-- Panel 3: Execute -->
-        <div class="panel panel-amber">
-            <div class="panel-header">
-                Execute
-                <span class="badge badge-live" id="readyBadge" style="display:none;">READY</span>
-            </div>
-            <div class="panel-body" style="display:flex;flex-direction:column;min-height:420px;">
-                <!-- From -->
-                <div class="swap-input-box" id="fromBox">
-                    <div class="swap-row">
-                        <div class="token-selector" id="fromSelector">
-                            <div class="token-icon" id="fromIcon" style="width:36px;height:36px;background:rgba(39,117,202,0.15);border-color:rgba(39,117,202,0.5);color:#2775CA;">●</div>
-                            <div>
-                                <div class="symbol" id="fromSymbol">USDC</div>
-                                <div class="chain-label">Quai</div>
-                            </div>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <input type="text" class="amount-input" id="fromAmount" placeholder="0.00" disabled autocomplete="off" inputmode="decimal">
-                    </div>
-                    <div class="balance-row">
-                        <span>Balance: <span id="fromBal">—</span></span>
-                        <div class="pct-btns" id="pctBtns" style="display:none;">
-                            <button class="pct-btn" data-pct="25">25%</button>
-                            <button class="pct-btn" data-pct="50">50%</button>
-                            <button class="pct-btn" data-pct="100">MAX</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Flip -->
-                <div class="flip-wrapper">
-                    <div class="flip-line"></div>
-                    <button class="flip-btn" id="flipBtn" title="Flip pair">↕</button>
-                    <div class="flip-line"></div>
-                </div>
-
-                <!-- To -->
-                <div class="swap-input-box">
-                    <div class="swap-row">
-                        <div class="token-selector" id="toSelector">
-                            <div class="token-icon" id="toIcon" style="width:36px;height:36px;background:rgba(199,80,80,0.15);border-color:rgba(199,80,80,0.5);color:#C75050;">◆</div>
-                            <div>
-                                <div class="symbol" id="toSymbol">QUAI</div>
-                                <div class="chain-label">Quai</div>
-                            </div>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="amount-input" id="toAmount" style="text-align:right;color:var(--text-dim);">0.00</div>
-                    </div>
-                    <div class="balance-row">
-                        <span>Balance: <span id="toBal">—</span></span>
-                        <span id="toUsd"></span>
-                    </div>
-                </div>
-
-                <!-- Details -->
-                <div class="swap-details">
-                    <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value" id="detRate">—</span></div>
-                    <div class="detail-row"><span class="detail-label">Price Impact</span><span class="detail-value" id="detImpact">—</span></div>
-                    <div class="detail-row"><span class="detail-label">Fee (0.30%)</span><span class="detail-value fee" id="detFee">—</span></div>
-                    <div class="detail-row"><span class="detail-label">Min. Received</span><span class="detail-value" id="detMin">—</span></div>
-                </div>
-
-                <div style="flex:1;min-height:16px;"></div>
-
-                <button class="swap-cta disabled" id="swapBtn" disabled>CONNECT WALLET</button>
-            </div>
-            <div class="panel-accent-bar cyan"></div>
-        </div>
-    </div>
-
-    <!-- Pairs Table -->
-    <div class="pairs-section">
-        <table class="pairs-table">
-            <thead>
-                <tr>
-                    <th>Pair</th><th>Rate</th><th>TVL</th><th>24h Volume</th><th>Fee</th><th></th>
-                </tr>
-            </thead>
-            <tbody id="pairsBody"></tbody>
+    <!-- POOLS (all numbers editable) -->
+    <div class="pools-section">
+        <div class="pools-label">LIQUIDITY POOLS</div>
+        <table class="pools">
+            <thead><tr><th>PAIR</th><th>RATE</th><th>TVL</th><th>FEE</th><th></th></tr></thead>
+            <tbody id="poolsBody"></tbody>
         </table>
     </div>
 
-    <!-- Footer -->
-    <div class="page-footer">
-        <span>QISWAP · BUILT ON QUAI NETWORK</span>
-        <div class="footer-links">
-            <a href="#">DOCS</a>
-            <a href="#">GITHUB</a>
-            <a href="https://discord.gg/quai" target="_blank">DISCORD</a>
-        </div>
+    <div class="api-status">
+        <div class="status-row"><span><span class="dot mock"></span>PRICE FEED</span><span>MOCK — AWAITING API</span></div>
+        <div class="status-row"><span><span class="dot mock"></span>LIQUIDITY</span><span>MOCK — AWAITING LP</span></div>
     </div>
+</main>
 
-</div>
-</div>
+<footer>
+    <span>QISWAP · QUAI NETWORK</span>
+    <div style="display:flex;gap:16px;">
+        <a href="#">DOCS</a>
+        <a href="https://discord.gg/quai" target="_blank">DISCORD</a>
+    </div>
+</footer>
 
-<!-- Token Selector Modal -->
-<div class="modal-overlay" id="tokenModal">
+<!-- TOKEN MODAL -->
+<div class="modal-bg" id="modal">
     <div class="modal">
         <div class="modal-head">
             <span class="modal-title">SELECT TOKEN</span>
-            <button class="modal-close" id="modalClose">✕</button>
+            <button class="modal-x" id="modalX">✕</button>
         </div>
-        <input class="modal-search" id="modalSearch" placeholder="Search name or symbol..." autocomplete="off">
         <div class="modal-list" id="modalList"></div>
     </div>
 </div>
 
 <script>
-// ===== DATA =====
+// ════════════════════════════════════════════════════════
+//  TOKENS & POOLS  (replace with API feeds)
+// ════════════════════════════════════════════════════════
+
 const TOKENS = [
-    { symbol: "QUAI", name: "Quai", icon: "◆", color: "#C75050", price: 0.042 },
-    { symbol: "QI", name: "Qi", icon: "◇", color: "#00f0ff", price: 0.0018 },
-    { symbol: "USDC", name: "USD Coin", icon: "●", color: "#2775CA", price: 1.0 },
-    { symbol: "USDT", name: "Tether", icon: "●", color: "#50AF95", price: 1.0 },
-    { symbol: "USDai", name: "USD AI", icon: "◈", color: "#ffb800", price: 1.0 },
-    { symbol: "sUSDai", name: "Staked USDai", icon: "◈", color: "#bf5af2", price: 1.068 },
-    { symbol: "WQUAI", name: "Wrapped Quai", icon: "◆", color: "#8B3030", price: 0.042 },
+    { sym: "QI",   name: "Qi",   icon: "◇", color: "#00f0ff", price: 0.0018 },
+    { sym: "QUAI", name: "Quai", icon: "◆", color: "#C75050", price: 0.042  },
+    { sym: "USD",  name: "USD",  icon: "●", color: "#2775CA", price: 1.00   },
 ];
 
-const PAIRS = {
-    "QUAI/USDC": { rate: 0.042, tvl: "2.4M", vol: "312K", fee: 0.003 },
-    "QUAI/USDT": { rate: 0.042, tvl: "1.8M", vol: "198K", fee: 0.003 },
-    "QUAI/USDai": { rate: 0.042, tvl: "890K", vol: "67K", fee: 0.003 },
-    "QI/USDC": { rate: 0.0018, tvl: "560K", vol: "45K", fee: 0.003 },
-    "QI/USDT": { rate: 0.0018, tvl: "340K", vol: "28K", fee: 0.003 },
-    "QUAI/QI": { rate: 23.33, tvl: "1.1M", vol: "156K", fee: 0.003 },
-    "QI/USDai": { rate: 0.0018, tvl: "120K", vol: "12K", fee: 0.003 },
-    "USDai/USDC": { rate: 1.0, tvl: "4.2M", vol: "890K", fee: 0.0005 },
-    "sUSDai/USDai": { rate: 1.068, tvl: "1.6M", vol: "210K", fee: 0.001 },
+const POOLS = {
+    "QI/QUAI":  { rate: 23.33,  tvl: 1100000, fee: 0.003 },
+    "QI/USD":   { rate: 0.0018, tvl: 560000,  fee: 0.003 },
+    "QUAI/USD": { rate: 0.042,  tvl: 2400000, fee: 0.003 },
 };
 
-// ===== STATE =====
-let fromToken = "USDC", toToken = "QUAI";
-let connected = false, slippage = 0.5, txState = "idle";
-let selectorTarget = null; // "from" | "to"
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
 
-// ===== HELPERS =====
-function getToken(sym) { return TOKENS.find(t => t.symbol === sym); }
-function getPairKey(a, b) {
-    if (PAIRS[a+"/"+b]) return { key: a+"/"+b, inv: false };
-    if (PAIRS[b+"/"+a]) return { key: b+"/"+a, inv: true };
+let from = "QI", to = "QUAI";
+let txState = "idle";
+const SLIPPAGE = 0.005;
+
+// ════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════
+
+const tok = sym => TOKENS.find(t => t.sym === sym);
+
+function getPool(a, b) {
+    const key = a + "/" + b;
+    const inv = b + "/" + a;
+    if (POOLS[key]) return { key, ...POOLS[key], inverted: false };
+    if (POOLS[inv]) return { key: inv, rate: 1 / POOLS[inv].rate, fee: POOLS[inv].fee, tvl: POOLS[inv].tvl, inverted: true };
     return null;
 }
-function getRate(a, b) {
-    if (a === b) return 1;
-    const p = getPairKey(a, b);
-    if (!p) return null;
-    return p.inv ? 1 / PAIRS[p.key].rate : PAIRS[p.key].rate;
-}
-function getPairData(a, b) {
-    const p = getPairKey(a, b);
-    return p ? PAIRS[p.key] : null;
-}
-function fmt(n, d) {
-    if (n === null || n === undefined) return "—";
+
+function fmt(n) {
+    if (n == null) return "—";
+    if (n < 0.0001) return n.toFixed(8);
     if (n < 0.001) return n.toFixed(6);
-    if (n < 1) return n.toFixed(4);
-    return n.toFixed(d || 2);
+    if (n < 1)     return n.toFixed(4);
+    if (n < 10)    return n.toFixed(3);
+    return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
 }
 
-// ===== CHART =====
-function drawChart(from, to) {
-    const container = document.getElementById("chartContainer");
-    const rate = getRate(from, to) || 1;
-    const pts = [];
-    let v = rate;
-    for (let i = 0; i < 48; i++) {
-        v += (Math.random() - 0.48) * rate * 0.03;
-        v = Math.max(v * 0.8, v);
-        pts.push(v);
-    }
-    const min = Math.min(...pts), max = Math.max(...pts);
-    const range = max - min || 1;
-    const W = 600, H = 200;
-    const coords = pts.map((v, i) => {
-        const x = (i / (pts.length - 1)) * W;
-        const y = H - ((v - min) / range) * (H - 20) - 10;
-        return [x, y];
-    });
-    const isUp = pts[pts.length - 1] >= pts[0];
-    const c = isUp ? "#39FF14" : "#ff3366";
-    const line = coords.map(p => p.join(",")).join(" ");
-    const area = `0,${H} ${line} ${W},${H}`;
-    const change = ((pts[pts.length - 1] - pts[0]) / pts[0] * 100);
-
-    container.innerHTML = `
-        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-            <defs>
-                <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="${c}" stop-opacity="0.2"/>
-                    <stop offset="100%" stop-color="${c}" stop-opacity="0"/>
-                </linearGradient>
-            </defs>
-            ${[0.25,0.5,0.75].map(f => `<line x1="0" y1="${H*f}" x2="${W}" y2="${H*f}" stroke="rgba(0,240,255,0.06)" stroke-width="0.5" stroke-dasharray="4 4"/>`).join("")}
-            <polygon points="${area}" fill="url(#ag)"/>
-            <polyline points="${line}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linejoin="round"/>
-            <circle cx="${coords[coords.length-1][0]}" cy="${coords[coords.length-1][1]}" r="3" fill="${c}"/>
-        </svg>
-    `;
-
-    document.getElementById("chartPrice").textContent = fmt(rate);
-    document.getElementById("chartMeta").innerHTML = `${to}/${from} · <span style="color:${c};">${isUp?"▲":"▼"} ${Math.abs(change).toFixed(2)}%</span>`;
-
-    const cb = document.getElementById("changeBadge");
-    cb.className = `change-badge ${isUp ? "up" : "down"}`;
-    cb.textContent = `24h: ${isUp?"+":""}${change.toFixed(2)}%`;
-    document.getElementById("chartChange").style.color = c;
-    document.getElementById("chartChange").textContent = `${isUp?"▲":"▼"} ${Math.abs(change).toFixed(2)}%`;
-
-    return change;
+function fmtTvl(n) {
+    if (n >= 1000000) return "$" + (n / 1000000).toFixed(1) + "M";
+    if (n >= 1000) return "$" + (n / 1000).toFixed(0) + "K";
+    return "$" + n.toFixed(0);
 }
 
-// ===== UPDATE UI =====
-function updateUI() {
-    const ft = getToken(fromToken), tt = getToken(toToken);
-    const rate = getRate(fromToken, toToken);
-    const pd = getPairData(fromToken, toToken);
-    const fee = pd ? pd.fee : 0.003;
+function parseNum(s) {
+    return parseFloat(String(s).replace(/[^0-9.\-]/g, "")) || 0;
+}
 
-    // Icons
-    function setIcon(id, t) {
-        const el = document.getElementById(id);
-        el.textContent = t.icon;
-        el.style.background = t.color + "22";
-        el.style.borderColor = t.color + "88";
-        el.style.color = t.color;
-    }
-    setIcon("fromIcon", ft); setIcon("toIcon", tt);
-    setIcon("pairIcon1", ft); setIcon("pairIcon2", tt);
-    document.getElementById("fromSymbol").textContent = fromToken;
-    document.getElementById("toSymbol").textContent = toToken;
-    document.getElementById("pairName").textContent = fromToken + "/" + toToken;
+// ════════════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════════════
 
-    // Info panel
-    if (rate) {
-        document.getElementById("infoRate").textContent = `1 ${fromToken} = ${fmt(rate)} ${toToken}`;
+function setDot(id, t) {
+    const el = document.getElementById(id);
+    el.textContent = t.icon;
+    el.style.background = t.color + "18";
+    el.style.borderColor = t.color + "77";
+    el.style.color = t.color;
+}
+
+function render(direction) {
+    direction = direction || "forward";
+
+    const ft = tok(from), tt = tok(to);
+    const pool = getPool(from, to);
+    const rate = pool ? pool.rate : null;
+    const fee = pool ? pool.fee : 0.003;
+
+    setDot("fromDot", ft);
+    setDot("toDot", tt);
+    document.getElementById("fromSym").textContent = from;
+    document.getElementById("toSym").textContent = to;
+
+    let inAmt, rawOut, feeAmt, netOut;
+
+    if (direction === "reverse" && rate) {
+        const desiredOut = parseNum(document.getElementById("toAmt").value);
+        rawOut = desiredOut / (1 - fee);
+        inAmt = rawOut / rate;
+        feeAmt = rawOut * fee;
+        netOut = desiredOut;
+        if (inAmt > 0 && isFinite(inAmt)) {
+            document.getElementById("fromAmt").value = fmt(inAmt);
+        } else {
+            document.getElementById("fromAmt").value = "";
+        }
     } else {
-        document.getElementById("infoRate").textContent = "No pool";
+        inAmt = parseNum(document.getElementById("fromAmt").value);
+        rawOut = rate ? inAmt * rate : 0;
+        feeAmt = rawOut * fee;
+        netOut = rawOut - feeAmt;
+        const outEl = document.getElementById("toAmt");
+        outEl.value = (inAmt > 0 && rate) ? fmt(netOut) : "";
+        outEl.classList.toggle("has-value", inAmt > 0 && rate != null);
     }
-    document.getElementById("infoTvl").textContent = pd ? "$" + pd.tvl : "—";
-    document.getElementById("infoVol").textContent = pd ? "$" + pd.vol : "—";
-    document.getElementById("infoFee").textContent = (fee * 100).toFixed(2) + "%";
 
-    // Calculate output
-    const fromAmt = parseFloat(document.getElementById("fromAmount").value) || 0;
-    const rawOut = rate ? fromAmt * rate : 0;
-    const feeAmt = rawOut * fee;
-    const netOut = rawOut - feeAmt;
+    const minOut = netOut * (1 - SLIPPAGE);
+    document.getElementById("toAmt").classList.toggle("has-value", netOut > 0);
+    document.getElementById("toUsd").textContent = (netOut > 0 && rate) ? "≈ $" + (netOut * tt.price).toFixed(2) : "";
 
-    document.getElementById("toAmount").textContent = fromAmt > 0 && rate ? fmt(netOut, netOut < 1 ? 6 : 2) : "0.00";
-    document.getElementById("toAmount").style.color = fromAmt > 0 && rate ? "var(--text-primary)" : "var(--text-dim)";
-    document.getElementById("toUsd").textContent = fromAmt > 0 ? "≈ $" + (netOut * (tt.price || 0)).toFixed(2) : "";
+    document.getElementById("dRate").textContent = rate ? `1 ${from} = ${fmt(rate)} ${to}` : "NO POOL";
+    document.getElementById("dFee").textContent = (netOut > 0) ? fmt(feeAmt) + " " + to + " (" + (fee * 100).toFixed(1) + "%)" : "—";
+    document.getElementById("dMin").textContent = (netOut > 0) ? fmt(minOut) + " " + to : "—";
+    document.getElementById("dRoute").textContent = rate ? `${from} → ${to}` : "—";
 
-    // Details
-    document.getElementById("detRate").textContent = rate ? `1 ${fromToken} = ${fmt(rate)} ${toToken}` : "—";
-    const impact = fromAmt > 0 ? Math.min(fromAmt * 0.00002, 5) : 0;
-    document.getElementById("detImpact").textContent = impact > 0 ? impact.toFixed(3) + "%" : "—";
-    document.getElementById("detImpact").style.color = impact > 2 ? "var(--qi-red)" : "var(--text-secondary)";
-    document.getElementById("detFee").textContent = fromAmt > 0 ? fmt(feeAmt, feeAmt < 1 ? 6 : 2) + " " + toToken : "—";
-    document.getElementById("detMin").textContent = fromAmt > 0 ? fmt(netOut * (1 - slippage / 100), netOut < 1 ? 6 : 2) + " " + toToken : "—";
-
-    // CTA button
-    const btn = document.getElementById("swapBtn");
-    if (!connected) {
-        btn.textContent = "CONNECT WALLET";
-        btn.className = "swap-cta disabled";
-        btn.disabled = true;
-    } else if (txState === "approving") {
-        btn.textContent = "APPROVING...";
-        btn.className = "swap-cta processing";
-        btn.disabled = true;
+    const btn = document.getElementById("ctaBtn");
+    if (txState === "approving") {
+        btn.textContent = "APPROVING..."; btn.className = "cta wait"; btn.disabled = true;
     } else if (txState === "swapping") {
-        btn.textContent = "SWAPPING...";
-        btn.className = "swap-cta processing";
-        btn.disabled = true;
+        btn.textContent = "SWAPPING..."; btn.className = "cta wait"; btn.disabled = true;
     } else if (txState === "done") {
-        btn.textContent = "✓ COMPLETE";
-        btn.className = "swap-cta done";
-        btn.disabled = true;
+        btn.textContent = "✓ COMPLETE"; btn.className = "cta done"; btn.disabled = true;
     } else if (!rate) {
-        btn.textContent = "NO LIQUIDITY";
-        btn.className = "swap-cta disabled";
-        btn.disabled = true;
-    } else if (fromAmt <= 0) {
-        btn.textContent = "ENTER AMOUNT";
-        btn.className = "swap-cta disabled";
-        btn.disabled = true;
+        btn.textContent = "NO LIQUIDITY"; btn.className = "cta off"; btn.disabled = true;
+    } else if (inAmt <= 0) {
+        btn.textContent = "ENTER AMOUNT"; btn.className = "cta off"; btn.disabled = true;
     } else {
-        btn.textContent = `SWAP ${fromToken} → ${toToken}`;
-        btn.className = "swap-cta ready";
-        btn.disabled = false;
+        btn.textContent = `SWAP ${from} → ${to}`; btn.className = "cta go"; btn.disabled = false;
     }
-
-    drawChart(fromToken, toToken);
 }
 
-// ===== PAIRS TABLE =====
-function buildPairsTable() {
-    const body = document.getElementById("pairsBody");
+// ════════════════════════════════════════════════════════
+//  POOLS TABLE  (all numbers editable)
+// ════════════════════════════════════════════════════════
+
+function buildPools() {
+    const body = document.getElementById("poolsBody");
     body.innerHTML = "";
-    for (const [key, data] of Object.entries(PAIRS)) {
-        const [base, quote] = key.split("/");
-        const bt = getToken(base), qt = getToken(quote);
+    for (const [key, p] of Object.entries(POOLS)) {
+        const [a, b] = key.split("/");
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td><div class="pair-cell">
-                <div class="token-icons">
-                    <div class="token-icon" style="width:20px;height:20px;font-size:9px;background:${bt.color}22;border-color:${bt.color}88;color:${bt.color};">${bt.icon}</div>
-                    <div class="token-icon" style="width:20px;height:20px;font-size:9px;background:${qt.color}22;border-color:${qt.color}88;color:${qt.color};">${qt.icon}</div>
-                </div>
-                <span class="pair-text">${key}</span>
-            </div></td>
-            <td>${data.rate < 0.01 ? data.rate.toFixed(4) : data.rate.toFixed(data.rate >= 1 ? 2 : 4)}</td>
-            <td>$${data.tvl}</td>
-            <td>$${data.vol}</td>
-            <td>${(data.fee * 100).toFixed(2)}%</td>
-            <td><span class="trade-tag">TRADE →</span></td>
-        `;
+
+        const rateInput = document.createElement("input");
+        rateInput.className = "editable";
+        rateInput.value = p.rate < 0.01 ? p.rate.toFixed(4) : fmt(p.rate);
+        rateInput.addEventListener("input", () => {
+            POOLS[key].rate = parseNum(rateInput.value);
+            syncTokenPrices();
+            render();
+        });
+        rateInput.addEventListener("click", e => e.stopPropagation());
+
+        const tvlInput = document.createElement("input");
+        tvlInput.className = "editable";
+        tvlInput.value = fmtTvl(p.tvl);
+        tvlInput.addEventListener("input", () => {
+            let v = tvlInput.value.replace(/[^0-9.MmKk]/g, "");
+            let num = parseFloat(v);
+            if (v.toLowerCase().includes("m")) num *= 1000000;
+            else if (v.toLowerCase().includes("k")) num *= 1000;
+            if (num > 0) POOLS[key].tvl = num;
+        });
+        tvlInput.addEventListener("click", e => e.stopPropagation());
+
+        const feeInput = document.createElement("input");
+        feeInput.className = "editable";
+        feeInput.style.width = "60px";
+        feeInput.value = (p.fee * 100).toFixed(1) + "%";
+        feeInput.addEventListener("input", () => {
+            let v = parseFloat(feeInput.value.replace(/[^0-9.]/g, ""));
+            if (v > 0 && v < 100) POOLS[key].fee = v / 100;
+            render();
+        });
+        feeInput.addEventListener("click", e => e.stopPropagation());
+
+        const tdPair = document.createElement("td");
+        tdPair.className = "pair-name";
+        tdPair.textContent = key;
+
+        const tdRate = document.createElement("td");
+        tdRate.appendChild(rateInput);
+
+        const tdTvl = document.createElement("td");
+        tdTvl.appendChild(tvlInput);
+
+        const tdFee = document.createElement("td");
+        tdFee.appendChild(feeInput);
+
+        const tdTag = document.createElement("td");
+        tdTag.innerHTML = `<span class="tag">TRADE →</span>`;
+
+        tr.appendChild(tdPair);
+        tr.appendChild(tdRate);
+        tr.appendChild(tdTvl);
+        tr.appendChild(tdFee);
+        tr.appendChild(tdTag);
+
         tr.addEventListener("click", () => {
-            fromToken = base; toToken = quote;
-            document.getElementById("fromAmount").value = "";
-            updateUI();
+            from = a; to = b;
+            document.getElementById("fromAmt").value = "";
+            document.getElementById("toAmt").value = "";
+            render();
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
         body.appendChild(tr);
     }
 }
 
-// ===== LOAD STATS =====
-setTimeout(() => {
-    document.getElementById("statTvl").textContent = "$12.4M";
-    document.getElementById("statVol").textContent = "$1.82M";
-    document.getElementById("statQuai").textContent = "$0.042";
-    document.getElementById("statQi").textContent = "$0.0018";
-}, 900);
+function syncTokenPrices() {
+    if (POOLS["QUAI/USD"]) tok("QUAI").price = POOLS["QUAI/USD"].rate;
+    if (POOLS["QI/USD"])   tok("QI").price   = POOLS["QI/USD"].rate;
+}
 
-// ===== CONNECT =====
-document.getElementById("connectBtn").addEventListener("click", () => {
-    if (connected) return;
-    const btn = document.getElementById("connectBtn");
-    btn.textContent = "CONNECTING...";
-    btn.style.opacity = "0.6";
-    setTimeout(() => {
-        connected = true;
-        btn.textContent = "0x7a3...f2c8";
-        btn.className = "btn-connect connected";
-        btn.style.opacity = "1";
-        document.getElementById("fromAmount").disabled = false;
-        document.getElementById("fromBal").textContent = "1,420.00";
-        document.getElementById("toBal").textContent = "23,809.52";
-        document.getElementById("pctBtns").style.display = "flex";
-        document.getElementById("readyBadge").style.display = "";
-        updateUI();
-    }, 1200);
+// ════════════════════════════════════════════════════════
+//  EVENTS
+// ════════════════════════════════════════════════════════
+
+document.getElementById("fromAmt").addEventListener("input", e => {
+    e.target.value = e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*?)\..*/g, "$1");
+    render("forward");
 });
 
-// ===== INPUT =====
-document.getElementById("fromAmount").addEventListener("input", (e) => {
-    const v = e.target.value.replace(/[^0-9.]/g, "");
-    if (v.split(".").length <= 2) e.target.value = v;
-    else e.target.value = v.slice(0, v.lastIndexOf("."));
-    updateUI();
+document.getElementById("toAmt").addEventListener("input", e => {
+    e.target.value = e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*?)\..*/g, "$1");
+    render("reverse");
 });
 
-// ===== PCT BUTTONS =====
-document.querySelectorAll(".pct-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const p = parseInt(btn.dataset.pct);
-        document.getElementById("fromAmount").value = (1420 * p / 100).toString();
-        updateUI();
+document.querySelectorAll(".pct-btn").forEach(b => {
+    b.addEventListener("click", () => {
+        const pct = parseInt(b.dataset.p);
+        const bal = parseNum(document.getElementById("fromBal").value);
+        document.getElementById("fromAmt").value = (bal * pct / 100).toString();
+        render("forward");
     });
 });
 
-// ===== FLIP =====
 document.getElementById("flipBtn").addEventListener("click", () => {
-    [fromToken, toToken] = [toToken, fromToken];
-    document.getElementById("fromAmount").value = "";
-    updateUI();
+    [from, to] = [to, from];
+    document.getElementById("fromAmt").value = "";
+    document.getElementById("toAmt").value = "";
+    const fb = document.getElementById("fromBal").value;
+    const tb = document.getElementById("toBal").value;
+    document.getElementById("fromBal").value = tb;
+    document.getElementById("toBal").value = fb;
+    render("forward");
 });
 
-// ===== TOKEN SELECTOR =====
+document.getElementById("connectBtn").addEventListener("click", () => {
+    const btn = document.getElementById("connectBtn");
+    if (btn.classList.contains("on")) return;
+    btn.textContent = "..."; btn.style.opacity = "0.5";
+    setTimeout(() => {
+        btn.textContent = "0x7a3…f2c8";
+        btn.className = "btn-connect on";
+        btn.style.opacity = "1";
+    }, 700);
+});
+
+let selecting = null;
 function openModal(target) {
-    selectorTarget = target;
-    const modal = document.getElementById("tokenModal");
-    modal.classList.add("open");
-    document.getElementById("modalSearch").value = "";
-    document.getElementById("modalSearch").focus();
-    renderTokenList("");
-}
-function closeModal() {
-    document.getElementById("tokenModal").classList.remove("open");
-    selectorTarget = null;
-}
-function renderTokenList(search) {
+    selecting = target;
     const list = document.getElementById("modalList");
-    const exclude = selectorTarget === "from" ? toToken : fromToken;
+    const exclude = target === "from" ? to : from;
     list.innerHTML = "";
-    TOKENS.filter(t => t.symbol !== exclude && (t.symbol.toLowerCase().includes(search.toLowerCase()) || t.name.toLowerCase().includes(search.toLowerCase())))
-        .forEach(t => {
-            const btn = document.createElement("button");
-            btn.className = "modal-token";
-            btn.innerHTML = `
-                <div class="token-icon" style="width:32px;height:32px;font-size:12px;background:${t.color}22;border-color:${t.color}88;color:${t.color};">${t.icon}</div>
-                <div><div class="name">${t.symbol}</div><div class="sub">${t.name}</div></div>
-                <span class="price">$${t.price < 0.01 ? t.price.toFixed(4) : t.price.toFixed(2)}</span>
-            `;
-            btn.addEventListener("click", () => {
-                if (selectorTarget === "from") {
-                    if (t.symbol === toToken) toToken = fromToken;
-                    fromToken = t.symbol;
-                } else {
-                    if (t.symbol === fromToken) fromToken = toToken;
-                    toToken = t.symbol;
-                }
-                document.getElementById("fromAmount").value = "";
-                closeModal();
-                updateUI();
-            });
-            list.appendChild(btn);
+    TOKENS.filter(t => t.sym !== exclude).forEach(t => {
+        const btn = document.createElement("button");
+        btn.className = "modal-item";
+        btn.innerHTML = `
+            <div class="token-dot" style="width:34px;height:34px;font-size:16px;font-weight:700;background:${t.color}18;border-color:${t.color}77;color:${t.color};border:2px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;">${t.icon}</div>
+            <div><div class="m-name">${t.sym}</div><div class="m-sub">${t.name}</div></div>
+            <span class="m-price">$${t.price < 0.01 ? t.price.toFixed(4) : t.price.toFixed(2)}</span>
+        `;
+        btn.addEventListener("click", () => {
+            if (selecting === "from") {
+                if (t.sym === to) to = from;
+                from = t.sym;
+            } else {
+                if (t.sym === from) from = to;
+                to = t.sym;
+            }
+            document.getElementById("fromAmt").value = "";
+            document.getElementById("toAmt").value = "";
+            closeModal();
+            render("forward");
         });
-}
-document.getElementById("fromSelector").addEventListener("click", () => openModal("from"));
-document.getElementById("toSelector").addEventListener("click", () => openModal("to"));
-document.getElementById("modalClose").addEventListener("click", closeModal);
-document.getElementById("tokenModal").addEventListener("click", (e) => { if (e.target === e.currentTarget) closeModal(); });
-document.getElementById("modalSearch").addEventListener("input", (e) => renderTokenList(e.target.value));
-
-// ===== SLIPPAGE =====
-document.getElementById("slippageToggle").addEventListener("click", () => {
-    const panel = document.getElementById("slippagePanel");
-    panel.style.display = panel.style.display === "none" ? "flex" : "none";
-});
-document.querySelectorAll(".slippage-opt").forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelectorAll(".slippage-opt").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        slippage = parseFloat(btn.dataset.val);
-        document.getElementById("slippageToggle").textContent = `⚙ SLIPPAGE: ${slippage}%`;
-        updateUI();
+        list.appendChild(btn);
     });
+    document.getElementById("modal").classList.add("open");
+}
+function closeModal() { document.getElementById("modal").classList.remove("open"); selecting = null; }
+document.getElementById("fromBtn").addEventListener("click", () => openModal("from"));
+document.getElementById("toBtn").addEventListener("click", () => openModal("to"));
+document.getElementById("modalX").addEventListener("click", closeModal);
+document.getElementById("modal").addEventListener("click", e => { if (e.target === e.currentTarget) closeModal(); });
+
+document.getElementById("ctaBtn").addEventListener("click", () => {
+    if (txState !== "idle") return;
+    txState = "approving"; render();
+    setTimeout(() => { txState = "swapping"; render(); }, 1000);
+    setTimeout(() => { txState = "done"; render(); }, 2500);
+    setTimeout(() => { txState = "idle"; document.getElementById("fromAmt").value = ""; document.getElementById("toAmt").value = ""; render(); }, 4200);
 });
 
-// ===== SWAP =====
-document.getElementById("swapBtn").addEventListener("click", () => {
-    if (!connected || txState !== "idle") return;
-    txState = "approving";
-    updateUI();
-    setTimeout(() => { txState = "swapping"; updateUI(); }, 1200);
-    setTimeout(() => { txState = "done"; updateUI(); }, 3000);
-    setTimeout(() => { txState = "idle"; document.getElementById("fromAmount").value = ""; updateUI(); }, 5000);
-});
-
-// ===== INIT =====
-buildPairsTable();
-updateUI();
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+buildPools();
+render("forward");
 </script>
 
 </body>
