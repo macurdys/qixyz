@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RageQuit — Adversarial DAO Auditor | Qi.xyz</title>
+    <meta name="description" content="Fork into existence. RageQuit is a DAO that stress-tests, forks, and reduces QuaiVault until only the resilient core remains. Raising $50K for a professional security audit.">
+    <meta property="og:title" content="RageQuit — Adversarial DAO Auditor">
+    <meta property="og:description" content="Fork into existence. A DAO that audits itself through deliberate destruction.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%23ff3366'%3ERQ%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-red-dim: rgba(255, 51, 102, 0.15);
+            --qi-red-glow: rgba(255, 51, 102, 0.4);
+            --qi-green: #39FF14;
+            --qi-green-dim: rgba(57, 255, 20, 0.15);
+            --qi-purple: #bf5af2;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(255, 51, 102, 0.12);
+            --border-bright: rgba(255, 51, 102, 0.3);
+            --border-cyan-dim: rgba(0, 240, 255, 0.12);
+            --border-cyan-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-red) var(--bg-deep); }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+
+        /* Scanlines */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 51, 102, 0.006) 2px, rgba(255, 51, 102, 0.006) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(255, 51, 102, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 51, 102, 0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.88); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-display); font-size: 20px; font-weight: 700;
+            color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--qi-cyan-glow);
+        }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);
+            text-decoration: none; letter-spacing: 2px; text-transform: uppercase;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .nav-links a:hover { color: var(--qi-red); text-shadow: 0 0 10px var(--qi-red-glow); }
+        .nav-proto {
+            font-family: var(--font-mono); font-size: 10px; color: var(--qi-red);
+            letter-spacing: 3px; border: 1px solid var(--border-bright);
+            padding: 4px 12px; opacity: 0.8;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 80px 24px 60px; z-index: 1;
+            overflow: hidden;
+        }
+        .hero-bg-img {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+        }
+        .hero-bg-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.2) saturate(0.6);
+        }
+        .hero-bg-img::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(6, 8, 13, 0.5) 0%,
+                rgba(6, 8, 13, 0.3) 40%,
+                rgba(6, 8, 13, 0.7) 70%,
+                var(--bg-deep) 100%
+            );
+        }
+
+        /* Animated red pulse behind title */
+        .hero-pulse {
+            position: absolute; width: 600px; height: 600px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 51, 102, 0.1) 0%, transparent 70%);
+            filter: blur(80px); top: 50%; left: 50%; transform: translate(-50%, -50%);
+            animation: pulse-red 4s ease-in-out infinite;
+            z-index: 1;
+        }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        .hero-content {
+            position: relative; z-index: 2;
+            text-align: center; max-width: 900px;
+        }
+        .hero-tag {
+            font-family: var(--font-mono); font-size: 11px; color: var(--qi-red);
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: 32px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.2s;
+        }
+        .hero-tag::before { content: '◆ '; animation: blink 2s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .hero h1 {
+            font-family: var(--font-display); font-size: clamp(52px, 10vw, 110px);
+            font-weight: 900; letter-spacing: 8px; color: var(--text-primary);
+            line-height: 1; margin-bottom: 8px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.4s;
+        }
+        .hero h1 span {
+            color: var(--qi-red);
+            text-shadow: 0 0 40px var(--qi-red-glow), 0 0 80px rgba(255, 51, 102, 0.15);
+        }
+        .hero-sub {
+            font-family: var(--font-display); font-size: clamp(14px, 2vw, 20px);
+            font-weight: 400; color: var(--text-dim); letter-spacing: 6px;
+            text-transform: uppercase; margin-bottom: 48px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.5s;
+        }
+        .hero-tagline {
+            font-family: var(--font-body); font-size: clamp(18px, 2.5vw, 24px);
+            font-weight: 300; color: var(--text-secondary); max-width: 650px;
+            margin: 0 auto 16px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.6s;
+        }
+        .hero-tagline-detail {
+            font-family: var(--font-mono); font-size: 13px; color: var(--qi-red);
+            letter-spacing: 1px; max-width: 600px; margin: 0 auto 48px;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.7s;
+            line-height: 1.7;
+        }
+        .hero-ctas {
+            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+            opacity: 0; animation: fade-up 0.8s ease forwards 0.6s;
+        }
+        @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Buttons */
+        .btn {
+            font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px;
+            text-transform: uppercase; text-decoration: none; padding: 14px 32px;
+            transition: all 0.3s; cursor: pointer; display: inline-block; border: none;
+        }
+        .btn-rage {
+            background: var(--qi-red); color: var(--bg-deep);
+            border: 1px solid var(--qi-red);
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.2), inset 0 0 20px rgba(255, 51, 102, 0.1);
+        }
+        .btn-rage:hover {
+            box-shadow: 0 0 40px rgba(255, 51, 102, 0.4), inset 0 0 30px rgba(255, 51, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        .btn-ghost {
+            background: transparent; color: var(--qi-red); border: 1px solid var(--border-bright);
+        }
+        .btn-ghost:hover {
+            background: var(--qi-red-dim); border-color: var(--qi-red);
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.1);
+        }
+        .btn-cyan {
+            background: transparent; color: var(--qi-cyan); border: 1px solid var(--border-cyan-bright);
+        }
+        .btn-cyan:hover {
+            background: var(--qi-cyan-dim); border-color: var(--qi-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        /* Scroll hint */
+        .scroll-hint {
+            position: absolute; bottom: 24px; left: 50%;
+            transform: translateX(-50%); z-index: 2;
+            color: var(--qi-red); font-family: var(--font-mono);
+            font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+            text-align: center;
+            opacity: 0; animation: fade-up 0.8s ease forwards 1.2s;
+        }
+        .scroll-hint .arrow {
+            display: block; font-size: 18px;
+            animation: bounce-down 1.5s ease-in-out infinite; margin-top: 4px;
+        }
+        @keyframes bounce-down {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+
+        /* ===== SECTIONS ===== */
+        section { position: relative; z-index: 1; padding: 120px 24px; }
+        .section-inner { max-width: 1100px; margin: 0 auto; }
+        .section-label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--qi-red);
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px;
+        }
+        .section-label::before { content: '// '; color: var(--text-dim); }
+        .section-title {
+            font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px);
+            font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; line-height: 1.2;
+        }
+        .section-desc {
+            font-size: 18px; font-weight: 300; color: var(--text-secondary);
+            max-width: 700px; margin-bottom: 56px; line-height: 1.8;
+        }
+
+        .divider {
+            max-width: 1100px; margin: 0 auto; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--qi-red), transparent);
+            position: relative; z-index: 1;
+        }
+
+        /* ===== THESIS ===== */
+        .thesis-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+        }
+        .thesis-text p {
+            font-weight: 300; color: var(--text-secondary); line-height: 1.9;
+            margin-bottom: 24px; font-size: 17px;
+        }
+        .thesis-text strong { color: var(--qi-red); font-weight: 600; }
+        .thesis-text em { color: var(--qi-cyan); font-style: normal; }
+
+        .thesis-flywheel {
+            border: 1px solid var(--border-dim); background: var(--bg-panel);
+            padding: 40px; position: relative; overflow: hidden;
+        }
+        .thesis-flywheel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-red), transparent);
+        }
+
+        .flywheel-step {
+            display: flex; align-items: flex-start; gap: 20px; margin-bottom: 28px;
+            position: relative;
+        }
+        .flywheel-step:last-child { margin-bottom: 0; }
+        .flywheel-num {
+            font-family: var(--font-display); font-size: 24px; font-weight: 900;
+            color: var(--qi-red); opacity: 0.4; min-width: 36px;
+        }
+        .flywheel-step h4 {
+            font-family: var(--font-display); font-size: 14px; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .flywheel-step p {
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);
+            line-height: 1.6; letter-spacing: 0.5px;
+        }
+
+        /* Connector line between steps */
+        .flywheel-step::after {
+            content: '';
+            position: absolute; left: 17px; top: 36px; bottom: -28px;
+            width: 1px; background: var(--border-dim);
+        }
+        .flywheel-step:last-child::after { display: none; }
+
+        /* Loop arrow */
+        .flywheel-loop {
+            text-align: center; margin-top: 24px; padding-top: 24px;
+            border-top: 1px solid var(--border-dim);
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--qi-red); letter-spacing: 3px;
+        }
+        .flywheel-loop .loop-icon {
+            font-size: 20px; display: block; margin-bottom: 4px;
+            animation: spin-slow 8s linear infinite;
+        }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* ===== FORK TREE ===== */
+        .fork-tree-container {
+            border: 1px solid var(--border-dim); background: var(--bg-panel);
+            padding: 48px; position: relative; overflow: hidden;
+            margin-bottom: 48px;
+        }
+        .fork-tree-container::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--qi-red), var(--qi-cyan), var(--qi-red));
+        }
+
+        .fork-tree-label {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: 32px;
+        }
+
+        .fork-tree-svg { width: 100%; height: auto; }
+
+        .fork-tree-legend {
+            display: flex; gap: 32px; margin-top: 24px; padding-top: 20px;
+            border-top: 1px solid var(--border-dim);
+        }
+        .legend-item {
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+        .legend-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+        }
+        .legend-dot.active { background: var(--qi-green); box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); }
+        .legend-dot.forked { background: var(--qi-amber); box-shadow: 0 0 8px rgba(255, 184, 0, 0.5); }
+        .legend-dot.dissolved { background: var(--qi-red); box-shadow: 0 0 8px rgba(255, 51, 102, 0.5); }
+        .legend-dot.pending { background: var(--text-dim); box-shadow: 0 0 8px rgba(74, 85, 104, 0.5); }
+
+        /* ===== FUNDING TRACKER ===== */
+        .funding-panel {
+            border: 1px solid var(--border-dim); background: var(--bg-panel);
+            padding: 48px; position: relative; overflow: hidden;
+        }
+        .funding-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-green), transparent);
+        }
+
+        .funding-header {
+            display: flex; justify-content: space-between; align-items: baseline;
+            margin-bottom: 8px;
+        }
+        .funding-amount {
+            font-family: var(--font-display); font-size: 48px; font-weight: 900;
+            color: var(--qi-green); letter-spacing: 2px;
+        }
+        .funding-target {
+            font-family: var(--font-mono); font-size: 14px; color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+        .funding-label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 32px;
+        }
+
+        .funding-bar {
+            height: 4px; background: rgba(57, 255, 20, 0.1); margin-bottom: 8px;
+            position: relative; overflow: hidden;
+        }
+        .funding-bar-fill {
+            height: 100%; background: var(--qi-green);
+            box-shadow: 0 0 12px rgba(57, 255, 20, 0.4);
+            width: 0%; transition: width 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .funding-bar-fill.animated { width: 0%; }
+
+        .funding-milestones {
+            display: flex; justify-content: space-between; margin-bottom: 40px;
+        }
+        .milestone {
+            text-align: center; position: relative; flex: 1;
+        }
+        .milestone::before {
+            content: '';
+            position: absolute; top: -16px; left: 50%;
+            width: 1px; height: 8px;
+            background: var(--text-dim);
+        }
+        .milestone-label {
+            font-family: var(--font-mono); font-size: 9px; color: var(--text-dim);
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .milestone-amount {
+            font-family: var(--font-display); font-size: 12px; color: var(--text-secondary);
+            letter-spacing: 1px; margin-top: 2px;
+        }
+        .milestone.reached .milestone-label { color: var(--qi-green); }
+        .milestone.reached .milestone-amount { color: var(--qi-green); }
+
+        /* ===== TIERS ===== */
+        .tiers-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .tier-card {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 32px 28px; position: relative; overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+        .tier-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .tier-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.08);
+        }
+        .tier-card:hover::before { opacity: 1; }
+
+        .tier-card.t1::before { background: linear-gradient(90deg, transparent, var(--text-dim), transparent); }
+        .tier-card.t1:hover { border-color: var(--text-dim); }
+        .tier-card.t2::before { background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); }
+        .tier-card.t2:hover { border-color: var(--qi-cyan); }
+        .tier-card.t3::before { background: linear-gradient(90deg, transparent, var(--qi-amber), transparent); }
+        .tier-card.t3:hover { border-color: var(--qi-amber); }
+        .tier-card.t4::before { background: linear-gradient(90deg, transparent, var(--qi-red), transparent); }
+        .tier-card.t4:hover { border-color: var(--qi-red); }
+        .tier-card.t5::before { background: linear-gradient(90deg, transparent, var(--qi-purple), transparent); }
+        .tier-card.t5:hover { border-color: var(--qi-purple); }
+
+        .tier-name {
+            font-family: var(--font-display); font-size: 16px; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;
+        }
+        .tier-price {
+            font-family: var(--font-mono); font-size: 22px; font-weight: 400;
+            margin-bottom: 16px; letter-spacing: 1px;
+        }
+        .t1 .tier-name { color: var(--text-dim); }
+        .t1 .tier-price { color: var(--text-dim); }
+        .t2 .tier-name { color: var(--qi-cyan); }
+        .t2 .tier-price { color: var(--qi-cyan); }
+        .t3 .tier-name { color: var(--qi-amber); }
+        .t3 .tier-price { color: var(--qi-amber); }
+        .t4 .tier-name { color: var(--qi-red); }
+        .t4 .tier-price { color: var(--qi-red); }
+        .t5 .tier-name { color: var(--qi-purple); }
+        .t5 .tier-price { color: var(--qi-purple); }
+
+        .tier-perks {
+            list-style: none; padding: 0;
+        }
+        .tier-perks li {
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);
+            padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+            letter-spacing: 0.5px;
+        }
+        .tier-perks li::before {
+            content: '→ '; color: var(--text-dim);
+        }
+        .tier-weight {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase; margin-top: 16px;
+        }
+
+        /* ===== LIFECYCLE ===== */
+        .lifecycle-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+        }
+        .lifecycle-phase {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 32px 24px; position: relative; overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .lifecycle-phase:hover { border-color: var(--border-bright); transform: translateY(-4px); }
+        .lifecycle-phase::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-red), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .lifecycle-phase:hover::before { opacity: 1; }
+
+        .phase-num {
+            font-family: var(--font-display); font-size: 36px; font-weight: 900;
+            color: var(--qi-red); opacity: 0.15; margin-bottom: 12px;
+        }
+        .phase-name {
+            font-family: var(--font-display); font-size: 14px; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;
+            color: var(--qi-red);
+        }
+        .phase-duration {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 2px; margin-bottom: 16px;
+        }
+        .phase-desc {
+            font-size: 14px; color: var(--text-secondary); line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* ===== ALLOCATION ===== */
+        .alloc-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+            margin-top: 48px;
+        }
+        .alloc-item {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 28px 24px; text-align: center;
+        }
+        .alloc-pct {
+            font-family: var(--font-display); font-size: 36px; font-weight: 900;
+            letter-spacing: 2px; margin-bottom: 4px;
+        }
+        .alloc-amount {
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);
+            letter-spacing: 1px; margin-bottom: 12px;
+        }
+        .alloc-label {
+            font-family: var(--font-display); font-size: 11px; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary);
+        }
+        .alloc-item:nth-child(1) .alloc-pct { color: var(--qi-green); }
+        .alloc-item:nth-child(2) .alloc-pct { color: var(--qi-red); }
+        .alloc-item:nth-child(3) .alloc-pct { color: var(--qi-cyan); }
+        .alloc-item:nth-child(4) .alloc-pct { color: var(--qi-amber); }
+
+        /* ===== META GAME ===== */
+        .meta-panel {
+            border: 1px solid var(--border-dim); background: var(--bg-panel);
+            padding: 56px; position: relative; overflow: hidden;
+            text-align: center;
+        }
+        .meta-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--qi-red), var(--qi-cyan), var(--qi-green));
+        }
+        .meta-panel h3 {
+            font-family: var(--font-display); font-size: clamp(20px, 3vw, 32px);
+            font-weight: 700; letter-spacing: 2px; margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        .meta-panel h3 span { color: var(--qi-red); }
+        .meta-panel p {
+            font-size: 18px; font-weight: 300; color: var(--text-secondary);
+            max-width: 650px; margin: 0 auto 12px; line-height: 1.8;
+        }
+        .meta-panel .meta-kicker {
+            font-family: var(--font-mono); font-size: 13px; color: var(--qi-red);
+            letter-spacing: 2px; margin-top: 24px;
+        }
+
+        /* ===== AUDIT SCOPE ===== */
+        .scope-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        }
+        .scope-item {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 28px 24px; position: relative;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .scope-item:hover { border-color: var(--border-cyan-bright); transform: translateY(-2px); }
+        .scope-item::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .scope-item:hover::before { opacity: 1; }
+        .scope-num {
+            font-family: var(--font-display); font-size: 11px; font-weight: 600;
+            color: var(--qi-cyan); letter-spacing: 3px; margin-bottom: 8px;
+            opacity: 0.6;
+        }
+        .scope-item h4 {
+            font-family: var(--font-display); font-size: 14px; font-weight: 600;
+            letter-spacing: 1px; margin-bottom: 8px; color: var(--text-primary);
+        }
+        .scope-item p {
+            font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);
+            line-height: 1.6; letter-spacing: 0.5px;
+        }
+
+        /* ===== BUILT ON ===== */
+        .built-on {
+            display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+            margin-top: 48px;
+        }
+        .built-tag {
+            font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
+            text-transform: uppercase; padding: 8px 20px;
+            border: 1px solid var(--border-dim); color: var(--text-dim);
+            transition: all 0.3s;
+        }
+        .built-tag:hover { border-color: var(--border-bright); color: var(--qi-red); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: relative; z-index: 1; background: var(--bg-panel);
+            border-top: 1px solid var(--border-dim); padding: 40px 24px;
+        }
+        .footer-content {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 24px;
+        }
+        .footer-brand {
+            font-family: var(--font-display); font-size: 16px; font-weight: 700;
+            color: var(--qi-cyan); letter-spacing: 3px; text-decoration: none;
+        }
+        .footer-links { display: flex; gap: 32px; }
+        .footer-links a {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+            text-decoration: none; letter-spacing: 2px; text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover { color: var(--qi-red); }
+        .footer-copy {
+            width: 100%; text-align: center;
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 1px; margin-top: 24px; padding-top: 24px;
+            border-top: 1px solid var(--border-dim);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .thesis-grid { grid-template-columns: 1fr; }
+            .lifecycle-grid { grid-template-columns: repeat(2, 1fr); }
+            .scope-grid { grid-template-columns: repeat(2, 1fr); }
+            .alloc-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .lifecycle-grid { grid-template-columns: 1fr; }
+            .scope-grid { grid-template-columns: 1fr; }
+            .alloc-grid { grid-template-columns: repeat(2, 1fr); }
+            .tiers-grid { grid-template-columns: 1fr; }
+            .funding-milestones { flex-wrap: wrap; gap: 16px; }
+            .fork-tree-legend { flex-wrap: wrap; gap: 16px; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .footer-links { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="index.html" class="nav-logo">QI.XYZ</a>
+        <div class="nav-links">
+            <a href="#thesis">Thesis</a>
+            <a href="#fork-tree">Fork Tree</a>
+            <a href="#funding">Funding</a>
+            <a href="#tiers">Join</a>
+            <a href="#audit">Audit</a>
+        </div>
+        <span class="nav-proto">PROTO-13</span>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-bg-img">
+            <img src="vault.png" alt="QuaiVault" />
+        </div>
+        <div class="hero-pulse"></div>
+        <div class="hero-content">
+            <div class="hero-tag">Proto-13 — Adversarial DAO Auditor</div>
+            <h1>RAGE<span>QUIT</span></h1>
+            <div class="hero-sub">Fork Into Existence</div>
+
+
+            <div class="hero-ctas">
+                <a href="#funding" class="btn btn-rage">Fund the Audit</a>
+                <a href="#thesis" class="btn btn-ghost">Read the Thesis</a>
+                <a href="https://quaivault.org" target="_blank" class="btn btn-cyan">QuaiVault ↗</a>
+            </div>
+        </div>
+        <div class="scroll-hint">
+            Explore
+            <span class="arrow">↓</span>
+        </div>
+    </section>
+
+    <!-- ===== THESIS ===== -->
+    <div class="divider"></div>
+    <section id="thesis">
+        <div class="section-inner">
+            <div class="section-label">The Thesis</div>
+            <div class="section-title">Audit Through Destruction</div>
+            <div class="section-desc">QuaiVault is a multisig wallet system with Zodiac compatibility, modular architecture, and a full indexer stack. It's powerful — but it's unaudited. RageQuit turns the audit preparation process into a DAO.</div>
+
+            <div class="thesis-grid">
+                <div class="thesis-text">
+                    <p>QuaiVault has <em>DailyLimit</em>, <em>Whitelist</em>, and <em>SocialRecovery</em> modules, a <em>ProxyFactory</em> for deterministic deployment, <em>Zodiac IAvatar</em> compatibility, and a <em>Supabase indexer</em> tracking 27 event types. That's a lot of surface area. Before DAOs, treasuries, and real capital flow through it, the contracts need to be battle-tested by real users with real stakes.</p>
+                    <p>RageQuit is <strong>recursive</strong>: it uses QuaiVault to audit QuaiVault. Members fund a shared multisig, then deliberately probe edge cases, attack surfaces, and governance failures. When something breaks or a design flaw is found, the DAO <strong>forks</strong> — one branch patches, another continues probing.</p>
+                    <p>Each fork sheds unnecessary complexity. Each rage quit tests the withdrawal mechanism. Each cycle produces documented findings. The DAO that survives all the rage quits <em>is</em> the audited product.</p>
+                    <p>The final surviving entity commissions a professional third-party security audit with the accumulated treasury — <strong>$50,000 USD</strong>.</p>
+                </div>
+
+                <div class="thesis-flywheel">
+                    <div class="flywheel-step">
+                        <span class="flywheel-num">01</span>
+                        <div>
+                            <h4>Fund</h4>
+                            <p>Members contribute to the QuaiVault treasury. Non-transferable weight tokens track proportional ownership.</p>
+                        </div>
+                    </div>
+                    <div class="flywheel-step">
+                        <span class="flywheel-num">02</span>
+                        <div>
+                            <h4>Stress</h4>
+                            <p>Deliberately probe edge cases — zero-value txs, module conflicts, concurrent proposals, adversarial guardian scenarios.</p>
+                        </div>
+                    </div>
+                    <div class="flywheel-step">
+                        <span class="flywheel-num">03</span>
+                        <div>
+                            <h4>Fork</h4>
+                            <p>When a flaw is found, the DAO forks via ProxyFactory. One branch patches, another continues probing.</p>
+                        </div>
+                    </div>
+                    <div class="flywheel-step">
+                        <span class="flywheel-num">04</span>
+                        <div>
+                            <h4>Reduce</h4>
+                            <p>Each fork strips away fragility. Code, modules, and governance that proved unnecessary get removed.</p>
+                        </div>
+                    </div>
+                    <div class="flywheel-step">
+                        <span class="flywheel-num">05</span>
+                        <div>
+                            <h4>Audit</h4>
+                            <p>The final surviving entity commissions a professional audit. The report is published publicly.</p>
+                        </div>
+                    </div>
+                    <div class="flywheel-loop">
+                        <span class="loop-icon">⟳</span>
+                        REPEAT UNTIL UNBREAKABLE
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FORK TREE ===== -->
+    <div class="divider"></div>
+    <section id="fork-tree">
+        <div class="section-inner">
+            <div class="section-label">Evolution</div>
+            <div class="section-title">The Fork Tree</div>
+            <div class="section-desc">Every fork is an experiment. Every dissolved branch is a lesson. The tree visualizes the protocol's evolutionary hardening — converging toward the minimal viable secure DAO.</div>
+
+            <div class="fork-tree-container">
+                <div class="fork-tree-label">RageQuit Fork Registry — Live Lineage</div>
+                <svg class="fork-tree-svg" viewBox="0 0 900 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Connections -->
+                    <line x1="130" y1="50" x2="280" y2="100" stroke="rgba(255,184,0,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="130" y1="50" x2="280" y2="180" stroke="rgba(255,51,102,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="280" y1="100" x2="460" y2="60" stroke="rgba(255,184,0,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="280" y1="100" x2="460" y2="140" stroke="rgba(57,255,20,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="460" y1="140" x2="640" y2="110" stroke="rgba(57,255,20,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="460" y1="140" x2="640" y2="200" stroke="rgba(74,85,104,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="640" y1="110" x2="790" y2="110" stroke="rgba(57,255,20,0.4)" stroke-width="2" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="1.5s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="280" y1="180" x2="460" y2="240" stroke="rgba(255,51,102,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <line x1="460" y1="240" x2="640" y2="290" stroke="rgba(255,51,102,0.3)" stroke-width="1.5" stroke-dasharray="4 4">
+                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+
+                    <!-- Genesis node -->
+                    <circle cx="130" cy="50" r="16" fill="none" stroke="#ffb800" stroke-width="1.5"/>
+                    <circle cx="130" cy="50" r="6" fill="#ffb800" opacity="0.6">
+                        <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                    <text x="130" y="85" text-anchor="middle" fill="#7a8a9e" font-family="'Share Tech Mono', monospace" font-size="10" letter-spacing="1">GENESIS</text>
+
+                    <!-- Fork 1a -->
+                    <circle cx="280" cy="100" r="14" fill="none" stroke="#ffb800" stroke-width="1.5"/>
+                    <circle cx="280" cy="100" r="5" fill="#ffb800" opacity="0.6"/>
+                    <text x="280" y="130" text-anchor="middle" fill="#7a8a9e" font-family="'Share Tech Mono', monospace" font-size="9" letter-spacing="1">FORK 1A</text>
+                    <text x="280" y="142" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="8">reentrancy patch</text>
+
+                    <!-- Fork 1b — dissolved -->
+                    <circle cx="280" cy="180" r="14" fill="none" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="270" y1="170" x2="290" y2="190" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="290" y1="170" x2="270" y2="190" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <text x="280" y="210" text-anchor="middle" fill="#ff3366" font-family="'Share Tech Mono', monospace" font-size="9" opacity="0.6" letter-spacing="1">FORK 1B</text>
+                    <text x="280" y="222" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="8">dissolved</text>
+
+                    <!-- Fork 2a — forked again -->
+                    <circle cx="460" cy="60" r="14" fill="none" stroke="#ffb800" stroke-width="1.5"/>
+                    <circle cx="460" cy="60" r="5" fill="#ffb800" opacity="0.6"/>
+                    <text x="460" y="42" text-anchor="middle" fill="#7a8a9e" font-family="'Share Tech Mono', monospace" font-size="9" letter-spacing="1">FORK 2A</text>
+
+                    <!-- Fork 2b — active survivor -->
+                    <circle cx="460" cy="140" r="14" fill="none" stroke="#39FF14" stroke-width="1.5"/>
+                    <circle cx="460" cy="140" r="5" fill="#39FF14" opacity="0.8">
+                        <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <text x="460" y="168" text-anchor="middle" fill="#39FF14" font-family="'Share Tech Mono', monospace" font-size="9" letter-spacing="1">FORK 2B</text>
+                    <text x="460" y="180" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="8">module isolation</text>
+
+                    <!-- Fork 3a — active reduced -->
+                    <circle cx="640" cy="110" r="14" fill="none" stroke="#39FF14" stroke-width="1.5"/>
+                    <circle cx="640" cy="110" r="5" fill="#39FF14" opacity="0.8">
+                        <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <text x="640" y="138" text-anchor="middle" fill="#39FF14" font-family="'Share Tech Mono', monospace" font-size="9" letter-spacing="1">FORK 3A</text>
+                    <text x="640" y="150" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="8">2-of-3 minimal</text>
+
+                    <!-- Fork 3b — pending -->
+                    <circle cx="640" cy="200" r="14" fill="none" stroke="#4a5568" stroke-width="1.5" stroke-dasharray="4 4"/>
+                    <text x="640" y="228" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="9" letter-spacing="1">FORK 3B</text>
+                    <text x="640" y="240" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="8">pending vote</text>
+
+                    <!-- Final — audit target -->
+                    <rect x="758" y="82" width="70" height="56" rx="2" fill="none" stroke="#39FF14" stroke-width="2">
+                        <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite"/>
+                    </rect>
+                    <text x="793" y="107" text-anchor="middle" fill="#39FF14" font-family="'Orbitron', monospace" font-size="10" font-weight="700" letter-spacing="2">AUDIT</text>
+                    <text x="793" y="125" text-anchor="middle" fill="#39FF14" font-family="'Share Tech Mono', monospace" font-size="9" opacity="0.6">TARGET</text>
+
+                    <!-- Dissolved branch 2 -->
+                    <circle cx="460" cy="240" r="14" fill="none" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="450" y1="230" x2="470" y2="250" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="470" y1="230" x2="450" y2="250" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <text x="460" y="268" text-anchor="middle" fill="#ff3366" font-family="'Share Tech Mono', monospace" font-size="9" opacity="0.6" letter-spacing="1">FORK 2C</text>
+                    <text x="460" y="280" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="8">rage quit</text>
+
+                    <!-- Dissolved branch 3 -->
+                    <circle cx="640" cy="290" r="14" fill="none" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="630" y1="280" x2="650" y2="300" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="650" y1="280" x2="630" y2="300" stroke="#ff3366" stroke-width="1.5" opacity="0.5"/>
+                    <text x="640" y="318" text-anchor="middle" fill="#ff3366" font-family="'Share Tech Mono', monospace" font-size="9" opacity="0.6" letter-spacing="1">FORK 2D</text>
+                    <text x="640" y="330" text-anchor="middle" fill="#4a5568" font-family="'Share Tech Mono', monospace" font-size="8">griefing test</text>
+                </svg>
+
+                <div class="fork-tree-legend">
+                    <div class="legend-item"><span class="legend-dot active"></span> Active</div>
+                    <div class="legend-item"><span class="legend-dot forked"></span> Forked</div>
+                    <div class="legend-item"><span class="legend-dot dissolved"></span> Dissolved / Rage Quit</div>
+                    <div class="legend-item"><span class="legend-dot pending"></span> Pending</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FORK LIFECYCLE ===== -->
+    <div class="divider"></div>
+    <section id="lifecycle">
+        <div class="section-inner">
+            <div class="section-label">Process</div>
+            <div class="section-title">Fork Lifecycle</div>
+            <div class="section-desc">Each fork cycle follows a structured four-phase process. The cycle repeats until the protocol converges on its minimal resilient form.</div>
+
+            <div class="lifecycle-grid">
+                <div class="lifecycle-phase">
+                    <div class="phase-num">01</div>
+                    <div class="phase-name">Provocation</div>
+                    <div class="phase-duration">1–2 weeks</div>
+                    <div class="phase-desc">Deliberately stress the current QuaiVault instance. Edge-case transactions, module interaction conflicts, concurrent proposal attacks, adversarial guardian scenarios.</div>
+                </div>
+                <div class="lifecycle-phase">
+                    <div class="phase-num">02</div>
+                    <div class="phase-name">Discovery</div>
+                    <div class="phase-duration">1 week</div>
+                    <div class="phase-desc">Document findings with severity ratings, reproduction steps, and proposed fixes. Critical, High, Medium, Low, Informational. Build the pre-audit findings database.</div>
+                </div>
+                <div class="lifecycle-phase">
+                    <div class="phase-num">03</div>
+                    <div class="phase-name">Fork Decision</div>
+                    <div class="phase-duration">Governance vote</div>
+                    <div class="phase-desc">Members vote: PATCH in place, FORK into branches with competing fixes, or DISSOLVE if the issue is out of scope. Anyone can rage quit at any point.</div>
+                </div>
+                <div class="lifecycle-phase">
+                    <div class="phase-num">04</div>
+                    <div class="phase-name">Reduction</div>
+                    <div class="phase-duration">Ongoing</div>
+                    <div class="phase-desc">The surviving branch strips away whatever proved unnecessary or fragile — code, modules, governance layers. Converge toward the minimum viable secure DAO.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FUNDING ===== -->
+    <div class="divider"></div>
+    <section id="funding">
+        <div class="section-inner">
+            <div class="section-label">Treasury</div>
+            <div class="section-title">Funding the Audit</div>
+            <div class="section-desc">Raising $50,000 USD for a professional third-party security audit of QuaiVault's smart contract suite. Every dollar is held in the QuaiVault multisig — the same contracts being tested.</div>
+
+            <div class="funding-panel">
+                <div class="funding-header">
+                    <span class="funding-amount" id="fundingAmount">$0</span>
+                    <span class="funding-target">/ $50,000 USD</span>
+                </div>
+                <div class="funding-label">Raised toward security audit</div>
+                <div class="funding-bar">
+                    <div class="funding-bar-fill" id="fundingBar"></div>
+                </div>
+                <div class="funding-milestones">
+                    <div class="milestone">
+                        <div class="milestone-amount">$5K</div>
+                        <div class="milestone-label">Genesis</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-amount">$15K</div>
+                        <div class="milestone-label">Bug Bounties</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-amount">$30K</div>
+                        <div class="milestone-label">Audit RFP</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-amount">$50K</div>
+                        <div class="milestone-label">Audit Engaged</div>
+                    </div>
+                </div>
+
+                <div class="alloc-grid">
+                    <div class="alloc-item">
+                        <div class="alloc-pct">70%</div>
+                        <div class="alloc-amount">$35,000</div>
+                        <div class="alloc-label">Security Audit</div>
+                    </div>
+                    <div class="alloc-item">
+                        <div class="alloc-pct">15%</div>
+                        <div class="alloc-amount">$7,500</div>
+                        <div class="alloc-label">Bug Bounties</div>
+                    </div>
+                    <div class="alloc-item">
+                        <div class="alloc-pct">10%</div>
+                        <div class="alloc-amount">$5,000</div>
+                        <div class="alloc-label">Infrastructure</div>
+                    </div>
+                    <div class="alloc-item">
+                        <div class="alloc-pct">5%</div>
+                        <div class="alloc-amount">$2,500</div>
+                        <div class="alloc-label">Documentation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TIERS ===== -->
+    <div class="divider"></div>
+    <section id="tiers">
+        <div class="section-inner">
+            <div class="section-label">Membership</div>
+            <div class="section-title">Contribution Tiers</div>
+            <div class="section-desc">Join the DAO at any level. Every tier above Observer includes rage quit rights — withdraw your proportional share at any time, no questions asked.</div>
+
+            <div class="tiers-grid">
+                <div class="tier-card t1">
+                    <div class="tier-name">Observer</div>
+                    <div class="tier-price">FREE</div>
+                    <ul class="tier-perks">
+                        <li>Forum access</li>
+                        <li>Fork notifications</li>
+                        <li>Findings database (read)</li>
+                    </ul>
+                    <div class="tier-weight">Weight: 0 — Read-only</div>
+                </div>
+                <div class="tier-card t2">
+                    <div class="tier-name">Tester</div>
+                    <div class="tier-price">~$50</div>
+                    <ul class="tier-perks">
+                        <li>Voting rights</li>
+                        <li>Rage quit eligible</li>
+                        <li>Submit findings</li>
+                    </ul>
+                    <div class="tier-weight">Weight: 1×</div>
+                </div>
+                <div class="tier-card t3">
+                    <div class="tier-name">Builder</div>
+                    <div class="tier-price">~$250</div>
+                    <ul class="tier-perks">
+                        <li>Create proposals</li>
+                        <li>Initiate forks</li>
+                        <li>Bug bounty eligible</li>
+                    </ul>
+                    <div class="tier-weight">Weight: 5×</div>
+                </div>
+                <div class="tier-card t4">
+                    <div class="tier-name">Guardian</div>
+                    <div class="tier-price">~$1,000</div>
+                    <ul class="tier-perks">
+                        <li>Multisig signer candidacy</li>
+                        <li>Nominate audit firms</li>
+                        <li>SocialRecovery guardian</li>
+                    </ul>
+                    <div class="tier-weight">Weight: 20×</div>
+                </div>
+                <div class="tier-card t5">
+                    <div class="tier-name">Patron</div>
+                    <div class="tier-price">~$5,000</div>
+                    <ul class="tier-perks">
+                        <li>Advisory role</li>
+                        <li>Audit report co-attribution</li>
+                        <li>Priority fork participation</li>
+                    </ul>
+                    <div class="tier-weight">Weight: 100×</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== AUDIT SCOPE ===== -->
+    <div class="divider"></div>
+    <section id="audit">
+        <div class="section-inner">
+            <div class="section-label">Deliverable</div>
+            <div class="section-title">Audit Scope</div>
+            <div class="section-desc">The final audit covers the full QuaiVault contract suite. Audit firm selected by governance vote. Report published publicly.</div>
+
+            <div class="scope-grid">
+                <div class="scope-item">
+                    <div class="scope-num">SCOPE 01</div>
+                    <h4>QuaiVault Core</h4>
+                    <p>Multisig logic, proxy pattern, upgrade safety, threshold enforcement</p>
+                </div>
+                <div class="scope-item">
+                    <div class="scope-num">SCOPE 02</div>
+                    <h4>Module Contracts</h4>
+                    <p>DailyLimit, Whitelist, SocialRecovery — module isolation and interaction</p>
+                </div>
+                <div class="scope-item">
+                    <div class="scope-num">SCOPE 03</div>
+                    <h4>ProxyFactory</h4>
+                    <p>Deployment logic, salt collision resistance, deterministic addressing</p>
+                </div>
+                <div class="scope-item">
+                    <div class="scope-num">SCOPE 04</div>
+                    <h4>Zodiac IAvatar</h4>
+                    <p>Module execution paths, guard bypass vectors, execution result handling</p>
+                </div>
+                <div class="scope-item">
+                    <div class="scope-num">SCOPE 05</div>
+                    <h4>RageQuit Governance</h4>
+                    <p>Withdrawal logic, voting integrity, fork mechanics, proportional exits</p>
+                </div>
+                <div class="scope-item">
+                    <div class="scope-num">SCOPE 06</div>
+                    <h4>MultiSend</h4>
+                    <p>Batched transaction safety, delegate call risks, encoding validation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== META GAME ===== -->
+    <div class="divider"></div>
+    <section>
+        <div class="section-inner">
+            <div class="meta-panel">
+                <div class="section-label" style="text-align:center;">The Meta-Game</div>
+                <h3>The DAO that survives all the <span>rage quits</span> is the audited product.</h3>
+                <p>RageQuit is recursive. Every bug found in the DAO's own operation is a bug found in the protocol. Every rage quit tests the withdrawal mechanism. Every fork tests the ProxyFactory. The governance process itself is the stress test.</p>
+                <p>This is not a DAO that happens to fund an audit. It is an audit disguised as a DAO.</p>
+                <div class="meta-kicker">◆ Built on QuaiVault — Auditing QuaiVault ◆</div>
+            </div>
+
+            <div class="built-on">
+                <span class="built-tag">QuaiVault</span>
+                <span class="built-tag">Quai Network</span>
+                <span class="built-tag">Zodiac IAvatar</span>
+                <span class="built-tag">ProxyFactory</span>
+                <span class="built-tag">Supabase Indexer</span>
+                <span class="built-tag">React 18</span>
+                <span class="built-tag">quais.js</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-content">
+            <a href="index.html" class="footer-brand">QI.XYZ</a>
+            <div class="footer-links">
+                <a href="index.html">← Station</a>
+                <a href="https://quaivault.org" target="_blank">QuaiVault</a>
+                <a href="https://qu.ai" target="_blank">Quai Network</a>
+                <a href="https://discord.gg/quai" target="_blank">Discord</a>
+            </div>
+        </div>
+        <div class="footer-copy">Proto-13 — RageQuit DAO — Qi.xyz 2025</div>
+    </footer>
+
+    <script>
+        // ===== Funding bar animation on scroll =====
+        const fundingBar = document.getElementById('fundingBar');
+        const fundingAmount = document.getElementById('fundingAmount');
+        let fundingAnimated = false;
+
+        function animateFunding() {
+            if (fundingAnimated) return;
+            const rect = fundingBar.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.85) {
+                fundingAnimated = true;
+                // Simulate current funding: $0 (not yet launched)
+                const targetPct = 0;
+                const targetUSD = 0;
+                fundingBar.style.width = targetPct + '%';
+
+                // Animate counter
+                let current = 0;
+                const step = Math.max(1, Math.floor(targetUSD / 60));
+                const counter = setInterval(() => {
+                    current += step;
+                    if (current >= targetUSD) {
+                        current = targetUSD;
+                        clearInterval(counter);
+                    }
+                    fundingAmount.textContent = '$' + current.toLocaleString();
+                }, 16);
+            }
+        }
+
+        window.addEventListener('scroll', animateFunding);
+        animateFunding();
+
+        // ===== Smooth nav scroll =====
+        document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // ===== Subtle parallax on hero =====
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const heroImg = document.querySelector('.hero-bg-img img');
+            if (heroImg && scrollY < window.innerHeight) {
+                heroImg.style.transform = `scale(1.05) translateY(${scrollY * 0.15}px)`;
+            }
+        });
+    </script>
+
+</body>
+</html>
