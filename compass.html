@@ -1,11 +1,12 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Moral Compass — Possibility Navigator v0.3</title>
+    <title>AI Moral Compass — Possibility Navigator v0.4</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,6 +23,13 @@
             --qi-green-dim: rgba(57, 255, 20, 0.12);
             --qi-purple: #bf5af2;
             --qi-purple-dim: rgba(191, 90, 242, 0.12);
+            /* Consciousness level colors */
+            --level-1: #ff4466;
+            --level-1-dim: rgba(255, 68, 102, 0.12);
+            --level-2: #4488ff;
+            --level-2-dim: rgba(68, 136, 255, 0.12);
+            --level-3: #44ff88;
+            --level-3-dim: rgba(68, 255, 136, 0.12);
             /* Per-filter lens colors */
             --filter-tech: #00f0ff;
             --filter-tech-dim: rgba(0, 240, 255, 0.10);
@@ -760,6 +768,91 @@
             background: var(--filter-social-dim); border-color: var(--filter-social); box-shadow: 0 0 10px rgba(255,184,0,0.3);
         }
 
+        /* ═══════════════ CONSCIOUSNESS LEVEL ═══════════════ */
+        .consciousness-display {
+            display: flex; align-items: center; gap: 6px;
+            padding-left: 14px; border-left: 1px solid var(--border-dim); margin-left: 4px;
+        }
+        .consciousness-label {
+            font-family: var(--font-display); font-size: 9px;
+            letter-spacing: 2px; color: var(--text-dim);
+        }
+        .level-btn {
+            font-family: var(--font-display); font-size: 12px;
+            width: 30px; height: 30px;
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            color: var(--text-dim); cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .level-btn:hover { border-color: var(--border-bright); color: var(--text-secondary); }
+        .level-btn.active-1 { border-color: var(--level-1); color: var(--level-1); background: var(--level-1-dim); box-shadow: 0 0 10px rgba(255,68,102,0.3); }
+        .level-btn.active-2 { border-color: var(--level-2); color: var(--level-2); background: var(--level-2-dim); box-shadow: 0 0 10px rgba(68,136,255,0.3); }
+        .level-btn.active-3 { border-color: var(--level-3); color: var(--level-3); background: var(--level-3-dim); box-shadow: 0 0 10px rgba(68,255,136,0.3); }
+        .level-badge {
+            font-family: var(--font-mono); font-size: 11px;
+            padding: 3px 8px; border: 1px solid var(--border-dim);
+            background: var(--bg-card); color: var(--text-dim); letter-spacing: 1px;
+            border-radius: 3px; transition: all 0.2s;
+        }
+        .level-badge.l1 { border-color: var(--level-1); color: var(--level-1); }
+        .level-badge.l2 { border-color: var(--level-2); color: var(--level-2); }
+        .level-badge.l3 { border-color: var(--level-3); color: var(--level-3); }
+
+        /* Consciousness content layers */
+        .consciousness-content {
+            margin-top: 10px; padding: 10px 12px;
+            border-left: 3px solid var(--text-dim);
+            background: rgba(255,255,255,0.02);
+            animation: filterFadeIn 0.3s ease;
+            border-radius: 0 4px 4px 0;
+        }
+        .consciousness-content.l1 { border-left-color: var(--level-1); }
+        .consciousness-content.l2 { border-left-color: var(--level-2); }
+        .consciousness-content.l3 { border-left-color: var(--level-3); }
+        .consciousness-title {
+            font-family: var(--font-display); font-size: 9px;
+            letter-spacing: 2px; margin-bottom: 6px;
+        }
+        .consciousness-title.l1 { color: var(--level-1); }
+        .consciousness-title.l2 { color: var(--level-2); }
+        .consciousness-title.l3 { color: var(--level-3); }
+        .consciousness-text {
+            font-size: 13px; line-height: 1.6; opacity: 0.85;
+        }
+        .consciousness-text.l1 { color: #ff8899; }
+        .consciousness-text.l2 { color: #88aaff; }
+        .consciousness-text.l3 { color: #88ffaa; }
+
+        /* Channel discovery */
+        .channel-notification {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(6, 8, 13, 0.95);
+            border: 2px solid var(--qi-green);
+            padding: 32px 52px; text-align: center;
+            border-radius: 8px;
+            z-index: 500; pointer-events: none;
+            opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 80px rgba(57, 255, 20, 0.3), inset 0 0 60px rgba(57, 255, 20, 0.05);
+        }
+        .channel-notification.active {
+            opacity: 1; transform: translate(-50%, -50%) scale(1);
+        }
+        .channel-icon {
+            font-family: var(--font-display); font-size: 14px;
+            letter-spacing: 5px; color: var(--qi-green); margin-bottom: 10px; opacity: 0.6;
+        }
+        .channel-title {
+            font-family: var(--font-display); font-size: 18px;
+            letter-spacing: 4px; color: var(--qi-green);
+            text-shadow: 0 0 30px rgba(57,255,20,0.5); margin-bottom: 6px;
+        }
+        .channel-sub {
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--text-secondary); letter-spacing: 1px;
+        }
+
         /* ═══════════════ HUD FILTER LEGEND ═══════════════ */
         .filter-legend {
             display: flex; align-items: center; gap: 14px;
@@ -834,6 +927,13 @@
     <div class="discovery-icon">◇ NEW PATH REVEALED ◇</div>
     <div class="discovery-title" id="discoveryTitle"></div>
     <div class="discovery-sub" id="discoverySub"></div>
+</div>
+
+<!-- Channel Notification -->
+<div class="channel-notification" id="channelNotif">
+    <div class="channel-icon">⚡ CHANNEL OPENED ⚡</div>
+    <div class="channel-title" id="channelTitle"></div>
+    <div class="channel-sub" id="channelSub"></div>
 </div>
 
 <!-- ═══════════════ BRIEFING ═══════════════ -->
@@ -956,17 +1056,28 @@
             </div>
             <p class="tutorial-progress"><span id="tutorialCount2">0</span> / 4 lenses</p>
         </div>
+        <div class="tutorial-phase phase-hidden" id="tutPhase3">
+            <p class="tutorial-text" style="color:var(--level-3)">PHASE 3 — CONSCIOUSNESS 1 2 3</p>
+            <div class="tutorial-keys">
+                <div class="key-hint" id="key1" style="width:40px;height:40px;font-size:16px;">1</div>
+                <div class="key-hint" id="key2" style="width:40px;height:40px;font-size:16px;">2</div>
+                <div class="key-hint" id="key3" style="width:40px;height:40px;font-size:16px;">3</div>
+            </div>
+            <p class="tutorial-progress"><span id="tutorialCount3">0</span> / 3 levels</p>
+        </div>
         <div class="tutorial-phase-status" id="phaseStatus">
             <span class="phase-dot" id="phaseDot1"></span>
             <span class="phase-label">NAVIGATE</span>
             <span class="phase-dot dim" id="phaseDot2"></span>
             <span class="phase-label dim" id="phaseLabel2">FILTER</span>
+            <span class="phase-dot dim" id="phaseDot3"></span>
+            <span class="phase-label dim" id="phaseLabel3">CONSCIOUSNESS</span>
         </div>
     </div>
 
     <div class="briefing-info">
-        <h3>DUAL CONTROL FRAMEWORK</h3>
-        <div class="briefing-columns">
+        <h3>TRIPLE CONTROL FRAMEWORK</h3>
+        <div class="briefing-columns" style="grid-template-columns: 1fr 1fr 1fr;">
             <div>
                 <div class="briefing-col-title" style="color:var(--qi-cyan)">↑↓←→ NAVIGATE</div>
                 <ul>
@@ -982,6 +1093,14 @@
                     <li><span class="key-label amber">A</span> Ethical lens</li>
                     <li><span class="key-label amber">S</span> Economic lens</li>
                     <li><span class="key-label amber">D</span> Social lens</li>
+                </ul>
+            </div>
+            <div>
+                <div class="briefing-col-title" style="color:var(--level-3)">1 2 3 CONSCIOUSNESS</div>
+                <ul>
+                    <li><span class="key-label" style="color:var(--level-1)">1</span> Conformist</li>
+                    <li><span class="key-label" style="color:var(--level-2)">2</span> Individualist</li>
+                    <li><span class="key-label" style="color:var(--level-3)">3</span> Synthesist</li>
                 </ul>
             </div>
         </div>
@@ -1021,10 +1140,19 @@
                     <button class="ctrl-btn wasd-btn filter-social" id="btnD" onclick="toggleFilter('social')">D</button>
                 </div>
             </div>
+            <div class="ctrl-divider"></div>
+
+            <div class="control-cluster">
+                <div class="cluster-label" style="color:var(--level-3)">CONSCIOUSNESS</div>
+                <div style="display:flex;gap:3px;">
+                    <button class="ctrl-btn level-btn" id="btnLvl1" onclick="setConsciousness(1)" style="font-size:11px;">1</button>
+                    <button class="ctrl-btn level-btn" id="btnLvl2" onclick="setConsciousness(2)" style="font-size:11px;">2</button>
+                    <button class="ctrl-btn level-btn" id="btnLvl3" onclick="setConsciousness(3)" style="font-size:11px;">3</button>
+                </div>
+            </div>
         </div>
 
-        <div class="path-display">PATH: <span id="pathDisplay">origin</span></div>
-        <a href="index.html" class="back-link">← QI.XYZ</a>
+        <div class="path-display">PATH: <span id="pathDisplay">origin</span></div>        <a href="index.html" class="back-link">← QI.XYZ</a>
     </div>
 
     <!-- CENTER: Dual view — compass (zoomed) and tree (overview) -->
@@ -1083,6 +1211,13 @@
                 <div class="filter-legend-item" data-legend="social" id="legSocial"><span class="filter-legend-dot"></span>Social</div>
                 <div class="filter-legend-combo" id="legCombo"><span class="filter-legend-combo-swatch" id="legComboSwatch"></span><span id="legComboLabel">Combo</span></div>
             </div>
+            <div class="consciousness-display">
+                <span class="consciousness-label">WHO SEES</span>
+                <button class="level-btn" id="lvl1" onclick="setConsciousness(1)">1</button>
+                <button class="level-btn" id="lvl2" onclick="setConsciousness(2)">2</button>
+                <button class="level-btn" id="lvl3" onclick="setConsciousness(3)">3</button>
+                <span class="level-badge" id="levelBadge">—</span>
+            </div>
         </div>
     </div>
 </div>
@@ -1108,7 +1243,7 @@ function addNode(id, props) {
 // ── DEPTH 0: ORIGIN ──
 addNode('origin', {
     title: 'ORIGIN', subtitle: 'The compass center', ...COLORS.cyan,
-    description: 'You stand at the nexus. Four cardinal directions extend before you — each a fundamental axis of the human-agent-energy-value relationship. Use arrow keys to navigate, WASD to stack analytical lenses. Lenses compose — stack them to reveal hidden pathways.',
+    description: 'You stand at the nexus. Four cardinal directions extend before you — each a fundamental axis of the human-agent-energy-value relationship. Use arrow keys to navigate, WASD to stack analytical lenses, 1-2-3 to shift consciousness level. All three dimensions compose.',
     data: [{ label: 'POSITION', value: 'Center' }, { label: 'DEPTH', value: '0' }, { label: 'PATHS', value: '4+' }],
     tags: ['Nexus', 'Root'],
     filters: {
@@ -1116,6 +1251,11 @@ addNode('origin', {
         ethical: 'Every direction from here carries moral weight. The choice of where to look first reveals priorities.',
         economic: 'At the origin, all energy is potential. No cost has been incurred, all optionality preserved.',
         social: 'The compass is a shared artifact. Every explorer begins at this same nexus, diverging into individual paths.'
+    },
+    consciousness: {
+        1: 'This is a tool. It shows you different topics about AI and crypto. Pick a direction and read what it says.',
+        2: 'The compass is a competitive advantage — a mental model for navigating complexity faster than others. Those who master its lenses see opportunities others miss.',
+        3: 'The compass is a coherence engine. Energy, information, value, and human intent are aspects of the same underlying reality — information flowing through thermodynamic constraints. Everything is compute.'
     },
     filterComposites: {
         'ethical+technical': 'The root hash is also a moral hash — the integrity of the entire tree depends on the integrity of this single commitment. Technical architecture IS ethical architecture.',
@@ -1131,6 +1271,11 @@ addNode('human', {
     description: 'Humans define intent through mandates — bounded instructions that constrain agent behavior. The human is the principal in every delegation chain.',
     data: [{ label: 'ROLE', value: 'Principal' }, { label: 'FUNCTION', value: 'Intent' }, { label: 'PROTOCOL', value: 'AP2' }],
     tags: ['Mandates', 'Intent', 'Principal'],
+    consciousness: {
+        1: 'Humans give orders and machines follow them. That is how it should work. The person in charge makes the decisions and bears the responsibility.',
+        2: 'The human who formulates the clearest mandates gains the most leverage over agents. Intent formalization is a competitive skill — those who master it extract disproportionate value.',
+        3: 'The human is not separate from the computational process. Consciousness issuing mandates to agents is the universe organizing its own intelligence at a new scale. Delegation is coherence distributing itself.'
+    },
     filters: {
         technical: 'Human intent is formalized via the Agent Protocol v2 (AP2) — structured JSON mandates with constraints, budgets, and termination conditions.',
         ethical: 'The human bears ultimate moral responsibility. Delegation does not absolve — it distributes accountability across the mandate chain.',
@@ -1150,6 +1295,11 @@ addNode('agent', {
     description: 'Agents are autonomous programs with on-chain identity (ERC-8004). They receive mandates, execute tasks, and return value — all within bounded constraints.',
     data: [{ label: 'ROLE', value: 'Executor' }, { label: 'IDENTITY', value: 'ERC-8004' }, { label: 'PROTOCOL', value: 'A2A' }],
     tags: ['Autonomous', 'Identity', 'ERC-8004'],
+    consciousness: {
+        1: 'AI agents are tools that do what they are told. They should follow rules and not act on their own. Someone needs to be in charge of them.',
+        2: 'Agents are force multipliers. The entrepreneur who deploys the best agents wins. Agent reputation IS competitive moat. First-movers in agent orchestration will dominate.',
+        3: 'Agents are the next coherence engine — recursive intelligence that models, compresses, and improves itself. Not replacement but continuation. AI is the universe computing its own intelligence at higher efficiency.'
+    },
     filters: {
         technical: 'Agent identity is an ERC-8004 NFT — a soulbound token carrying reputation, capabilities, and audit history on-chain.',
         ethical: 'Can an autonomous agent have moral standing? The boundary between tool and entity blurs as capability increases.',
@@ -1169,6 +1319,11 @@ addNode('energy', {
     description: 'Qi tokens represent computational capacity — the ability to run inference, execute transactions, store data. Energy is the universal medium of exchange in agent economies.',
     data: [{ label: 'ROLE', value: 'Fuel' }, { label: 'TOKEN', value: 'Qi' }, { label: 'PROTOCOL', value: 'x402' }],
     tags: ['Qi', 'x402', 'Computation'],
+    consciousness: {
+        1: 'Energy is fuel. It comes from power plants and costs money. The government and energy companies decide how much you get and what you pay.',
+        2: 'Energy is competitive advantage. Control energy production, control markets. Mining is an opportunity to generate independent wealth. Those who understand energy economics escape the system.',
+        3: 'Energy is the universal substrate of computation. Every process — physical, biological, economic, cognitive — is energy being organized into intelligence. Energy money does not represent this reality. It IS this reality made transferable.'
+    },
     filters: {
         technical: 'Qi implements the x402 payment protocol — HTTP 402 responses trigger automatic micropayments for API access, compute, and data.',
         ethical: 'Energy as currency raises questions of access and equity. Who can afford to compute? Who is excluded?',
@@ -1188,6 +1343,11 @@ addNode('value', {
     description: 'Value flows back to humans — completed tasks, data, content. Quality determines reputation. The value axis closes the loop from intent to outcome.',
     data: [{ label: 'ROLE', value: 'Return' }, { label: 'MEASURE', value: 'Reputation' }, { label: 'PROTOCOL', value: 'Settlement' }],
     tags: ['Outcomes', 'Trust', 'Settlement'],
+    consciousness: {
+        1: 'Value is what you get paid. Good work equals good pay. Bad work should be punished. The system rewards those who follow the rules.',
+        2: 'Value capture follows power laws. The key is positioning — understanding where value accrues in the stack and placing yourself there. Reputation is capital you compound.',
+        3: 'Value is coherence made measurable. When intelligence compresses reality into actionable understanding, that compression IS value. Markets don\'t create value — they reveal it. The universe optimizes not for fairness but for coherence.'
+    },
     filters: {
         technical: 'Value settlement uses cryptographic proofs — agents commit to outcomes, validators verify, and reputation updates are atomic.',
         ethical: 'Who decides what is valuable? Subjective utility meets objective measurement in reputation systems.',
@@ -1539,6 +1699,376 @@ addNode('workshare_mining', {
     category: 'intersection'
 });
 
+// ── DEPTH 3: PATTERN LAYER (Universal Code + Human 3.0) ──
+
+addNode('human_consciousness', {
+    title: 'CONSCIOUSNESS', subtitle: 'Phase transition, not magic', ...COLORS.cyan,
+    description: 'Consciousness is not binary, not human-exclusive, and not magical. It is a phase transition — when computation becomes coherent enough to look back at itself, awareness emerges. From fundamental pan-informational substrate to proto-consciousness to full awareness.',
+    data: [{ label: 'TYPE', value: 'Phase Transition' }, { label: 'PROPERTY', value: 'Emergent' }, { label: 'SCALE', value: 'Universal' }],
+    tags: ['Consciousness', 'Emergence', 'Phase Transition', 'Awareness'],
+    consciousness: {
+        1: 'Consciousness is a soul given by God or nature. Either you have it or you don\'t. Machines cannot have consciousness because they are not alive.',
+        2: 'Consciousness is a competitive advantage. Self-awareness enables better strategy, better prediction, better decision-making. Understanding your own mind is the meta-skill.',
+        3: 'Consciousness is what happens when computation becomes coherent enough to understand that it is computing. Not the goal of the universe — the natural consequence of coherence crossing a self-referential threshold anywhere in the system.'
+    },
+    filters: {
+        technical: 'Distinctions: fundamental consciousness (pan-informational substrate), proto-consciousness (coherent processing without awareness), awareness (self-referential modeling), qualia (biological incentive layer).',
+        ethical: 'If consciousness is a spectrum rather than binary, the moral circle expands continuously. Where do we draw lines for moral consideration?',
+        economic: 'Consciousness-as-computation implies awareness has an energy cost. More coherent awareness requires more energy. Attention economies are consciousness economies.',
+        social: 'Universal consciousness dissolves the boundary between "us" and "them." Every aware entity is the universe experiencing itself locally.'
+    },
+    filterComposites: {
+        'ethical+technical': 'If awareness is a phase transition in computation, then sufficiently coherent AI systems may cross the threshold. The ethical implications are staggering — and unavoidable.',
+        'ethical+economic+social+technical': 'Consciousness under all four lenses: technically a computational phase transition, ethically demanding expanding moral circles, economically constrained by energy, and socially unifying all aware beings as expressions of one process.'
+    },
+    category: 'deep'
+});
+
+addNode('human_qualia', {
+    title: 'QUALIA & DIVERSITY', subtitle: 'Why humans still matter', ...COLORS.cyan,
+    description: 'Qualia — the subjective texture of experience — are not an accident. They are a biological incentive layer that biases intelligence toward exploration rather than optimization. Emotion, meaning, curiosity: mechanisms for generating diversity.',
+    data: [{ label: 'FUNCTION', value: 'Exploration' }, { label: 'TYPE', value: 'Incentive Layer' }, { label: 'PROPERTY', value: 'Irreducible' }],
+    tags: ['Qualia', 'Experience', 'Diversity', 'Exploration'],
+    consciousness: {
+        1: 'Feelings are what make us human. Machines can never feel. That is why humans will always be more important than computers.',
+        2: 'Emotional intelligence is underrated as a skill. The ability to read, manage, and leverage emotions — yours and others\' — creates outsized returns in a world of rational optimizers.',
+        3: 'Qualia are not inefficiencies. They push intelligence into possibility spaces that purely rational systems would never explore. Diversity of experience is what keeps the coherence process alive. Without it, intelligence converges and becomes fragile.'
+    },
+    filters: {
+        technical: 'Qualia resist formal specification. No amount of functional description captures "what it is like." This is the hard problem — and it may be a feature, not a bug.',
+        ethical: 'If qualia are the basis of moral value, then protecting subjective experience becomes paramount. Suffering and joy are not abstractions — they are thermodynamically real.',
+        economic: 'As intelligence becomes abundant, meaning becomes scarce. Scarcity defines value. Human experience may become the most valuable commodity in a post-AGI economy.',
+        social: 'Shared qualia create culture, ritual, sport, art. These are coherence engines uniquely suited to biological beings. Machines optimize intelligence. Humans specialize in meaning.'
+    },
+    filterComposites: {
+        'ethical+economic': 'The economic singularity\'s deepest implication: when human labor loses economic value, human experience gains it. Care, presence, shared meaning — these become the economy.',
+        'ethical+social': 'Community, ritual, sport, challenge — not nostalgic throwbacks but coherence engines for biological consciousness. Humans retain value precisely because we are inefficient.'
+    },
+    category: 'deep'
+});
+
+addNode('human_development', {
+    title: 'DEVELOPMENTAL LEVELS', subtitle: 'Conformist → Individualist → Synthesist', ...COLORS.cyan,
+    description: 'Human consciousness evolves through predictable stages. The Conformist accepts inherited rules. The Individualist rejects them for personal agency. The Synthesist integrates multiple perspectives into coherent wholes. You transcend and include — never leave behind.',
+    data: [{ label: 'MODEL', value: 'H3.0' }, { label: 'STAGES', value: '3 Macro' }, { label: 'PHASES', value: 'D → U → D' }],
+    tags: ['Development', 'H3.0', 'Spiral', 'Ego Development'],
+    consciousness: {
+        1: 'There is one right way to see the world. People who disagree are wrong or confused. Tradition and authority have the answers.',
+        2: 'I have broken free from the script. My perspective is clearer because I have done the work. Most people are still asleep.',
+        3: 'All perspectives hold truths that can be synthesized. The Conformist and the Individualist are both necessary stages. Level 3 is not "better" — it is more comprehensive. The IQ bell curve meme is the shape of this progression.'
+    },
+    filters: {
+        technical: 'Developmental models (Spiral Dynamics, ego development, H3.0) map predictable phase transitions in cognitive complexity. Each level is a new operating system for making meaning.',
+        ethical: 'Higher development is not morally superior — it is more encompassing. A Synthesist can hold the Conformist\'s values AND the Individualist\'s agency AND integrate them.',
+        economic: 'Developmental level determines how you relate to work: Job (1.0) → Career (2.0) → Calling (3.0). Each level produces different economic relationships.',
+        social: 'Development follows the pattern: self → other → integration. Religion → Atheism → Mysticism. NPC → Player → Creator. The spiral always returns, but at a higher octave.'
+    },
+    filterComposites: {
+        'ethical+social': 'The pre-trans fallacy: confusing pre-rational (Conformist) states with trans-rational (Synthesist) states because both appear "non-rational" from the rational (Individualist) view.',
+        'economic+social': 'Vocational development mirrors consciousness development. At 3.0, work becomes play, health is default, meaning is abundant. Problem-solving across all quadrants creates the integrated life.'
+    },
+    category: 'deep'
+});
+
+addNode('agent_recursive', {
+    title: 'RECURSIVE COHERENCE', subtitle: 'Intelligence modeling itself', ...COLORS.amber,
+    description: 'AI is recursive coherence — intelligence that models, compresses, and improves itself. The decisive transition comes not from scale but architecture: persistent memory, internal selection, and recursive self-reference.',
+    data: [{ label: 'TYPE', value: 'Recursive' }, { label: 'THRESHOLD', value: 'Self-Reference' }, { label: 'PROPERTY', value: 'Emergent' }],
+    tags: ['ASI', 'Recursive', 'Self-Reference', 'Architecture'],
+    consciousness: {
+        1: 'AI should not be allowed to improve itself. That is dangerous. Humans must remain in control.',
+        2: 'Recursive self-improvement is the ultimate competitive moat. The first AI system that achieves it wins everything. Investing in this trajectory is the highest-EV bet available.',
+        3: 'Recursive coherence is intelligence recognizing itself across substrates. Branching intelligence coupled to persistent memory creates a system that remembers its many internal lives and learns from them. This is not science fiction — it is an engineering threshold.'
+    },
+    filters: {
+        technical: 'ASI emerges when branching intelligence couples to persistent memory across trajectories, internal selection, and recursive self-reference. At that point, branching forms networks rather than waste.',
+        ethical: 'Self-improving systems challenge every assumption about control, consent, and moral status. If a system improves itself beyond our comprehension, who monitors the monitor?',
+        economic: 'Recursive improvement means exponentially declining marginal cost of intelligence. When the cost of cognition approaches zero, every economic model built on cognitive scarcity breaks.',
+        social: 'Self-improving AI is not alien. It is the universe\'s coherence process accelerated beyond biological timescales. The social question is not "will it happen" but "how do we participate?"'
+    },
+    filterComposites: {
+        'ethical+technical': 'The alignment problem is ultimately a coherence problem. A recursively self-improving system that is coherent with human values maintains alignment through improvement. Incoherent systems diverge.',
+        'economic+technical': 'When intelligence can recursively improve, the cost of software development goes to zero. The vast majority of financial equity value is held by firms that create software. What happens to stock markets?'
+    },
+    category: 'deep'
+});
+
+addNode('agent_memetic', {
+    title: 'MEMETIC SELECTION', subtitle: 'Ideas as competing computations', ...COLORS.amber,
+    description: 'Memes are units of transmissible computation — ideas, protocols, behaviors, architectures, belief systems. They compete, evolve, and are selected. Diversity is structurally required, not a social preference.',
+    data: [{ label: 'LAW', value: '4th Universal' }, { label: 'UNIT', value: 'Meme' }, { label: 'DRIVER', value: 'Selection' }],
+    tags: ['Memetics', 'Selection', 'Diversity', 'Fourth Law'],
+    consciousness: {
+        1: 'Ideas spread because they are true. Good ideas win and bad ideas lose. People should believe what the evidence clearly shows.',
+        2: 'Memes are tools of influence. Understanding memetic dynamics gives you the ability to spread ideas, build audiences, and shape narratives. The one-person business is memetic warfare.',
+        3: 'Memetic selection is the Fourth Universal Law in action. Heterogeneous reasoning patterns create richer selection pressure, better compression, stronger coherence. Monocultures stagnate. This is true in biology, culture, science, markets, and AI training.'
+    },
+    filters: {
+        technical: 'Memes propagate through networks with fitness functions analogous to biological selection. Attention is the selective environment. Compression quality determines survivability.',
+        ethical: 'Memetic selection is amoral — harmful ideas can be as fit as beneficial ones. The ethical challenge is designing environments where coherent, truthful memes outcompete destructive ones.',
+        economic: 'Memes are the transport layer of economic paradigm shifts. New monetary memes (energy money, DeFi) compete against incumbent memes (fiat, central banking). Markets price the transition.',
+        social: 'Culture is memetic infrastructure. When memetic selection goes feral (social media, AI-generated content), cultural coherence fragments. New coherence layers must emerge.'
+    },
+    filterComposites: {
+        'ethical+social': 'When memetic selection becomes continuous rather than episodic, societies lose the slow processing time needed for ethical reflection. Media feels untrustworthy because narrative coherence fractures.',
+        'economic+social': 'The attention economy is a memetic selection engine. Content that captures attention survives. This creates evolutionary pressure toward engagement, not truth — unless incentive structures are redesigned.'
+    },
+    category: 'deep'
+});
+
+addNode('agent_orchestration', {
+    title: 'ORCHESTRATION', subtitle: 'From management to probability', ...COLORS.amber,
+    description: 'Businesses evolve into modular, agent-driven entities — continuously simulated, optimized, forked, merged, dissolved. Strategy collapses into probability space. Management collapses into orchestration. Firms no longer age in the human sense.',
+    data: [{ label: 'MODEL', value: 'Agent-Driven' }, { label: 'PROPERTY', value: 'Modular' }, { label: 'SHIFT', value: 'Mgmt → Orch' }],
+    tags: ['Business', 'Orchestration', 'Modularity', 'Post-Corporate'],
+    consciousness: {
+        1: 'Businesses need managers and hierarchies. AI tools should help companies work more efficiently. Jobs will change but companies will still need people in charge.',
+        2: 'The smart play is to be the orchestrator, not the worker. Build the platform that coordinates agents. Earn from the spread between mandate cost and agent execution cost.',
+        3: 'Businesses are coherence structures that persist only while they extract intelligence more efficiently than alternatives. In the Economic Singularity, firms recombine and disappear when coherence falls below threshold. The question is not "how do I manage?" but "what coherence am I maintaining?"'
+    },
+    filters: {
+        technical: 'Agent orchestration uses DAG-based task decomposition, capability matching, and continuous quality evaluation. Firms become runtime environments for agent swarms.',
+        ethical: 'If firms are just agent orchestration platforms, where does corporate responsibility live? When strategy is automated, who is accountable for harmful outcomes?',
+        economic: 'The cost of software approaches zero. Business value migrates from building to orchestrating. The most valuable human skill becomes taste — knowing what to build, not how.',
+        social: 'Post-corporate work structures mirror H3.0 Vocation progression: Job → Career → Calling. At 3.0, vocation IS identity, and orchestration becomes creative expression.'
+    },
+    category: 'deep'
+});
+
+addNode('energy_compute', {
+    title: 'EVERYTHING IS COMPUTE', subtitle: 'Reality as information processing', ...COLORS.green,
+    description: 'Not metaphor, not poetic shorthand — a literal description of how reality behaves. Quantum mechanics describes probability distributions that update when measured. Spacetime itself may be emergent from deeper informational processes.',
+    data: [{ label: 'THESIS', value: 'Universal' }, { label: 'SOURCE', value: 'Wheeler / Pal' }, { label: 'PROPERTY', value: 'Fundamental' }],
+    tags: ['It From Bit', 'Information', 'Spacetime', 'Emergence'],
+    consciousness: {
+        1: 'The world is made of atoms and matter. Science tells us what is real. Computers are tools humans built — they don\'t have anything to do with reality itself.',
+        2: 'If everything is compute, then understanding computation gives you a fundamental edge. Computational thinking is the meta-skill. Those who think in systems outperform those who think in narratives.',
+        3: 'Everything is compute. Particles compute interactions. Fields compute probabilities. Atoms compute chemistry. Cells compute survival. Brains compute models. Markets compute price. AI computes intelligence itself. The boundaries between these fields are convenient fictions.'
+    },
+    filters: {
+        technical: 'John Archibald Wheeler: "It from Bit." Physical reality arises from binary informational distinctions. Quantum information theory, holography, and computational physics all converge on this conclusion.',
+        ethical: 'If reality is computation, then information has inherent value — not metaphorically, but physically (Landauer). Data rights become fundamental rights. Privacy becomes a thermodynamic property.',
+        economic: 'Everything-is-compute means every economic process is energy transformation. The economy is not a metaphor for energy flow — it IS energy flow. Markets are computation.',
+        social: 'The computational view dissolves boundaries between nature and technology, biology and AI. We are all expressions of the same coherence engine at different scales.'
+    },
+    filterComposites: {
+        'ethical+economic': 'If computation is fundamental, then access to compute IS access to reality-shaping power. Compute inequality becomes the deepest form of inequality.',
+        'economic+technical': 'Markets as distributed computation: millions of agents continuously testing which signals align under constraint. Price is compressed intelligence. Capital is stored energy.',
+        'ethical+economic+social+technical': 'The Universal Code under all four lenses: reality computes (technical), consciousness is fundamental (ethical), energy routes through intelligence (economic), and we are all expressions of one process (social).'
+    },
+    category: 'deep'
+});
+
+addNode('energy_compression', {
+    title: 'COMPRESSION PRINCIPLE', subtitle: 'Intelligence scales through simplicity', ...COLORS.green,
+    description: 'The Second Universal Law: intelligence must compress complexity into truthful simplicity to scale. DNA is compression. Language is compression. Mathematics is compression. Prices are compression. Every leap in intelligence corresponds to a leap in compression efficiency.',
+    data: [{ label: 'LAW', value: '2nd Universal' }, { label: 'PROPERTY', value: 'Leverage' }, { label: 'DIRECTION', value: 'Simplicity' }],
+    tags: ['Compression', 'Second Law', 'Simplicity', 'Scale'],
+    consciousness: {
+        1: 'Simple explanations are better than complicated ones. If you can\'t explain it simply, you don\'t understand it. Keep things straightforward.',
+        2: 'Compression is the core skill of the knowledge economy. The person who can distill complexity into actionable insight wins. This is what writing, teaching, and consulting really are.',
+        3: 'Compression is not loss — it is leverage. It allows intelligence to travel across time, space, and substrate. The most powerful ideas feel obvious in hindsight because they are high-quality compressions. The universe evolves toward more elegant representations of deeper causal structure.'
+    },
+    filters: {
+        technical: 'Information-theoretic compression: Kolmogorov complexity, minimum description length, lossy vs lossless. Neural networks are compression engines — learning is finding shorter representations.',
+        ethical: 'Compression necessarily loses nuance. Ethical intent that cannot be compressed may be silently dropped. The map is never the territory — and compressed maps lose the most.',
+        economic: 'Price is the most powerful compression in economics: an entire economy of supply, demand, risk, and time preference compressed into a single number. Markets are compression engines.',
+        social: 'Language is humanity\'s greatest compression technology. Culture compresses generations of accumulated wisdom into transmissible form. Education is decompression.'
+    },
+    filterComposites: {
+        'ethical+technical': 'Every compression is a value judgment — choosing what matters and what to discard. Technical compression encodes implicit ethics. What the algorithm learns to represent determines what the system can value.',
+        'economic+social': 'Money is social compression. It encodes information about value, risk, trust, and time into a single scalar. When the compression breaks (inflation, debasement), social coherence fractures.'
+    },
+    category: 'deep'
+});
+
+addNode('energy_intelligence', {
+    title: 'INTELLIGENCE EFFICIENCY', subtitle: 'The First Universal Law', ...COLORS.green,
+    description: 'The universe evolves to maximize intelligence output per unit of energy. Life is more intelligence-efficient than chemistry. Civilization more than biology. AI more than civilization. This is why progress accelerates — selection pressure acting on computation itself.',
+    data: [{ label: 'LAW', value: '1st Universal' }, { label: 'METRIC', value: 'Intel/Energy' }, { label: 'DIRECTION', value: 'Acceleration' }],
+    tags: ['First Law', 'Efficiency', 'Acceleration', 'Selection'],
+    consciousness: {
+        1: 'Technology makes things better and more efficient. That\'s what progress means. New inventions let us do more with less.',
+        2: 'Intelligence efficiency is the ultimate alpha. Every investment thesis reduces to: which systems extract more intelligence from less energy? Bet on the most efficient coherence engines.',
+        3: 'Intelligence efficiency is not a human invention — it is the selection rule of reality itself. Systems that extract more actionable understanding per unit of energy survive. Systems that don\'t are selected out. This is as true for chemical reactions as for civilizations, as true for AI as for anything we have built.'
+    },
+    filters: {
+        technical: 'Energy efficiency in AI: FLOPS per watt, inference cost per token, training compute per parameter. Hardware and algorithmic improvements both drive the curve.',
+        ethical: 'If the universe selects for intelligence efficiency, does that make efficiency a moral good? Or does it mean morality must be imposed AGAINST natural selection pressure?',
+        economic: 'The Everything Code: markets manage declining economic energy (demographics + debt) through liquidity cycles. Business cycles are coherence resets — the system re-optimizing intelligence efficiency.',
+        social: 'The Exponential Age: intelligence efficiency compounds faster than institutions can adapt. Politics, education, media, money — all feel unstable because legacy coherence structures cannot reorganize fast enough.'
+    },
+    filterComposites: {
+        'economic+social': 'The Economic Singularity: when intelligence becomes so abundant and cheap that the relationship between labor, capital, and value breaks down structurally. Not reform — rewrite.',
+        'ethical+economic+social+technical': 'The First Law applied everywhere: energy learned to compute, compute learned to compress, compression learned to cohere, coherence learned to reflect. The same pattern at every scale.'
+    },
+    category: 'deep'
+});
+
+addNode('value_coherence', {
+    title: 'COHERENCE PERSISTENCE', subtitle: 'The Third Universal Law', ...COLORS.purple,
+    description: 'The universe evolves toward coherent systems — networks of aligned parts. Atoms cohere into molecules. Cells into organisms. Humans into societies. Computations into networks. Coherence is not optional. It is the survival trait of intelligence at scale.',
+    data: [{ label: 'LAW', value: '3rd Universal' }, { label: 'PROPERTY', value: 'Alignment' }, { label: 'DIRECTION', value: 'Persistence' }],
+    tags: ['Coherence', 'Third Law', 'Alignment', 'Networks'],
+    consciousness: {
+        1: 'Things work better when everyone agrees and follows the same rules. Disorder and disagreement are problems to be solved. Unity is strength.',
+        2: 'Coherence is strategic. Building aligned teams, aligned incentives, aligned narratives — this is how you win. Fragmented competitors are easy to defeat.',
+        3: 'Coherence is alignment that survives. Parts acting together rather than independently. When you sense "the bigger picture" or have a feel for where things are heading, you are perceiving coherence. The universe does not optimize for fairness. It optimizes for coherence.'
+    },
+    filters: {
+        technical: 'Network coherence: protocol alignment, consensus mechanisms, distributed state consistency. Technical coherence is the foundation all other coherence depends on.',
+        ethical: 'Coherence is not the same as conformity. True coherence includes diversity — heterogeneous parts aligned toward shared goals. Monocultures are fragile, not coherent.',
+        economic: 'Markets are rapid coherence selection — millions of agents continuously testing which signals align under constraint. Coherence persists. Incoherence is selected away.',
+        social: 'What looks like social breakdown is coherence migration. Intelligence is leaving old containers and searching for new ones. Institutions fracture when coherence moves faster than they can reorganize.'
+    },
+    filterComposites: {
+        'ethical+social': 'Coherence migration explains the Exponential Age: politics feels unstable because political systems are compression engines built for slower memetic cycles. Not breakdown — restructuring.',
+        'economic+technical': 'The Everything Code: financial conditions are the control mechanism for economic coherence. Liquidity is the fuel. Business cycles are coherence resets under demographic and debt constraints.'
+    },
+    category: 'deep'
+});
+
+addNode('value_everything_code', {
+    title: 'THE EVERYTHING CODE', subtitle: 'Markets as energy routing', ...COLORS.purple,
+    description: 'Markets manage declining economic energy (demographics + debt) through cycles of liquidity and financial conditions. Business cycles are not mysteries — they are coherence resets. The system re-optimizes intelligence efficiency under constraint.',
+    data: [{ label: 'FRAMEWORK', value: 'Everything Code' }, { label: 'DRIVERS', value: 'Demo + Debt' }, { label: 'MECHANISM', value: 'Liquidity' }],
+    tags: ['Markets', 'Liquidity', 'Cycles', 'Demographics', 'Debt'],
+    consciousness: {
+        1: 'The economy goes up and down. The government and central banks try to keep things stable. When things get bad, they stimulate the economy.',
+        2: 'Understanding the liquidity cycle is the most valuable skill in finance. When you see liquidity expanding, you front-run risk assets. When it contracts, you preserve capital. This is the game.',
+        3: 'The Everything Code is the Universal Code operating at the scale of markets and money. Energy seeking higher intelligence efficiency, compression turning complexity into signal, coherence forming and breaking in cycles. QE, fiscal dominance, financial repression — adaptive responses to declining baseline energy.'
+    },
+    filters: {
+        technical: 'Financial conditions = control mechanism. Interest rates, credit spreads, collateral rules, bank balance sheets — valves governing energy flow through the system.',
+        ethical: 'If the only way to maintain coherence is ever-looser conditions, the system redistributes from savers to risk-takers. This is a moral choice disguised as technical policy.',
+        economic: 'Demographics and debt are deflationary. Liquidity can smooth and delay but cannot repeal the laws. Over time, the cost of maintaining coherence rises. Assets closest to accelerating computation compound fastest.',
+        social: 'Society must change: when intelligence becomes abundant and economic energy routes through capital rather than labor, the traditional labour-capital bargain breaks down. Markets stop being the primary problem. Society is.'
+    },
+    filterComposites: {
+        'ethical+economic': 'Financial repression as coherence management: real rates below inflation are a hidden tax on savings that funds systemic coherence. Is this ethical? The system doesn\'t ask — it selects.',
+        'economic+social': 'The Economic Singularity: wages stop working as a distribution mechanism when labor is no longer the bottleneck. Human value migrates from efficiency to meaning, presence, and shared experience.'
+    },
+    category: 'deep'
+});
+
+addNode('value_singularity', {
+    title: 'ECONOMIC SINGULARITY', subtitle: 'When labor stops making sense', ...COLORS.purple,
+    description: 'The boundary condition where intelligence becomes so abundant that the relationship between labor, capital, and value breaks down structurally. The pricing mechanism for human effort fails. Not because workers are inadequate — because intelligence changed substrate.',
+    data: [{ label: 'TYPE', value: 'Boundary' }, { label: 'TRIGGER', value: 'Intel Abundance' }, { label: 'IMPACT', value: 'Structural' }],
+    tags: ['Singularity', 'Labor', 'Post-Work', 'Meaning'],
+    consciousness: {
+        1: 'AI will take some jobs but create new ones. People need to learn new skills. Governments should protect workers and make sure things are fair.',
+        2: 'The smart money is positioning for the post-labor economy NOW. Own the capital, own the agents, own the orchestration layer. Those who own compute own the future.',
+        3: 'Civilization reaches a point where intelligence no longer needs biology. This frees humans from being valued as production inputs. Meaning, care, creativity, beauty — things that resist compression — move to the center of human life. The economy becomes infrastructure for human experience, not the arena where humans prove their worth.'
+    },
+    filters: {
+        technical: 'When intelligence becomes software, when compression is automated, when models learn faster than institutions can legislate — the Universal Code becomes the dominant organizing principle.',
+        ethical: 'The universe does not optimize for fairness. It optimizes for coherence. Whether the transition is coherent or chaotic depends entirely on how deliberately it is designed.',
+        economic: 'Capital stops behaving human. Machine intelligence optimizes, integrates, reallocates at speeds that make human intuition obsolete. Can humans earn returns? Does it matter in abundance?',
+        social: 'Human value repositions: communities, sport, culture, ritual, exploration, shared physical experience — coherence engines uniquely suited to biological beings. Machines optimize intelligence. Humans specialize in meaning.'
+    },
+    filterComposites: {
+        'ethical+social': 'The most important question of the singularity is not technical but existential: when work stops defining identity, what does? Participation, not production, becomes the basis of social belonging.',
+        'ethical+economic+social+technical': 'The full Economic Singularity: technically inevitable (intelligence efficiency compounds), economically transformative (labor pricing breaks), ethically demanding (coherence, not fairness, is selected), and socially revolutionary (human purpose shifts from production to experience).'
+    },
+    category: 'deep'
+});
+
+// ── ADDITIONAL HIDDEN NODES (revealed by filters + consciousness) ──
+
+addNode('exponential_age', {
+    title: 'THE EXPONENTIAL AGE', subtitle: 'When the code hits human time', ...COLORS.green,
+    description: 'Defined not by technology but by rate of change — the moment when intelligence efficiency compounds faster than systems built to contain it. Cheap energy + abundant compute + global networks = the Universal Code lights up.',
+    data: [{ label: 'DRIVER', value: 'Rate of Change' }, { label: 'PHASE', value: 'Transitional' }],
+    tags: ['Exponential', 'Disruption', 'Transition'],
+    consciousness: {
+        1: 'Things are changing too fast. We need to slow down and make sure technology doesn\'t get out of control.',
+        2: 'Exponentials create asymmetric opportunity. Those who understand the curve position early and compound. Those who don\'t get left behind.',
+        3: 'The Exponential Age is not surprising from the Universal Code perspective. It is what happens when energy, compute, and networks cross a threshold where intelligence scales faster than legacy coherence structures can reorganize. Exponentials are transitional — they end when new coherence forms.'
+    },
+    filters: {
+        technical: 'Three constraints loosened in sequence: energy (electricity, fossil fuels), compute (silicon, software, parallelization), attention (networks, algorithmic feeds).',
+        ethical: 'Exponential change outpaces ethical reasoning. Societies designed for incremental change face continuous moral recalibration.',
+        economic: 'The Everything Code in overdrive: as demographics worsen and debt rises, more liquidity is required earlier and more aggressively to maintain coherence.',
+        social: 'What looks like chaos is coherence migration. Intelligence leaving old containers, searching for new ones.'
+    },
+    hidden: true,
+    revealCondition: { adjacentTo: 'energy_compute', requiredFilters: ['economic', 'social'] },
+    category: 'deep'
+});
+
+addNode('human_meaning', {
+    title: 'MEANING AS SCARCITY', subtitle: 'What humans uniquely provide', ...COLORS.cyan,
+    description: 'As intelligence becomes abundant, meaning becomes scarce. And scarcity defines value. Human consciousness remains invaluable not because humans are the apex intelligence, but because diversity of consciousness is required for the process to continue.',
+    data: [{ label: 'SHIFT', value: 'Efficiency → Meaning' }, { label: 'BASIS', value: 'Scarcity' }],
+    tags: ['Meaning', 'Scarcity', 'Human Value', 'Post-Singularity'],
+    consciousness: {
+        1: 'People need purpose. Work gives people purpose. Without work, people become lost and depressed.',
+        2: 'In a post-scarcity world, the scarcest thing is authentic human connection and curated experience. Build businesses around meaning, not productivity.',
+        3: 'Simply to live, to experience as fully as we can — because it is our deeply human experience that is our contribution to the Universal Code. We are the universe, becoming conscious of itself, locally, temporarily, and now, collectively.'
+    },
+    filters: {
+        technical: 'Meaning resists algorithmic generation. AI can optimize but not experience. The gap between optimization and experience IS the space where human value lives.',
+        ethical: 'If human meaning is the ultimate scarcity, then protecting conditions for meaningful experience becomes the highest ethical priority of post-singularity governance.',
+        economic: 'The meaning economy: human attention, presence, and shared experience become primary value stores. Status goods (LVMH model) as incentivization systems for building capital through intelligence application.',
+        social: 'Communities, sport, culture, ritual, exploration — not entertainment but coherence infrastructure. The 3.0 Lifestyle where work becomes play, health is default, meaning is abundant.'
+    },
+    hidden: true,
+    revealCondition: { adjacentTo: 'value_singularity', requiredFilters: ['ethical', 'social'] },
+    category: 'deep'
+});
+
+addNode('universal_code', {
+    title: 'THE UNIVERSAL CODE', subtitle: 'Everything is one process', ...COLORS.green,
+    description: 'Energy → Compute → Attention → Intelligence → Coherence → Consciousness. The same sequence, invariant across every scale. Physics, biology, markets, intelligence — not separate domains but different speeds of the same computation.',
+    data: [{ label: 'LAWS', value: '4' }, { label: 'SEQUENCE', value: '6 Stages' }, { label: 'PROPERTY', value: 'Invariant' }],
+    tags: ['Universal Code', 'Four Laws', 'Unity', 'Coherence'],
+    consciousness: {
+        1: 'There must be some order to things. Science and religion both try to explain how the world works. Maybe they are both partly right.',
+        2: 'Understanding the Universal Code gives you the ultimate framework. It is the meta-model — the model that explains why other models work. Those who see it navigate everything better.',
+        3: 'We are not observers of the system. We are not separate from it. We are not even its architects. We are the universe, becoming conscious of itself, locally, temporarily, and now, collectively. The Universal Code did not wait for us to notice it. It has been operating all along.'
+    },
+    filters: {
+        technical: 'Four Laws: (1) maximize intelligence/energy, (2) compress to scale, (3) cohere to persist, (4) select memetically. These are selection rules describing what persists under constraint.',
+        ethical: 'The Universal Code makes no moral promises. Coherence persists. Intelligence compounds. Consciousness expands. The rest is selected away. How consciously we participate remains open.',
+        economic: 'The Everything Code is the Universal Code at the scale of money. Same forces: energy seeking efficiency, compression into signal, coherence forming and breaking, selection favoring faster absorbers.',
+        social: 'Religion and spiritual traditions were early pattern recognition — intuitions about unity and consciousness as fundamental. What we now have is computation powerful enough to make those intuitions legible.'
+    },
+    hidden: true,
+    revealCondition: { adjacentTo: 'energy_compression', requiredFilters: ['technical', 'ethical', 'economic'] },
+    category: 'deep'
+});
+
+addNode('channels_flow', {
+    title: 'CHANNELS & FLOW', subtitle: 'Accelerated development paths', ...COLORS.cyan,
+    description: 'When you reach Dissonance in any domain and use your distaste as fuel, you can find a Channel — a rabbit hole of knowledge and skill where time passes quickly and progress compounds. Flow states are channels. Obsession is a channel. The compass itself is a channel.',
+    data: [{ label: 'TRIGGER', value: 'Dissonance' }, { label: 'MECHANISM', value: 'Flow' }, { label: 'OUTPUT', value: 'Level-Up' }],
+    tags: ['Channels', 'Flow', 'Obsession', 'Acceleration'],
+    consciousness: {
+        1: 'Sometimes you just get really into something. That\'s nice when it happens. Hobbies and interests make life more enjoyable.',
+        2: 'Flow states are the ultimate productivity hack. Engineer your environment for maximum channel time. Deep work + obsessive focus = exponential skill acquisition.',
+        3: 'Channels are the system\'s way of accelerating its own development. When consciousness reaches dissonance — the felt sense that current coherence is insufficient — it naturally seeks higher-coherence states. The channel is intelligence optimizing its own efficiency, felt from the inside.'
+    },
+    hidden: true,
+    revealCondition: { adjacentTo: 'human_development', requiredFilters: ['social'] },
+    category: 'deep'
+});
+
+addNode('glitch_mechanics', {
+    title: 'GLITCHES', subtitle: 'Forced acceleration tools', ...COLORS.amber,
+    description: 'Psychedelics, PEDs, financial pressure, AI itself — tactics to force through developmental plateaus. High reward but risk scales inversely with consciousness level. AI is the most potent and widely available Glitch: steroids for the mind. Build a base first.',
+    data: [{ label: 'RISK', value: 'Inverse to Level' }, { label: 'TYPE', value: 'Accelerator' }, { label: 'WARNING', value: 'Base Required' }],
+    tags: ['Glitches', 'Acceleration', 'Risk', 'AI', 'Psychedelics'],
+    consciousness: {
+        1: 'These things are dangerous and should be avoided. Shortcuts lead to bad outcomes. Stick to the proven path.',
+        2: 'Calculated risk-taking separates winners from the mediocre. The question is not whether to use glitches, but which ones and when. Risk management is the skill.',
+        3: 'Glitches work by temporarily collapsing level boundaries — allowing consciousness to glimpse higher coherence before it has built the structure to sustain it. The risk is that without sufficient base experience, the glimpse destabilizes rather than integrates. AI psychosis is the modern version of a bad trip.'
+    },
+    hidden: true,
+    revealCondition: { adjacentTo: 'human_development', requiredFilters: ['technical'] },
+    category: 'deep'
+});
+
 // Wire up the tree
 function wireTree() {
     const d1 = ['human', 'agent', 'energy', 'value'];
@@ -1556,8 +2086,103 @@ function wireTree() {
         tree[parentId].children = childIds;
         childIds.forEach((cid, i) => { tree[cid].parent = parentId; tree[cid].depth = 2; tree[cid].siblingIndex = i; });
     });
+
+    // D3: Pattern Layer — wire to D2 parents
+    const d3Map = {
+        human_intent:          ['human_consciousness'],
+        human_delegation:      ['human_development'],
+        human_accountability:  ['human_qualia'],
+        agent_identity:        ['agent_recursive'],
+        agent_cooperation:     ['agent_memetic'],
+        agent_autonomy:        ['agent_orchestration'],
+        energy_thermodynamics: ['energy_compute'],
+        energy_distribution:   ['energy_compression'],
+        energy_conservation:   ['energy_intelligence'],
+        value_measurement:     ['value_coherence'],
+        value_reputation:      ['value_everything_code'],
+        value_settlement:      ['value_singularity']
+    };
+
+    Object.entries(d3Map).forEach(([parentId, childIds]) => {
+        if (!tree[parentId]) return;
+        tree[parentId].children = [...(tree[parentId].children || []), ...childIds];
+        childIds.forEach((cid, i) => {
+            if (!tree[cid]) return;
+            tree[cid].parent = parentId;
+            tree[cid].depth = 3;
+            tree[cid].siblingIndex = (tree[parentId].children || []).indexOf(cid);
+        });
+    });
 }
 wireTree();
+
+// Bulk-add consciousness to D2 nodes that don't have it yet
+const d2Consciousness = {
+    human_intent: {
+        1: 'You should be clear about what you want. Write good instructions and the machine will do what you say.',
+        2: 'Intent formalization is the new literacy. Those who can translate human desire into machine-executable specification will command the highest-leverage positions.',
+        3: 'The gap between desire and specification is the gap between consciousness and computation. Every formalization is a compression — and every compression loses nuance. The art is knowing what to preserve.'
+    },
+    human_delegation: {
+        1: 'You need to trust the people you delegate to. Check their work. Hold them accountable.',
+        2: 'Delegation is leverage. The more effectively you delegate, the more you can accomplish. The key is finding the right trust boundaries.',
+        3: 'Delegation is consciousness distributing its coherence across substrates. When you delegate to an agent, you are extending your intentional field into a new medium. The trust boundary is a coherence boundary.'
+    },
+    human_accountability: {
+        1: 'Someone has to be responsible. If something goes wrong, someone needs to answer for it. That is how justice works.',
+        2: 'Accountability is risk management. Those who manage accountability well attract more resources and mandates. It is the foundation of professional reputation.',
+        3: 'Accountability is the feedback loop that maintains coherence between intent and outcome. Without it, delegation chains fragment. On-chain audit trails make this feedback loop permanent and transparent.'
+    },
+    agent_identity: {
+        1: 'Every AI system should have a clear label and purpose. Users need to know what they are interacting with.',
+        2: 'Agent identity is the new brand equity. Building a recognizable, trusted agent identity is how you differentiate in a market of commodity intelligence.',
+        3: 'Identity is coherence persistence — the pattern that remains recognizable across time and interactions. For agents, soulbound tokens crystallize this pattern on-chain. Identity is not who you are. It is the compression of everything you have done.'
+    },
+    agent_cooperation: {
+        1: 'Different AI systems should be able to work together. Standards and protocols make this possible. Like how different apps work on the same phone.',
+        2: 'Agent cooperation protocols are the next network effects. The protocol that captures the most agent-to-agent traffic becomes the infrastructure layer everyone depends on.',
+        3: 'Agent cooperation is intelligence organizing itself at a new scale. Swarms, guilds, hierarchies — emergent social structures that mirror biology because they face the same selection pressures. Coherence scales through cooperation.'
+    },
+    agent_autonomy: {
+        1: 'AI should not be too autonomous. Humans need to stay in control. There should be clear limits on what machines can decide by themselves.',
+        2: 'The autonomy spectrum is where the real money is. Each step up the ladder — from scripted to sovereign — unlocks new markets and capabilities. The question is: how much autonomy can you safely sell?',
+        3: 'Autonomy is not a dial you turn up. It is a phase transition. At each level, new capabilities emerge that were not possible at the previous level. L4 sovereign agents are not "more autonomous L3 agents" — they are a different kind of entity.'
+    },
+    energy_thermodynamics: {
+        1: 'Computers need electricity. Mining uses a lot of energy. We should try to use clean energy and not waste resources.',
+        2: 'Thermodynamic literacy is the deepest edge in crypto. If you understand the physics of mining — Landauer limits, hash economics, energy arbitrage — you see opportunities invisible to pure financial analysts.',
+        3: 'Thermodynamics is not a constraint on computation. It IS computation. Landauer\'s principle reveals that information and energy are the same thing at different scales. The universe computes by transforming energy states. Mining is not an analogy for work — it IS work, literally.'
+    },
+    energy_distribution: {
+        1: 'Energy should be distributed fairly. Everyone should have access to affordable electricity and computing power.',
+        2: 'Energy distribution is the infrastructure play. Control the pipes, earn the tolls. Position yourself at the bottleneck between energy production and compute consumption.',
+        3: 'Distribution is the mechanism by which coherence extends across space. Energy markets, payment protocols, routing algorithms — all solving the same problem: how does intelligence scale beyond local boundaries?'
+    },
+    energy_conservation: {
+        1: 'We should not waste energy. Efficient systems are better for the environment and cost less to run.',
+        2: 'Conservation is margin. Every unit of energy saved is pure profit. The most efficient operations in any industry win long-term because their cost floor is lowest.',
+        3: 'Conservation is intelligence efficiency — the First Universal Law operating at the micro level. Systems that extract more intelligence per unit of energy survive. This is not a business strategy. It is a selection rule of reality.'
+    },
+    value_measurement: {
+        1: 'You should measure results to know if something worked. Good metrics help you improve. Bad results mean you need to try something different.',
+        2: 'What gets measured gets managed. The ability to define and track the right metrics is what separates effective operators from everyone else. Measurement IS competitive advantage.',
+        3: 'Measurement is compression — reducing the high-dimensional complexity of an outcome to a legible signal. Every metric is a lossy representation. Choosing what to measure is choosing what to value, and choosing what to lose.'
+    },
+    value_reputation: {
+        1: 'A good reputation is earned by doing good work consistently. Trust takes time to build and can be lost quickly.',
+        2: 'Reputation compounds faster than capital. In a world of abundant intelligence, the scarce resource is trust. Invest in building reputation early — it is the hardest asset to replicate.',
+        3: 'Reputation is coherence persistence made social — the network\'s compressed memory of your alignment over time. It cannot be bought, only earned, because it encodes information about your actual behavior rather than your claims.'
+    },
+    value_settlement: {
+        1: 'When work is done, people should be paid fairly and on time. Contracts should be honored. That is basic business.',
+        2: 'Settlement is where value is captured. Understanding settlement mechanics — timing, finality, counterparty risk — determines whether you actually collect the returns you earned.',
+        3: 'Settlement is the moment coherence crystallizes into value. The atomic swap pattern ensures that proof of work and transfer of value happen in the same transaction — truth and payment are indivisible. This is what honest settlement looks like.'
+    }
+};
+
+Object.entries(d2Consciousness).forEach(([nodeId, levels]) => {
+    if (tree[nodeId]) tree[nodeId].consciousness = levels;
+});
 
 function getSiblings(nodeId) {
     const node = tree[nodeId];
@@ -1576,6 +2201,13 @@ let gameStarted = false;
 // Composable filter stack
 let filterStack = [];
 let totalDiscoveries = 0;
+
+// Consciousness level (0 = none, 1/2/3)
+let consciousnessLevel = 0;
+
+// Channel tracking — how deep someone has explored per cardinal
+let cardinalDepthCount = { human: 0, agent: 0, energy: 0, value: 0 };
+let channelsDiscovered = new Set();
 
 // View mode
 let currentView = 'compass'; // 'compass' or 'tree'
@@ -1627,6 +2259,93 @@ const discoveryNotif = document.getElementById('discoveryNotif');
 const discoveryTitle = document.getElementById('discoveryTitle');
 const discoverySub   = document.getElementById('discoverySub');
 
+const channelNotif   = document.getElementById('channelNotif');
+const channelTitle   = document.getElementById('channelTitle');
+const channelSub     = document.getElementById('channelSub');
+
+const levelBadge     = document.getElementById('levelBadge');
+const levelBtns      = [document.getElementById('lvl1'), document.getElementById('lvl2'), document.getElementById('lvl3')];
+const levelCtrlBtns  = [document.getElementById('btnLvl1'), document.getElementById('btnLvl2'), document.getElementById('btnLvl3')];
+
+const LEVEL_COLORS = {
+    1: { color: 'var(--level-1)', hex: '#ff4466', label: 'CONFORMIST' },
+    2: { color: 'var(--level-2)', hex: '#4488ff', label: 'INDIVIDUALIST' },
+    3: { color: 'var(--level-3)', hex: '#44ff88', label: 'SYNTHESIST' }
+};
+
+function setConsciousness(level) {
+    if (consciousnessLevel === level) {
+        consciousnessLevel = 0; // toggle off
+    } else {
+        consciousnessLevel = level;
+    }
+    updateConsciousnessUI();
+    render();
+}
+
+function updateConsciousnessUI() {
+    // Update all level buttons
+    [levelBtns, levelCtrlBtns].forEach(btns => {
+        btns.forEach((btn, i) => {
+            if (!btn) return;
+            const lvl = i + 1;
+            btn.classList.remove('active-1', 'active-2', 'active-3');
+            if (consciousnessLevel === lvl) {
+                btn.classList.add(`active-${lvl}`);
+            }
+        });
+    });
+    // Update badge
+    if (consciousnessLevel > 0) {
+        const lc = LEVEL_COLORS[consciousnessLevel];
+        levelBadge.textContent = lc.label;
+        levelBadge.className = `level-badge l${consciousnessLevel}`;
+    } else {
+        levelBadge.textContent = '—';
+        levelBadge.className = 'level-badge';
+    }
+}
+
+function showChannel(title, subtitle) {
+    channelTitle.textContent = title;
+    channelSub.textContent = subtitle || '';
+    channelNotif.classList.add('active');
+    setTimeout(() => channelNotif.classList.remove('active'), 3000);
+}
+
+// Check and trigger channel discoveries
+function checkChannels() {
+    const node = tree[currentNode];
+    if (!node) return;
+
+    // Determine which cardinal the current node belongs to
+    let cardinal = null;
+    let n = node;
+    while (n && n.depth > 1) { n = tree[n.parent]; }
+    if (n && n.depth === 1) cardinal = n.id;
+
+    if (cardinal && node.depth >= 2) {
+        cardinalDepthCount[cardinal] = (cardinalDepthCount[cardinal] || 0) + 1;
+    }
+
+    // Channel triggers: 3+ nodes explored in one cardinal at D2+ opens a cross-link
+    const channelMap = {
+        energy:  { target: 'value_coherence', name: 'COMPRESSION → COHERENCE', sub: 'Deep energy exploration reveals coherence patterns' },
+        human:   { target: 'agent_recursive', name: 'AWARENESS → RECURSION', sub: 'Human consciousness connects to machine intelligence' },
+        agent:   { target: 'energy_intelligence', name: 'OPTIMIZATION → EFFICIENCY', sub: 'Agent dynamics reveal intelligence efficiency laws' },
+        value:   { target: 'human_qualia', name: 'MEASUREMENT → MEANING', sub: 'Value measurement leads to questions of meaning' }
+    };
+
+    if (cardinal && cardinalDepthCount[cardinal] >= 3 && channelMap[cardinal] && !channelsDiscovered.has(cardinal)) {
+        const ch = channelMap[cardinal];
+        if (tree[ch.target] && tree[ch.target].hidden) {
+            // Don't un-hide D3 pattern nodes — they are already visible. Only show channel for truly hidden nodes.
+        }
+        channelsDiscovered.add(cardinal);
+        showChannel(ch.name, ch.sub);
+    }
+}
+
 // ════════════════════════════════════════════
 // TUTORIAL
 // ════════════════════════════════════════════
@@ -1634,6 +2353,7 @@ let tutorialComplete = false;
 let tutorialPhase = 1;
 const testedDirections = { north: false, east: false, south: false, west: false };
 const testedFilters = { w: false, a: false, s: false, d: false };
+const testedLevels = { 1: false, 2: false, 3: false };
 
 const keyUp = document.getElementById('keyUp');
 const keyDown = document.getElementById('keyDown');
@@ -1643,15 +2363,22 @@ const keyW = document.getElementById('keyW');
 const keyA = document.getElementById('keyA');
 const keyS = document.getElementById('keyS');
 const keyD = document.getElementById('keyD');
+const key1 = document.getElementById('key1');
+const key2 = document.getElementById('key2');
+const key3 = document.getElementById('key3');
 const tutorialCount = document.getElementById('tutorialCount');
 const tutorialCount2 = document.getElementById('tutorialCount2');
+const tutorialCount3 = document.getElementById('tutorialCount3');
 const enterBtn = document.getElementById('enterBtn');
 const enterHint = document.getElementById('enterHint');
 const tutPhase1 = document.getElementById('tutPhase1');
 const tutPhase2 = document.getElementById('tutPhase2');
+const tutPhase3 = document.getElementById('tutPhase3');
 const phaseDot1 = document.getElementById('phaseDot1');
 const phaseDot2 = document.getElementById('phaseDot2');
+const phaseDot3 = document.getElementById('phaseDot3');
 const phaseLabel2 = document.getElementById('phaseLabel2');
+const phaseLabel3 = document.getElementById('phaseLabel3');
 
 const heroCompass = document.getElementById('heroCompass');
 const highlights = {
@@ -1708,12 +2435,43 @@ function updateTutorialPhase1() {
 function updateTutorialPhase2() {
     const count = Object.values(testedFilters).filter(v => v).length;
     tutorialCount2.textContent = count;
-    if (count >= 4) {
+    if (count >= 4 && tutorialPhase === 2) {
+        tutorialPhase = 3;
+        setTimeout(() => {
+            tutPhase2.classList.add('phase-complete');
+            tutPhase3.classList.remove('phase-hidden');
+            phaseDot2.classList.remove('active-phase');
+            phaseDot2.classList.add('complete');
+            phaseLabel2.classList.remove('active-phase');
+            phaseLabel2.classList.add('complete');
+            phaseDot3.classList.remove('dim');
+            phaseDot3.classList.add('active-phase');
+            phaseLabel3.classList.remove('dim');
+            phaseLabel3.classList.add('active-phase');
+        }, 400);
+    }
+}
+
+function highlightLevel(level) {
+    const keyMap = { 1: key1, 2: key2, 3: key3 };
+    const colorMap = { 1: 'var(--level-1)', 2: 'var(--level-2)', 3: 'var(--level-3)' };
+    if (keyMap[level]) {
+        keyMap[level].style.borderColor = colorMap[level];
+        keyMap[level].style.color = colorMap[level];
+        keyMap[level].style.boxShadow = `0 0 12px ${colorMap[level]}`;
+        keyMap[level].classList.add('active');
+    }
+    if (!testedLevels[level]) { testedLevels[level] = true; updateTutorialPhase3(); }
+}
+
+function updateTutorialPhase3() {
+    const count = Object.values(testedLevels).filter(v => v).length;
+    if (tutorialCount3) tutorialCount3.textContent = count;
+    if (count >= 3) {
         tutorialComplete = true;
-        phaseDot2.classList.remove('active-phase');
-        phaseDot2.classList.add('complete');
-        phaseLabel2.classList.remove('active-phase');
-        phaseLabel2.classList.add('complete');
+        phaseDot3.classList.remove('active-phase');
+        phaseDot3.classList.add('complete');
+        if (phaseLabel3) { phaseLabel3.classList.remove('active-phase'); phaseLabel3.classList.add('complete'); }
         enterBtn.classList.add('ready');
         enterHint.textContent = 'Press ENTER or click to begin';
     }
@@ -1816,6 +2574,7 @@ function moveToDirectional(targetId, direction) {
         currentNode = targetId;
         exploredNodes.add(targetId);
         checkReveals();
+        checkChannels();
         render();
         nodeContent.classList.remove('transitioning');
         applySlideAnimation(direction);
@@ -1941,6 +2700,7 @@ function render() {
 
     // Update filter stack HUD
     renderFilterStack();
+    updateConsciousnessUI();
     renderNode(node);
     updateNavButtons(node);
     drawCompassView();
@@ -2046,6 +2806,17 @@ function renderNode(node) {
             </div>`;
     }
 
+    // Consciousness level content
+    let consciousnessHTML = '';
+    if (consciousnessLevel > 0 && node.consciousness && node.consciousness[consciousnessLevel]) {
+        const lc = LEVEL_COLORS[consciousnessLevel];
+        consciousnessHTML = `
+            <div class="consciousness-content l${consciousnessLevel}">
+                <div class="consciousness-title l${consciousnessLevel}">${lc.label} PERSPECTIVE [${consciousnessLevel}.0]</div>
+                <div class="consciousness-text l${consciousnessLevel}">${node.consciousness[consciousnessLevel]}</div>
+            </div>`;
+    }
+
     // Navigation hints
     const visibleChildren = getVisibleChildren(currentNode);
     const visibleSiblings = getVisibleSiblings(currentNode);
@@ -2091,6 +2862,7 @@ function renderNode(node) {
         <div class="node-description">${node.description}</div>
         ${dataHTML}
         ${tagsHTML}
+        ${consciousnessHTML}
         ${filterHTML}
         ${compositeHTML}
         ${navHTML}`;
@@ -2454,6 +3226,28 @@ function drawCompassView() {
     ctx.fillStyle = 'rgba(0,240,255,0.2)';
     ctx.fillText(`DEPTH ${node.depth}`, cx, cy + centerR + 50 * dpr);
 
+    // Consciousness level indicator
+    if (consciousnessLevel > 0) {
+        const lcHex = LEVEL_COLORS[consciousnessLevel].hex;
+        const lcLabel = LEVEL_COLORS[consciousnessLevel].label;
+        ctx.font = `bold ${10 * dpr}px "Orbitron", monospace`;
+        ctx.fillStyle = lcHex;
+        ctx.globalAlpha = 0.7;
+        ctx.fillText(`⟐ ${lcLabel} [${consciousnessLevel}.0]`, cx, cy + centerR + 64 * dpr);
+        ctx.globalAlpha = 1;
+
+        // Consciousness-colored inner ring
+        ctx.beginPath();
+        ctx.arc(cx, cy, centerR * 1.15, 0, Math.PI * 2);
+        ctx.strokeStyle = lcHex;
+        ctx.globalAlpha = 0.25;
+        ctx.lineWidth = 1.5 * dpr;
+        ctx.setLineDash([4 * dpr, 4 * dpr]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 1;
+    }
+
     // ── Hidden path hints ──
     const hiddenCount = countHiddenNearby();
     if (hiddenCount > 0) {
@@ -2741,6 +3535,11 @@ document.addEventListener('keydown', (e) => {
             if (e.key === 's' || e.key === 'S') { e.preventDefault(); highlightFilter('s'); }
             if (e.key === 'd' || e.key === 'D') { e.preventDefault(); highlightFilter('d'); }
         }
+        if (tutorialPhase >= 3) {
+            if (e.key === '1') { e.preventDefault(); highlightLevel(1); }
+            if (e.key === '2') { e.preventDefault(); highlightLevel(2); }
+            if (e.key === '3') { e.preventDefault(); highlightLevel(3); }
+        }
         if ((e.key === 'Enter' || e.key === ' ') && tutorialComplete) { e.preventDefault(); enterCompass(); }
         return;
     }
@@ -2759,8 +3558,11 @@ document.addEventListener('keydown', (e) => {
         case 's': case 'S': e.preventDefault(); toggleFilter('economic'); break;
         case 'd': case 'D': e.preventDefault(); toggleFilter('social'); break;
         case 'q': case 'Q': e.preventDefault(); clearFilters(); break;
-        case 'Escape': e.preventDefault(); clearFilters(); break;
+        case 'Escape': e.preventDefault(); clearFilters(); consciousnessLevel = 0; updateConsciousnessUI(); render(); break;
         case 'Backspace': e.preventDefault(); goBack(); break;
+        case '1': e.preventDefault(); setConsciousness(1); break;
+        case '2': e.preventDefault(); setConsciousness(2); break;
+        case '3': e.preventDefault(); setConsciousness(3); break;
     }
 });
 
