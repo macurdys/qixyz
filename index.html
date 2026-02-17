@@ -6,6 +6,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -478,6 +479,388 @@
         </div>
         <div class="carousel-track-wrapper">
             <div class="carousel-track" id="carouselTrack">
+
+                <!-- 0 — Blockchain Debate Championship -->
+                <a href="blockchain-debate-64.html" class="carousel-card carousel-card-debate" data-color="amber" style="flex: 0 0 420px;">
+                    <div class="carousel-card-visual" style="height:280px; background:#05080f; overflow:hidden; position:relative;">
+
+                        <!-- Animated grid bg -->
+                        <div style="position:absolute;inset:0;
+                            background-image: linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+                                              linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+                            background-size:30px 30px;"></div>
+
+                        <!-- Gold radial glow centre -->
+                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+                            width:320px;height:200px;
+                            background:radial-gradient(ellipse, rgba(255,184,0,0.12) 0%, transparent 70%);
+                            filter:blur(18px);pointer-events:none;"></div>
+
+                        <!-- SVG BRACKET -->
+                        <svg viewBox="0 0 410 270" xmlns="http://www.w3.org/2000/svg"
+                             style="position:absolute;inset:0;width:100%;height:100%;"
+                             font-family="'Share Tech Mono', 'Courier New', monospace">
+
+                            <defs>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
+                                <filter id="glow-gold">
+                                    <feGaussianBlur stdDeviation="3" result="blur"/>
+                                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
+                                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.8"/>
+                                    <stop offset="100%" stop-color="#ffb800" stop-opacity="0.9"/>
+                                </linearGradient>
+                                <!-- Animate the bracket lines drawing in -->
+                                <style>
+                                    .bline { stroke-dasharray: 200; stroke-dashoffset: 200;
+                                             animation: draw 1.2s ease forwards; }
+                                    .bline1 { animation-delay: 0.1s; }
+                                    .bline2 { animation-delay: 0.25s; }
+                                    .bline3 { animation-delay: 0.4s; }
+                                    .bline4 { animation-delay: 0.55s; }
+                                    .bline5 { animation-delay: 0.7s; }
+                                    .bline6 { animation-delay: 0.85s; }
+                                    .bline7 { animation-delay: 1.0s; }
+                                    .bline8 { animation-delay: 1.15s; }
+                                    .bline9 { animation-delay: 1.3s; }
+                                    .blineF { animation-delay: 1.5s; }
+                                    @keyframes draw {
+                                        to { stroke-dashoffset: 0; }
+                                    }
+                                    .slot-fade { opacity:0; animation: slotIn 0.5s ease forwards; }
+                                    .sf1 { animation-delay: 0.05s; }
+                                    .sf2 { animation-delay: 0.2s; }
+                                    .sf3 { animation-delay: 0.35s; }
+                                    .sf4 { animation-delay: 0.5s; }
+                                    .sf5 { animation-delay: 0.65s; }
+                                    .sf6 { animation-delay: 0.8s; }
+                                    .sf7 { animation-delay: 0.95s; }
+                                    .sf8 { animation-delay: 1.1s; }
+                                    .sfF { animation-delay: 1.45s; }
+                                    @keyframes slotIn {
+                                        from { opacity:0; transform: translateX(-4px); }
+                                        to   { opacity:1; transform: translateX(0); }
+                                    }
+                                    .trophy-pulse {
+                                        animation: trophyPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.9s both;
+                                    }
+                                    @keyframes trophyPop {
+                                        from { opacity:0; transform: scale(0.3); }
+                                        to   { opacity:1; transform: scale(1); }
+                                    }
+                                </style>
+                            </defs>
+
+                            <!-- ─── ROUND LABELS ─── -->
+                            <text x="10"  y="11" font-size="5.5" fill="#4a5568" letter-spacing="1">R64</text>
+                            <text x="88"  y="11" font-size="5.5" fill="#4a5568" letter-spacing="1">R32</text>
+                            <text x="162" y="11" font-size="5.5" fill="#4a5568" letter-spacing="1">SWEET 16</text>
+                            <text x="242" y="11" font-size="5.5" fill="#4a5568" letter-spacing="1">ELITE 8</text>
+                            <text x="316" y="11" font-size="5.5" fill="#4a5568" letter-spacing="1">F4</text>
+                            <text x="371" y="11" font-size="5.5" fill="#ffb800" letter-spacing="1" filter="url(#glow-gold)">FINAL</text>
+
+                            <!-- ─── VERTICAL ROUND DIVIDERS ─── -->
+                            <line x1="80"  y1="14" x2="80"  y2="264" stroke="rgba(0,240,255,0.06)" stroke-width="0.5"/>
+                            <line x1="155" y1="14" x2="155" y2="264" stroke="rgba(0,240,255,0.06)" stroke-width="0.5"/>
+                            <line x1="232" y1="14" x2="232" y2="264" stroke="rgba(0,240,255,0.06)" stroke-width="0.5"/>
+                            <line x1="308" y1="14" x2="308" y2="264" stroke="rgba(0,240,255,0.06)" stroke-width="0.5"/>
+                            <line x1="360" y1="14" x2="360" y2="264" stroke="rgba(0,240,255,0.06)" stroke-width="0.5"/>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- R64 SLOTS (8 visible, representing 16 matchups each side) -->
+                            <!-- ══════════════════════════════════════ -->
+
+                            <!-- TOP HALF -->
+                            <!-- Match 1: BTC vs FANTOM -->
+                            <g class="slot-fade sf1">
+                                <rect x="6" y="18" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="27" font-size="6" fill="#00f0ff">BTC</text>
+                                <text x="40" y="27" font-size="5" fill="#4a5568">UTXO #1</text>
+                            </g>
+                            <g class="slot-fade sf1">
+                                <rect x="6" y="34" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.12)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="43" font-size="6" fill="#7a8a9e">FANTOM</text>
+                                <text x="48" y="43" font-size="5" fill="#4a5568">#64</text>
+                            </g>
+
+                            <!-- Match 2: QUAI vs IOTA -->
+                            <g class="slot-fade sf2">
+                                <rect x="6" y="56" width="68" height="13" fill="#0c1018" stroke="rgba(255,184,0,0.3)" stroke-width="0.7" rx="1"/>
+                                <text x="10" y="65" font-size="6" fill="#ffb800" filter="url(#glow-gold)">QUAI</text>
+                                <text x="36" y="65" font-size="5" fill="#4a5568">PoEM #2</text>
+                            </g>
+                            <g class="slot-fade sf2">
+                                <rect x="6" y="72" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.12)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="81" font-size="6" fill="#7a8a9e">IOTA</text>
+                                <text x="32" y="81" font-size="5" fill="#4a5568">DAG #63</text>
+                            </g>
+
+                            <!-- Match 3: ERGO vs CASPER -->
+                            <g class="slot-fade sf3">
+                                <rect x="6" y="94" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="103" font-size="6" fill="#00f0ff">ERGO</text>
+                                <text x="34" y="103" font-size="5" fill="#4a5568">eUTXO #3</text>
+                            </g>
+                            <g class="slot-fade sf3">
+                                <rect x="6" y="110" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.12)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="119" font-size="6" fill="#7a8a9e">CASPER</text>
+                                <text x="44" y="119" font-size="5" fill="#4a5568">#62</text>
+                            </g>
+
+                            <!-- Match 4: ETH vs BNB -->
+                            <g class="slot-fade sf4">
+                                <rect x="6" y="132" width="68" height="13" fill="#0c1018" stroke="rgba(57,255,20,0.25)" stroke-width="0.7" rx="1"/>
+                                <text x="10" y="141" font-size="6" fill="#39FF14">ETH</text>
+                                <text x="30" y="141" font-size="5" fill="#4a5568">PoS #17</text>
+                            </g>
+                            <g class="slot-fade sf4">
+                                <rect x="6" y="148" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.12)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="157" font-size="6" fill="#7a8a9e">BNB</text>
+                                <text x="28" y="157" font-size="5" fill="#4a5568">EVM #48</text>
+                            </g>
+
+                            <!-- Match 5: ADA vs NEAR -->
+                            <g class="slot-fade sf5">
+                                <rect x="6" y="170" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="179" font-size="6" fill="#00f0ff">ADA</text>
+                                <text x="30" y="179" font-size="5" fill="#4a5568">eUTXO #18</text>
+                            </g>
+                            <g class="slot-fade sf5">
+                                <rect x="6" y="186" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.12)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="195" font-size="6" fill="#7a8a9e">NEAR</text>
+                                <text x="33" y="195" font-size="5" fill="#4a5568">PoS #23</text>
+                            </g>
+
+                            <!-- Match 6: ARB vs SCROLL -->
+                            <g class="slot-fade sf6">
+                                <rect x="6" y="208" width="68" height="13" fill="#0c1018" stroke="rgba(167,139,250,0.25)" stroke-width="0.7" rx="1"/>
+                                <text x="10" y="217" font-size="6" fill="#A78BFA">ARB</text>
+                                <text x="30" y="217" font-size="5" fill="#4a5568">L2 #33</text>
+                            </g>
+                            <g class="slot-fade sf6">
+                                <rect x="6" y="224" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.12)" stroke-width="0.5" rx="1"/>
+                                <text x="10" y="233" font-size="6" fill="#7a8a9e">SCROLL</text>
+                                <text x="42" y="233" font-size="5" fill="#4a5568">#40</text>
+                            </g>
+
+                            <!-- More matchups indicator -->
+                            <text x="10" y="253" font-size="5.5" fill="#2a3545">+ 26 MORE MATCHUPS . . .</text>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- BRACKET CONNECTOR LINES R64 → R32 -->
+                            <!-- ══════════════════════════════════════ -->
+
+                            <!-- Match 1 bracket lines -->
+                            <polyline class="bline bline1" points="74,24 77,24 77,40 74,40"
+                                stroke="rgba(0,240,255,0.5)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline1" x1="77" y1="32" x2="84" y2="32"
+                                stroke="rgba(0,240,255,0.5)" stroke-width="0.8"/>
+
+                            <!-- Match 2 bracket lines -->
+                            <polyline class="bline bline2" points="74,62 77,62 77,78 74,78"
+                                stroke="rgba(255,184,0,0.6)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline2" x1="77" y1="70" x2="84" y2="70"
+                                stroke="rgba(255,184,0,0.6)" stroke-width="0.8"/>
+
+                            <!-- Match 3 bracket lines -->
+                            <polyline class="bline bline3" points="74,100 77,100 77,116 74,116"
+                                stroke="rgba(0,240,255,0.5)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline3" x1="77" y1="108" x2="84" y2="108"
+                                stroke="rgba(0,240,255,0.5)" stroke-width="0.8"/>
+
+                            <!-- Match 4 bracket lines -->
+                            <polyline class="bline bline4" points="74,138 77,138 77,154 74,154"
+                                stroke="rgba(57,255,20,0.5)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline4" x1="77" y1="146" x2="84" y2="146"
+                                stroke="rgba(57,255,20,0.5)" stroke-width="0.8"/>
+
+                            <!-- Match 5 bracket lines -->
+                            <polyline class="bline bline5" points="74,176 77,176 77,192 74,192"
+                                stroke="rgba(0,240,255,0.5)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline5" x1="77" y1="184" x2="84" y2="184"
+                                stroke="rgba(0,240,255,0.5)" stroke-width="0.8"/>
+
+                            <!-- Match 6 bracket lines -->
+                            <polyline class="bline bline6" points="74,214 77,214 77,230 74,230"
+                                stroke="rgba(167,139,250,0.5)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline6" x1="77" y1="222" x2="84" y2="222"
+                                stroke="rgba(167,139,250,0.5)" stroke-width="0.8"/>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- R32 SLOTS -->
+                            <!-- ══════════════════════════════════════ -->
+                            <g class="slot-fade sf2">
+                                <rect x="84" y="26" width="65" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="88" y="35" font-size="6" fill="#00f0ff">BTC</text>
+                                <text x="104" y="35" font-size="5" fill="#4a5568">vs QUAI →</text>
+                            </g>
+                            <g class="slot-fade sf3">
+                                <rect x="84" y="64" width="65" height="13" fill="#0c1018" stroke="rgba(255,184,0,0.3)" stroke-width="0.5" rx="1"/>
+                                <text x="88" y="73" font-size="6" fill="#ffb800">QUAI</text>
+                                <text x="110" y="73" font-size="5" fill="#4a5568">advances</text>
+                            </g>
+                            <g class="slot-fade sf4">
+                                <rect x="84" y="102" width="65" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="88" y="111" font-size="6" fill="#00f0ff">ERGO</text>
+                                <text x="110" y="111" font-size="5" fill="#4a5568">advances</text>
+                            </g>
+                            <g class="slot-fade sf5">
+                                <rect x="84" y="140" width="65" height="13" fill="#0c1018" stroke="rgba(57,255,20,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="88" y="149" font-size="6" fill="#39FF14">ETH</text>
+                                <text x="104" y="149" font-size="5" fill="#4a5568">advances</text>
+                            </g>
+                            <g class="slot-fade sf6">
+                                <rect x="84" y="178" width="65" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="88" y="187" font-size="6" fill="#00f0ff">ADA</text>
+                                <text x="104" y="187" font-size="5" fill="#4a5568">advances</text>
+                            </g>
+                            <g class="slot-fade sf7">
+                                <rect x="84" y="216" width="65" height="13" fill="#0c1018" stroke="rgba(167,139,250,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="88" y="225" font-size="6" fill="#A78BFA">ARB</text>
+                                <text x="104" y="225" font-size="5" fill="#4a5568">advances</text>
+                            </g>
+
+                            <!-- R32 → SWEET 16 connectors (pairs) -->
+                            <polyline class="bline bline3" points="149,32 152,32 152,70 149,70"
+                                stroke="url(#lineGrad)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline3" x1="152" y1="51" x2="158" y2="51"
+                                stroke="url(#lineGrad)" stroke-width="0.8"/>
+
+                            <polyline class="bline bline5" points="149,108 152,108 152,146 149,146"
+                                stroke="url(#lineGrad)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline5" x1="152" y1="127" x2="158" y2="127"
+                                stroke="url(#lineGrad)" stroke-width="0.8"/>
+
+                            <polyline class="bline bline7" points="149,184 152,184 152,222 149,222"
+                                stroke="url(#lineGrad)" stroke-width="0.8" fill="none"/>
+                            <line class="bline bline7" x1="152" y1="203" x2="158" y2="203"
+                                stroke="url(#lineGrad)" stroke-width="0.8"/>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- SWEET 16 SLOTS -->
+                            <!-- ══════════════════════════════════════ -->
+                            <g class="slot-fade sf4">
+                                <rect x="158" y="45" width="68" height="13" fill="#0c1018" stroke="rgba(255,184,0,0.35)" stroke-width="0.7" rx="1"/>
+                                <text x="162" y="54" font-size="6" fill="#ffb800">QUAI</text>
+                                <text x="184" y="54" font-size="5" fill="#4a5568">vs ETH</text>
+                            </g>
+                            <g class="slot-fade sf5">
+                                <rect x="158" y="121" width="68" height="13" fill="#0c1018" stroke="rgba(57,255,20,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="162" y="130" font-size="6" fill="#39FF14">ETH</text>
+                                <text x="178" y="130" font-size="5" fill="#4a5568">vs ADA</text>
+                            </g>
+                            <g class="slot-fade sf6">
+                                <rect x="158" y="197" width="68" height="13" fill="#0c1018" stroke="rgba(167,139,250,0.2)" stroke-width="0.5" rx="1"/>
+                                <text x="162" y="206" font-size="6" fill="#A78BFA">ARB</text>
+                                <text x="178" y="206" font-size="5" fill="#4a5568">vs ERGO</text>
+                            </g>
+
+                            <!-- S16 → E8 connectors -->
+                            <polyline class="bline bline5" points="226,51 229,51 229,127 226,127"
+                                stroke="rgba(0,240,255,0.45)" stroke-width="0.9" fill="none"/>
+                            <line class="bline bline5" x1="229" y1="89" x2="235" y2="89"
+                                stroke="rgba(0,240,255,0.45)" stroke-width="0.9"/>
+
+                            <polyline class="bline bline7" points="226,203 229,203 229,127 226,127"
+                                stroke="rgba(0,240,255,0.3)" stroke-width="0.6" fill="none"/>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ELITE 8 SLOT -->
+                            <!-- ══════════════════════════════════════ -->
+                            <g class="slot-fade sf6">
+                                <rect x="235" y="83" width="68" height="13" fill="#0c1018" stroke="rgba(255,184,0,0.4)" stroke-width="0.8" rx="1"/>
+                                <text x="239" y="92" font-size="6" fill="#ffb800">QUAI</text>
+                                <text x="261" y="92" font-size="5" fill="#4a5568">vs ETH</text>
+                            </g>
+                            <g class="slot-fade sf7">
+                                <rect x="235" y="165" width="68" height="13" fill="#0c1018" stroke="rgba(0,240,255,0.25)" stroke-width="0.5" rx="1"/>
+                                <text x="239" y="174" font-size="6" fill="#00f0ff">ADA</text>
+                                <text x="255" y="174" font-size="5" fill="#4a5568">vs ARB</text>
+                            </g>
+
+                            <!-- E8 → F4 connectors -->
+                            <polyline class="bline bline7" points="303,89 306,89 306,171 303,171"
+                                stroke="rgba(255,184,0,0.55)" stroke-width="1" fill="none"/>
+                            <line class="bline bline7" x1="306" y1="130" x2="312" y2="130"
+                                stroke="rgba(255,184,0,0.55)" stroke-width="1"/>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- FINAL FOUR SLOT -->
+                            <!-- ══════════════════════════════════════ -->
+                            <g class="slot-fade sf7">
+                                <rect x="312" y="124" width="44" height="13" fill="#0d0f05" stroke="rgba(255,184,0,0.55)" stroke-width="1" rx="1"/>
+                                <text x="316" y="133" font-size="6.5" fill="#ffb800" filter="url(#glow-gold)">QUAI</text>
+                                <text x="337" y="133" font-size="5" fill="#7a8a9e"> vs ???</text>
+                            </g>
+
+                            <!-- F4 → Final connector -->
+                            <line class="bline blineF" x1="356" y1="130" x2="363" y2="130"
+                                stroke="rgba(255,184,0,0.8)" stroke-width="1.2"/>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- CHAMPIONSHIP SLOT -->
+                            <!-- ══════════════════════════════════════ -->
+                            <g class="slot-fade sfF">
+                                <rect x="363" y="122" width="42" height="17" fill="#120e00" stroke="#ffb800" stroke-width="1.2" rx="1.5"
+                                    filter="url(#glow-gold)"/>
+                                <text x="366" y="131.5" font-size="5.5" fill="#ffb800" font-weight="bold">CHAMPION</text>
+                                <text x="369" y="137.5" font-size="5" fill="#7a8a9e">JUNE 7</text>
+                            </g>
+
+                            <!-- TROPHY ICON -->
+                            <g class="trophy-pulse" transform="translate(379,100)">
+                                <text font-size="13" fill="#ffb800" text-anchor="middle" filter="url(#glow-gold)">🏆</text>
+                            </g>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- GLOW DOTS AT BRACKET NODES -->
+                            <!-- ══════════════════════════════════════ -->
+                            <circle cx="77" cy="32" r="2" fill="#00f0ff" opacity="0.8" filter="url(#glow)"/>
+                            <circle cx="77" cy="70" r="2" fill="#ffb800" opacity="0.8" filter="url(#glow-gold)"/>
+                            <circle cx="77" cy="108" r="2" fill="#00f0ff" opacity="0.6" filter="url(#glow)"/>
+                            <circle cx="77" cy="146" r="2" fill="#39FF14" opacity="0.7"/>
+                            <circle cx="77" cy="184" r="2" fill="#00f0ff" opacity="0.6"/>
+                            <circle cx="77" cy="222" r="2" fill="#A78BFA" opacity="0.7"/>
+                            <circle cx="152" cy="51" r="2.5" fill="#ffb800" opacity="0.9" filter="url(#glow-gold)"/>
+                            <circle cx="152" cy="127" r="2.5" fill="#00f0ff" opacity="0.7" filter="url(#glow)"/>
+                            <circle cx="229" cy="89" r="3" fill="#ffb800" opacity="0.9" filter="url(#glow-gold)"/>
+                            <circle cx="306" cy="130" r="3.5" fill="#ffb800" opacity="1" filter="url(#glow-gold)"/>
+                        </svg>
+
+                        <!-- Card badges -->
+                        <span class="card-tag-top" style="background:rgba(6,8,13,0.85);backdrop-filter:blur(4px);">Event</span>
+                        <span class="card-status concept"></span>
+
+                        <!-- Bottom "MARCH 2026" bar -->
+                        <div style="position:absolute;bottom:0;left:0;right:0;
+                            background:linear-gradient(0deg, rgba(6,8,13,0.95) 0%, transparent 100%);
+                            padding:8px 12px 6px;display:flex;align-items:center;gap:8px;">
+                            <span style="width:6px;height:6px;background:#ffb800;border-radius:50%;
+                                box-shadow:0 0 8px rgba(255,184,0,0.7);display:inline-block;
+                                animation:pulse-gold 2s ease-in-out infinite;"></span>
+                            <span style="font-family:'Share Tech Mono',monospace;font-size:9px;
+                                color:#ffb800;letter-spacing:3px;text-transform:uppercase;">
+                                64 CHAINS · MARCH 2026
+                            </span>
+                        </div>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Blockchain Debate</h3>
+                        <p>64 blockchains. 1 rep each. 6 rounds of structured Oxford-style debate to surface the industry's deepest agreements — and sharpest divisions. Inspired by the UTXO Alliance.</p>
+                        <span class="card-link">blockchain-debate-64.html →</span>
+                    </div>
+                </a>
+
+                <style>
+                @keyframes pulse-gold {
+                    0%,100% { opacity:1; box-shadow:0 0 8px rgba(255,184,0,0.7); }
+                    50% { opacity:0.5; box-shadow:0 0 4px rgba(255,184,0,0.3); }
+                }
+                </style>
 
                 <!-- 1 — Solar Energy Blog -->
                 <a href="solar-energy-blog.html" class="carousel-card" data-color="amber">
