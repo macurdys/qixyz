@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLOCKCHAIN DEBATE CHAMPIONSHIP — MARCH 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #F5C842;
+      --gold-dim: #A88B2A;
+      --black: #080A0E;
+      --surface: #0E1118;
+      --surface2: #161B26;
+      --surface3: #1E2535;
+      --white: #F0EDE6;
+      --muted: #7A8396;
+      --accent-green: #2EE8A0;
+      --accent-red: #FF4D6D;
+      --border: rgba(245,200,66,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'IBM Plex Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(180deg, rgba(8,10,14,0.98) 0%, rgba(8,10,14,0) 100%);
+      backdrop-filter: blur(4px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold); color: var(--black);
+      padding: 0.45rem 1.2rem; font-size: 0.7rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .nav-cta:hover { background: #FFD966; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 7rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(245,200,66,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,200,66,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPulse 8s ease-in-out infinite;
+    }
+    @keyframes gridPulse {
+      0%,100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    .hero-glow {
+      position: absolute; top: 20%; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(245,200,66,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      line-height: 0.92; letter-spacing: 0.02em;
+      color: var(--white);
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .hero-title span { color: var(--gold); }
+    .hero-sub {
+      max-width: 620px; margin: 2rem auto 0;
+      font-size: 0.85rem; line-height: 1.8; color: var(--muted);
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+    .hero-meta {
+      display: flex; gap: 3rem; margin-top: 3rem; justify-content: center;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
+      color: var(--gold); line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.3rem;
+    }
+    .hero-buttons {
+      display: flex; gap: 1rem; margin-top: 3rem;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+    .btn-primary {
+      background: var(--gold); color: var(--black);
+      padding: 0.85rem 2.2rem; font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600; font-size: 0.78rem; letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none; border: none;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #FFD966; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,200,66,0.3); }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      padding: 0.85rem 2.2rem; font-family: 'IBM Plex Mono', monospace;
+      font-weight: 400; font-size: 0.78rem; letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none;
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      overflow: hidden; padding: 0.7rem 0; background: var(--surface);
+    }
+    .ticker {
+      display: flex; width: max-content;
+      animation: ticker 45s linear infinite;
+    }
+    .ticker:hover { animation-play-state: paused; }
+    .ticker-item {
+      font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); padding: 0 2.5rem; white-space: nowrap;
+    }
+    .ticker-item span { color: var(--gold); margin-right: 0.5rem; }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── SECTION WRAPPER ── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1; letter-spacing: 0.03em;
+      margin-bottom: 1.5rem;
+    }
+    .section-divider {
+      width: 60px; height: 2px; background: var(--gold); margin-bottom: 3rem;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--surface); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .about-text p {
+      font-size: 0.85rem; line-height: 2; color: var(--muted); margin-bottom: 1.2rem;
+    }
+    .about-text p strong { color: var(--white); }
+    .about-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .about-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem; position: relative; overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .about-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--gold);
+    }
+    .about-card:hover { border-color: var(--gold-dim); }
+    .about-card h4 {
+      font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.5rem;
+    }
+    .about-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── FORMAT / RULES ── */
+    #rules { background: var(--black); }
+    .rules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .rule-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 2rem; transition: all 0.3s; position: relative;
+    }
+    .rule-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+    .rule-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem;
+      color: var(--surface3); line-height: 1; margin-bottom: 1rem;
+      position: absolute; top: 1rem; right: 1.2rem;
+    }
+    .rule-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+    .rule-title {
+      font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.8rem;
+    }
+    .rule-text { font-size: 0.78rem; line-height: 1.8; color: var(--muted); }
+
+    /* ── SCHEDULE / ROUNDS ── */
+    #schedule { background: var(--surface); }
+    .rounds-timeline { position: relative; padding-left: 2rem; }
+    .rounds-timeline::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: var(--border);
+    }
+    .round-item {
+      position: relative; padding: 0 0 3rem 2.5rem;
+    }
+    .round-item::before {
+      content: ''; position: absolute; left: -5px; top: 6px;
+      width: 11px; height: 11px; background: var(--surface);
+      border: 2px solid var(--gold-dim); border-radius: 50%;
+    }
+    .round-item.active::before { background: var(--gold); border-color: var(--gold); }
+    .round-date {
+      font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold);
+      text-transform: uppercase; margin-bottom: 0.3rem;
+    }
+    .round-name {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+    .round-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+    .round-tag {
+      display: inline-block; margin-top: 0.5rem;
+      background: rgba(245,200,66,0.1); color: var(--gold);
+      font-size: 0.62rem; letter-spacing: 0.15em; padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    /* ── 64 BLOCKCHAINS ── */
+    #competitors { background: var(--black); }
+    .region-header {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.2rem; margin-top: 3rem;
+    }
+    .region-header:first-of-type { margin-top: 0; }
+    .region-name {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+      letter-spacing: 0.1em; color: var(--gold);
+    }
+    .region-line { flex: 1; height: 1px; background: var(--border); }
+    .region-count {
+      font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em;
+    }
+    .chains-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
+      margin-bottom: 2rem;
+    }
+    .chain-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.8rem;
+      cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .chain-card:hover { border-color: var(--gold); background: var(--surface2); }
+    .chain-seed {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+      color: var(--surface3); min-width: 1.5rem; text-align: center;
+      transition: color 0.2s;
+    }
+    .chain-card:hover .chain-seed { color: var(--gold-dim); }
+    .chain-info { flex: 1; min-width: 0; }
+    .chain-name {
+      font-size: 0.78rem; font-weight: 600; color: var(--white);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chain-ticker { font-size: 0.62rem; color: var(--muted); margin-top: 0.15rem; }
+    .chain-badge {
+      font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.15rem 0.4rem; border: 1px solid;
+    }
+    .badge-utxo { color: var(--gold); border-color: rgba(245,200,66,0.3); }
+    .badge-evm { color: var(--accent-green); border-color: rgba(46,232,160,0.3); }
+    .badge-l2 { color: #A78BFA; border-color: rgba(167,139,250,0.3); }
+    .badge-other { color: var(--muted); border-color: rgba(122,131,150,0.3); }
+
+    /* ── BRACKET PREVIEW ── */
+    #bracket { background: var(--surface); }
+    .bracket-info {
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 2rem 2.5rem; margin-bottom: 3rem;
+      display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+    }
+    .bracket-info p { font-size: 0.82rem; color: var(--muted); line-height: 1.9; }
+    .bracket-info p strong { color: var(--white); }
+    .bracket-visual {
+      overflow-x: auto; padding-bottom: 1rem;
+    }
+    .bracket-rounds {
+      display: flex; gap: 0;
+      min-width: 900px;
+    }
+    .bracket-round {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: space-around; padding: 0 0.5rem;
+    }
+    .bracket-round-label {
+      font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold);
+      text-transform: uppercase; text-align: center; padding: 0.5rem;
+      border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;
+    }
+    .bracket-match {
+      background: var(--surface); border: 1px solid var(--border);
+      margin: 0.3rem 0; padding: 0.4rem 0.6rem;
+      font-size: 0.62rem; color: var(--muted);
+      text-align: center; transition: border-color 0.2s;
+    }
+    .bracket-match:hover { border-color: var(--gold-dim); color: var(--white); }
+    .bracket-match.tbd { color: var(--surface3); border-color: var(--surface2); }
+
+    /* ── TOPICS ── */
+    #topics { background: var(--black); }
+    .topics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .topic-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1.5rem 1.8rem; transition: all 0.3s;
+    }
+    .topic-card:hover { border-color: var(--gold); }
+    .topic-round {
+      font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold);
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .topic-title {
+      font-family: 'Syne', sans-serif; font-size: 1.05rem;
+      font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .topic-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── JUDGING ── */
+    #judging { background: var(--surface); }
+    .judging-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+    .judge-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 1.5rem 1rem; text-align: center; transition: all 0.3s;
+    }
+    .judge-card:hover { border-color: var(--gold); }
+    .judge-score {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem;
+      color: var(--gold); line-height: 1;
+    }
+    .judge-pct { font-size: 0.65rem; color: var(--muted); }
+    .judge-criterion {
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--white); margin-top: 0.7rem; line-height: 1.4;
+    }
+
+    /* ── REGISTER CTA ── */
+    #register {
+      background: var(--black);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      text-align: center; padding: 8rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    #register::before {
+      content: 'DEBATE';
+      position: absolute; bottom: -2rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Bebas Neue', sans-serif; font-size: 22vw;
+      color: rgba(245,200,66,0.03); pointer-events: none; white-space: nowrap;
+      letter-spacing: -0.02em;
+    }
+    .register-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 0.95; margin-bottom: 1.5rem;
+    }
+    .register-title span { color: var(--gold); }
+    .register-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .register-form {
+      display: flex; gap: 0; max-width: 480px; margin: 0 auto 1.5rem;
+    }
+    .register-form input {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      color: var(--white); padding: 0.9rem 1.2rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .register-form input:focus { border-color: var(--gold); }
+    .register-form input::placeholder { color: var(--muted); }
+    .register-form button {
+      background: var(--gold); color: var(--black);
+      border: none; padding: 0.9rem 1.8rem;
+      font-family: 'IBM Plex Mono', monospace; font-weight: 600;
+      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .register-form button:hover { background: #FFD966; }
+    .register-note { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface); padding: 4rem 2rem 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; margin-bottom: 3rem;
+    }
+    .footer-brand .logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem;
+      letter-spacing: 0.1em; color: var(--gold); margin-bottom: 1rem;
+    }
+    .footer-brand p { font-size: 0.75rem; color: var(--muted); line-height: 1.8; max-width: 280px; }
+    .footer-col h5 {
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--white); margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.6rem; }
+    .footer-col ul li a {
+      color: var(--muted); text-decoration: none; font-size: 0.75rem;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid var(--border); padding-top: 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom p { font-size: 0.65rem; color: var(--muted); }
+    .footer-bottom a { color: var(--gold); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .about-grid, .rules-grid, .chains-grid { grid-template-columns: 1fr 1fr; }
+      .judging-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .topics-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { display: none; }
+      .chains-grid { grid-template-columns: 1fr 1fr; }
+      .rules-grid, .about-grid { grid-template-columns: 1fr; }
+      .judging-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .hero-meta { gap: 1.5rem; flex-wrap: wrap; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(8,10,14,0.92); z-index: 2000;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      max-width: 600px; width: 90%; padding: 2.5rem; position: relative;
+      animation: fadeUp 0.3s ease;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1.2rem;
+      background: none; border: none; color: var(--muted);
+      font-size: 1.2rem; cursor: pointer; font-family: monospace;
+    }
+    .modal-close:hover { color: var(--gold); }
+    .modal h3 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+    .modal-chain-details dt {
+      font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted);
+      text-transform: uppercase; margin-top: 1rem;
+    }
+    .modal-chain-details dd {
+      font-size: 0.82rem; color: var(--white); margin-top: 0.2rem;
+    }
+    .modal-chain-details { margin-top: 1rem; }
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⛓ BLOCKCHAIN DEBATE CHAMPIONSHIP</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#rules">Rules</a>
+    <a href="#competitors">Competitors</a>
+    <a href="#bracket">Bracket</a>
+    <a href="#topics">Topics</a>
+    <a href="#judging">Judging</a>
+  </div>
+  <a href="#register" class="nav-cta">Nominate a Rep →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <p class="hero-eyebrow">The Premier Event for Blockchain Unification · March 2026</p>
+  <h1 class="hero-title">
+    BLOCKCHAIN<br><span>DEBATE</span><br>CHAMPIONSHIP
+  </h1>
+  <p class="hero-sub">
+    64 blockchains. One representative each. Six rounds of structured debate to surface the industry's
+    deepest agreements — and its sharpest divisions. Inspired by the
+    <a href="https://www.utxoa.org/" target="_blank" style="color:var(--gold)">UTXO Alliance</a>'s
+    spirit of cross-chain collaboration.
+  </p>
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <div class="hero-stat-num">64</div>
+      <div class="hero-stat-label">Blockchains</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">63</div>
+      <div class="hero-stat-label">Debates</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">6</div>
+      <div class="hero-stat-label">Rounds</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">1</div>
+      <div class="hero-stat-label">Champion</div>
+    </div>
+  </div>
+  <div class="hero-buttons">
+    <a href="#competitors" class="btn-primary">View All 64 Blockchains</a>
+    <a href="#rules" class="btn-outline">Read the Rules</a>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <!-- duplicated for seamless loop -->
+    <span class="ticker-item"><span>⚡</span> Bitcoin</span>
+    <span class="ticker-item"><span>⚡</span> Ethereum</span>
+    <span class="ticker-item"><span>⚡</span> Cardano</span>
+    <span class="ticker-item"><span>⚡</span> Quai Network</span>
+    <span class="ticker-item"><span>⚡</span> Solana</span>
+    <span class="ticker-item"><span>⚡</span> Ergo</span>
+    <span class="ticker-item"><span>⚡</span> Nervos</span>
+    <span class="ticker-item"><span>⚡</span> Polkadot</span>
+    <span class="ticker-item"><span>⚡</span> Cosmos</span>
+    <span class="ticker-item"><span>⚡</span> Avalanche</span>
+    <span class="ticker-item"><span>⚡</span> Arbitrum</span>
+    <span class="ticker-item"><span>⚡</span> Stacks</span>
+    <span class="ticker-item"><span>⚡</span> Alephium</span>
+    <span class="ticker-item"><span>⚡</span> Near Protocol</span>
+    <span class="ticker-item"><span>⚡</span> Optimism</span>
+    <span class="ticker-item"><span>⚡</span> Zcash</span>
+    <span class="ticker-item"><span>⚡</span> Bitcoin</span>
+    <span class="ticker-item"><span>⚡</span> Ethereum</span>
+    <span class="ticker-item"><span>⚡</span> Cardano</span>
+    <span class="ticker-item"><span>⚡</span> Quai Network</span>
+    <span class="ticker-item"><span>⚡</span> Solana</span>
+    <span class="ticker-item"><span>⚡</span> Ergo</span>
+    <span class="ticker-item"><span>⚡</span> Nervos</span>
+    <span class="ticker-item"><span>⚡</span> Polkadot</span>
+    <span class="ticker-item"><span>⚡</span> Cosmos</span>
+    <span class="ticker-item"><span>⚡</span> Avalanche</span>
+    <span class="ticker-item"><span>⚡</span> Arbitrum</span>
+    <span class="ticker-item"><span>⚡</span> Stacks</span>
+    <span class="ticker-item"><span>⚡</span> Alephium</span>
+    <span class="ticker-item"><span>⚡</span> Near Protocol</span>
+    <span class="ticker-item"><span>⚡</span> Optimism</span>
+    <span class="ticker-item"><span>⚡</span> Zcash</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p class="section-label">Why This Exists</p>
+        <h2 class="section-title">Collaboration<br>over combat</h2>
+        <div class="section-divider"></div>
+        <p>The blockchain industry spends enormous energy on tribalism — maximalists against altcoiners, UTXO against account-model, L1 against L2. This tournament flips the script.</p>
+        <p><strong>The goal is not to crown a winner.</strong> It is to force the best technical minds in each ecosystem to articulate precisely what they believe — and to listen to what others believe — in a structured, public forum.</p>
+        <p>Inspired by the <strong>UTXO Alliance's</strong> mission of cross-chain collaboration, the Blockchain Debate Championship aims to produce a living document of industry consensus emerging from 63 structured debates across 6 rounds.</p>
+        <p>Every debate is recorded, scored, and published. The result is the most comprehensive map ever made of where blockchains agree, where they differ, and why.</p>
+      </div>
+      <div class="about-cards reveal reveal-delay-2">
+        <div class="about-card">
+          <h4>One Rep Per Chain</h4>
+          <p>Each blockchain sends a single official representative — a core developer, researcher, or protocol designer who can speak to technical fundamentals.</p>
+        </div>
+        <div class="about-card">
+          <h4>Structured Format</h4>
+          <p>Each debate follows Oxford-style rules with timed opening, rebuttal, and closing statements. Topics are revealed 72 hours in advance.</p>
+        </div>
+        <div class="about-card">
+          <h4>Public Record</h4>
+          <p>All debates are live-streamed and archived. Transcripts, scoring rubrics, and judge commentary are published within 24 hours of each match.</p>
+        </div>
+        <div class="about-card">
+          <h4>Seeding by Nakamoto Coefficient</h4>
+          <p>Seeds 1–64 are assigned by a composite of decentralization score, ecosystem size, and age — not market cap. No pay-to-play.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RULES -->
+<section id="rules">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Tournament Rules</p>
+      <h2 class="section-title">How it Works</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card reveal">
+        <div class="rule-num">01</div>
+        <div class="rule-icon">🎙</div>
+        <div class="rule-title">Debate Format</div>
+        <div class="rule-text">Oxford-style structured debate. Opening statement (5 min), opponent opening (5 min), cross-examination (6 min), rebuttal (3 min), audience Q&A (10 min), closing (2 min each). Total: ~45 minutes per match.</div>
+      </div>
+      <div class="rule-card reveal reveal-delay-1">
+        <div class="rule-num">02</div>
+        <div class="rule-icon">🏛</div>
+        <div class="rule-title">Representation Rules</div>
+        <div class="rule-text">Each chain nominates one official representative minimum 30 days before Round 1. The representative must be a core contributor (developer, researcher, or founding team member). No PR firms. No VC proxies.</div>
+      </div>
+      <div class="rule-card reveal reveal-delay-2">
+        <div class="rule-num">03</div>
+        <div class="rule-icon">📋</div>
+        <div class="rule-title">Topic Assignment</div>
+        <div class="rule-text">Round topics are drawn from a pre-published master topic list. Each debate gets a unique motion. Representatives receive the specific debate motion 72 hours in advance. No prep coaching from outside the project.</div>
+      </div>
+      <div class="rule-card reveal">
+        <div class="rule-num">04</div>
+        <div class="rule-icon">⚖️</div>
+        <div class="rule-title">Scoring System</div>
+        <div class="rule-text">A panel of 3 independent judges scores each debate across 5 criteria: Technical Accuracy (30%), Clarity of Argument (25%), Rebuttal Quality (20%), Evidence Quality (15%), and Decorum (10%). Scores are published publicly.</div>
+      </div>
+      <div class="rule-card reveal reveal-delay-1">
+        <div class="rule-num">05</div>
+        <div class="rule-icon">🌐</div>
+        <div class="rule-title">Chain Agnostic Judges</div>
+        <div class="rule-text">Judges are selected from academia, standards bodies, and neutral research organizations. No judge may hold > 0.5% of their portfolio in any chain they judge. Conflicts must be disclosed and recused. Wolfram Research serves as a neutral arbiter.</div>
+      </div>
+      <div class="rule-card reveal reveal-delay-2">
+        <div class="rule-num">06</div>
+        <div class="rule-icon">🏆</div>
+        <div class="rule-title">The Championship Prize</div>
+        <div class="rule-text">The winning chain's representative earns the right to draft the inaugural "Blockchain Consensus Manifesto" — a collaborative document co-authored with all 63 opponents, representing the industry's best shared understanding of decentralized systems.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="container">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;">
+      <div class="reveal">
+        <p class="section-label">Tournament Calendar</p>
+        <h2 class="section-title">March – June 2026</h2>
+        <div class="section-divider"></div>
+        <p style="font-size:0.8rem; color:var(--muted); line-height:1.9; margin-bottom: 2rem;">
+          Six rounds over four months. Debates held in three formats: live video (Rounds 1–2), 
+          hybrid in-person/virtual (Rounds 3–4), and in-person finale (Rounds 5–6).
+        </p>
+        <div class="rounds-timeline">
+          <div class="round-item active">
+            <div class="round-date">March 1 — March 15, 2026</div>
+            <div class="round-name">Round of 64 — Opening Day</div>
+            <div class="round-desc">32 matches. Online format. Each debate livestreamed. Topics focus on consensus mechanism fundamentals.</div>
+            <div class="round-tag">32 Debates · Online</div>
+          </div>
+          <div class="round-item">
+            <div class="round-date">March 20 — April 4, 2026</div>
+            <div class="round-name">Round of 32</div>
+            <div class="round-desc">16 matches. First cross-architectural debates — UTXO vs Account-Model matchups expected here.</div>
+            <div class="round-tag">16 Debates · Online</div>
+          </div>
+          <div class="round-item">
+            <div class="round-date">April 10 — April 20, 2026</div>
+            <div class="round-name">Sweet Sixteen</div>
+            <div class="round-desc">8 matches. Topics shift to scalability trilemma, interoperability, and real-world adoption. Hybrid format begins.</div>
+            <div class="round-tag">8 Debates · Hybrid</div>
+          </div>
+          <div class="round-item">
+            <div class="round-date">May 1 — May 10, 2026</div>
+            <div class="round-name">Elite Eight</div>
+            <div class="round-desc">4 matches. Topics: governance, decentralization metrics, energy and sustainability. In-person preferred.</div>
+            <div class="round-tag">4 Debates · In-Person</div>
+          </div>
+          <div class="round-item">
+            <div class="round-date">May 20 — May 25, 2026</div>
+            <div class="round-name">Final Four</div>
+            <div class="round-desc">2 semi-final matches. Open to the public. Topic: "What does a mature blockchain ecosystem look like in 2030?"</div>
+            <div class="round-tag">2 Debates · In-Person</div>
+          </div>
+          <div class="round-item">
+            <div class="round-date">June 7, 2026</div>
+            <div class="round-name">The Championship</div>
+            <div class="round-desc">Grand Final. Live audience. Full panel of judges. Topic drawn the morning of the event. The Consensus Manifesto drafting begins immediately after.</div>
+            <div class="round-tag">Championship · In-Person · Live Broadcast</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2" style="margin-top: 6rem;">
+        <div style="background: var(--surface2); border: 1px solid var(--border); padding: 2rem;">
+          <h4 style="font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.1em; color:var(--gold); margin-bottom:1.2rem;">KEY DATES</h4>
+          <table style="width:100%; font-size:0.75rem; border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.7rem 0; color: var(--muted);">Nominations Open</td>
+              <td style="padding: 0.7rem 0; color: var(--white); text-align:right;">Feb 1, 2026</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.7rem 0; color: var(--muted);">Nominations Close</td>
+              <td style="padding: 0.7rem 0; color: var(--white); text-align:right;">Feb 22, 2026</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.7rem 0; color: var(--muted);">Seeding Published</td>
+              <td style="padding: 0.7rem 0; color: var(--white); text-align:right;">Feb 25, 2026</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.7rem 0; color: var(--muted);">Bracket Released</td>
+              <td style="padding: 0.7rem 0; color: var(--gold); text-align:right; font-weight:600;">Feb 28, 2026</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.7rem 0; color: var(--muted);">Round 1 Begins</td>
+              <td style="padding: 0.7rem 0; color: var(--gold); text-align:right; font-weight:600;">March 1, 2026</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 0.7rem 0; color: var(--muted);">Grand Final</td>
+              <td style="padding: 0.7rem 0; color: var(--white); text-align:right;">June 7, 2026</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.7rem 0; color: var(--muted);">Manifesto Published</td>
+              <td style="padding: 0.7rem 0; color: var(--white); text-align:right;">June 30, 2026</td>
+            </tr>
+          </table>
+        </div>
+        <div style="background: rgba(245,200,66,0.05); border: 1px solid rgba(245,200,66,0.2); padding: 1.5rem; margin-top:1rem;">
+          <h4 style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:0.7rem;">About the Seeding Methodology</h4>
+          <p style="font-size:0.75rem; color:var(--muted); line-height:1.8;">Seeds are computed from a composite score: <strong style="color:var(--white)">Nakamoto Coefficient</strong> (40%), active dev contributors (25%), years of mainnet operation (20%), and unique wallet addresses (15%). Market cap is explicitly excluded. This rewards decentralization over speculation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 64 COMPETITORS -->
+<section id="competitors">
+  <div class="container">
+    <div class="reveal" style="margin-bottom:3rem;">
+      <p class="section-label">Official Field · 64 Chains</p>
+      <h2 class="section-title">The Competitors</h2>
+      <div class="section-divider"></div>
+      <p style="font-size:0.82rem; color:var(--muted); max-width:600px; line-height:1.9;">
+        64 blockchains across 4 regions. Click any chain to see its representative brief.
+        Badges indicate model type: <span style="color:var(--gold)">UTXO</span>, <span style="color:var(--accent-green)">EVM</span>, <span style="color:#A78BFA">L2</span>, or Other.
+      </p>
+    </div>
+
+    <!-- REGION 1: PROOF OF WORK / UTXO -->
+    <div class="region-header reveal">
+      <div class="region-name">⛏ Region 1 — Proof of Work & UTXO</div>
+      <div class="region-line"></div>
+      <div class="region-count">16 chains</div>
+    </div>
+    <div class="chains-grid reveal">
+      <div class="chain-card" onclick="openModal('Bitcoin','BTC','utxo','Satoshi Nakamoto\'s original UTXO chain. The oldest, most battle-tested blockchain in existence. Seed #1 by Nakamoto Coefficient.','SHA-256 PoW','2009','~580,000 blocks/yr')">
+        <div class="chain-seed">1</div>
+        <div class="chain-info"><div class="chain-name">Bitcoin</div><div class="chain-ticker">BTC</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Quai Network','QUAI','utxo','Proof of Entropy Minima (PoEM) consensus. Merged-mined multi-chain UTXO architecture with dual token (Qi/Quai). Member of the UTXO Alliance.','KawPow PoW (PoEM)','2023','Hierarchical sharding')">
+        <div class="chain-seed">2</div>
+        <div class="chain-info"><div class="chain-name">Quai Network</div><div class="chain-ticker">QUAI / QI</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Ergo','ERG','utxo','Extended UTXO model with eUTXO. Smart contract platform built on Proof of Work with Autolykos algorithm. Strong academic foundation.','Autolykos v2','2019','eUTXO')">
+        <div class="chain-seed">3</div>
+        <div class="chain-info"><div class="chain-name">Ergo</div><div class="chain-ticker">ERG</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Litecoin','LTC','utxo','One of the oldest forks of Bitcoin. Scrypt-based PoW, faster block times. One of the most widely supported UTXO chains.','Scrypt PoW','2011','UTXO')">
+        <div class="chain-seed">4</div>
+        <div class="chain-info"><div class="chain-name">Litecoin</div><div class="chain-ticker">LTC</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Nervos Network','CKB','utxo','Cell model (generalized UTXO) for a layered blockchain architecture. UTXO Alliance founding member. Optimized for Layer 2 asset custody.','Eaglesong PoW','2019','Cell/UTXO')">
+        <div class="chain-seed">5</div>
+        <div class="chain-info"><div class="chain-name">Nervos</div><div class="chain-ticker">CKB</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Alephium','ALPH','utxo','Stateful UTXO (sUTXO) model. Blockflow sharding with PoLW (Proof of Less Work). UTXO Alliance member.','PoLW (Blake3)','2021','sUTXO')">
+        <div class="chain-seed">6</div>
+        <div class="chain-info"><div class="chain-name">Alephium</div><div class="chain-ticker">ALPH</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Zcash','ZEC','utxo','Privacy-focused UTXO chain with zk-SNARKs. Shielded transactions. Pioneered zero-knowledge cryptography in production.','Equihash PoW','2016','UTXO + zk')">
+        <div class="chain-seed">7</div>
+        <div class="chain-info"><div class="chain-name">Zcash</div><div class="chain-ticker">ZEC</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Bitcoin Cash','BCH','utxo','Bitcoin fork prioritizing large blocks and on-chain scaling. CashTokens upgrade enables native token issuance.','SHA-256 PoW','2017','UTXO')">
+        <div class="chain-seed">8</div>
+        <div class="chain-info"><div class="chain-name">Bitcoin Cash</div><div class="chain-ticker">BCH</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Monero','XMR','utxo','Privacy-by-default UTXO chain using RingCT and stealth addresses. Community-driven, ASIC-resistant mining.','RandomX PoW','2014','UTXO + Ring')">
+        <div class="chain-seed">9</div>
+        <div class="chain-info"><div class="chain-name">Monero</div><div class="chain-ticker">XMR</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('DigiByte','DGB','utxo','Multi-algorithm PoW chain. One of the most decentralized UTXO chains by miner distribution. UTXO Alliance member.','5 PoW Algos','2014','UTXO')">
+        <div class="chain-seed">10</div>
+        <div class="chain-info"><div class="chain-name">DigiByte</div><div class="chain-ticker">DGB</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Ravencoin','RVN','utxo','Asset-creation focused UTXO chain. KawPow algorithm. Designed for securities tokenization.','KawPow PoW','2018','UTXO')">
+        <div class="chain-seed">11</div>
+        <div class="chain-info"><div class="chain-name">Ravencoin</div><div class="chain-ticker">RVN</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Hathor','HTR','utxo','DAG + blockchain hybrid. Nano-contracts. UTXO Alliance member.','Merged-mine SHA-256','2020','DAG-UTXO')">
+        <div class="chain-seed">12</div>
+        <div class="chain-info"><div class="chain-name">Hathor</div><div class="chain-ticker">HTR</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Horizen','ZEN','utxo','Sidechain platform. zk-SNARK privacy. Horizen Labs a UTXO Alliance member.','Equihash PoW','2017','UTXO + zk')">
+        <div class="chain-seed">13</div>
+        <div class="chain-info"><div class="chain-name">Horizen</div><div class="chain-ticker">ZEN</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Dash','DASH','utxo','UTXO chain with InstantSend and CoinJoin privacy mixing. Focused on payments.','X11 PoW','2014','UTXO')">
+        <div class="chain-seed">14</div>
+        <div class="chain-info"><div class="chain-name">Dash</div><div class="chain-ticker">DASH</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Stacks','STX','utxo','Bitcoin Layer 2 for smart contracts. Proof of Transfer (PoX) consensus. UTXO-adjacent architecture.','PoX (PoW-linked)','2021','UTXO-adjacent')">
+        <div class="chain-seed">15</div>
+        <div class="chain-info"><div class="chain-name">Stacks</div><div class="chain-ticker">STX</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Komodo','KMD','utxo','Delayed Proof of Work. Atomic swap infrastructure. UTXO Alliance founding member.','dPoW (BTC-anchored)','2016','UTXO')">
+        <div class="chain-seed">16</div>
+        <div class="chain-info"><div class="chain-name">Komodo</div><div class="chain-ticker">KMD</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+    </div>
+
+    <!-- REGION 2: PROOF OF STAKE L1 -->
+    <div class="region-header reveal">
+      <div class="region-name">🌐 Region 2 — Proof of Stake Layer 1</div>
+      <div class="region-line"></div>
+      <div class="region-count">16 chains</div>
+    </div>
+    <div class="chains-grid reveal">
+      <div class="chain-card" onclick="openModal('Ethereum','ETH','evm','The dominant smart contract platform. Transitioned to PoS in the Merge (2022). Account-based model with EVM.','Proof of Stake','2015','Account/EVM')">
+        <div class="chain-seed">17</div>
+        <div class="chain-info"><div class="chain-name">Ethereum</div><div class="chain-ticker">ETH</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Cardano','ADA','utxo','Extended UTXO (eUTXO) model. Academic peer-reviewed development via IOHK. UTXO Alliance founding member.','Ouroboros PoS','2017','eUTXO')">
+        <div class="chain-seed">18</div>
+        <div class="chain-info"><div class="chain-name">Cardano</div><div class="chain-ticker">ADA</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Solana','SOL','other','High-throughput account-based chain. Proof of History + PoS hybrid. Gulf Stream mempool.','PoH + PoS','2020','Account')">
+        <div class="chain-seed">19</div>
+        <div class="chain-info"><div class="chain-name">Solana</div><div class="chain-ticker">SOL</div></div>
+        <div class="chain-badge badge-other">PoH</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Polkadot','DOT','other','Relay-chain + parachain architecture. Shared security model. Substrate framework.','NPoS','2020','Relay/Para')">
+        <div class="chain-seed">20</div>
+        <div class="chain-info"><div class="chain-name">Polkadot</div><div class="chain-ticker">DOT</div></div>
+        <div class="chain-badge badge-other">NPoS</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Cosmos','ATOM','other','Hub-and-spoke IBC architecture. Application-specific chains. Tendermint BFT consensus.','Tendermint BFT','2019','IBC Hub')">
+        <div class="chain-seed">21</div>
+        <div class="chain-info"><div class="chain-name">Cosmos</div><div class="chain-ticker">ATOM</div></div>
+        <div class="chain-badge badge-other">IBC</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Avalanche','AVAX','evm','Tri-chain architecture (X/P/C-Chain). Snowball consensus. EVM-compatible C-Chain.','Snowman/Snowball','2020','Tri-chain EVM')">
+        <div class="chain-seed">22</div>
+        <div class="chain-info"><div class="chain-name">Avalanche</div><div class="chain-ticker">AVAX</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Near Protocol','NEAR','other','Nightshade sharding. Human-readable account names. WASM-based smart contracts.','Proof of Stake','2020','Sharded Account')">
+        <div class="chain-seed">23</div>
+        <div class="chain-info"><div class="chain-name">Near Protocol</div><div class="chain-ticker">NEAR</div></div>
+        <div class="chain-badge badge-other">WASM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Algorand','ALGO','other','Pure Proof of Stake. Instant finality. AVM (Algorand Virtual Machine).','PPoS','2019','Account')">
+        <div class="chain-seed">24</div>
+        <div class="chain-info"><div class="chain-name">Algorand</div><div class="chain-ticker">ALGO</div></div>
+        <div class="chain-badge badge-other">PPoS</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Aptos','APT','other','Move language smart contracts. Block-STM parallel execution engine. BFT consensus.','AptosBFT','2022','Account/Move')">
+        <div class="chain-seed">25</div>
+        <div class="chain-info"><div class="chain-name">Aptos</div><div class="chain-ticker">APT</div></div>
+        <div class="chain-badge badge-other">Move</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Sui','SUI','other','Object-centric data model. Move language. Narwhal/Bullshark DAG consensus.','Narwhal/Bullshark','2023','Object/Move')">
+        <div class="chain-seed">26</div>
+        <div class="chain-info"><div class="chain-name">Sui</div><div class="chain-ticker">SUI</div></div>
+        <div class="chain-badge badge-other">Move</div>
+      </div>
+      <div class="chain-card" onclick="openModal('TON','TON','other','Telegram-origin blockchain. Infinite sharding. Workchains architecture.','PoS + BFT','2019','Sharded')">
+        <div class="chain-seed">27</div>
+        <div class="chain-info"><div class="chain-name">TON</div><div class="chain-ticker">TON</div></div>
+        <div class="chain-badge badge-other">PoS</div>
+      </div>
+      <div class="chain-card" onclick="openModal('MultiversX','EGLD','evm','Adaptive state sharding. Secure Proof of Stake. EVM-compatible and WASM.','SPoS','2020','Sharded EVM')">
+        <div class="chain-seed">28</div>
+        <div class="chain-info"><div class="chain-name">MultiversX</div><div class="chain-ticker">EGLD</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Hedera','HBAR','other','Hashgraph consensus (DAG). Governed by HBAR Foundation. Enterprise-grade.','Hashgraph aBFT','2019','DAG')">
+        <div class="chain-seed">29</div>
+        <div class="chain-info"><div class="chain-name">Hedera</div><div class="chain-ticker">HBAR</div></div>
+        <div class="chain-badge badge-other">DAG</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Internet Computer','ICP','other','Canister-based smart contracts. Chain Key cryptography. Web-speed finality.','Threshold Relay','2021','Canister')">
+        <div class="chain-seed">30</div>
+        <div class="chain-info"><div class="chain-name">Internet Computer</div><div class="chain-ticker">ICP</div></div>
+        <div class="chain-badge badge-other">ICP</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Stellar','XLM','other','Stellar Consensus Protocol. Cross-border payments. Anchor network.','SCP (Federated)','2014','Account')">
+        <div class="chain-seed">31</div>
+        <div class="chain-info"><div class="chain-name">Stellar</div><div class="chain-ticker">XLM</div></div>
+        <div class="chain-badge badge-other">SCP</div>
+      </div>
+      <div class="chain-card" onclick="openModal('XRP Ledger','XRP','other','Ripple Protocol Consensus. Validator-based. Fast settlement for payments.','RPCA','2012','Account')">
+        <div class="chain-seed">32</div>
+        <div class="chain-info"><div class="chain-name">XRP Ledger</div><div class="chain-ticker">XRP</div></div>
+        <div class="chain-badge badge-other">RPCA</div>
+      </div>
+    </div>
+
+    <!-- REGION 3: ETHEREUM LAYER 2 -->
+    <div class="region-header reveal">
+      <div class="region-name">⚡ Region 3 — Ethereum L2 & Scaling</div>
+      <div class="region-line"></div>
+      <div class="region-count">16 chains</div>
+    </div>
+    <div class="chains-grid reveal">
+      <div class="chain-card" onclick="openModal('Arbitrum One','ARB','l2','Optimistic rollup. EVM-compatible. Largest L2 by TVL. Nitro tech stack.','Optimistic Rollup','2021','EVM L2')">
+        <div class="chain-seed">33</div>
+        <div class="chain-info"><div class="chain-name">Arbitrum One</div><div class="chain-ticker">ARB</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Optimism','OP','l2','Optimistic rollup. OP Stack. The Superchain vision.','Optimistic Rollup','2021','EVM L2')">
+        <div class="chain-seed">34</div>
+        <div class="chain-info"><div class="chain-name">Optimism</div><div class="chain-ticker">OP</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Base','BASE','l2','Coinbase-incubated OP Stack L2. No native token. Onboarding layer for mainstream users.','Optimistic Rollup','2023','EVM L2')">
+        <div class="chain-seed">35</div>
+        <div class="chain-info"><div class="chain-name">Base</div><div class="chain-ticker">BASE</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Polygon zkEVM','MATIC','l2','ZK rollup with EVM equivalence. Type 2 zkEVM. Fastest finality among EVM L2s.','ZK Rollup','2023','ZK L2')">
+        <div class="chain-seed">36</div>
+        <div class="chain-info"><div class="chain-name">Polygon zkEVM</div><div class="chain-ticker">MATIC/POL</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('zkSync Era','ZK','l2','ZK rollup by Matter Labs. Custom LLVM compiler. Native account abstraction.','ZK Rollup','2023','ZK L2')">
+        <div class="chain-seed">37</div>
+        <div class="chain-info"><div class="chain-name">zkSync Era</div><div class="chain-ticker">ZK</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Starknet','STRK','l2','ZK-STARK rollup. Cairo VM. Custom smart contract language. Developed by StarkWare.','ZK-STARK','2022','ZK L2')">
+        <div class="chain-seed">38</div>
+        <div class="chain-info"><div class="chain-name">Starknet</div><div class="chain-ticker">STRK</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Linea','LineaETH','l2','Consensys zkEVM. Integrated with MetaMask and Infura ecosystem.','ZK Rollup','2023','ZK L2')">
+        <div class="chain-seed">39</div>
+        <div class="chain-info"><div class="chain-name">Linea</div><div class="chain-ticker">LineaETH</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Scroll','SCR','l2','Community-driven zkEVM. Bytecode-level EVM compatibility. Type 1 zkEVM goal.','ZK Rollup','2023','ZK L2')">
+        <div class="chain-seed">40</div>
+        <div class="chain-info"><div class="chain-name">Scroll</div><div class="chain-ticker">SCR</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Mantle','MNT','l2','Modular L2. EigenLayer data availability. OP Stack derived.','Optimistic Rollup','2023','Modular L2')">
+        <div class="chain-seed">41</div>
+        <div class="chain-info"><div class="chain-name">Mantle</div><div class="chain-ticker">MNT</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Blast','BLAST','l2','Native yield L2. ETH and stablecoin yield passed to users. OP Stack.','Optimistic Rollup','2024','Yield L2')">
+        <div class="chain-seed">42</div>
+        <div class="chain-info"><div class="chain-name">Blast</div><div class="chain-ticker">BLAST</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Mode','MODE','l2','Sequencer fee sharing model. OP Stack. DeFi-native L2.','Optimistic Rollup','2024','EVM L2')">
+        <div class="chain-seed">43</div>
+        <div class="chain-info"><div class="chain-name">Mode</div><div class="chain-ticker">MODE</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Rootstock','RBTC','l2','Bitcoin sidechain with EVM compatibility. Merge-mined with Bitcoin.','Merge-mined PoW','2018','BTC L2')">
+        <div class="chain-seed">44</div>
+        <div class="chain-info"><div class="chain-name">Rootstock</div><div class="chain-ticker">RBTC</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Lightning Network','BTC-LN','l2','Bitcoin payment channel network. Instant off-chain micropayments.','Payment Channels','2018','BTC L2')">
+        <div class="chain-seed">45</div>
+        <div class="chain-info"><div class="chain-name">Lightning Network</div><div class="chain-ticker">BTC-LN</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Loopring','LRC','l2','zkRollup for DEX and payments. One of the first production zkRollups.','ZK Rollup','2020','ZK L2')">
+        <div class="chain-seed">46</div>
+        <div class="chain-info"><div class="chain-name">Loopring</div><div class="chain-ticker">LRC</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('ImmutableX','IMX','l2','ZK rollup for gaming and NFTs. StarkEx-based. Custom order book DEX.','ZK Rollup (StarkEx)','2021','Gaming L2')">
+        <div class="chain-seed">47</div>
+        <div class="chain-info"><div class="chain-name">ImmutableX</div><div class="chain-ticker">IMX</div></div>
+        <div class="chain-badge badge-l2">L2</div>
+      </div>
+      <div class="chain-card" onclick="openModal('BNB Chain','BNB','evm','Binance-developed EVM chain. High throughput, low fees. PoSA consensus.','PoSA','2020','EVM L2-ish')">
+        <div class="chain-seed">48</div>
+        <div class="chain-info"><div class="chain-name">BNB Chain</div><div class="chain-ticker">BNB</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+    </div>
+
+    <!-- REGION 4: EMERGING / SPECIALIZED -->
+    <div class="region-header reveal">
+      <div class="region-name">🔬 Region 4 — Emerging & Specialized</div>
+      <div class="region-line"></div>
+      <div class="region-count">16 chains</div>
+    </div>
+    <div class="chains-grid reveal">
+      <div class="chain-card" onclick="openModal('Tezos','XTZ','other','On-chain governance with self-amending protocol. Liquid PoS. Michelson VM.','Liquid PoS','2018','Account')">
+        <div class="chain-seed">49</div>
+        <div class="chain-info"><div class="chain-name">Tezos</div><div class="chain-ticker">XTZ</div></div>
+        <div class="chain-badge badge-other">LPoS</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Filecoin','FIL','other','Decentralized storage network. Proof of Spacetime + Proof of Replication.','PoSt + PoRep','2020','Storage')">
+        <div class="chain-seed">50</div>
+        <div class="chain-info"><div class="chain-name">Filecoin</div><div class="chain-ticker">FIL</div></div>
+        <div class="chain-badge badge-other">Storage</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Arweave','AR','other','Permanent storage blockchain. Proof of Access (SPoRA). Permaweb.','Proof of Access','2018','Storage DAG')">
+        <div class="chain-seed">51</div>
+        <div class="chain-info"><div class="chain-name">Arweave</div><div class="chain-ticker">AR</div></div>
+        <div class="chain-badge badge-other">Storage</div>
+      </div>
+      <div class="chain-card" onclick="openModal('VeChain','VET','other','Supply chain and enterprise blockchain. Proof of Authority + PoS hybrid.','PoA 2.0','2018','Enterprise')">
+        <div class="chain-seed">52</div>
+        <div class="chain-info"><div class="chain-name">VeChain</div><div class="chain-ticker">VET</div></div>
+        <div class="chain-badge badge-other">PoA</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Flow','FLOW','other','Dapper Labs chain. Resource-oriented Cadence language. Designed for NFTs and games.','HotStuff BFT','2020','Account/Cadence')">
+        <div class="chain-seed">53</div>
+        <div class="chain-info"><div class="chain-name">Flow</div><div class="chain-ticker">FLOW</div></div>
+        <div class="chain-badge badge-other">BFT</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Sei','SEI','evm','Order-book optimized L1. Twin-Turbo consensus. EVM + Cosmos SDK.','Twin-Turbo PoS','2023','EVM + CosmWasm')">
+        <div class="chain-seed">54</div>
+        <div class="chain-info"><div class="chain-name">Sei</div><div class="chain-ticker">SEI</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Injective','INJ','evm','DeFi-native L1. Orderbook DEX built-in. Cosmos SDK + EVM.','Tendermint PoS','2021','EVM + CosmWasm')">
+        <div class="chain-seed">55</div>
+        <div class="chain-info"><div class="chain-name">Injective</div><div class="chain-ticker">INJ</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Celo','CELO','evm','Mobile-first EVM chain. Ultralight client. ReFi focus. OP Stack migrating.','EPoS','2020','EVM')">
+        <div class="chain-seed">56</div>
+        <div class="chain-info"><div class="chain-name">Celo</div><div class="chain-ticker">CELO</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Nano','XNO','other','Feeless, instant payments. Directed Acyclic Graph (DAG) lattice. Open Representative Voting.','ORV (DAG)','2015','DAG')">
+        <div class="chain-seed">57</div>
+        <div class="chain-info"><div class="chain-name">Nano</div><div class="chain-ticker">XNO</div></div>
+        <div class="chain-badge badge-other">DAG</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Radix','XRD','other','Cerberus consensus (linear sharding). Radix Engine v2. Asset-oriented programming.','Cerberus BFT','2022','Asset-oriented')">
+        <div class="chain-seed">58</div>
+        <div class="chain-info"><div class="chain-name">Radix</div><div class="chain-ticker">XRD</div></div>
+        <div class="chain-badge badge-other">Cerberus</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Topl','TOPL','utxo','Impact-measurement blockchain. Bifrost protocol. UTXO Alliance member.','Proof of Stake','2022','UTXO-adjacent')">
+        <div class="chain-seed">59</div>
+        <div class="chain-info"><div class="chain-name">Topl</div><div class="chain-ticker">TOPL</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Osmosis','OSMO','other','AMM-native Cosmos chain. Supercharged concentrated liquidity. IBC hub.','Tendermint PoS','2021','CosmWasm')">
+        <div class="chain-seed">60</div>
+        <div class="chain-info"><div class="chain-name">Osmosis</div><div class="chain-ticker">OSMO</div></div>
+        <div class="chain-badge badge-other">IBC</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Beam','BEAM','utxo','Confidential DeFi. Mimblewimble protocol. Private transactions by default.','BeamHash III PoW','2019','MW-UTXO')">
+        <div class="chain-seed">61</div>
+        <div class="chain-info"><div class="chain-name">Beam</div><div class="chain-ticker">BEAM</div></div>
+        <div class="chain-badge badge-utxo">UTXO</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Casper','CSPR','evm','Highway consensus. EVM-compatible. Enterprise-friendly PoS with upgradeable contracts.','Highway PoS','2021','EVM')">
+        <div class="chain-seed">62</div>
+        <div class="chain-info"><div class="chain-name">Casper</div><div class="chain-ticker">CSPR</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+      <div class="chain-card" onclick="openModal('IOTA','IOTA','other','Directed Acyclic Graph. Feeless, coordinator-free Tangle. IoT-focused.','Tangle DAG','2016','DAG')">
+        <div class="chain-seed">63</div>
+        <div class="chain-info"><div class="chain-name">IOTA</div><div class="chain-ticker">IOTA</div></div>
+        <div class="chain-badge badge-other">DAG</div>
+      </div>
+      <div class="chain-card" onclick="openModal('Fantom','FTM','evm','Lachesis aBFT DAG consensus. EVM-compatible. Sonic upgrade for 10,000 TPS.','Lachesis aBFT','2019','EVM/DAG')">
+        <div class="chain-seed">64</div>
+        <div class="chain-info"><div class="chain-name">Fantom</div><div class="chain-ticker">FTM/S</div></div>
+        <div class="chain-badge badge-evm">EVM</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRACKET PREVIEW -->
+<section id="bracket">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Tournament Structure</p>
+      <h2 class="section-title">The Bracket</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="bracket-info reveal">
+      <p>
+        The 64-team single-elimination bracket is seeded by <strong>Nakamoto Coefficient composite score</strong>, not market cap.
+        Regions are balanced across model types — UTXO, EVM, L2, and Other — ensuring cross-architectural debates as early as Round 2.
+        The bracket is fixed at seeding; no reseeding occurs after each round. <strong>Full bracket PDF will be published February 28, 2026.</strong>
+      </p>
+      <a href="#register" class="btn-primary" style="white-space:nowrap">Get Notified</a>
+    </div>
+    <div class="bracket-visual reveal">
+      <div class="bracket-rounds">
+        <div class="bracket-round">
+          <div class="bracket-round-label">Round of 64 (32 Debates)</div>
+          <div class="bracket-match">#1 Bitcoin<br>vs<br>#64 Fantom</div>
+          <div class="bracket-match">#2 Quai Network<br>vs<br>#63 IOTA</div>
+          <div class="bracket-match">#3 Ergo<br>vs<br>#62 Casper</div>
+          <div class="bracket-match">#4 Litecoin<br>vs<br>#61 Beam</div>
+          <div class="bracket-match">#5 Nervos<br>vs<br>#60 Osmosis</div>
+          <div class="bracket-match">#6 Alephium<br>vs<br>#59 Topl</div>
+          <div class="bracket-match">#7 Zcash<br>vs<br>#58 Radix</div>
+          <div class="bracket-match">#8 Bit.Cash<br>vs<br>#57 Nano</div>
+          <div class="bracket-match" style="margin-top:0.5rem; font-size:0.55rem; color:var(--muted)">+24 more →</div>
+        </div>
+        <div class="bracket-round">
+          <div class="bracket-round-label">Round of 32</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+        </div>
+        <div class="bracket-round">
+          <div class="bracket-round-label">Sweet 16</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+        </div>
+        <div class="bracket-round">
+          <div class="bracket-round-label">Elite 8</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+        </div>
+        <div class="bracket-round">
+          <div class="bracket-round-label">Final Four</div>
+          <div class="bracket-match tbd">TBD vs TBD</div>
+        </div>
+        <div class="bracket-round">
+          <div class="bracket-round-label">Championship</div>
+          <div class="bracket-match tbd" style="border-color: var(--gold-dim); color: var(--gold);">🏆 TBD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEBATE TOPICS -->
+<section id="topics">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Master Topic List</p>
+      <h2 class="section-title">Debate Motions</h2>
+      <div class="section-divider"></div>
+      <p style="font-size:0.82rem; color:var(--muted); max-width:600px; line-height:1.9; margin-bottom:3rem;">
+        Specific motion pairings are assigned to matches. All possible motions are published in advance. 
+        Representatives prep for any motion in their pool.
+      </p>
+    </div>
+    <div class="topics-grid">
+      <div class="topic-card reveal">
+        <div class="topic-round">Round 1 Pool — Consensus Fundamentals</div>
+        <div class="topic-title">This house believes Proof of Work is the only credibly neutral consensus mechanism.</div>
+        <div class="topic-desc">Debaters must address energy use, security budget, and the meaning of "neutral" in distributed systems.</div>
+      </div>
+      <div class="topic-card reveal reveal-delay-1">
+        <div class="topic-round">Round 1 Pool — Architecture</div>
+        <div class="topic-title">The UTXO model is fundamentally superior to account-based models for value transfer.</div>
+        <div class="topic-desc">Covering parallelism, privacy, state bloat, and smart contract composability tradeoffs.</div>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-round">Round 2 Pool — Scaling</div>
+        <div class="topic-title">Layer 2 rollups will never achieve the security guarantees of Layer 1 settlement.</div>
+        <div class="topic-desc">Bridging risks, data availability, exit windows, and the trust assumptions of optimistic vs ZK.</div>
+      </div>
+      <div class="topic-card reveal reveal-delay-1">
+        <div class="topic-round">Round 2 Pool — Economics</div>
+        <div class="topic-title">A fixed monetary policy is more important than programmability in a sound money system.</div>
+        <div class="topic-desc">Comparing inflationary PoS issuance, Bitcoin's halvings, and energy-backed stable tokens.</div>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-round">Round 3 Pool — Interoperability</div>
+        <div class="topic-title">Cross-chain bridges are a temporary hack. The future is a single unified settlement layer.</div>
+        <div class="topic-desc">IBC, atomic swaps, merged mining, and the architecture of multi-chain vs. one-chain futures.</div>
+      </div>
+      <div class="topic-card reveal reveal-delay-1">
+        <div class="topic-round">Round 3 Pool — Governance</div>
+        <div class="topic-title">On-chain governance makes blockchains less secure over time.</div>
+        <div class="topic-desc">Examining Tezos, Polkadot, Cosmos, vs. off-chain rough-consensus models (Bitcoin, Ethereum).</div>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-round">Round 4 Pool — Privacy</div>
+        <div class="topic-title">Public blockchains with transparent ledgers are incompatible with financial privacy.</div>
+        <div class="topic-desc">ZK proofs, confidential transactions, Mimblewimble, ring signatures — where does transparency end?</div>
+      </div>
+      <div class="topic-card reveal reveal-delay-1">
+        <div class="topic-round">Final Four — Thermodynamics & Energy</div>
+        <div class="topic-title">Money that cannot be created without physical energy expenditure is the only honest money.</div>
+        <div class="topic-desc">The thermoeconomic case for Proof of Work as a monetary anchor. Entropy, information, and value.</div>
+      </div>
+      <div class="topic-card reveal" style="grid-column: span 2; background: rgba(245,200,66,0.03); border-color: rgba(245,200,66,0.3);">
+        <div class="topic-round">Championship Motion — To Be Drawn Day-of</div>
+        <div class="topic-title">The blockchain industry will consolidate to 3–5 dominant networks within 10 years. Is this inevitable, and is it desirable?</div>
+        <div class="topic-desc">The grand finale motion will be drawn from a sealed envelope on the morning of June 7, 2026. Both finalists have 72 hours from the semifinal win to prepare any motion in the Championship Pool. This creates the highest-stakes, most genuine debate possible — no canned answers.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JUDGING CRITERIA -->
+<section id="judging">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Scoring System</p>
+      <h2 class="section-title">How Debates Are Scored</h2>
+      <div class="section-divider"></div>
+      <p style="font-size:0.82rem; color:var(--muted); max-width:600px; line-height:1.9; margin-bottom:3rem;">
+        Three independent judges score each criterion independently. Scores are published with full commentary. 
+        All judging rubrics and conflict-of-interest disclosures are available pre-debate.
+      </p>
+    </div>
+    <div class="judging-grid reveal">
+      <div class="judge-card">
+        <div class="judge-score">30<span style="font-size:1.2rem">%</span></div>
+        <div class="judge-pct">of total score</div>
+        <div class="judge-criterion">Technical Accuracy</div>
+      </div>
+      <div class="judge-card">
+        <div class="judge-score">25<span style="font-size:1.2rem">%</span></div>
+        <div class="judge-pct">of total score</div>
+        <div class="judge-criterion">Clarity of Argument</div>
+      </div>
+      <div class="judge-card">
+        <div class="judge-score">20<span style="font-size:1.2rem">%</span></div>
+        <div class="judge-pct">of total score</div>
+        <div class="judge-criterion">Rebuttal Quality</div>
+      </div>
+      <div class="judge-card">
+        <div class="judge-score">15<span style="font-size:1.2rem">%</span></div>
+        <div class="judge-pct">of total score</div>
+        <div class="judge-criterion">Evidence & Citation Quality</div>
+      </div>
+      <div class="judge-card">
+        <div class="judge-score">10<span style="font-size:1.2rem">%</span></div>
+        <div class="judge-pct">of total score</div>
+        <div class="judge-criterion">Decorum & Sportsmanship</div>
+      </div>
+    </div>
+    <div style="margin-top: 2rem; background: var(--surface2); border: 1px solid var(--border); padding: 1.5rem 2rem;" class="reveal">
+      <h4 style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem;">Judge Independence Guarantee</h4>
+      <p style="font-size:0.78rem; color:var(--muted); line-height:1.8;">
+        Judges are drawn from academic blockchain research, cryptography, computer science, and monetary economics. 
+        <strong style="color:var(--white)">Wolfram Research</strong> serves as the neutral arbiter of technical claims and publishes a post-debate 
+        technical fact-check within 48 hours of each match. No judge may hold positions in, receive grants from, or have 
+        employment relationships with any chain in their assigned bracket. All disclosures are public.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register">
+  <div class="container">
+    <p class="hero-eyebrow">March 2026 · Applications Close February 22</p>
+    <h2 class="register-title">
+      Nominate Your<br><span>Representative</span>
+    </h2>
+    <p class="register-sub">Each blockchain gets one nomination. Nominations are reviewed by the organizing committee for eligibility. No marketing reps. No ghost nominees.</p>
+    <div class="register-form">
+      <input type="email" placeholder="your@blockchain.org" />
+      <button type="button">Submit Nomination →</button>
+    </div>
+    <p class="register-note">// Nominations open · Deadline Feb 22, 2026 · All confirmations via email</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">⛓ BDC 2026</div>
+        <p>The Blockchain Debate Championship is an independent initiative inspired by the cross-chain collaboration spirit of the UTXO Alliance. Not affiliated with any single blockchain project.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Tournament</h5>
+        <ul>
+          <li><a href="#rules">Rules & Format</a></li>
+          <li><a href="#schedule">Schedule</a></li>
+          <li><a href="#bracket">Bracket</a></li>
+          <li><a href="#judging">Judging Criteria</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Competitors</h5>
+        <ul>
+          <li><a href="#competitors">All 64 Chains</a></li>
+          <li><a href="#topics">Debate Topics</a></li>
+          <li><a href="#register">Nominations</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="https://www.utxoa.org/" target="_blank">UTXO Alliance</a></li>
+          <li><a href="#">Seeding Methodology</a></li>
+          <li><a href="#">Judge Applications</a></li>
+          <li><a href="#">Press Kit</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Blockchain Debate Championship · Inspired by <a href="https://www.utxoa.org/">UTXO Alliance</a></p>
+      <p style="font-family:'IBM Plex Mono'; font-size:0.6rem;">// LAUNCH MARCH 1, 2026 · 64 CHAINS · 63 DEBATES · 1 MANIFESTO</p>
+    </div>
+  </div>
+</footer>
+
+<!-- CHAIN DETAIL MODAL -->
+<div class="modal-overlay" id="chainModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+    <p id="modal-type" style="font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem;"></p>
+    <h3 id="modal-name"></h3>
+    <p id="modal-desc" style="font-size:0.8rem; color:var(--muted); line-height:1.8; margin-bottom:1rem;"></p>
+    <dl class="modal-chain-details">
+      <dt>Consensus</dt><dd id="modal-consensus"></dd>
+      <dt>Launch Year</dt><dd id="modal-launch"></dd>
+      <dt>Architecture</dt><dd id="modal-arch"></dd>
+      <dt>Debate Status</dt>
+      <dd style="color:var(--accent-green)">✓ Eligible for nomination · Deadline Feb 22, 2026</dd>
+    </dl>
+    <div style="margin-top:2rem;">
+      <a href="#register" class="btn-primary" onclick="closeModal()" style="font-size:0.7rem; padding:0.7rem 1.5rem;">Nominate a Rep for This Chain →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Modal
+  function openModal(name, ticker, type, desc, consensus, launch, arch) {
+    const types = { utxo: 'UTXO Model', evm: 'EVM / Account Model', l2: 'Layer 2 Rollup', other: 'Specialized / Other' };
+    document.getElementById('modal-name').textContent = name + ' (' + ticker + ')';
+    document.getElementById('modal-type').textContent = types[type] || type;
+    document.getElementById('modal-desc').textContent = desc;
+    document.getElementById('modal-consensus').textContent = consensus;
+    document.getElementById('modal-launch').textContent = launch;
+    document.getElementById('modal-arch').textContent = arch;
+    document.getElementById('chainModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('chainModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('chainModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Smooth anchor offset for fixed nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({ top: target.offsetTop - 70, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
