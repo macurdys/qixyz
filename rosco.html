@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROSCO — Rotating Savings & Credit Organization on Qi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+        body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.006) 2px, rgba(0,240,255,0.006) 4px); pointer-events: none; z-index: 9999; }
+        .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px); background-size: 60px 60px; opacity: 0.3; z-index: 0; pointer-events: none; }
+
+        /* NAV */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(6,8,13,0.88); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-dim); padding: 0 40px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--qi-cyan); text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px var(--qi-cyan-glow); }
+        .nav-links { display: flex; gap: 28px; list-style: none; }
+        .nav-links a { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--qi-cyan); }
+
+        /* HERO */
+        .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 24px 80px; z-index: 1; overflow: hidden; }
+        .hero-orb { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(0,240,255,0.07) 0%, rgba(255,184,0,0.04) 40%, transparent 70%); filter: blur(80px); top: 50%; left: 50%; transform: translate(-50%,-50%); animation: orb-pulse 6s ease-in-out infinite; }
+        @keyframes orb-pulse { 0%,100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.7; transform: translate(-50%,-50%) scale(1.15); } }
+        .hero-status { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; opacity: 0; animation: fade-up 0.8s ease forwards 0.3s; }
+        .hero-status::before { content: '◆ '; }
+        .hero h1 { font-family: var(--font-display); font-size: clamp(52px, 11vw, 130px); font-weight: 900; letter-spacing: 10px; line-height: 1; margin-bottom: 12px; opacity: 0; animation: fade-up 0.8s ease forwards 0.5s; }
+        .hero h1 .cyan { color: var(--qi-cyan); text-shadow: 0 0 40px var(--qi-cyan-glow); }
+        .hero h1 .amber { color: var(--qi-amber); text-shadow: 0 0 30px rgba(255,184,0,0.4); }
+        .hero-sub { font-family: var(--font-display); font-size: clamp(10px, 1.4vw, 13px); letter-spacing: 6px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 32px; opacity: 0; animation: fade-up 0.8s ease forwards 0.6s; }
+        .hero-tagline { font-family: var(--font-body); font-size: clamp(18px, 2.5vw, 26px); font-weight: 300; color: var(--text-secondary); max-width: 720px; margin-bottom: 16px; opacity: 0; animation: fade-up 0.8s ease forwards 0.7s; }
+        .hero-tagline em { color: var(--qi-cyan); font-style: normal; font-weight: 500; }
+        .hero-tagline-sub { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); max-width: 600px; margin-bottom: 48px; letter-spacing: 1px; opacity: 0; animation: fade-up 0.8s ease forwards 0.8s; }
+        .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; opacity: 0; animation: fade-up 0.8s ease forwards 0.9s; }
+        @keyframes fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Cultural names floating */
+        .culture-float { position: absolute; font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; pointer-events: none; opacity: 0; animation: fade-up 1.5s ease forwards; }
+
+        /* BUTTONS */
+        .btn { font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; padding: 14px 32px; transition: all 0.3s; cursor: pointer; display: inline-block; }
+        .btn-primary { background: var(--qi-cyan); color: var(--bg-deep); border: 1px solid var(--qi-cyan); box-shadow: 0 0 20px rgba(0,240,255,0.2); }
+        .btn-primary:hover { box-shadow: 0 0 40px rgba(0,240,255,0.4); transform: translateY(-2px); }
+        .btn-ghost { background: transparent; color: var(--qi-cyan); border: 1px solid var(--border-bright); }
+        .btn-ghost:hover { background: var(--qi-cyan-dim); border-color: var(--qi-cyan); }
+
+        /* SECTIONS */
+        .section { position: relative; z-index: 1; padding: 100px 24px; }
+        .section-inner { max-width: 1100px; margin: 0 auto; }
+        .section-label { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+        .section-label::before { content: '// '; color: var(--text-dim); }
+        .section-title { font-family: var(--font-display); font-size: clamp(24px, 3.5vw, 40px); font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; line-height: 1.2; }
+        .section-desc { font-size: 18px; font-weight: 300; color: var(--text-secondary); max-width: 700px; margin-bottom: 56px; line-height: 1.9; }
+        .divider { max-width: 1100px; margin: 0 auto; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); position: relative; z-index: 1; }
+
+        /* HOW IT WORKS - STEPS */
+        .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .step-card { background: var(--bg-card); border: 1px solid var(--border-dim); padding: 32px 24px; position: relative; overflow: hidden; transition: border-color 0.3s, transform 0.3s; }
+        .step-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--qi-cyan), transparent); opacity: 0; transition: opacity 0.3s; }
+        .step-card:hover { border-color: var(--border-bright); transform: translateY(-4px); }
+        .step-card:hover::before { opacity: 1; }
+        .step-num { font-family: var(--font-display); font-size: 32px; font-weight: 900; color: var(--qi-cyan); opacity: 0.15; margin-bottom: 12px; }
+        .step-card h3 { font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; }
+        .step-card p { font-weight: 300; color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
+
+        /* CONTRACT ARCHITECTURE */
+        .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+        .arch-panel { background: var(--bg-card); border: 1px solid var(--border-dim); overflow: hidden; }
+        .arch-panel-header { background: var(--bg-panel); padding: 16px 24px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: center; gap: 12px; }
+        .arch-panel-header .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .arch-panel-header .dot.green { background: var(--qi-green); box-shadow: 0 0 6px rgba(57,255,20,0.5); }
+        .arch-panel-header .dot.amber { background: var(--qi-amber); box-shadow: 0 0 6px rgba(255,184,0,0.5); }
+        .arch-panel-header .dot.red { background: var(--qi-red); box-shadow: 0 0 6px rgba(255,51,102,0.5); }
+        .arch-panel-header span { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+        .arch-panel-body { padding: 24px; }
+        .fn-row { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 12px; }
+        .fn-row:last-child { border-bottom: none; }
+        .fn-badge { font-family: var(--font-mono); font-size: 8px; letter-spacing: 1px; padding: 2px 6px; text-transform: uppercase; flex-shrink: 0; }
+        .fn-badge.view { border: 1px solid rgba(0,240,255,0.3); color: var(--qi-cyan); }
+        .fn-badge.ext { border: 1px solid rgba(255,184,0,0.3); color: var(--qi-amber); }
+        .fn-name { font-family: var(--font-mono); font-size: 13px; color: var(--text-primary); }
+        .fn-desc { font-size: 12px; color: var(--text-dim); margin-left: auto; }
+
+        /* INTERACTIVE DEMO */
+        .demo-container { background: var(--bg-card); border: 1px solid var(--border-dim); overflow: hidden; }
+        .demo-header { background: var(--bg-panel); padding: 16px 24px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: space-between; }
+        .demo-header-label { font-family: var(--font-mono); font-size: 10px; color: var(--qi-cyan); letter-spacing: 3px; text-transform: uppercase; }
+        .demo-body { padding: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+        /* Ring visualization */
+        .ring-viz { display: flex; align-items: center; justify-content: center; position: relative; min-height: 340px; }
+        .ring-center { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: rgba(0,240,255,0.04); border: 1.5px solid rgba(0,240,255,0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; }
+        .ring-center .pot-label { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 1px; }
+        .ring-center .pot-amount { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--qi-cyan); }
+        .member-node { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-panel); border: 1.5px solid var(--border-dim); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); transition: all 0.4s; cursor: pointer; z-index: 2; }
+        .member-node.active { border-color: var(--qi-amber); color: var(--qi-amber); box-shadow: 0 0 16px rgba(255,184,0,0.3); background: rgba(255,184,0,0.06); }
+        .member-node.paid { border-color: rgba(0,240,255,0.4); color: var(--qi-cyan); }
+        .member-node.pending { border-color: var(--border-dim); color: var(--text-dim); }
+        .member-node .payout-tag { position: absolute; top: -18px; font-size: 7px; letter-spacing: 1px; color: var(--qi-amber); background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.3); padding: 1px 6px; white-space: nowrap; }
+
+        /* Demo controls */
+        .demo-controls { display: flex; flex-direction: column; gap: 16px; }
+        .demo-stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .demo-stat-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+        .demo-stat-value { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--qi-cyan); letter-spacing: 1px; }
+        .demo-stat-value.amber { color: var(--qi-amber); }
+        .demo-stat-value.green { color: var(--qi-green); }
+
+        .demo-btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 12px 20px; cursor: pointer; transition: all 0.3s; width: 100%; text-align: center; }
+        .demo-btn-pay { background: var(--qi-cyan-dim); border: 1px solid var(--border-bright); color: var(--qi-cyan); }
+        .demo-btn-pay:hover { background: var(--qi-cyan); color: var(--bg-deep); }
+        .demo-btn-advance { background: var(--qi-amber-dim); border: 1px solid rgba(255,184,0,0.3); color: var(--qi-amber); }
+        .demo-btn-advance:hover { background: var(--qi-amber); color: var(--bg-deep); }
+        .demo-btn-withdraw { background: rgba(57,255,20,0.06); border: 1px solid rgba(57,255,20,0.3); color: var(--qi-green); }
+        .demo-btn-withdraw:hover { background: var(--qi-green); color: var(--bg-deep); }
+        .demo-btn-reset { background: transparent; border: 1px solid var(--border-dim); color: var(--text-dim); font-size: 10px; padding: 8px; }
+        .demo-btn-reset:hover { border-color: var(--qi-red); color: var(--qi-red); }
+
+        .demo-log { background: var(--bg-panel); border: 1px solid var(--border-dim); padding: 12px 16px; max-height: 140px; overflow-y: auto; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); line-height: 1.8; margin-top: 8px; }
+        .demo-log .log-entry { border-bottom: 1px solid rgba(255,255,255,0.02); padding: 2px 0; }
+        .demo-log .log-entry .ts { color: var(--text-dim); }
+        .demo-log .log-entry .action { color: var(--qi-cyan); }
+        .demo-log .log-entry .amount { color: var(--qi-amber); }
+
+        /* CODE BLOCK */
+        .code-block { background: var(--bg-panel); border: 1px solid var(--border-dim); padding: 24px; overflow-x: auto; margin-bottom: 24px; }
+        .code-block pre { font-family: var(--font-mono); font-size: 12px; line-height: 1.8; color: var(--text-secondary); white-space: pre; }
+        .code-block .kw { color: var(--qi-purple); }
+        .code-block .fn { color: var(--qi-cyan); }
+        .code-block .str { color: var(--qi-green); }
+        .code-block .num { color: var(--qi-amber); }
+        .code-block .cm { color: var(--text-dim); }
+        .code-block .ty { color: var(--qi-red); }
+
+        /* CULTURAL NAMES GRID */
+        .culture-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+        .culture-card { background: var(--bg-panel); border: 1px solid var(--border-dim); padding: 16px; transition: border-color 0.3s; }
+        .culture-card:hover { border-color: var(--border-bright); }
+        .culture-card .name { font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; }
+        .culture-card .region { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+
+        /* VESU YIELD */
+        .yield-box { background: linear-gradient(135deg, rgba(57,255,20,0.04), rgba(0,240,255,0.04)); border: 1px solid rgba(57,255,20,0.15); padding: 32px; display: flex; align-items: center; gap: 32px; }
+        .yield-icon { font-size: 40px; flex-shrink: 0; }
+        .yield-text h3 { font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
+        .yield-text p { font-weight: 300; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+
+        /* FOOTER */
+        footer { position: relative; z-index: 1; border-top: 1px solid var(--border-dim); padding: 40px; display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; }
+        .footer-logo { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--qi-cyan); letter-spacing: 4px; }
+        .footer-copy { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .steps-grid { grid-template-columns: 1fr 1fr; }
+            .arch-grid { grid-template-columns: 1fr; }
+            .demo-body { grid-template-columns: 1fr; }
+            .culture-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            .steps-grid { grid-template-columns: 1fr; }
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            footer { flex-direction: column; gap: 12px; text-align: center; }
+        }
+        .animate { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .animate.in-view { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+    <a href="index.html" class="nav-logo">ROSCO</a>
+    <ul class="nav-links">
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#demo">Live Demo</a></li>
+        <li><a href="#contract">Contract</a></li>
+        <li><a href="index.html">← Qi.xyz</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-orb"></div>
+
+    <!-- Scattered cultural names -->
+    <span class="culture-float" style="top:18%;left:8%;color:rgba(255,184,0,0.12);animation-delay:1s;">TANDA</span>
+    <span class="culture-float" style="top:30%;right:6%;color:rgba(0,240,255,0.1);animation-delay:1.3s;">CHAMA</span>
+    <span class="culture-float" style="bottom:28%;left:5%;color:rgba(191,90,242,0.1);animation-delay:1.6s;">SUSU</span>
+    <span class="culture-float" style="top:22%;right:18%;color:rgba(57,255,20,0.08);animation-delay:1.8s;">STOKVEL</span>
+    <span class="culture-float" style="bottom:22%;right:8%;color:rgba(255,184,0,0.08);animation-delay:2s;">GYE 계</span>
+    <span class="culture-float" style="top:40%;left:4%;color:rgba(0,240,255,0.07);animation-delay:2.2s;">HUI 會</span>
+    <span class="culture-float" style="bottom:35%;right:15%;color:rgba(191,90,242,0.07);animation-delay:2.4s;">EQUB እቁብ</span>
+    <span class="culture-float" style="bottom:15%;left:15%;color:rgba(255,184,0,0.06);animation-delay:2.6s;">ARISAN</span>
+    <span class="culture-float" style="top:15%;left:25%;color:rgba(57,255,20,0.06);animation-delay:2.8s;">PARDNER</span>
+
+    <div class="hero-status">Community Savings Protocol</div>
+    <h1><span class="cyan">ROS</span><span class="amber">CO</span></h1>
+    <div class="hero-sub">Rotating Savings & Credit Organization on Qi</div>
+    <p class="hero-tagline">The <em>ancient savings circle</em>, perfected on-chain. Members pool tokens each round — one collects the full pot. Smart-contract enforced, yield-bearing, trustless community finance.</p>
+    <p class="hero-tagline-sub">"The poor man's bank, where money is not idle for long" — now on Cairo/StarkNet with VESU yield</p>
+    <div class="hero-ctas">
+        <a href="#demo" class="btn btn-primary">Try the Demo</a>
+        <a href="#contract" class="btn btn-ghost">View Contract</a>
+    </div>
+</section>
+
+<!-- WHAT IS A ROSCA -->
+<div class="divider"></div>
+<section class="section" id="what">
+    <div class="section-inner animate">
+        <div class="section-label">The Concept</div>
+        <div class="section-title">Every Culture Invented This</div>
+        <div class="section-desc">A ROSCA (Rotating Savings and Credit Association) is humanity's oldest peer-to-peer financial system. A group agrees to contribute a fixed amount regularly. Each round, one member receives the entire pot. The rotation continues until everyone has received once. No bank. No interest. Pure community trust.</div>
+
+        <div class="culture-grid">
+            <div class="culture-card"><div class="name" style="color:var(--qi-amber);">Tanda</div><div class="region">Latin America</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-cyan);">Chama</div><div class="region">East Africa</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-green);">Susu</div><div class="region">West Africa / Caribbean</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-purple);">Hui 會</div><div class="region">Chinese Communities</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-amber);">Stokvel</div><div class="region">South Africa</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-cyan);">Equb እቁብ</div><div class="region">Ethiopia</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-red);">Gye 계</div><div class="region">South Korea</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-green);">Arisan</div><div class="region">Indonesia</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-purple);">Pardner</div><div class="region">West Indies</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-amber);">Kameti کمیٹی</div><div class="region">Pakistan</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-cyan);">Paluwagan</div><div class="region">Philippines</div></div>
+            <div class="culture-card"><div class="name" style="color:var(--qi-red);">Gam'eya جمعية</div><div class="region">Egypt</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="divider"></div>
+<section class="section" id="how">
+    <div class="section-inner animate">
+        <div class="section-label">How ROSCO Works</div>
+        <div class="section-title">Four Steps to Community Finance</div>
+        <div class="section-desc">ROSCO takes the trust-based rotating savings model and replaces social enforcement with smart contracts. Payments are automatic. Rotation is on-chain. Idle funds earn yield through VESU. Nobody can cheat.</div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">01</div>
+                <h3>Create a Circle</h3>
+                <p>Deploy a SavingBox contract. Set the save_amount per round, number_of_payments (total rounds), payment_interval, withdraw_fee, and link a token + VESU yield address.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">02</div>
+                <h3>Members Join & Pay</h3>
+                <p>Members call <code style="color:var(--qi-cyan);">pay()</code> during the first round to register. Each round, every member contributes save_amount. Late payments are tracked separately from on-time ones.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">03</div>
+                <h3>Funds Earn Yield</h3>
+                <p>Every deposit is automatically forwarded to the VESU lending protocol to earn interest while sitting in the pot. Idle money is never idle — it compounds for all members.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">04</div>
+                <h3>Withdraw + Bonus</h3>
+                <p>At cycle end, call <code style="color:var(--qi-green);">withdraw()</code> to receive your savings plus a proportional share of all fees. More on-time payments = bigger share. Early exit costs a fee.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- VESU YIELD -->
+<div class="divider"></div>
+<section class="section">
+    <div class="section-inner animate">
+        <div class="section-label">DeFi Integration</div>
+        <div class="yield-box">
+            <div class="yield-icon">⚡</div>
+            <div class="yield-text">
+                <h3>VESU Yield — Money Never Sleeps</h3>
+                <p>Unlike traditional ROSCAs where pooled money sits idle, ROSCO automatically deposits every contribution into the VESU lending protocol. The pot generates yield in real-time. When the cycle ends, members split not just their savings — but the accumulated interest and fees from early withdrawals. The disciplined savers are rewarded most.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INTERACTIVE DEMO -->
+<div class="divider"></div>
+<section class="section" id="demo">
+    <div class="section-inner animate">
+        <div class="section-label">Interactive Demo</div>
+        <div class="section-title">Try a Savings Circle</div>
+        <div class="section-desc">This simulation demonstrates how a ROSCO SavingBox contract operates. 6 members, 30 Qi per round, 6 rounds. Click through to see the lifecycle.</div>
+
+        <div class="demo-container">
+            <div class="demo-header">
+                <div class="demo-header-label">SavingBox Simulation</div>
+                <div style="display:flex;gap:6px;">
+                    <span style="width:8px;height:8px;border-radius:50;background:var(--qi-green);display:inline-block;box-shadow:0 0 6px rgba(57,255,20,0.5);border-radius:50%;"></span>
+                    <span style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:1px;">LIVE SIMULATION</span>
+                </div>
+            </div>
+            <div class="demo-body">
+                <!-- Ring Visualization -->
+                <div class="ring-viz" id="ringViz">
+                    <!-- SVG orbit rings -->
+                    <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 340 340">
+                        <circle cx="170" cy="170" r="130" fill="none" stroke="rgba(0,240,255,0.06)" stroke-width="0.5" stroke-dasharray="6,5"/>
+                        <circle cx="170" cy="170" r="90" fill="none" stroke="rgba(0,240,255,0.04)" stroke-width="0.5" stroke-dasharray="3,6"/>
+                    </svg>
+                    <div class="ring-center">
+                        <div class="pot-label">POT</div>
+                        <div class="pot-amount" id="potDisplay">0 Qi</div>
+                    </div>
+                    <!-- Member nodes injected by JS -->
+                </div>
+
+                <!-- Controls -->
+                <div class="demo-controls">
+                    <div id="demoStats">
+                        <div class="demo-stat-row">
+                            <span class="demo-stat-label">Round</span>
+                            <span class="demo-stat-value" id="statRound">1 / 6</span>
+                        </div>
+                        <div class="demo-stat-row">
+                            <span class="demo-stat-label">Save Amount</span>
+                            <span class="demo-stat-value amber">30 Qi</span>
+                        </div>
+                        <div class="demo-stat-row">
+                            <span class="demo-stat-label">Members</span>
+                            <span class="demo-stat-value" id="statMembers">6</span>
+                        </div>
+                        <div class="demo-stat-row">
+                            <span class="demo-stat-label">Pot Total</span>
+                            <span class="demo-stat-value" id="statPot">0 Qi</span>
+                        </div>
+                        <div class="demo-stat-row">
+                            <span class="demo-stat-label">VESU Yield</span>
+                            <span class="demo-stat-value green" id="statYield">0.0 Qi</span>
+                        </div>
+                        <div class="demo-stat-row">
+                            <span class="demo-stat-label">Early W. Fees</span>
+                            <span class="demo-stat-value" id="statFees">0 Qi</span>
+                        </div>
+                    </div>
+
+                    <button class="demo-btn demo-btn-pay" id="btnPay" onclick="simPay()">All Members Pay (30 Qi)</button>
+                    <button class="demo-btn demo-btn-advance" id="btnAdvance" onclick="simAdvance()" disabled>Advance Round →</button>
+                    <button class="demo-btn demo-btn-withdraw" id="btnWithdraw" onclick="simWithdraw()" disabled>Withdraw (End of Cycle)</button>
+                    <button class="demo-btn demo-btn-reset" onclick="simReset()">Reset Simulation</button>
+
+                    <div class="demo-log" id="demoLog">
+                        <div class="log-entry"><span class="ts">[init]</span> SavingBox deployed — 6 members, 30 Qi/round, 6 rounds, 10% early withdrawal fee</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTRACT ARCHITECTURE -->
+<div class="divider"></div>
+<section class="section" id="contract">
+    <div class="section-inner animate">
+        <div class="section-label">Smart Contract</div>
+        <div class="section-title">SavingBox.cairo Architecture</div>
+        <div class="section-desc">Written in Cairo for StarkNet. The contract manages registration, payment tracking (on-time vs late), VESU yield deposits, early withdrawal with configurable fees, and proportional reward distribution.</div>
+
+        <div class="arch-grid">
+            <!-- View Functions -->
+            <div class="arch-panel">
+                <div class="arch-panel-header">
+                    <span class="dot green"></span>
+                    <span>View Functions (read-only)</span>
+                </div>
+                <div class="arch-panel-body">
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_samount()</span><span class="fn-desc">Qi per round</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_number_of_payments()</span><span class="fn-desc">Total rounds</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_payment_interval()</span><span class="fn-desc">Seconds between</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_start_time()</span><span class="fn-desc">Unix timestamp</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_current_payment()</span><span class="fn-desc">Current round #</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_user_data(addr)</span><span class="fn-desc">Savings, valid, late, registered</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_registered_users()</span><span class="fn-desc">All member addresses</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_withdraw_fee()</span><span class="fn-desc">Early exit fee %</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_total_fees_collected()</span><span class="fn-desc">Fee pool total</span></div>
+                    <div class="fn-row"><span class="fn-badge view">VIEW</span><span class="fn-name">get_expected_payments(ts)</span><span class="fn-desc">Payments due at time</span></div>
+                </div>
+            </div>
+
+            <!-- External Functions -->
+            <div class="arch-panel">
+                <div class="arch-panel-header">
+                    <span class="dot amber"></span>
+                    <span>External Functions (state-changing)</span>
+                </div>
+                <div class="arch-panel-body">
+                    <div class="fn-row"><span class="fn-badge ext">EXT</span><span class="fn-name">pay()</span><span class="fn-desc">Contribute save_amount</span></div>
+                    <div class="fn-row"><span class="fn-badge ext">EXT</span><span class="fn-name">advance_payment()</span><span class="fn-desc">Sync round to clock</span></div>
+                    <div class="fn-row"><span class="fn-badge ext">EXT</span><span class="fn-name">withdraw()</span><span class="fn-desc">End-of-cycle payout</span></div>
+                    <div class="fn-row"><span class="fn-badge ext">EXT</span><span class="fn-name">early_withdraw(n)</span><span class="fn-desc">Exit early (fee applies)</span></div>
+                    <div class="fn-row"><span class="fn-badge ext">EXT</span><span class="fn-name">donate(amount)</span><span class="fn-desc">Boost the reward pool</span></div>
+
+                    <div style="margin-top:20px; padding-top: 16px; border-top: 1px solid var(--border-dim);">
+                        <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-bottom:12px;">CONSTRUCTOR PARAMS</div>
+                        <div class="fn-row"><span class="fn-badge ext">u256</span><span class="fn-name">save_amount</span><span class="fn-desc">Tokens per round</span></div>
+                        <div class="fn-row"><span class="fn-badge ext">u64</span><span class="fn-name">number_of_payments</span><span class="fn-desc"># of rounds</span></div>
+                        <div class="fn-row"><span class="fn-badge ext">u64</span><span class="fn-name">payment_interval</span><span class="fn-desc">Seconds between</span></div>
+                        <div class="fn-row"><span class="fn-badge ext">u64</span><span class="fn-name">withdraw_fee</span><span class="fn-desc">Early exit % (max 50)</span></div>
+                        <div class="fn-row"><span class="fn-badge ext">addr</span><span class="fn-name">token_address</span><span class="fn-desc">ERC-20 contract</span></div>
+                        <div class="fn-row"><span class="fn-badge ext">addr</span><span class="fn-name">vesu_address</span><span class="fn-desc">VESU lending pool</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code sample -->
+        <div style="margin-top:48px;">
+            <div class="section-label">Deploy Example</div>
+            <div class="code-block"><pre><span class="cm">// Deploy a ROSCO savings circle on StarkNet</span>
+<span class="kw">const</span> savingBox = <span class="kw">await</span> deploy(<span class="str">"SavingBox"</span>, {
+    save_amount:       <span class="num">30_000000000000000000</span>,  <span class="cm">// 30 Qi (18 decimals)</span>
+    number_of_payments: <span class="num">8</span>,                      <span class="cm">// 8 rounds</span>
+    payment_interval:   <span class="num">604800</span>,                 <span class="cm">// 7 days in seconds</span>
+    withdraw_fee:       <span class="num">10</span>,                     <span class="cm">// 10% early exit fee</span>
+    token_address:      <span class="str">QI_TOKEN_ADDRESS</span>,       <span class="cm">// ERC-20 Qi token</span>
+    vesu_address:       <span class="str">VESU_POOL_ADDRESS</span>,      <span class="cm">// VESU lending pool</span>
+});
+
+<span class="cm">// Member joins by paying first round</span>
+<span class="kw">await</span> savingBox.<span class="fn">pay</span>();  <span class="cm">// Registers + deposits 30 Qi → VESU</span>
+
+<span class="cm">// ... after all rounds complete ...</span>
+<span class="kw">await</span> savingBox.<span class="fn">withdraw</span>();  <span class="cm">// Receives savings + fee share + yield</span></pre></div>
+        </div>
+
+        <!-- Payment flow -->
+        <div style="margin-top:32px;">
+            <div class="section-label">Payment Flow</div>
+            <div class="code-block"><pre><span class="cm">// What happens inside pay():</span>
+
+<span class="cm">1.</span> advance_payment()         <span class="cm">// Sync current_round to block timestamp</span>
+<span class="cm">2.</span> <span class="kw">if</span> !registered → register  <span class="cm">// First-time callers join (round 1 only)</span>
+<span class="cm">3.</span> assert total_paid &lt; max    <span class="cm">// Can't overpay</span>
+<span class="cm">4.</span> token.transfer_from(user)  <span class="cm">// Pull save_amount from member</span>
+<span class="cm">5.</span> update savings map          <span class="cm">// Track cumulative deposits</span>
+<span class="cm">6.</span> <span class="kw">if</span> on_time → valid++       <span class="cm">// On-time? Increment valid_payments</span>
+   <span class="kw">else</span>    → late++          <span class="cm">// Late? Increment late_payments</span>
+<span class="cm">7.</span> token.approve(vesu)        <span class="cm">// Approve VESU to spend</span>
+<span class="cm">8.</span> vesu.deposit(amount)       <span class="cm">// Deposit to earn yield</span></pre></div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-logo">ROSCO</div>
+    <div class="footer-copy">Cairo · StarkNet · VESU · Qi.xyz</div>
+</footer>
+
+<script>
+    // ===== SIMULATION ENGINE =====
+    const SIM = {
+        members: 6,
+        saveAmount: 30,
+        totalRounds: 6,
+        withdrawFee: 10,
+        currentRound: 1,
+        roundPaid: false,
+        potTotal: 0,
+        yieldAccum: 0,
+        feesCollected: 0,
+        memberData: [],
+        finished: false
+    };
+
+    function initSim() {
+        SIM.currentRound = 1;
+        SIM.roundPaid = false;
+        SIM.potTotal = 0;
+        SIM.yieldAccum = 0;
+        SIM.feesCollected = 0;
+        SIM.finished = false;
+        SIM.memberData = [];
+        for (let i = 0; i < SIM.members; i++) {
+            SIM.memberData.push({ id: i + 1, totalPaid: 0, validPayments: 0, latePayments: 0, withdrawn: false });
+        }
+        renderRing();
+        updateStats();
+        document.getElementById('btnPay').disabled = false;
+        document.getElementById('btnAdvance').disabled = true;
+        document.getElementById('btnWithdraw').disabled = true;
+    }
+
+    function renderRing() {
+        const viz = document.getElementById('ringViz');
+        // Remove old member nodes
+        viz.querySelectorAll('.member-node').forEach(n => n.remove());
+
+        const cx = viz.offsetWidth / 2;
+        const cy = viz.offsetHeight / 2;
+        const radius = Math.min(cx, cy) * 0.72;
+
+        SIM.memberData.forEach((m, i) => {
+            const angle = (i / SIM.members) * Math.PI * 2 - Math.PI / 2;
+            const x = cx + Math.cos(angle) * radius - 22;
+            const y = cy + Math.sin(angle) * radius - 22;
+
+            const node = document.createElement('div');
+            node.className = 'member-node';
+            if (i === (SIM.currentRound - 1) % SIM.members) {
+                node.classList.add('active');
+            } else if (m.totalPaid >= SIM.saveAmount * SIM.currentRound) {
+                node.classList.add('paid');
+            } else {
+                node.classList.add('pending');
+            }
+            node.style.left = x + 'px';
+            node.style.top = y + 'px';
+            node.textContent = 'M' + m.id;
+
+            if (i === (SIM.currentRound - 1) % SIM.members) {
+                const tag = document.createElement('div');
+                tag.className = 'payout-tag';
+                tag.textContent = 'PAYOUT';
+                node.appendChild(tag);
+            }
+
+            viz.appendChild(node);
+        });
+    }
+
+    function updateStats() {
+        document.getElementById('statRound').textContent = SIM.currentRound + ' / ' + SIM.totalRounds;
+        document.getElementById('statPot').textContent = SIM.potTotal + ' Qi';
+        document.getElementById('potDisplay').textContent = SIM.potTotal + ' Qi';
+        document.getElementById('statYield').textContent = SIM.yieldAccum.toFixed(1) + ' Qi';
+        document.getElementById('statFees').textContent = SIM.feesCollected + ' Qi';
+    }
+
+    function log(msg) {
+        const logEl = document.getElementById('demoLog');
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = '<span class="ts">[R' + SIM.currentRound + ']</span> ' + msg;
+        logEl.appendChild(entry);
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function simPay() {
+        if (SIM.roundPaid || SIM.finished) return;
+
+        const roundDeposit = SIM.saveAmount * SIM.members;
+        SIM.potTotal += roundDeposit;
+
+        SIM.memberData.forEach(m => {
+            m.totalPaid += SIM.saveAmount;
+            m.validPayments++;
+        });
+
+        SIM.roundPaid = true;
+        // Simulate VESU yield (~0.5% per round on pot)
+        const yieldThisRound = +(SIM.potTotal * 0.005).toFixed(1);
+        SIM.yieldAccum = +(SIM.yieldAccum + yieldThisRound).toFixed(1);
+
+        log('<span class="action">pay()</span> — All 6 members deposit <span class="amount">' + SIM.saveAmount + ' Qi</span> → pot = <span class="amount">' + SIM.potTotal + ' Qi</span>');
+        log('VESU yield this round: <span class="amount">+' + yieldThisRound + ' Qi</span>');
+
+        document.getElementById('btnPay').disabled = true;
+        document.getElementById('btnAdvance').disabled = false;
+
+        if (SIM.currentRound >= SIM.totalRounds) {
+            document.getElementById('btnAdvance').disabled = true;
+            document.getElementById('btnWithdraw').disabled = false;
+            log('<span style="color:var(--qi-green)">✓ All rounds complete — withdraw() now available</span>');
+        }
+
+        renderRing();
+        updateStats();
+    }
+
+    function simAdvance() {
+        if (!SIM.roundPaid || SIM.currentRound >= SIM.totalRounds) return;
+
+        SIM.currentRound++;
+        SIM.roundPaid = false;
+
+        log('advance_payment() → <span class="action">Round ' + SIM.currentRound + '</span>');
+
+        document.getElementById('btnPay').disabled = false;
+        document.getElementById('btnAdvance').disabled = true;
+
+        renderRing();
+        updateStats();
+    }
+
+    function simWithdraw() {
+        if (!SIM.finished && SIM.currentRound >= SIM.totalRounds && SIM.roundPaid) {
+            SIM.finished = true;
+            const perMember = SIM.potTotal / SIM.members;
+            const yieldPerMember = +(SIM.yieldAccum / SIM.members).toFixed(1);
+            const totalPerMember = +(perMember + yieldPerMember).toFixed(1);
+
+            log('<span class="action">withdraw()</span> — Each member receives:');
+            log('  Savings: <span class="amount">' + perMember + ' Qi</span> + Yield: <span class="amount">' + yieldPerMember + ' Qi</span> = <span style="color:var(--qi-green);font-weight:bold;">' + totalPerMember + ' Qi</span>');
+            log('<span style="color:var(--qi-green)">✓ Cycle complete. All members paid out.</span>');
+
+            document.getElementById('btnWithdraw').disabled = true;
+            document.getElementById('btnPay').disabled = true;
+            document.getElementById('btnAdvance').disabled = true;
+        }
+    }
+
+    function simReset() {
+        document.getElementById('demoLog').innerHTML = '<div class="log-entry"><span class="ts">[init]</span> SavingBox redeployed — 6 members, 30 Qi/round, 6 rounds, 10% early withdrawal fee</div>';
+        initSim();
+    }
+
+    // Init
+    initSim();
+    window.addEventListener('resize', renderRing);
+
+    // ===== SCROLL ANIMATIONS =====
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
