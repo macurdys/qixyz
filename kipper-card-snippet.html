@@ -1,0 +1,204 @@
+<!--
+    KIPPER CAROUSEL CARD — Insert into qi.xyz index.html carousel track
+    Place before the "Your Idea Here" card (the last card)
+    Link: kipper.html
+-->
+
+<!-- Kipper — Scientific Truth Filter for X -->
+<a href="kipper.html" class="carousel-card" data-color="green" style="flex: 0 0 420px;">
+    <div class="carousel-card-visual" style="height:280px; background:#05080f; overflow:hidden; position:relative;">
+
+        <!-- Subtle grid -->
+        <div style="position:absolute;inset:0;
+            background-image: linear-gradient(rgba(61,220,132,0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(61,220,132,0.03) 1px, transparent 1px);
+            background-size:30px 30px;"></div>
+
+        <!-- Emerald radial glow -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            width:300px;height:200px;
+            background:radial-gradient(ellipse, rgba(61,220,132,0.1) 0%, rgba(200,168,78,0.05) 40%, transparent 70%);
+            filter:blur(20px);pointer-events:none;"></div>
+
+        <!-- SVG: X feed with Kipper filter overlay -->
+        <svg viewBox="0 0 420 270" xmlns="http://www.w3.org/2000/svg"
+             style="position:absolute;inset:0;width:100%;height:100%;"
+             font-family="'Share Tech Mono', 'Courier New', monospace">
+
+            <defs>
+                <filter id="kip-glow">
+                    <feGaussianBlur stdDeviation="2" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <filter id="kip-glow-gold">
+                    <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <linearGradient id="kipFilterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#3ddc84" stop-opacity="0.08"/>
+                    <stop offset="100%" stop-color="#3ddc84" stop-opacity="0"/>
+                </linearGradient>
+                <style>
+                    .kip-fade { opacity:0; animation: kipFadeIn 0.5s ease forwards; }
+                    .kf1 { animation-delay: 0.1s; }
+                    .kf2 { animation-delay: 0.3s; }
+                    .kf3 { animation-delay: 0.5s; }
+                    .kf4 { animation-delay: 0.7s; }
+                    .kf5 { animation-delay: 0.9s; }
+                    .kf6 { animation-delay: 1.1s; }
+                    @keyframes kipFadeIn {
+                        from { opacity:0; transform: translateY(4px); }
+                        to   { opacity:1; transform: translateY(0); }
+                    }
+                    .kip-scan {
+                        animation: kipScan 3s ease-in-out infinite;
+                    }
+                    @keyframes kipScan {
+                        0%, 100% { opacity: 0.15; }
+                        50% { opacity: 0.4; }
+                    }
+                    .kip-badge-pulse {
+                        animation: kipBadgePulse 2s ease-in-out infinite;
+                    }
+                    @keyframes kipBadgePulse {
+                        0%, 100% { opacity: 0.7; }
+                        50% { opacity: 1; }
+                    }
+                </style>
+            </defs>
+
+            <!-- ═══ LEFT SIDE: X FEED ═══ -->
+            <!-- Feed header -->
+            <text x="20" y="22" font-size="7" fill="#4a5568" letter-spacing="2">X FEED</text>
+            <text x="80" y="22" font-size="6" fill="#3ddc84" letter-spacing="1" filter="url(#kip-glow)">+ KIPPER LAYER</text>
+
+            <!-- Post 1: Unverified / hype -->
+            <g class="kip-fade kf1">
+                <rect x="16" y="32" width="180" height="52" rx="4" fill="#0c1018" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+                <circle cx="30" cy="44" r="6" fill="rgba(255,255,255,0.08)"/>
+                <text x="40" y="46" font-size="5.5" fill="#7a8a9e">@crypto_bro99</text>
+                <rect x="24" y="52" width="120" height="2" rx="1" fill="rgba(255,255,255,0.06)"/>
+                <rect x="24" y="58" width="90" height="2" rx="1" fill="rgba(255,255,255,0.04)"/>
+                <text x="24" y="72" font-size="5" fill="#ff3366" opacity="0.7">🚀 100X GUARANTEED NO CAP</text>
+                <!-- Red X mark -->
+                <g transform="translate(176,40)">
+                    <circle r="8" fill="rgba(255,51,102,0.15)" stroke="rgba(255,51,102,0.4)" stroke-width="0.5"/>
+                    <text y="3" text-anchor="middle" font-size="8" fill="#ff3366" font-weight="bold">✗</text>
+                </g>
+            </g>
+
+            <!-- Post 2: VERIFIED -->
+            <g class="kip-fade kf2">
+                <rect x="16" y="92" width="180" height="52" rx="4" fill="#0c1018" stroke="rgba(61,220,132,0.2)" stroke-width="0.7"/>
+                <circle cx="30" cy="104" r="6" fill="rgba(61,220,132,0.12)"/>
+                <text x="40" y="106" font-size="5.5" fill="#3ddc84">@dr_entropy</text>
+                <!-- Verified badge inline -->
+                <circle cx="90" cy="103" r="4" fill="#3ddc84" opacity="0.3"/>
+                <text x="90" y="105.5" text-anchor="middle" font-size="5" fill="#000" font-weight="bold">✓</text>
+                <rect x="24" y="112" width="140" height="2" rx="1" fill="rgba(61,220,132,0.1)"/>
+                <rect x="24" y="118" width="110" height="2" rx="1" fill="rgba(61,220,132,0.06)"/>
+                <text x="24" y="133" font-size="5" fill="#3ddc84" opacity="0.8" class="kip-badge-pulse">◈ VERIFIED SCIENCE</text>
+                <!-- Green check -->
+                <g transform="translate(176,100)">
+                    <circle r="8" fill="rgba(61,220,132,0.15)" stroke="rgba(61,220,132,0.4)" stroke-width="0.7" filter="url(#kip-glow)"/>
+                    <text y="3" text-anchor="middle" font-size="8" fill="#3ddc84" font-weight="bold">✓</text>
+                </g>
+            </g>
+
+            <!-- Post 3: Pending -->
+            <g class="kip-fade kf3">
+                <rect x="16" y="152" width="180" height="52" rx="4" fill="#0c1018" stroke="rgba(255,184,0,0.15)" stroke-width="0.5"/>
+                <circle cx="30" cy="164" r="6" fill="rgba(255,255,255,0.08)"/>
+                <text x="40" y="166" font-size="5.5" fill="#7a8a9e">@quant_lab</text>
+                <rect x="24" y="172" width="130" height="2" rx="1" fill="rgba(255,255,255,0.06)"/>
+                <rect x="24" y="178" width="100" height="2" rx="1" fill="rgba(255,255,255,0.04)"/>
+                <text x="24" y="193" font-size="5" fill="#ffb800" opacity="0.6">⏳ 3 VALIDATORS REVIEWING</text>
+                <g transform="translate(176,160)">
+                    <circle r="8" fill="rgba(255,184,0,0.12)" stroke="rgba(255,184,0,0.3)" stroke-width="0.5"/>
+                    <text y="3" text-anchor="middle" font-size="7" fill="#ffb800">⏳</text>
+                </g>
+            </g>
+
+            <!-- ═══ DIVIDER LINE ═══ -->
+            <line x1="210" y1="20" x2="210" y2="250" stroke="rgba(61,220,132,0.1)" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+            <!-- ═══ RIGHT SIDE: KIPPER FILTER PANEL ═══ -->
+            <rect x="218" y="28" width="186" height="222" rx="6" fill="url(#kipFilterGrad)" stroke="rgba(61,220,132,0.12)" stroke-width="0.5"/>
+
+            <!-- Kipper logo area -->
+            <g class="kip-fade kf4">
+                <text x="230" y="50" font-size="12" fill="#3ddc84" font-weight="bold" letter-spacing="3" filter="url(#kip-glow)" font-family="'Orbitron','Share Tech Mono',monospace">KIPPER</text>
+                <text x="330" y="50" font-size="7" fill="#c8a84e" filter="url(#kip-glow-gold)">◈</text>
+                <text x="230" y="62" font-size="5" fill="#4a5568" letter-spacing="1.5">SCIENTIFIC TRUTH FILTER</text>
+            </g>
+
+            <!-- Scanning line effect -->
+            <rect x="220" y="70" width="182" height="1" fill="#3ddc84" opacity="0.1" class="kip-scan"/>
+
+            <!-- Consensus meter -->
+            <g class="kip-fade kf5">
+                <text x="230" y="86" font-size="5" fill="#4a5568" letter-spacing="1">FEED HEALTH</text>
+                <rect x="230" y="92" width="160" height="5" rx="2" fill="#1a2233"/>
+                <rect x="230" y="92" width="110" height="5" rx="2" fill="#3ddc84" opacity="0.5"/>
+                <text x="394" y="97" text-anchor="end" font-size="5.5" fill="#3ddc84">68%</text>
+
+                <!-- Stats -->
+                <text x="230" y="118" font-size="5" fill="#4a5568" letter-spacing="1">TODAY</text>
+                <text x="230" y="132" font-size="14" fill="#3ddc84" font-weight="bold" font-family="'Orbitron','Share Tech Mono',monospace" filter="url(#kip-glow)">247</text>
+                <text x="276" y="132" font-size="5" fill="#4a5568">CLAIMS</text>
+                <text x="276" y="140" font-size="5" fill="#4a5568">VERIFIED</text>
+
+                <text x="320" y="132" font-size="14" fill="#ff3366" font-weight="bold" font-family="'Orbitron','Share Tech Mono',monospace">31</text>
+                <text x="342" y="132" font-size="5" fill="#4a5568">CLAIMS</text>
+                <text x="342" y="140" font-size="5" fill="#4a5568">DISPUTED</text>
+            </g>
+
+            <!-- Active validators -->
+            <g class="kip-fade kf6">
+                <text x="230" y="162" font-size="5" fill="#4a5568" letter-spacing="1">ACTIVE VALIDATORS</text>
+                <!-- Validator dots -->
+                <circle cx="236" cy="174" r="4" fill="rgba(61,220,132,0.2)" stroke="rgba(61,220,132,0.4)" stroke-width="0.5"/>
+                <circle cx="248" cy="174" r="4" fill="rgba(61,220,132,0.2)" stroke="rgba(61,220,132,0.4)" stroke-width="0.5"/>
+                <circle cx="260" cy="174" r="4" fill="rgba(200,168,78,0.2)" stroke="rgba(200,168,78,0.4)" stroke-width="0.5"/>
+                <circle cx="272" cy="174" r="4" fill="rgba(61,220,132,0.2)" stroke="rgba(61,220,132,0.4)" stroke-width="0.5"/>
+                <circle cx="284" cy="174" r="4" fill="rgba(192,192,192,0.2)" stroke="rgba(192,192,192,0.4)" stroke-width="0.5"/>
+                <circle cx="296" cy="174" r="4" fill="rgba(61,220,132,0.2)" stroke="rgba(61,220,132,0.4)" stroke-width="0.5"/>
+                <circle cx="308" cy="174" r="4" fill="rgba(200,168,78,0.2)" stroke="rgba(200,168,78,0.4)" stroke-width="0.5"/>
+                <text x="320" y="177" font-size="5.5" fill="#4a5568">+89</text>
+
+                <!-- Network label -->
+                <rect x="230" y="190" width="160" height="20" rx="3" fill="rgba(61,220,132,0.04)" stroke="rgba(61,220,132,0.1)" stroke-width="0.5"/>
+                <circle cx="242" cy="200" r="3" fill="#3ddc84" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <text x="250" y="203" font-size="5" fill="#3ddc84" letter-spacing="1">QUAI NETWORK · PROOF-OF-ENTROPY-MINIMA</text>
+
+                <!-- Powered by -->
+                <text x="230" y="232" font-size="4.5" fill="#4a5568" letter-spacing="1">POWERED BY VERIFIED SCIENCE</text>
+                <text x="230" y="242" font-size="4.5" fill="#c8a84e" letter-spacing="0.5">ENERGY-BACKED CREDIBILITY</text>
+            </g>
+        </svg>
+
+        <!-- Card badges -->
+        <span class="card-tag-top" style="background:rgba(6,8,13,0.85);backdrop-filter:blur(4px);border-color:rgba(61,220,132,0.3);color:#3ddc84;">Filter</span>
+        <span class="card-status concept"></span>
+
+        <!-- Bottom bar -->
+        <div style="position:absolute;bottom:0;left:0;right:0;
+            background:linear-gradient(0deg, rgba(6,8,13,0.95) 0%, transparent 100%);
+            padding:8px 12px 6px;display:flex;align-items:center;gap:8px;">
+            <span style="width:6px;height:6px;background:#3ddc84;border-radius:50%;
+                box-shadow:0 0 8px rgba(61,220,132,0.7);display:inline-block;
+                animation:pulse-green 2s ease-in-out infinite;"></span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:9px;
+                color:#3ddc84;letter-spacing:3px;text-transform:uppercase;">
+                QUAI · VERIFIED SCIENCE · X INTEGRATION
+            </span>
+        </div>
+    </div>
+    <div class="carousel-card-body">
+        <h3>Kipper</h3>
+        <p>Scientific truth filter for X. Verified Science validators annotate, challenge, and verify claims on-chain. Community Notes, but for science — powered by Quai's Proof-of-Entropy-Minima.</p>
+        <span class="card-link">kipper.html →</span>
+    </div>
+</a>

@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kipper — Scientific Truth Filter for X</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.15);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --kip-emerald: #3ddc84;
+            --kip-emerald-dim: rgba(61, 220, 132, 0.15);
+            --kip-emerald-glow: rgba(61, 220, 132, 0.4);
+            --kip-gold: #c8a84e;
+            --kip-gold-glow: rgba(200, 168, 78, 0.5);
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.12);
+            --border-bright: rgba(0, 240, 255, 0.3);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--kip-emerald) var(--bg-deep); }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            font-size: 17px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(61, 220, 132, 0.006) 2px, rgba(61, 220, 132, 0.006) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(61, 220, 132, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(61, 220, 132, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.88); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(61, 220, 132, 0.12);
+            padding: 0 40px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-display); font-size: 20px; font-weight: 700;
+            color: var(--kip-emerald); text-decoration: none; letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--kip-emerald-glow);
+        }
+        .nav-back {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+            text-decoration: none; letter-spacing: 2px; text-transform: uppercase;
+            transition: color 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .nav-back:hover { color: var(--kip-emerald); }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .hero-orb {
+            position: absolute;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(61, 220, 132, 0.06) 0%, rgba(200, 168, 78, 0.04) 40%, transparent 70%);
+            filter: blur(80px);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orb-pulse 6s ease-in-out infinite;
+        }
+        @keyframes orb-pulse {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Floating X posts in the background */
+        .hero-feed-layer {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+        .feed-post {
+            position: absolute;
+            width: 260px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            animation: float-up var(--dur) linear infinite;
+            animation-delay: var(--delay);
+        }
+        .feed-post.verified {
+            border-color: rgba(61, 220, 132, 0.3);
+            box-shadow: 0 0 20px rgba(61, 220, 132, 0.1);
+        }
+        .feed-post .post-header {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+        }
+        .feed-post .avatar {
+            width: 20px; height: 20px; border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+        .feed-post .handle {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px;
+        }
+        .feed-post .badge-check {
+            width: 14px; height: 14px; border-radius: 50%;
+            background: var(--kip-emerald);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 8px; color: #000; font-weight: bold;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(100vh); opacity: 0; }
+            5% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-120vh); opacity: 0; }
+        }
+
+        .hero-badge {
+            position: relative;
+            width: 180px; height: 180px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: badge-arrive 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+        }
+        .hero-badge img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 40px rgba(61, 220, 132, 0.3)) drop-shadow(0 0 80px rgba(200, 168, 78, 0.15));
+        }
+        .hero-badge .badge-ring {
+            position: absolute; inset: -12px;
+            border: 1px solid rgba(61, 220, 132, 0.2);
+            border-radius: 50%;
+            animation: ring-spin 20s linear infinite;
+        }
+        .hero-badge .badge-ring::before {
+            content: '';
+            position: absolute;
+            top: -3px; left: 50%;
+            width: 6px; height: 6px;
+            background: var(--kip-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--kip-emerald-glow);
+        }
+        @keyframes ring-spin { to { transform: rotate(360deg); } }
+        @keyframes badge-arrive {
+            from { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+            to { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        .hero-status {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--kip-emerald);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 0.6s;
+        }
+        .hero-status::before { content: '◈ '; animation: pulse-dot 2s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(56px, 12vw, 140px);
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 0.8s;
+        }
+        .hero h1 .kip { color: var(--kip-emerald); text-shadow: 0 0 40px var(--kip-emerald-glow), 0 0 80px rgba(61, 220, 132, 0.15); }
+        .hero h1 .per { color: var(--kip-gold); text-shadow: 0 0 30px var(--kip-gold-glow); }
+
+        .hero-sub {
+            font-family: var(--font-display);
+            font-size: clamp(11px, 1.5vw, 14px);
+            font-weight: 400;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 0.9s;
+        }
+
+        .hero-tagline {
+            font-family: var(--font-body);
+            font-size: clamp(18px, 2.5vw, 26px);
+            font-weight: 300;
+            color: var(--text-secondary);
+            max-width: 680px;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 1s;
+        }
+        .hero-tagline em {
+            color: var(--kip-emerald);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .hero-tagline-sub {
+            font-family: var(--font-mono);
+            font-size: clamp(11px, 1.3vw, 13px);
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 48px;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fade-up 0.8s ease forwards 1.1s;
+        }
+
+        .hero-ctas {
+            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+            opacity: 0; animation: fade-up 0.8s ease forwards 1.2s;
+        }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px;
+            text-transform: uppercase; text-decoration: none; padding: 14px 32px;
+            transition: all 0.3s; cursor: pointer; display: inline-block;
+        }
+        .btn-primary {
+            background: var(--kip-emerald); color: var(--bg-deep);
+            border: 1px solid var(--kip-emerald);
+            box-shadow: 0 0 20px rgba(61, 220, 132, 0.25), inset 0 0 20px rgba(61, 220, 132, 0.1);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 50px rgba(61, 220, 132, 0.4), inset 0 0 30px rgba(61, 220, 132, 0.2);
+            transform: translateY(-2px);
+        }
+        .btn-ghost {
+            background: transparent; color: var(--kip-emerald);
+            border: 1px solid rgba(61, 220, 132, 0.3);
+        }
+        .btn-ghost:hover {
+            background: var(--kip-emerald-dim);
+            border-color: var(--kip-emerald);
+            box-shadow: 0 0 20px rgba(61, 220, 132, 0.1);
+        }
+
+        /* ===== PROBLEM / SOLUTION SPLIT ===== */
+        .split-section {
+            position: relative; z-index: 1;
+            max-width: 1100px; margin: 0 auto;
+            padding: 80px 24px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .split-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 40px 36px;
+            position: relative;
+            overflow: hidden;
+        }
+        .split-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        }
+        .split-card.problem::before {
+            background: linear-gradient(90deg, transparent, var(--qi-red), transparent);
+        }
+        .split-card.solution::before {
+            background: linear-gradient(90deg, transparent, var(--kip-emerald), transparent);
+        }
+        .split-card-label {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+            text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .split-card.problem .split-card-label { color: var(--qi-red); }
+        .split-card.solution .split-card-label { color: var(--kip-emerald); }
+        .split-card-label .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+        }
+        .split-card.problem .dot { background: var(--qi-red); box-shadow: 0 0 8px rgba(255, 51, 102, 0.5); }
+        .split-card.solution .dot { background: var(--kip-emerald); box-shadow: 0 0 8px var(--kip-emerald-glow); }
+        .split-card h3 {
+            font-family: var(--font-display); font-size: 20px; font-weight: 600;
+            letter-spacing: 1px; margin-bottom: 16px;
+        }
+        .split-card p {
+            font-weight: 300; color: var(--text-secondary); line-height: 1.9; font-size: 15px;
+        }
+
+        /* ===== HOW IT WORKS — PIPELINE ===== */
+        .pipeline-section {
+            position: relative; z-index: 1;
+            max-width: 1100px; margin: 0 auto;
+            padding: 80px 24px;
+        }
+        .section-label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--kip-emerald);
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: 48px;
+        }
+        .section-label::before { content: '// '; color: var(--text-dim); }
+
+        .pipeline-flow {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            position: relative;
+        }
+        .pipeline-flow::before {
+            content: '';
+            position: absolute;
+            top: 40px; left: 12.5%; right: 12.5%;
+            height: 1px;
+            background: linear-gradient(90deg,
+                var(--qi-red), var(--qi-amber), var(--kip-emerald), var(--kip-emerald));
+            opacity: 0.4;
+        }
+        .pipe-step {
+            text-align: center;
+            padding: 0 12px;
+        }
+        .pipe-icon {
+            width: 80px; height: 80px;
+            margin: 0 auto 20px;
+            border: 1px solid var(--border-dim);
+            background: var(--bg-card);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        .pipe-icon svg { width: 36px; height: 36px; }
+        .pipe-step:nth-child(1) .pipe-icon { border-color: rgba(255, 51, 102, 0.3); }
+        .pipe-step:nth-child(2) .pipe-icon { border-color: rgba(255, 184, 0, 0.3); }
+        .pipe-step:nth-child(3) .pipe-icon { border-color: rgba(61, 220, 132, 0.3); }
+        .pipe-step:nth-child(4) .pipe-icon { border-color: rgba(61, 220, 132, 0.5); box-shadow: 0 0 20px rgba(61, 220, 132, 0.1); }
+        .pipe-num {
+            font-family: var(--font-display); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 2px; margin-bottom: 8px;
+        }
+        .pipe-title {
+            font-family: var(--font-display); font-size: 13px; font-weight: 600;
+            letter-spacing: 1px; margin-bottom: 8px;
+        }
+        .pipe-desc {
+            font-family: var(--font-body); font-size: 13px; color: var(--text-dim);
+            font-weight: 300; line-height: 1.7;
+        }
+
+        /* ===== FEATURE CAROUSEL ===== */
+        .carousel-section {
+            position: relative; z-index: 1;
+            padding: 40px 24px 100px;
+            max-width: 1400px; margin: 0 auto;
+        }
+        .carousel-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .carousel-label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--kip-emerald);
+            letter-spacing: 4px; text-transform: uppercase;
+        }
+        .carousel-label::before { content: '// '; color: var(--text-dim); }
+        .carousel-controls { display: flex; gap: 8px; }
+        .carousel-btn {
+            width: 40px; height: 40px;
+            background: transparent; border: 1px solid var(--border-dim);
+            color: var(--kip-emerald); font-size: 18px;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono);
+        }
+        .carousel-btn:hover {
+            border-color: var(--kip-emerald); background: var(--kip-emerald-dim);
+            box-shadow: 0 0 15px rgba(61, 220, 132, 0.1);
+        }
+
+        .carousel-track-wrapper {
+            overflow: hidden; position: relative;
+        }
+        .carousel-track-wrapper::before,
+        .carousel-track-wrapper::after {
+            content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 10;
+            pointer-events: none;
+        }
+        .carousel-track-wrapper::before { left: 0; background: linear-gradient(90deg, var(--bg-deep), transparent); }
+        .carousel-track-wrapper::after { right: 0; background: linear-gradient(-90deg, var(--bg-deep), transparent); }
+
+        .carousel-track {
+            display: flex; gap: 24px;
+            transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .carousel-card {
+            flex: 0 0 340px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            position: relative;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            overflow: hidden;
+        }
+        .carousel-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--kip-emerald), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .carousel-card:hover {
+            border-color: var(--kip-emerald);
+            box-shadow: 0 0 40px rgba(61, 220, 132, 0.12), 0 8px 32px rgba(0, 0, 0, 0.4);
+            transform: translateY(-8px);
+        }
+        .carousel-card:hover::before { opacity: 1; }
+
+        .card-visual {
+            height: 200px;
+            background: var(--bg-panel);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .card-visual svg { width: 100%; height: 100%; }
+
+        .card-body {
+            padding: 24px 24px 28px;
+        }
+        .card-body h3 {
+            font-family: var(--font-display); font-size: 16px; font-weight: 600;
+            letter-spacing: 1px; margin-bottom: 10px;
+        }
+        .card-body p {
+            font-weight: 300; color: var(--text-secondary); font-size: 14px;
+            line-height: 1.7;
+        }
+        .card-tag {
+            position: absolute; top: 12px; left: 12px;
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
+            text-transform: uppercase; padding: 3px 8px;
+            border: 1px solid rgba(61, 220, 132, 0.3); color: var(--kip-emerald);
+            background: rgba(6, 8, 13, 0.75); backdrop-filter: blur(4px);
+        }
+        .card-status {
+            position: absolute; top: 12px; right: 12px;
+            width: 8px; height: 8px; border-radius: 50%;
+        }
+        .card-status.concept { background: var(--qi-amber); box-shadow: 0 0 8px rgba(255, 184, 0, 0.5); }
+        .card-status.live { background: var(--kip-emerald); box-shadow: 0 0 8px var(--kip-emerald-glow); }
+
+        .carousel-dots {
+            display: flex; justify-content: center; gap: 8px; margin-top: 24px;
+        }
+        .carousel-dot {
+            width: 8px; height: 8px; border: 1px solid var(--border-dim);
+            background: transparent; cursor: pointer; transition: all 0.3s;
+            padding: 0;
+        }
+        .carousel-dot.active {
+            background: var(--kip-emerald); border-color: var(--kip-emerald);
+            box-shadow: 0 0 8px var(--kip-emerald-glow);
+        }
+
+        /* ===== VALIDATOR TIERS ===== */
+        .tiers-section {
+            position: relative; z-index: 1;
+            max-width: 1100px; margin: 0 auto;
+            padding: 40px 24px 100px;
+        }
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .tier-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 32px 28px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .tier-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        }
+        .tier-card:hover { transform: translateY(-4px); }
+        .tier-card.t1::before { background: linear-gradient(90deg, transparent, #cd7f32, transparent); }
+        .tier-card.t1:hover { border-color: #cd7f32; }
+        .tier-card.t2::before { background: linear-gradient(90deg, transparent, #c0c0c0, transparent); }
+        .tier-card.t2:hover { border-color: #c0c0c0; }
+        .tier-card.t3::before { background: linear-gradient(90deg, transparent, var(--kip-gold), transparent); }
+        .tier-card.t3:hover { border-color: var(--kip-gold); box-shadow: 0 0 30px rgba(200, 168, 78, 0.1); }
+
+        .tier-icon {
+            font-size: 28px; margin-bottom: 16px;
+        }
+        .tier-name {
+            font-family: var(--font-display); font-size: 14px; font-weight: 600;
+            letter-spacing: 2px; margin-bottom: 6px;
+        }
+        .tier-card.t1 .tier-name { color: #cd7f32; }
+        .tier-card.t2 .tier-name { color: #c0c0c0; }
+        .tier-card.t3 .tier-name { color: var(--kip-gold); text-shadow: 0 0 10px var(--kip-gold-glow); }
+        .tier-req {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 1px; margin-bottom: 16px;
+        }
+        .tier-perks {
+            list-style: none; padding: 0;
+        }
+        .tier-perks li {
+            font-size: 13px; color: var(--text-secondary); font-weight: 300;
+            padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .tier-perks li::before {
+            content: '›';
+            font-family: var(--font-mono); color: var(--text-dim); font-size: 14px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border-dim);
+            padding: 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1100px; margin: 0 auto;
+        }
+        .footer-logo {
+            font-family: var(--font-display); font-size: 14px; font-weight: 700;
+            color: var(--kip-emerald); letter-spacing: 4px;
+            text-shadow: 0 0 10px var(--kip-emerald-glow);
+        }
+        .footer-copy {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .split-section { grid-template-columns: 1fr; }
+            .pipeline-flow { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+            .pipeline-flow::before { display: none; }
+            .tiers-grid { grid-template-columns: 1fr; }
+            .carousel-card { flex: 0 0 280px; }
+        }
+        @media (max-width: 600px) {
+            .pipeline-flow { grid-template-columns: 1fr; }
+            nav { padding: 0 20px; }
+            footer { flex-direction: column; gap: 12px; text-align: center; }
+        }
+
+        .animate { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .animate.in-view { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <span class="nav-logo">KIPPER</span>
+        <a href="index.html" class="nav-back">‹ Back to Qi.xyz</a>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-orb"></div>
+
+        <!-- Floating feed posts background -->
+        <div class="hero-feed-layer">
+            <div class="feed-post" style="left:5%; --dur:22s; --delay:0s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@anon_2847</span></div>
+                New study shows 40% efficiency gain in…
+            </div>
+            <div class="feed-post verified" style="left:18%; --dur:26s; --delay:3s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@dr_entropy</span><div class="badge-check">✓</div></div>
+                Peer-reviewed: PoEM consensus reduces…
+            </div>
+            <div class="feed-post" style="right:8%; --dur:20s; --delay:1s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@crypto_bro99</span></div>
+                🚀🚀🚀 THIS COIN IS GOING TO 100X…
+            </div>
+            <div class="feed-post verified" style="right:22%; --dur:28s; --delay:6s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@wolfram_lab</span><div class="badge-check">✓</div></div>
+                Computational irreducibility implies…
+            </div>
+            <div class="feed-post" style="left:38%; --dur:24s; --delay:8s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@fud_machine</span></div>
+                BREAKING: all blockchains are actually…
+            </div>
+            <div class="feed-post verified" style="right:40%; --dur:30s; --delay:12s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@thermo_econ</span><div class="badge-check">✓</div></div>
+                Shannon entropy measurement confirms…
+            </div>
+            <div class="feed-post" style="left:60%; --dur:19s; --delay:4s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@ngmi_55</span></div>
+                Trust me bro, the tokenomics are…
+            </div>
+            <div class="feed-post verified" style="left:75%; --dur:25s; --delay:9s;">
+                <div class="post-header"><div class="avatar"></div><span class="handle">@quai_miner</span><div class="badge-check">✓</div></div>
+                Hash rate data confirms thermodynamic…
+            </div>
+        </div>
+
+        <div class="hero-badge">
+            <div class="badge-ring"></div>
+            <img src="verified-science-badge.png" alt="Quai Network — Verified Science" />
+        </div>
+
+        <div class="hero-status">Scientific Validation Layer Active</div>
+
+        <h1><span class="kip">KIP</span><span class="per">PER</span></h1>
+
+        <div class="hero-sub">Scientific Truth Filter for X</div>
+
+        <p class="hero-tagline">
+            A <em>Verified Science</em> layer on top of X. Kipper separates signal from noise
+            by letting thermodynamically validated community members surface truth.
+        </p>
+
+        <p class="hero-tagline-sub">
+            Built on Quai Network · Proof-of-Entropy-Minima · Community Notes, but for science
+        </p>
+
+        <div class="hero-ctas">
+            <a href="#pipeline" class="btn btn-primary">How It Works</a>
+            <a href="#tiers" class="btn btn-ghost">Validator Tiers</a>
+        </div>
+    </section>
+
+    <!-- ===== PROBLEM / SOLUTION ===== -->
+    <div class="split-section animate">
+        <div class="split-card problem">
+            <div class="split-card-label"><span class="dot"></span> The Problem</div>
+            <h3>X Has No Science Filter</h3>
+            <p>Community Notes is crowd-sourced opinion. Scientific claims on X are judged by popularity, not evidence. Misinformation spreads at the speed of engagement while corrections arrive too late and get buried. There's no mechanism to distinguish a PhD researcher from a bot farm.</p>
+        </div>
+        <div class="split-card solution">
+            <div class="split-card-label"><span class="dot"></span> The Kipper Solution</div>
+            <h3>Proof-of-Knowledge Validation</h3>
+            <p>Kipper overlays a scientific consensus layer on X feeds. Trusted validators — verified by Quai Network's Proof-of-Entropy-Minima — annotate, challenge, and verify scientific claims in real-time. The Verified Science badge is earned, not bought. Energy-backed credibility.</p>
+        </div>
+    </div>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <div class="pipeline-section animate" id="pipeline">
+        <div class="section-label">How Kipper Works</div>
+
+        <div class="pipeline-flow">
+            <div class="pipe-step">
+                <div class="pipe-icon">
+                    <svg viewBox="0 0 36 36" fill="none">
+                        <rect x="4" y="6" width="28" height="24" rx="3" stroke="#ff3366" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="4" y1="12" x2="32" y2="12" stroke="#ff3366" stroke-width="1" opacity="0.3"/>
+                        <rect x="8" y="15" width="14" height="2" rx="1" fill="#ff3366" opacity="0.4"/>
+                        <rect x="8" y="20" width="20" height="2" rx="1" fill="#ff3366" opacity="0.3"/>
+                        <rect x="8" y="25" width="10" height="2" rx="1" fill="#ff3366" opacity="0.2"/>
+                    </svg>
+                </div>
+                <div class="pipe-num">01</div>
+                <div class="pipe-title">X Post Detected</div>
+                <div class="pipe-desc">Kipper monitors tagged posts & scientific claims on X in real-time</div>
+            </div>
+
+            <div class="pipe-step">
+                <div class="pipe-icon">
+                    <svg viewBox="0 0 36 36" fill="none">
+                        <circle cx="18" cy="18" r="12" stroke="#ffb800" stroke-width="1.5" opacity="0.6"/>
+                        <circle cx="18" cy="18" r="6" stroke="#ffb800" stroke-width="1" opacity="0.4"/>
+                        <circle cx="18" cy="18" r="2" fill="#ffb800" opacity="0.8"/>
+                        <line x1="18" y1="2" x2="18" y2="6" stroke="#ffb800" stroke-width="1" opacity="0.3"/>
+                        <line x1="18" y1="30" x2="18" y2="34" stroke="#ffb800" stroke-width="1" opacity="0.3"/>
+                        <line x1="2" y1="18" x2="6" y2="18" stroke="#ffb800" stroke-width="1" opacity="0.3"/>
+                        <line x1="30" y1="18" x2="34" y2="18" stroke="#ffb800" stroke-width="1" opacity="0.3"/>
+                    </svg>
+                </div>
+                <div class="pipe-num">02</div>
+                <div class="pipe-title">Validator Queue</div>
+                <div class="pipe-desc">Verified Science validators are routed relevant claims by expertise domain</div>
+            </div>
+
+            <div class="pipe-step">
+                <div class="pipe-icon">
+                    <svg viewBox="0 0 36 36" fill="none">
+                        <path d="M18 4 L32 12 L32 24 L18 32 L4 24 L4 12 Z" stroke="#3ddc84" stroke-width="1.5" opacity="0.6"/>
+                        <path d="M18 10 L26 14.5 L26 23.5 L18 28 L10 23.5 L10 14.5 Z" stroke="#3ddc84" stroke-width="1" opacity="0.4"/>
+                        <circle cx="18" cy="19" r="3" fill="#3ddc84" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="pipe-num">03</div>
+                <div class="pipe-title">Consensus Layer</div>
+                <div class="pipe-desc">Multi-validator consensus forms on-chain via Quai PoEM — tamper-proof verdicts</div>
+            </div>
+
+            <div class="pipe-step">
+                <div class="pipe-icon">
+                    <svg viewBox="0 0 36 36" fill="none">
+                        <rect x="6" y="6" width="24" height="24" rx="3" stroke="#3ddc84" stroke-width="1.5" opacity="0.7"/>
+                        <polyline points="12,19 16,23 25,13" stroke="#3ddc84" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                    </svg>
+                </div>
+                <div class="pipe-num">04</div>
+                <div class="pipe-title">Badge Applied</div>
+                <div class="pipe-desc">Verified Science badge appears on-post in X via the Kipper browser extension</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FEATURE CAROUSEL ===== -->
+    <div class="carousel-section" id="features">
+        <div class="carousel-header">
+            <div class="carousel-label">Kipper Modules</div>
+            <div class="carousel-controls">
+                <button class="carousel-btn" id="carouselPrev">‹</button>
+                <button class="carousel-btn" id="carouselNext">›</button>
+            </div>
+        </div>
+        <div class="carousel-track-wrapper">
+            <div class="carousel-track" id="carouselTrack">
+
+                <!-- Card 1: Browser Extension -->
+                <div class="carousel-card">
+                    <div class="card-visual">
+                        <svg viewBox="0 0 340 200">
+                            <defs>
+                                <linearGradient id="extGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#3ddc84" stop-opacity="0.1"/>
+                                    <stop offset="100%" stop-color="#3ddc84" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <rect x="0" y="0" width="340" height="200" fill="url(#extGrad)"/>
+                            <!-- Browser frame -->
+                            <rect x="40" y="20" width="260" height="160" rx="8" fill="#0c1018" stroke="rgba(61,220,132,0.2)" stroke-width="1"/>
+                            <rect x="40" y="20" width="260" height="24" rx="8" fill="#111822"/>
+                            <rect x="40" y="36" width="260" height="8" fill="#111822"/>
+                            <circle cx="56" cy="32" r="4" fill="#ff3366" opacity="0.6"/>
+                            <circle cx="68" cy="32" r="4" fill="#ffb800" opacity="0.6"/>
+                            <circle cx="80" cy="32" r="4" fill="#3ddc84" opacity="0.6"/>
+                            <rect x="100" y="28" width="140" height="8" rx="4" fill="#1a2233"/>
+                            <!-- Extension popup -->
+                            <rect x="200" y="48" width="90" height="70" rx="4" fill="#111822" stroke="rgba(61,220,132,0.4)" stroke-width="1"/>
+                            <circle cx="220" cy="62" r="6" fill="#3ddc84" opacity="0.3"/>
+                            <text x="230" y="65" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84">KIPPER</text>
+                            <rect x="210" y="74" width="70" height="4" rx="2" fill="rgba(61,220,132,0.15)"/>
+                            <rect x="210" y="82" width="50" height="4" rx="2" fill="rgba(61,220,132,0.1)"/>
+                            <rect x="210" y="96" width="70" height="14" rx="3" fill="#3ddc84" opacity="0.2"/>
+                            <text x="228" y="106" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84">VERIFY</text>
+                            <!-- Feed items -->
+                            <rect x="52" y="54" width="140" height="20" rx="3" fill="#1a2233"/>
+                            <rect x="52" y="80" width="140" height="20" rx="3" fill="#1a2233" stroke="rgba(61,220,132,0.15)" stroke-width="0.5"/>
+                            <circle cx="189" cy="90" r="5" fill="#3ddc84" opacity="0.4"/>
+                            <text x="185" y="93" font-family="'Share Tech Mono',monospace" font-size="6" fill="#000" font-weight="bold">✓</text>
+                            <rect x="52" y="106" width="140" height="20" rx="3" fill="#1a2233"/>
+                            <rect x="52" y="132" width="140" height="20" rx="3" fill="#1a2233" stroke="rgba(255,51,102,0.15)" stroke-width="0.5"/>
+                            <text x="54" y="146" font-family="'Share Tech Mono',monospace" font-size="5" fill="#ff3366" opacity="0.5">⚠ DISPUTED</text>
+                        </svg>
+                        <span class="card-tag">Extension</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Browser Extension</h3>
+                        <p>Chrome & Firefox extension overlays Verified Science badges directly onto X posts. See consensus scores, validator notes, and citation links in-feed without leaving the timeline.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Validator Dashboard -->
+                <div class="carousel-card">
+                    <div class="card-visual">
+                        <svg viewBox="0 0 340 200">
+                            <rect x="0" y="0" width="340" height="200" fill="#080c14"/>
+                            <!-- Dashboard layout -->
+                            <rect x="20" y="16" width="60" height="168" rx="4" fill="#0c1018" stroke="rgba(61,220,132,0.1)" stroke-width="0.5"/>
+                            <circle cx="50" cy="36" r="8" fill="#3ddc84" opacity="0.15"/>
+                            <text x="50" y="39" text-anchor="middle" font-family="'Orbitron',monospace" font-size="6" fill="#3ddc84" font-weight="bold">K</text>
+                            <rect x="32" y="56" width="36" height="3" rx="1" fill="rgba(61,220,132,0.15)"/>
+                            <rect x="32" y="66" width="36" height="3" rx="1" fill="rgba(255,255,255,0.05)"/>
+                            <rect x="32" y="76" width="36" height="3" rx="1" fill="rgba(255,255,255,0.05)"/>
+                            <rect x="32" y="86" width="36" height="3" rx="1" fill="rgba(255,255,255,0.05)"/>
+                            <!-- Main panel -->
+                            <rect x="90" y="16" width="230" height="80" rx="4" fill="#0c1018" stroke="rgba(61,220,132,0.08)" stroke-width="0.5"/>
+                            <text x="100" y="32" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568" letter-spacing="1">QUEUE: 12 CLAIMS PENDING</text>
+                            <!-- Claim cards -->
+                            <rect x="100" y="40" width="100" height="48" rx="3" fill="#111822" stroke="rgba(255,184,0,0.2)" stroke-width="0.5"/>
+                            <rect x="106" y="46" width="40" height="3" rx="1" fill="#ffb800" opacity="0.4"/>
+                            <rect x="106" y="54" width="80" height="2" rx="1" fill="rgba(255,255,255,0.1)"/>
+                            <rect x="106" y="60" width="60" height="2" rx="1" fill="rgba(255,255,255,0.07)"/>
+                            <rect x="106" y="72" width="30" height="10" rx="2" fill="rgba(61,220,132,0.15)"/>
+                            <text x="111" y="80" font-family="'Share Tech Mono',monospace" font-size="5" fill="#3ddc84">VERIFY</text>
+                            <rect x="140" y="72" width="30" height="10" rx="2" fill="rgba(255,51,102,0.15)"/>
+                            <text x="143" y="80" font-family="'Share Tech Mono',monospace" font-size="5" fill="#ff3366">DISPUTE</text>
+
+                            <rect x="210" y="40" width="100" height="48" rx="3" fill="#111822" stroke="rgba(61,220,132,0.2)" stroke-width="0.5"/>
+                            <rect x="216" y="46" width="50" height="3" rx="1" fill="#3ddc84" opacity="0.4"/>
+                            <rect x="216" y="54" width="80" height="2" rx="1" fill="rgba(255,255,255,0.1)"/>
+                            <rect x="216" y="60" width="70" height="2" rx="1" fill="rgba(255,255,255,0.07)"/>
+
+                            <!-- Stats panel -->
+                            <rect x="90" y="104" width="110" height="80" rx="4" fill="#0c1018" stroke="rgba(61,220,132,0.08)" stroke-width="0.5"/>
+                            <text x="100" y="120" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568" letter-spacing="1">YOUR STATS</text>
+                            <text x="100" y="140" font-family="'Orbitron',monospace" font-size="18" fill="#3ddc84" font-weight="bold">847</text>
+                            <text x="100" y="150" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">VERIFICATIONS</text>
+                            <text x="100" y="168" font-family="'Orbitron',monospace" font-size="12" fill="#ffb800">98.2%</text>
+                            <text x="100" y="176" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">ACCURACY</text>
+
+                            <rect x="210" y="104" width="110" height="80" rx="4" fill="#0c1018" stroke="rgba(61,220,132,0.08)" stroke-width="0.5"/>
+                            <text x="220" y="120" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568" letter-spacing="1">REPUTATION</text>
+                            <!-- Rep bar -->
+                            <rect x="220" y="130" width="80" height="6" rx="3" fill="#1a2233"/>
+                            <rect x="220" y="130" width="68" height="6" rx="3" fill="#3ddc84" opacity="0.6"/>
+                            <text x="220" y="150" font-family="'Share Tech Mono',monospace" font-size="6" fill="#c8a84e">◆ GOLD TIER</text>
+                        </svg>
+                        <span class="card-tag">Dashboard</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Validator Dashboard</h3>
+                        <p>Claim queue, reputation score, accuracy metrics, and Qi reward tracking. Validators review claims routed by expertise domain and build on-chain credibility.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: On-Chain Verdicts -->
+                <div class="carousel-card">
+                    <div class="card-visual">
+                        <svg viewBox="0 0 340 200">
+                            <rect x="0" y="0" width="340" height="200" fill="#080c14"/>
+                            <!-- Chain blocks -->
+                            <g opacity="0.8">
+                                <!-- Block 1 -->
+                                <rect x="20" y="70" width="56" height="60" rx="3" fill="#0c1018" stroke="rgba(61,220,132,0.25)" stroke-width="1"/>
+                                <text x="28" y="86" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">BLK #4291</text>
+                                <rect x="26" y="92" width="44" height="3" rx="1" fill="rgba(61,220,132,0.1)"/>
+                                <rect x="26" y="98" width="30" height="3" rx="1" fill="rgba(61,220,132,0.08)"/>
+                                <text x="28" y="118" font-family="'Share Tech Mono',monospace" font-size="5" fill="#3ddc84">✓ VERIFIED</text>
+                                <!-- Connector -->
+                                <line x1="76" y1="100" x2="94" y2="100" stroke="rgba(61,220,132,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+                                <!-- Block 2 -->
+                                <rect x="94" y="70" width="56" height="60" rx="3" fill="#0c1018" stroke="rgba(255,184,0,0.25)" stroke-width="1"/>
+                                <text x="102" y="86" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">BLK #4292</text>
+                                <rect x="100" y="92" width="44" height="3" rx="1" fill="rgba(255,184,0,0.1)"/>
+                                <rect x="100" y="98" width="38" height="3" rx="1" fill="rgba(255,184,0,0.08)"/>
+                                <text x="102" y="118" font-family="'Share Tech Mono',monospace" font-size="5" fill="#ffb800">⏳ PENDING</text>
+                                <line x1="150" y1="100" x2="168" y2="100" stroke="rgba(255,184,0,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+                                <!-- Block 3 -->
+                                <rect x="168" y="70" width="56" height="60" rx="3" fill="#0c1018" stroke="rgba(61,220,132,0.25)" stroke-width="1"/>
+                                <text x="176" y="86" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">BLK #4293</text>
+                                <rect x="174" y="92" width="44" height="3" rx="1" fill="rgba(61,220,132,0.1)"/>
+                                <rect x="174" y="98" width="34" height="3" rx="1" fill="rgba(61,220,132,0.08)"/>
+                                <text x="176" y="118" font-family="'Share Tech Mono',monospace" font-size="5" fill="#3ddc84">✓ VERIFIED</text>
+                                <line x1="224" y1="100" x2="242" y2="100" stroke="rgba(61,220,132,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+                                <!-- Block 4 -->
+                                <rect x="242" y="70" width="56" height="60" rx="3" fill="#0c1018" stroke="rgba(255,51,102,0.25)" stroke-width="1"/>
+                                <text x="250" y="86" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">BLK #4294</text>
+                                <rect x="248" y="92" width="44" height="3" rx="1" fill="rgba(255,51,102,0.1)"/>
+                                <rect x="248" y="98" width="40" height="3" rx="1" fill="rgba(255,51,102,0.08)"/>
+                                <text x="250" y="118" font-family="'Share Tech Mono',monospace" font-size="5" fill="#ff3366">✗ DISPUTED</text>
+                            </g>
+                            <!-- Header -->
+                            <text x="20" y="22" font-family="'Orbitron',monospace" font-size="8" fill="#3ddc84" letter-spacing="2" opacity="0.7">QUAI VERDICT CHAIN</text>
+                            <text x="20" y="36" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568" letter-spacing="1">IMMUTABLE · TRANSPARENT · ENERGY-BACKED</text>
+                            <!-- Entropy visualization -->
+                            <text x="20" y="168" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">ENTROPY: 0.9847 bits</text>
+                            <rect x="20" y="174" width="140" height="4" rx="2" fill="#1a2233"/>
+                            <rect x="20" y="174" width="130" height="4" rx="2" fill="rgba(61,220,132,0.4)"/>
+                            <text x="20" y="192" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">VALIDATORS: 23 · CONSENSUS: 91.3%</text>
+                        </svg>
+                        <span class="card-tag">On-Chain</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="card-body">
+                        <h3>On-Chain Verdicts</h3>
+                        <p>Every verification is written to Quai's blockchain. Tamper-proof, transparent, and auditable. Verdicts include entropy measurements and full validator provenance.</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Expertise Domains -->
+                <div class="carousel-card">
+                    <div class="card-visual">
+                        <svg viewBox="0 0 340 200">
+                            <rect x="0" y="0" width="340" height="200" fill="#080c14"/>
+                            <!-- Domain hexagons -->
+                            <g transform="translate(170,100)">
+                                <!-- Center -->
+                                <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15" fill="none" stroke="#3ddc84" stroke-width="1" opacity="0.6"/>
+                                <text x="0" y="3" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84">KIPPER</text>
+                                <!-- Thermodynamics -->
+                                <g transform="translate(-65,-40)">
+                                    <polygon points="0,-22 19,-11 19,11 0,22 -19,11 -19,-11" fill="rgba(61,220,132,0.05)" stroke="rgba(61,220,132,0.3)" stroke-width="0.7"/>
+                                    <text x="0" y="-2" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4.5" fill="#3ddc84">THERMO</text>
+                                    <text x="0" y="6" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4" fill="#4a5568">DYNAMICS</text>
+                                </g>
+                                <!-- Cryptography -->
+                                <g transform="translate(65,-40)">
+                                    <polygon points="0,-22 19,-11 19,11 0,22 -19,11 -19,-11" fill="rgba(0,240,255,0.05)" stroke="rgba(0,240,255,0.3)" stroke-width="0.7"/>
+                                    <text x="0" y="-2" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4.5" fill="#00f0ff">CRYPTO</text>
+                                    <text x="0" y="6" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4" fill="#4a5568">GRAPHY</text>
+                                </g>
+                                <!-- Economics -->
+                                <g transform="translate(-75,30)">
+                                    <polygon points="0,-22 19,-11 19,11 0,22 -19,11 -19,-11" fill="rgba(255,184,0,0.05)" stroke="rgba(255,184,0,0.3)" stroke-width="0.7"/>
+                                    <text x="0" y="3" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4.5" fill="#ffb800">ECON</text>
+                                </g>
+                                <!-- Physics -->
+                                <g transform="translate(75,30)">
+                                    <polygon points="0,-22 19,-11 19,11 0,22 -19,11 -19,-11" fill="rgba(191,90,242,0.05)" stroke="rgba(191,90,242,0.3)" stroke-width="0.7"/>
+                                    <text x="0" y="3" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4.5" fill="#bf5af2">PHYSICS</text>
+                                </g>
+                                <!-- Info Theory -->
+                                <g transform="translate(0,65)">
+                                    <polygon points="0,-22 19,-11 19,11 0,22 -19,11 -19,-11" fill="rgba(255,51,102,0.05)" stroke="rgba(255,51,102,0.3)" stroke-width="0.7"/>
+                                    <text x="0" y="-2" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4.5" fill="#ff3366">INFO</text>
+                                    <text x="0" y="6" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="4" fill="#4a5568">THEORY</text>
+                                </g>
+                                <!-- Connecting lines -->
+                                <line x1="0" y1="-30" x2="-65" y2="-40" stroke="rgba(61,220,132,0.15)" stroke-width="0.5"/>
+                                <line x1="0" y1="-30" x2="65" y2="-40" stroke="rgba(0,240,255,0.15)" stroke-width="0.5"/>
+                                <line x1="-26" y1="15" x2="-75" y2="30" stroke="rgba(255,184,0,0.15)" stroke-width="0.5"/>
+                                <line x1="26" y1="15" x2="75" y2="30" stroke="rgba(191,90,242,0.15)" stroke-width="0.5"/>
+                                <line x1="0" y1="30" x2="0" y2="65" stroke="rgba(255,51,102,0.15)" stroke-width="0.5"/>
+                            </g>
+                        </svg>
+                        <span class="card-tag">Domains</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Expertise Domains</h3>
+                        <p>Claims are routed to validators by scientific domain. Thermodynamics, cryptography, economics, physics, information theory — each with its own validator pool.</p>
+                    </div>
+                </div>
+
+                <!-- Card 5: Qi Rewards -->
+                <div class="carousel-card">
+                    <div class="card-visual">
+                        <svg viewBox="0 0 340 200">
+                            <rect x="0" y="0" width="340" height="200" fill="#080c14"/>
+                            <!-- Qi symbol -->
+                            <text x="170" y="65" text-anchor="middle" font-family="'Orbitron',monospace" font-size="40" fill="#00f0ff" opacity="0.12" font-weight="900">Qi</text>
+                            <!-- Reward flow -->
+                            <text x="40" y="30" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568" letter-spacing="2">REWARD FLOW</text>
+                            <!-- Verify action -->
+                            <rect x="30" y="80" width="80" height="30" rx="4" fill="#111822" stroke="rgba(61,220,132,0.2)" stroke-width="0.7"/>
+                            <text x="42" y="92" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84">VERIFY CLAIM</text>
+                            <text x="42" y="102" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">accuracy > 95%</text>
+                            <!-- Arrow -->
+                            <line x1="110" y1="95" x2="130" y2="95" stroke="rgba(61,220,132,0.4)" stroke-width="1"/>
+                            <polygon points="130,92 136,95 130,98" fill="#3ddc84" opacity="0.6"/>
+                            <!-- Qi reward -->
+                            <rect x="140" y="80" width="80" height="30" rx="4" fill="#111822" stroke="rgba(0,240,255,0.2)" stroke-width="0.7"/>
+                            <text x="152" y="92" font-family="'Orbitron',monospace" font-size="7" fill="#00f0ff" font-weight="bold">+2.4 Qi</text>
+                            <text x="152" y="102" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">energy reward</text>
+                            <!-- Arrow -->
+                            <line x1="220" y1="95" x2="240" y2="95" stroke="rgba(0,240,255,0.4)" stroke-width="1"/>
+                            <polygon points="240,92 246,95 240,98" fill="#00f0ff" opacity="0.6"/>
+                            <!-- Rep boost -->
+                            <rect x="250" y="80" width="70" height="30" rx="4" fill="#111822" stroke="rgba(200,168,78,0.2)" stroke-width="0.7"/>
+                            <text x="260" y="92" font-family="'Share Tech Mono',monospace" font-size="6" fill="#c8a84e">REP +1</text>
+                            <text x="260" y="102" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">tier progress</text>
+
+                            <!-- Monthly stats -->
+                            <rect x="30" y="130" width="280" height="50" rx="4" fill="#0c1018" stroke="rgba(0,240,255,0.08)" stroke-width="0.5"/>
+                            <text x="46" y="148" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">THIS MONTH</text>
+                            <text x="46" y="168" font-family="'Orbitron',monospace" font-size="14" fill="#00f0ff" font-weight="bold">142.8</text>
+                            <text x="110" y="168" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568">Qi EARNED</text>
+                            <text x="200" y="168" font-family="'Orbitron',monospace" font-size="14" fill="#3ddc84" font-weight="bold">59</text>
+                            <text x="224" y="168" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568">CLAIMS VERIFIED</text>
+                        </svg>
+                        <span class="card-tag">Rewards</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Qi Reward System</h3>
+                        <p>Accurate validators earn Qi — energy-based money. Higher accuracy and tier status multiply rewards. Science pays. Misinformation costs.</p>
+                    </div>
+                </div>
+
+                <!-- Card 6: API -->
+                <div class="carousel-card">
+                    <div class="card-visual">
+                        <svg viewBox="0 0 340 200">
+                            <rect x="0" y="0" width="340" height="200" fill="#080c14"/>
+                            <!-- Code block -->
+                            <rect x="30" y="20" width="280" height="160" rx="6" fill="#0c1018" stroke="rgba(61,220,132,0.12)" stroke-width="0.5"/>
+                            <rect x="30" y="20" width="280" height="20" rx="6" fill="#111822"/>
+                            <rect x="30" y="34" width="280" height="6" fill="#111822"/>
+                            <circle cx="44" cy="30" r="3" fill="#ff3366" opacity="0.5"/>
+                            <circle cx="54" cy="30" r="3" fill="#ffb800" opacity="0.5"/>
+                            <circle cx="64" cy="30" r="3" fill="#3ddc84" opacity="0.5"/>
+                            <text x="120" y="33" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">kipper-api.js</text>
+                            <!-- Code lines -->
+                            <text x="42" y="56" font-family="'Share Tech Mono',monospace" font-size="6" fill="#bf5af2">const</text>
+                            <text x="72" y="56" font-family="'Share Tech Mono',monospace" font-size="6" fill="#e8ecf0"> verdict =</text>
+                            <text x="126" y="56" font-family="'Share Tech Mono',monospace" font-size="6" fill="#ffb800"> await</text>
+                            <text x="42" y="68" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84">  kipper.verify</text>
+                            <text x="120" y="68" font-family="'Share Tech Mono',monospace" font-size="6" fill="#e8ecf0">({</text>
+                            <text x="52" y="80" font-family="'Share Tech Mono',monospace" font-size="6" fill="#00f0ff">    post_id:</text>
+                            <text x="112" y="80" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84"> "1893..."</text>
+                            <text x="52" y="92" font-family="'Share Tech Mono',monospace" font-size="6" fill="#00f0ff">    domain:</text>
+                            <text x="108" y="92" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84"> "thermo"</text>
+                            <text x="52" y="104" font-family="'Share Tech Mono',monospace" font-size="6" fill="#00f0ff">    chain:</text>
+                            <text x="104" y="104" font-family="'Share Tech Mono',monospace" font-size="6" fill="#3ddc84"> "quai"</text>
+                            <text x="42" y="116" font-family="'Share Tech Mono',monospace" font-size="6" fill="#e8ecf0">  })</text>
+                            <text x="42" y="134" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568">// → { status: "verified",</text>
+                            <text x="42" y="146" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568">//     validators: 23,</text>
+                            <text x="42" y="158" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568">//     entropy: 0.9847 }</text>
+                        </svg>
+                        <span class="card-tag">API</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Developer API</h3>
+                        <p>Open API for any platform to integrate Kipper verdicts. Verify posts, query validator consensus, and embed the Verified Science badge anywhere. Build on truth.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <!-- ===== VALIDATOR TIERS ===== -->
+    <div class="tiers-section animate" id="tiers">
+        <div class="section-label">Validator Tiers</div>
+
+        <div class="tiers-grid">
+            <div class="tier-card t1">
+                <div class="tier-icon">🔬</div>
+                <div class="tier-name">BRONZE</div>
+                <div class="tier-req">10 verified claims · 80% accuracy</div>
+                <ul class="tier-perks">
+                    <li>Single-domain validation rights</li>
+                    <li>Basic Qi rewards per verdict</li>
+                    <li>Public validator profile</li>
+                    <li>Community forum access</li>
+                </ul>
+            </div>
+
+            <div class="tier-card t2">
+                <div class="tier-icon">⚗️</div>
+                <div class="tier-name">SILVER</div>
+                <div class="tier-req">100 verified · 90% accuracy · 3 months</div>
+                <ul class="tier-perks">
+                    <li>Multi-domain validation</li>
+                    <li>2× Qi reward multiplier</li>
+                    <li>Dispute resolution voting</li>
+                    <li>Priority claim routing</li>
+                </ul>
+            </div>
+
+            <div class="tier-card t3">
+                <div class="tier-icon">🏛️</div>
+                <div class="tier-name">GOLD</div>
+                <div class="tier-req">500 verified · 95% accuracy · 1 year</div>
+                <ul class="tier-perks">
+                    <li>All-domain master validator</li>
+                    <li>5× Qi reward multiplier</li>
+                    <li>Governance proposals</li>
+                    <li>Verified Science badge on X profile</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">KIPPER</div>
+        <div class="footer-copy">Quai Network · Verified Science · Qi.xyz</div>
+    </footer>
+
+    <script>
+        // ===== CAROUSEL =====
+        const track = document.getElementById('carouselTrack');
+        const cards = track.querySelectorAll('.carousel-card');
+        const dotsContainer = document.getElementById('carouselDots');
+        const cardWidth = 364; // 340 + 24 gap
+        let currentIndex = 0;
+        let autoplayInterval;
+
+        function getVisibleCount() {
+            const wrapperWidth = track.parentElement.offsetWidth;
+            return Math.floor(wrapperWidth / cardWidth) || 1;
+        }
+        function getMaxIndex() {
+            return Math.max(0, cards.length - getVisibleCount());
+        }
+        function buildDots() {
+            dotsContainer.innerHTML = '';
+            const max = getMaxIndex();
+            for (let i = 0; i <= max; i++) {
+                const dot = document.createElement('button');
+                dot.classList.add('carousel-dot');
+                if (i === currentIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => goTo(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
+        function updateTrack() {
+            track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+            dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === currentIndex);
+            });
+        }
+        function goTo(index) {
+            currentIndex = Math.min(Math.max(0, index), getMaxIndex());
+            updateTrack();
+            resetAutoplay();
+        }
+        document.getElementById('carouselNext').addEventListener('click', () => {
+            goTo(currentIndex >= getMaxIndex() ? 0 : currentIndex + 1);
+        });
+        document.getElementById('carouselPrev').addEventListener('click', () => {
+            goTo(currentIndex <= 0 ? getMaxIndex() : currentIndex - 1);
+        });
+        function resetAutoplay() {
+            clearInterval(autoplayInterval);
+            autoplayInterval = setInterval(() => {
+                goTo(currentIndex >= getMaxIndex() ? 0 : currentIndex + 1);
+            }, 5000);
+        }
+
+        // Touch swipe
+        let touchStartX = 0;
+        track.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) {
+                diff > 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
+            }
+        }, { passive: true });
+
+        // Mouse drag
+        const wrapper = track.parentElement;
+        let isDragging = false, dragStartX = 0, dragScrollLeft = 0, hasDragged = false;
+        wrapper.style.cursor = 'grab';
+        wrapper.style.userSelect = 'none';
+
+        wrapper.addEventListener('mousedown', (e) => {
+            isDragging = true; hasDragged = false;
+            wrapper.style.cursor = 'grabbing';
+            dragStartX = e.pageX;
+            dragScrollLeft = currentIndex * cardWidth;
+            clearInterval(autoplayInterval);
+            e.preventDefault();
+        });
+        wrapper.addEventListener('mouseleave', () => {
+            if (isDragging) { isDragging = false; wrapper.style.cursor = 'grab'; updateTrack(); resetAutoplay(); }
+        });
+        wrapper.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false; wrapper.style.cursor = 'grab';
+            const diff = dragStartX - e.pageX;
+            if (Math.abs(diff) > 50) { hasDragged = true; goTo(diff > 0 ? currentIndex + 1 : currentIndex - 1); }
+            else { updateTrack(); }
+            resetAutoplay();
+        });
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            track.style.transform = `translateX(-${dragScrollLeft + (dragStartX - e.pageX)}px)`;
+        });
+        wrapper.addEventListener('click', (e) => {
+            if (hasDragged) { e.preventDefault(); e.stopPropagation(); hasDragged = false; }
+        }, true);
+
+        buildDots(); updateTrack(); resetAutoplay();
+        window.addEventListener('resize', () => { buildDots(); goTo(Math.min(currentIndex, getMaxIndex())); });
+
+        // ===== SCROLL ANIMATIONS =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('in-view');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
