@@ -595,6 +595,312 @@
             letter-spacing: 1px;
         }
 
+        /* ===== TRUTH MARKETS DEMO ===== */
+        .truth-markets {
+            position: relative; z-index: 1;
+            max-width: 1100px; margin: 0 auto;
+            padding: 80px 24px;
+        }
+        .tm-intro {
+            max-width: 700px; margin-bottom: 48px;
+        }
+        .tm-intro h2 {
+            font-family: var(--font-display); font-size: clamp(24px, 4vw, 36px);
+            font-weight: 700; letter-spacing: 2px; margin-bottom: 12px;
+        }
+        .tm-intro h2 .accent { color: var(--qi-cyan); text-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
+        .tm-intro p {
+            font-weight: 300; color: var(--text-secondary); font-size: 16px; line-height: 1.8;
+        }
+        .tm-demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 32px;
+            align-items: start;
+        }
+        .tm-claim-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            overflow: hidden;
+        }
+        .tm-claim-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .tm-claim-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, rgba(61,220,132,0.2), rgba(0,240,255,0.2));
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono); font-size: 14px; color: var(--kip-emerald);
+        }
+        .tm-claim-meta { flex: 1; }
+        .tm-claim-meta .handle {
+            font-family: var(--font-mono); font-size: 13px; color: var(--text-primary);
+        }
+        .tm-claim-meta .domain-tag {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
+            text-transform: uppercase; padding: 2px 6px;
+            border: 1px solid rgba(0, 240, 255, 0.3); color: var(--qi-cyan);
+            display: inline-block; margin-top: 2px;
+        }
+        .tm-claim-body {
+            padding: 24px;
+        }
+        .tm-claim-body .claim-text {
+            font-size: 17px; font-weight: 400; line-height: 1.7;
+            color: var(--text-primary); margin-bottom: 16px;
+        }
+        .tm-claim-body .claim-source {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+        .tm-market-strip {
+            padding: 16px 24px;
+            background: rgba(0, 240, 255, 0.03);
+            border-top: 1px solid var(--border-dim);
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .tm-pool-info {
+            display: flex; gap: 24px;
+        }
+        .tm-pool-stat .label {
+            font-family: var(--font-mono); font-size: 9px; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+        .tm-pool-stat .value {
+            font-family: var(--font-display); font-size: 20px; font-weight: 600;
+        }
+        .tm-pool-stat .value.cyan { color: var(--qi-cyan); text-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+        .tm-pool-stat .value.green { color: var(--kip-emerald); }
+        .tm-pool-stat .value.red { color: var(--qi-red); }
+        .tm-pool-stat .value.gold { color: var(--kip-gold); }
+
+        .tm-timer {
+            font-family: var(--font-mono); font-size: 12px; color: var(--qi-amber);
+            letter-spacing: 1px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .tm-timer .blink {
+            display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--qi-amber); box-shadow: 0 0 8px rgba(255, 184, 0, 0.5);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        /* Odds bar */
+        .tm-odds-bar-wrap {
+            padding: 0 24px 20px;
+        }
+        .tm-odds-labels {
+            display: flex; justify-content: space-between; margin-bottom: 6px;
+        }
+        .tm-odds-labels span {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
+        }
+        .tm-odds-labels .true-label { color: var(--kip-emerald); }
+        .tm-odds-labels .false-label { color: var(--qi-red); }
+        .tm-odds-bar {
+            height: 10px; border-radius: 5px;
+            background: var(--qi-red);
+            overflow: hidden;
+            position: relative;
+        }
+        .tm-odds-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--kip-emerald), rgba(61, 220, 132, 0.7));
+            border-radius: 5px;
+            transition: width 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: 0 0 12px rgba(61, 220, 132, 0.3);
+        }
+
+        /* Bet panel */
+        .tm-bet-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 28px 24px;
+        }
+        .tm-bet-panel h3 {
+            font-family: var(--font-display); font-size: 14px; font-weight: 600;
+            letter-spacing: 2px; margin-bottom: 20px; color: var(--text-primary);
+        }
+        .tm-bet-sides {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tm-bet-btn {
+            padding: 14px;
+            border: 1px solid var(--border-dim);
+            background: transparent;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .tm-bet-btn.true-btn {
+            color: var(--kip-emerald);
+        }
+        .tm-bet-btn.true-btn:hover, .tm-bet-btn.true-btn.active {
+            border-color: var(--kip-emerald);
+            background: rgba(61, 220, 132, 0.1);
+            box-shadow: 0 0 20px rgba(61, 220, 132, 0.1);
+        }
+        .tm-bet-btn.false-btn {
+            color: var(--qi-red);
+        }
+        .tm-bet-btn.false-btn:hover, .tm-bet-btn.false-btn.active {
+            border-color: var(--qi-red);
+            background: rgba(255, 51, 102, 0.1);
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.1);
+        }
+        .tm-bet-btn .odds {
+            display: block; font-size: 18px; font-weight: 600;
+            margin-bottom: 2px;
+            font-family: var(--font-display);
+        }
+        .tm-bet-btn .side-label {
+            font-size: 10px; letter-spacing: 3px; opacity: 0.7;
+        }
+        .tm-amount-group {
+            margin-bottom: 20px;
+        }
+        .tm-amount-group label {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase;
+            display: block; margin-bottom: 8px;
+        }
+        .tm-amount-row {
+            display: flex; gap: 8px;
+        }
+        .tm-amount-input {
+            flex: 1;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            color: var(--qi-cyan);
+            font-family: var(--font-display); font-size: 18px;
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .tm-amount-input:focus {
+            border-color: var(--qi-cyan);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.1);
+        }
+        .tm-amount-input::placeholder {
+            color: var(--text-dim); font-size: 13px;
+        }
+        .tm-quick-btns {
+            display: flex; gap: 6px;
+        }
+        .tm-quick-btn {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            color: var(--text-dim);
+            font-family: var(--font-mono); font-size: 10px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tm-quick-btn:hover {
+            border-color: var(--qi-cyan); color: var(--qi-cyan);
+        }
+        .tm-payout-preview {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 14px;
+            margin-bottom: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .tm-payout-label {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .tm-payout-value {
+            font-family: var(--font-display); font-size: 18px;
+            font-weight: 600; color: var(--kip-emerald);
+            text-shadow: 0 0 10px rgba(61, 220, 132, 0.2);
+        }
+        .tm-place-bet {
+            width: 100%;
+            padding: 16px;
+            font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        .tm-place-bet.ready {
+            background: var(--kip-emerald); color: var(--bg-deep);
+            box-shadow: 0 0 30px rgba(61, 220, 132, 0.25);
+        }
+        .tm-place-bet.ready:hover {
+            box-shadow: 0 0 50px rgba(61, 220, 132, 0.4);
+            transform: translateY(-2px);
+        }
+        .tm-place-bet.disabled {
+            background: var(--bg-panel); color: var(--text-dim);
+            border: 1px solid var(--border-dim);
+            cursor: not-allowed;
+        }
+        .tm-place-bet.confirmed {
+            background: transparent;
+            border: 1px solid var(--kip-emerald);
+            color: var(--kip-emerald);
+        }
+
+        /* Activity feed */
+        .tm-activity {
+            margin-top: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 20px 24px;
+        }
+        .tm-activity h4 {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px;
+        }
+        .tm-activity-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-family: var(--font-mono); font-size: 11px;
+        }
+        .tm-activity-item:last-child { border-bottom: none; }
+        .tm-activity-dot {
+            width: 6px; height: 6px; border-radius: 50; flex-shrink: 0;
+        }
+        .tm-activity-dot.green { background: var(--kip-emerald); box-shadow: 0 0 6px rgba(61, 220, 132, 0.4); }
+        .tm-activity-dot.red { background: var(--qi-red); box-shadow: 0 0 6px rgba(255, 51, 102, 0.4); }
+        .tm-activity-user { color: var(--text-secondary); }
+        .tm-activity-action { color: var(--text-dim); }
+        .tm-activity-amount { margin-left: auto; font-weight: 600; }
+        .tm-activity-amount.green { color: var(--kip-emerald); }
+        .tm-activity-amount.red { color: var(--qi-red); }
+
+        /* How it works steps */
+        .tm-how {
+            margin-top: 48px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+        }
+        .tm-how-step {
+            text-align: center; padding: 0 12px;
+        }
+        .tm-how-num {
+            font-family: var(--font-display); font-size: 28px; font-weight: 800;
+            color: var(--qi-cyan); opacity: 0.25; margin-bottom: 8px;
+        }
+        .tm-how-title {
+            font-family: var(--font-display); font-size: 12px; font-weight: 500;
+            letter-spacing: 1px; margin-bottom: 8px; color: var(--text-primary);
+        }
+        .tm-how-desc {
+            font-size: 13px; font-weight: 300; color: var(--text-dim); line-height: 1.7;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .split-section { grid-template-columns: 1fr; }
@@ -602,11 +908,14 @@
             .pipeline-flow::before { display: none; }
             .tiers-grid { grid-template-columns: 1fr; }
             .carousel-card { flex: 0 0 280px; }
+            .tm-demo-grid { grid-template-columns: 1fr; }
+            .tm-how { grid-template-columns: repeat(2, 1fr); gap: 24px; }
         }
         @media (max-width: 600px) {
             .pipeline-flow { grid-template-columns: 1fr; }
             nav { padding: 0 20px; }
             footer { flex-direction: column; gap: 12px; text-align: center; }
+            .tm-how { grid-template-columns: 1fr; }
         }
 
         .animate { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -685,6 +994,7 @@
 
         <div class="hero-ctas">
             <a href="#pipeline" class="btn btn-primary">How It Works</a>
+            <a href="#truthmarkets" class="btn btn-ghost">Truth Markets</a>
             <a href="#tiers" class="btn btn-ghost">Validator Tiers</a>
         </div>
     </section>
@@ -1072,9 +1382,195 @@
                     </div>
                 </div>
 
+                <!-- Card 7: Truth Markets -->
+                <div class="carousel-card">
+                    <div class="card-visual">
+                        <svg viewBox="0 0 340 200">
+                            <rect x="0" y="0" width="340" height="200" fill="#080c14"/>
+                            <text x="170" y="30" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="6" fill="#4a5568" letter-spacing="2">TRUTH MARKET</text>
+                            <!-- Claim box -->
+                            <rect x="30" y="40" width="280" height="36" rx="4" fill="#111822" stroke="rgba(0,240,255,0.15)" stroke-width="0.5"/>
+                            <text x="42" y="55" font-family="'Share Tech Mono',monospace" font-size="6" fill="#e8ecf0">"PoEM consensus reduces energy waste by 40%"</text>
+                            <text x="42" y="68" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">@dr_entropy · thermodynamics</text>
+                            <!-- Odds bar -->
+                            <rect x="30" y="86" width="280" height="8" rx="4" fill="rgba(255,51,102,0.3)"/>
+                            <rect x="30" y="86" width="196" height="8" rx="4" fill="rgba(61,220,132,0.6)"/>
+                            <text x="30" y="104" font-family="'Share Tech Mono',monospace" font-size="5" fill="#3ddc84">TRUE 70%</text>
+                            <text x="286" y="104" font-family="'Share Tech Mono',monospace" font-size="5" fill="#ff3366" text-anchor="end">30% FALSE</text>
+                            <!-- Bet actions -->
+                            <rect x="30" y="114" width="130" height="32" rx="4" fill="#111822" stroke="rgba(61,220,132,0.25)" stroke-width="0.7"/>
+                            <text x="50" y="128" font-family="'Orbitron',monospace" font-size="8" fill="#3ddc84" font-weight="bold">TRUE</text>
+                            <text x="50" y="140" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">1.43× payout</text>
+                            <rect x="170" y="114" width="130" height="32" rx="4" fill="#111822" stroke="rgba(255,51,102,0.25)" stroke-width="0.7"/>
+                            <text x="190" y="128" font-family="'Orbitron',monospace" font-size="8" fill="#ff3366" font-weight="bold">FALSE</text>
+                            <text x="190" y="140" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">3.33× payout</text>
+                            <!-- Pool -->
+                            <rect x="30" y="156" width="280" height="28" rx="4" fill="#0c1018" stroke="rgba(0,240,255,0.08)" stroke-width="0.5"/>
+                            <text x="46" y="172" font-family="'Share Tech Mono',monospace" font-size="5" fill="#4a5568">POOL</text>
+                            <text x="80" y="172" font-family="'Orbitron',monospace" font-size="9" fill="#00f0ff" font-weight="bold">248.5 Qi</text>
+                            <text x="200" y="172" font-family="'Share Tech Mono',monospace" font-size="5" fill="#ffb800">⏱ 23h 14m remaining</text>
+                        </svg>
+                        <span class="card-tag">Markets</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="card-body">
+                        <h3>Truth Markets</h3>
+                        <p>Prediction markets for scientific claims. Tip Qi to bet on truth — validators resolve the outcome. Put your money where your knowledge is. Truth pays.</p>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <!-- ===== TRUTH MARKETS DEMO ===== -->
+    <div class="truth-markets animate" id="truthmarkets">
+        <div class="section-label">Truth Markets — Prediction Market Demo</div>
+
+        <div class="tm-intro">
+            <h2>Bet on <span class="accent">Truth</span></h2>
+            <p>Someone posts a scientific claim on X. Anyone can open a Truth Market by tipping Qi. The community bets on whether the claim is true or false. When the market closes, Kipper validators vote on the outcome. Correct bettors share the pool. Wrong bets fund truth.</p>
+        </div>
+
+        <div class="tm-demo-grid">
+            <!-- Left: Claim Card -->
+            <div>
+                <div class="tm-claim-card" id="tmClaimCard">
+                    <div class="tm-claim-header">
+                        <div class="tm-claim-avatar">DE</div>
+                        <div class="tm-claim-meta">
+                            <div class="handle">@dr_entropy</div>
+                            <span class="domain-tag">thermodynamics</span>
+                        </div>
+                    </div>
+                    <div class="tm-claim-body">
+                        <div class="claim-text">
+                            "Proof-of-Entropy-Minima consensus achieves equivalent Byzantine fault tolerance to PoW while reducing thermodynamic waste by &gt;40% at equivalent hash rates."
+                        </div>
+                        <div class="claim-source">Source: arXiv:2412.09831 · cited 14×</div>
+                    </div>
+                    <div class="tm-odds-bar-wrap">
+                        <div class="tm-odds-labels">
+                            <span class="true-label">TRUE <span id="tmTruePct">70</span>%</span>
+                            <span class="false-label"><span id="tmFalsePct">30</span>% FALSE</span>
+                        </div>
+                        <div class="tm-odds-bar">
+                            <div class="tm-odds-fill" id="tmOddsFill" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="tm-market-strip">
+                        <div class="tm-pool-info">
+                            <div class="tm-pool-stat">
+                                <div class="label">Total Pool</div>
+                                <div class="value cyan" id="tmPoolTotal">248.5</div>
+                            </div>
+                            <div class="tm-pool-stat">
+                                <div class="label">Bettors</div>
+                                <div class="value gold" id="tmBettorCount">17</div>
+                            </div>
+                        </div>
+                        <div class="tm-timer">
+                            <span class="blink"></span>
+                            <span id="tmTimeLeft">23h 14m left</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Feed -->
+                <div class="tm-activity" id="tmActivity">
+                    <h4>Recent Activity</h4>
+                    <div class="tm-activity-item">
+                        <div class="tm-activity-dot green"></div>
+                        <span class="tm-activity-user">@quai_miner</span>
+                        <span class="tm-activity-action">bet TRUE</span>
+                        <span class="tm-activity-amount green">+12.0 Qi</span>
+                    </div>
+                    <div class="tm-activity-item">
+                        <div class="tm-activity-dot red"></div>
+                        <span class="tm-activity-user">@skeptic_42</span>
+                        <span class="tm-activity-action">bet FALSE</span>
+                        <span class="tm-activity-amount red">+8.0 Qi</span>
+                    </div>
+                    <div class="tm-activity-item">
+                        <div class="tm-activity-dot green"></div>
+                        <span class="tm-activity-user">@wolfram_lab</span>
+                        <span class="tm-activity-action">bet TRUE</span>
+                        <span class="tm-activity-amount green">+25.0 Qi</span>
+                    </div>
+                    <div class="tm-activity-item">
+                        <div class="tm-activity-dot green"></div>
+                        <span class="tm-activity-user">@thermo_econ</span>
+                        <span class="tm-activity-action">bet TRUE</span>
+                        <span class="tm-activity-amount green">+15.5 Qi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Bet Panel -->
+            <div>
+                <div class="tm-bet-panel">
+                    <h3>Place Your Bet</h3>
+
+                    <div class="tm-bet-sides">
+                        <button class="tm-bet-btn true-btn" id="tmBetTrue" onclick="selectSide('true')">
+                            <span class="odds" id="tmTrueOdds">1.43×</span>
+                            <span class="side-label">True</span>
+                        </button>
+                        <button class="tm-bet-btn false-btn" id="tmBetFalse" onclick="selectSide('false')">
+                            <span class="odds" id="tmFalseOdds">3.33×</span>
+                            <span class="side-label">False</span>
+                        </button>
+                    </div>
+
+                    <div class="tm-amount-group">
+                        <label>Tip Amount (Qi)</label>
+                        <div class="tm-amount-row">
+                            <input type="number" class="tm-amount-input" id="tmAmountInput" placeholder="0.0" min="0.1" step="0.1" oninput="updatePayout()">
+                            <div class="tm-quick-btns">
+                                <button class="tm-quick-btn" onclick="setAmount(1)">1</button>
+                                <button class="tm-quick-btn" onclick="setAmount(5)">5</button>
+                                <button class="tm-quick-btn" onclick="setAmount(10)">10</button>
+                                <button class="tm-quick-btn" onclick="setAmount(25)">25</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tm-payout-preview">
+                        <span class="tm-payout-label">Potential Payout</span>
+                        <span class="tm-payout-value" id="tmPayoutValue">—</span>
+                    </div>
+
+                    <button class="tm-place-bet disabled" id="tmPlaceBet" onclick="placeBet()">
+                        Select a side &amp; amount
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- How Truth Markets Work -->
+        <div class="tm-how">
+            <div class="tm-how-step">
+                <div class="tm-how-num">01</div>
+                <div class="tm-how-title">Open Market</div>
+                <div class="tm-how-desc">Anyone tips Qi to create a Truth Market around a claim posted on X. The tip seeds the pool.</div>
+            </div>
+            <div class="tm-how-step">
+                <div class="tm-how-num">02</div>
+                <div class="tm-how-title">Community Bets</div>
+                <div class="tm-how-desc">Users tip Qi to bet TRUE or FALSE. Odds shift in real-time based on the weight of bets on each side.</div>
+            </div>
+            <div class="tm-how-step">
+                <div class="tm-how-num">03</div>
+                <div class="tm-how-title">Validators Resolve</div>
+                <div class="tm-how-desc">When the market closes, Kipper validators vote on-chain. Only bettors who staked Qi can participate in resolution voting.</div>
+            </div>
+            <div class="tm-how-step">
+                <div class="tm-how-num">04</div>
+                <div class="tm-how-title">Truth Pays Out</div>
+                <div class="tm-how-desc">Correct bettors split the pool proportionally. Wrong bets fund the truth economy. Science earns, misinformation costs.</div>
+            </div>
+        </div>
     </div>
 
     <!-- ===== VALIDATOR TIERS ===== -->
@@ -1231,6 +1727,112 @@
             });
         }, { threshold: 0.1 });
         document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+
+        // ===== TRUTH MARKETS DEMO =====
+        const tmState = {
+            side: null,
+            amount: 0,
+            truePool: 173.95,  // 70% of 248.5
+            falsePool: 74.55,  // 30% of 248.5
+            bettors: 17,
+            confirmed: false
+        };
+
+        function getTotalPool() { return tmState.truePool + tmState.falsePool; }
+        function getTruePct() { return Math.round((tmState.truePool / getTotalPool()) * 100); }
+        function getTrueOdds() { return (getTotalPool() / tmState.truePool).toFixed(2); }
+        function getFalseOdds() { return (getTotalPool() / tmState.falsePool).toFixed(2); }
+
+        function updateMarketUI() {
+            const truePct = getTruePct();
+            document.getElementById('tmTruePct').textContent = truePct;
+            document.getElementById('tmFalsePct').textContent = 100 - truePct;
+            document.getElementById('tmOddsFill').style.width = truePct + '%';
+            document.getElementById('tmPoolTotal').textContent = getTotalPool().toFixed(1);
+            document.getElementById('tmBettorCount').textContent = tmState.bettors;
+            document.getElementById('tmTrueOdds').textContent = getTrueOdds() + '×';
+            document.getElementById('tmFalseOdds').textContent = getFalseOdds() + '×';
+        }
+
+        function selectSide(side) {
+            if (tmState.confirmed) return;
+            tmState.side = side;
+            document.getElementById('tmBetTrue').classList.toggle('active', side === 'true');
+            document.getElementById('tmBetFalse').classList.toggle('active', side === 'false');
+            updatePayout();
+        }
+
+        function setAmount(amt) {
+            if (tmState.confirmed) return;
+            document.getElementById('tmAmountInput').value = amt;
+            tmState.amount = amt;
+            updatePayout();
+        }
+
+        function updatePayout() {
+            const amt = parseFloat(document.getElementById('tmAmountInput').value) || 0;
+            tmState.amount = amt;
+            const payoutEl = document.getElementById('tmPayoutValue');
+            const betBtn = document.getElementById('tmPlaceBet');
+
+            if (tmState.side && amt > 0) {
+                const odds = tmState.side === 'true' ? parseFloat(getTrueOdds()) : parseFloat(getFalseOdds());
+                payoutEl.textContent = (amt * odds).toFixed(2) + ' Qi';
+                betBtn.className = 'tm-place-bet ready';
+                betBtn.textContent = 'Tip ' + amt.toFixed(1) + ' Qi on ' + tmState.side.toUpperCase();
+            } else {
+                payoutEl.textContent = '—';
+                betBtn.className = 'tm-place-bet disabled';
+                betBtn.textContent = 'Select a side & amount';
+            }
+        }
+
+        function placeBet() {
+            if (!tmState.side || tmState.amount <= 0 || tmState.confirmed) return;
+
+            const amt = tmState.amount;
+            const side = tmState.side;
+
+            // Update pools
+            if (side === 'true') {
+                tmState.truePool += amt;
+            } else {
+                tmState.falsePool += amt;
+            }
+            tmState.bettors++;
+            tmState.confirmed = true;
+            updateMarketUI();
+
+            // Update button
+            const betBtn = document.getElementById('tmPlaceBet');
+            betBtn.className = 'tm-place-bet confirmed';
+            betBtn.textContent = '✓ Bet confirmed — ' + amt.toFixed(1) + ' Qi on ' + side.toUpperCase();
+
+            // Add to activity feed
+            const feed = document.getElementById('tmActivity');
+            const items = feed.querySelectorAll('.tm-activity-item');
+            const newItem = document.createElement('div');
+            newItem.className = 'tm-activity-item';
+            newItem.style.opacity = '0';
+            newItem.style.transform = 'translateY(-8px)';
+            const isTrue = side === 'true';
+            newItem.innerHTML = `
+                <div class="tm-activity-dot ${isTrue ? 'green' : 'red'}"></div>
+                <span class="tm-activity-user">@you</span>
+                <span class="tm-activity-action">bet ${side.toUpperCase()}</span>
+                <span class="tm-activity-amount ${isTrue ? 'green' : 'red'}">+${amt.toFixed(1)} Qi</span>
+            `;
+            feed.querySelector('h4').after(newItem);
+            requestAnimationFrame(() => {
+                newItem.style.transition = 'all 0.4s ease';
+                newItem.style.opacity = '1';
+                newItem.style.transform = 'translateY(0)';
+            });
+
+            // Disable inputs
+            document.getElementById('tmAmountInput').disabled = true;
+            document.querySelectorAll('.tm-quick-btn').forEach(b => b.style.pointerEvents = 'none');
+        }
     </script>
 
 </body>
