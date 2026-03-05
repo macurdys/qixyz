@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,6 +20,13 @@
       --accent-green: #2EE8A0;
       --accent-red: #FF4D6D;
       --border: rgba(245,200,66,0.18);
+      --ai-blue: #38BDF8;
+      --ai-blue-dim: rgba(56,189,248,0.12);
+      --ai-border: rgba(56,189,248,0.22);
+      --ai-glow: rgba(56,189,248,0.06);
+      --pending: #7A8396;
+      --partial: #F5C842;
+      --ready: #2EE8A0;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -518,6 +526,252 @@
     }
     .modal-chain-details { margin-top: 1rem; }
 
+
+    /* ── AI TRIAL PERIOD ── */
+    #ai-trial { background: var(--black); border-top: 1px solid var(--ai-border); border-bottom: 1px solid var(--ai-border); }
+    .ai-trial-banner {
+      background: linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(8,10,14,0) 60%);
+      border: 1px solid var(--ai-border); padding: 1rem 1.8rem;
+      display: flex; align-items: center; gap: 1.2rem; margin-bottom: 4rem;
+    }
+    .ai-trial-banner-dot {
+      width: 8px; height: 8px; background: var(--ai-blue); border-radius: 50%;
+      animation: aiPulse 1.8s ease-in-out infinite; flex-shrink: 0;
+    }
+    @keyframes aiPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(56,189,248,0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(56,189,248,0); }
+    }
+    .ai-trial-banner-text {
+      font-size: 0.72rem; letter-spacing: 0.12em; color: var(--ai-blue);
+      text-transform: uppercase;
+    }
+    .ai-trial-banner-text strong { color: var(--white); }
+    .ai-trial-tag {
+      margin-left: auto; background: rgba(56,189,248,0.1);
+      color: var(--ai-blue); font-size: 0.6rem; letter-spacing: 0.2em;
+      padding: 0.25rem 0.8rem; text-transform: uppercase; border: 1px solid var(--ai-border);
+      flex-shrink: 0;
+    }
+
+    .ai-how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-bottom: 5rem; }
+    .ai-how-card {
+      background: var(--surface); border: 1px solid var(--ai-border);
+      padding: 2rem; position: relative; overflow: hidden; transition: all 0.3s;
+    }
+    .ai-how-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--ai-blue);
+    }
+    .ai-how-card:hover { border-color: var(--ai-blue); background: var(--surface2); transform: translateY(-3px); }
+    .ai-how-step {
+      font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem;
+      color: var(--surface3); position: absolute; top: 0.8rem; right: 1rem; line-height: 1;
+    }
+    .ai-how-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+    .ai-how-title {
+      font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--ai-blue); margin-bottom: 0.8rem;
+    }
+    .ai-how-text { font-size: 0.78rem; color: var(--muted); line-height: 1.8; }
+    .ai-how-text strong { color: var(--white); }
+
+    /* Dossier structure */
+    .dossier-section { margin-bottom: 5rem; }
+    .dossier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .dossier-tree {
+      background: var(--surface); border: 1px solid var(--ai-border);
+      padding: 2rem; font-family: 'IBM Plex Mono', monospace;
+    }
+    .dossier-tree-header {
+      font-size: 0.6rem; letter-spacing: 0.2em; color: var(--ai-blue);
+      text-transform: uppercase; margin-bottom: 1.5rem; padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--ai-border);
+    }
+    .tree-line {
+      font-size: 0.75rem; color: var(--muted); line-height: 2.2;
+      white-space: nowrap;
+    }
+    .tree-line .tree-folder { color: var(--gold); }
+    .tree-line .tree-file { color: var(--white); }
+    .tree-line .tree-comment { color: var(--surface3); font-style: italic; }
+    .tree-line .tree-ai { color: var(--ai-blue); }
+    .dossier-fields { display: flex; flex-direction: column; gap: 1rem; }
+    .dossier-field {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1.2rem 1.5rem; transition: border-color 0.3s; cursor: default;
+    }
+    .dossier-field:hover { border-color: var(--ai-blue); }
+    .dossier-field-name {
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--ai-blue); margin-bottom: 0.4rem;
+    }
+    .dossier-field-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.6; }
+    .dossier-field-req {
+      display: inline-block; margin-top: 0.5rem;
+      font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.15rem 0.5rem;
+      text-transform: uppercase;
+    }
+    .req-required { background: rgba(56,189,248,0.1); color: var(--ai-blue); border: 1px solid var(--ai-border); }
+    .req-optional { background: rgba(245,200,66,0.08); color: var(--gold-dim); border: 1px solid rgba(245,200,66,0.2); }
+
+    /* AI Readiness tracker */
+    .readiness-section { margin-bottom: 5rem; }
+    .readiness-legend {
+      display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.68rem; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-ready { background: var(--ready); }
+    .dot-partial { background: var(--partial); }
+    .dot-pending { background: var(--surface3); border: 1px solid var(--muted); }
+    .readiness-grid {
+      display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem;
+    }
+    .readiness-chip {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.5rem 0.4rem; text-align: center; cursor: pointer;
+      transition: all 0.2s; position: relative;
+    }
+    .readiness-chip:hover { border-color: var(--ai-blue); background: var(--surface2); }
+    .readiness-chip-name { font-size: 0.55rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .readiness-chip-status {
+      width: 6px; height: 6px; border-radius: 50%; margin: 0.3rem auto 0;
+    }
+    .status-ready { background: var(--ready); }
+    .status-partial { background: var(--partial); }
+    .status-pending { background: var(--surface3); border: 1px solid rgba(122,131,150,0.4); }
+    .readiness-counts {
+      display: flex; gap: 2.5rem; margin-top: 2rem;
+    }
+    .readiness-count { text-align: center; }
+    .readiness-count-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; line-height: 1;
+    }
+    .readiness-count-label { font-size: 0.62rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-top: 0.2rem; }
+    .count-ready { color: var(--ready); }
+    .count-partial { color: var(--partial); }
+    .count-pending { color: var(--muted); }
+
+    /* Trial match demo */
+    .trial-demo {
+      background: var(--surface); border: 1px solid var(--ai-border);
+      padding: 2.5rem; margin-bottom: 5rem; position: relative; overflow: hidden;
+    }
+    .trial-demo::before {
+      content: 'SIMULATION'; position: absolute; bottom: -1rem; right: -1rem;
+      font-family: 'Bebas Neue', sans-serif; font-size: 8rem;
+      color: rgba(56,189,248,0.03); pointer-events: none; letter-spacing: -0.02em;
+    }
+    .trial-demo-header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+      padding-bottom: 1.5rem; border-bottom: 1px solid var(--ai-border);
+    }
+    .trial-demo-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+      color: var(--white); letter-spacing: 0.05em;
+    }
+    .trial-demo-subtitle { font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem; }
+    .trial-selector {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.5rem; align-items: center; margin-bottom: 2rem;
+    }
+    .trial-chain-select {
+      background: var(--surface2); border: 1px solid var(--ai-border);
+      color: var(--white); padding: 0.9rem 1.2rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+      outline: none; cursor: pointer; transition: border-color 0.2s; width: 100%;
+    }
+    .trial-chain-select:hover, .trial-chain-select:focus { border-color: var(--ai-blue); }
+    .trial-vs {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
+      color: var(--gold); text-align: center;
+    }
+    .trial-mode-row {
+      display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .trial-mode-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--muted); padding: 0.55rem 1.2rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .trial-mode-btn:hover, .trial-mode-btn.active {
+      border-color: var(--ai-blue); color: var(--ai-blue); background: var(--ai-blue-dim);
+    }
+    .trial-run-btn {
+      background: var(--ai-blue); color: var(--black); border: none;
+      padding: 0.9rem 2.5rem; font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600; font-size: 0.78rem; letter-spacing: 0.12em;
+      text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+    }
+    .trial-run-btn:hover { background: #7DD3FC; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(56,189,248,0.3); }
+    .trial-run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .trial-output {
+      background: var(--black); border: 1px solid var(--ai-border);
+      padding: 1.5rem; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem; line-height: 1.9; color: var(--muted);
+      min-height: 120px; position: relative; overflow: hidden;
+      display: none;
+    }
+    .trial-output.visible { display: block; }
+    .trial-output-line { color: var(--muted); }
+    .trial-output-line.speaker-a { color: var(--ai-blue); }
+    .trial-output-line.speaker-b { color: var(--gold); }
+    .trial-output-line.system { color: var(--surface3); }
+    .trial-output-cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: var(--ai-blue); animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Timeline for trial */
+    .trial-timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-bottom: 5rem; border: 1px solid var(--ai-border); }
+    .trial-phase {
+      padding: 1.5rem; border-right: 1px solid var(--ai-border); position: relative;
+      transition: background 0.3s;
+    }
+    .trial-phase:last-child { border-right: none; }
+    .trial-phase:hover { background: var(--ai-glow); }
+    .trial-phase-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem;
+      color: var(--ai-blue); opacity: 0.3; line-height: 1; margin-bottom: 0.5rem;
+    }
+    .trial-phase-name {
+      font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--ai-blue); margin-bottom: 0.5rem;
+    }
+    .trial-phase-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.7; }
+    .trial-phase-date { font-size: 0.6rem; color: var(--surface3); margin-top: 0.8rem; letter-spacing: 0.1em; }
+
+    /* Updated modal for AI status */
+    .modal-ai-status {
+      background: var(--ai-blue-dim); border: 1px solid var(--ai-border);
+      padding: 1rem 1.2rem; margin-top: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .modal-ai-label {
+      font-size: 0.62rem; letter-spacing: 0.15em; color: var(--ai-blue); text-transform: uppercase;
+    }
+    .modal-ai-badge {
+      font-size: 0.6rem; letter-spacing: 0.12em; padding: 0.2rem 0.7rem;
+      text-transform: uppercase; border: 1px solid;
+    }
+    .ai-badge-pending { color: var(--muted); border-color: rgba(122,131,150,0.4); }
+    .ai-badge-partial { color: var(--gold); border-color: rgba(245,200,66,0.4); background: rgba(245,200,66,0.06); }
+    .ai-badge-ready { color: var(--ready); border-color: rgba(46,232,160,0.4); background: rgba(46,232,160,0.06); }
+    .modal-ai-actions { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
+    .btn-ai {
+      background: transparent; border: 1px solid var(--ai-border); color: var(--ai-blue);
+      padding: 0.55rem 1.1rem; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+      display: inline-block;
+    }
+    .btn-ai:hover { background: var(--ai-blue-dim); border-color: var(--ai-blue); }
+
   </style>
 </head>
 <body>
@@ -529,6 +783,7 @@
     <a href="#about">About</a>
     <a href="#rules">Rules</a>
     <a href="#competitors">Competitors</a>
+    <a href="#ai-trial" style="color:var(--ai-blue)">⬡ AI Trial</a>
     <a href="#bracket">Bracket</a>
     <a href="#topics">Topics</a>
     <a href="#judging">Judging</a>
@@ -545,10 +800,10 @@
     BLOCKCHAIN<br><span>DEBATE</span><br>CHAMPIONSHIP
   </h1>
   <p class="hero-sub">
-    64 blockchains. One representative each. Six rounds of structured debate to surface the industry's
-    deepest agreements — and its sharpest divisions. Inspired by the
+    64 blockchains. One representative each — or an AI trained on their dossier. Six rounds of structured debate to surface the industry's
+    deepest agreements and sharpest divisions. Inspired by the
     <a href="https://www.utxoa.org/" target="_blank" style="color:var(--gold)">UTXO Alliance</a>'s
-    spirit of cross-chain collaboration.
+    spirit of cross-chain collaboration. <a href="#ai-trial" style="color:var(--ai-blue)">AI simulation trial now open →</a>
   </p>
   <div class="hero-meta">
     <div class="hero-stat">
@@ -567,10 +822,14 @@
       <div class="hero-stat-num">1</div>
       <div class="hero-stat-label">Champion</div>
     </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" style="color:var(--ai-blue)">AI</div>
+      <div class="hero-stat-label" style="color:var(--ai-blue)">Trial Active</div>
+    </div>
   </div>
   <div class="hero-buttons">
     <a href="#competitors" class="btn-primary">View All 64 Blockchains</a>
-    <a href="#rules" class="btn-outline">Read the Rules</a>
+    <a href="#ai-trial" class="btn-outline" style="border-color:var(--ai-border); color:var(--ai-blue)">⬡ Run AI Trial Debate</a>
   </div>
 </section>
 
@@ -645,6 +904,228 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+
+<!-- AI TRIAL PERIOD -->
+<section id="ai-trial">
+  <div class="container">
+
+    <div class="ai-trial-banner reveal">
+      <div class="ai-trial-banner-dot"></div>
+      <div class="ai-trial-banner-text"><strong>NEW — PRE-SEASON AI SIMULATION TRIAL</strong> · Build a dossier. Run a debate. See if the AI can stand in.</div>
+      <span class="ai-trial-tag">Beta</span>
+    </div>
+
+    <div class="reveal">
+      <p class="section-label">AI Simulation System</p>
+      <h2 class="section-title">The AI<br><span style="color:var(--ai-blue)">Trial Period</span></h2>
+      <div class="section-divider" style="background:var(--ai-blue)"></div>
+      <p style="font-size:0.85rem; color:var(--muted); max-width:660px; line-height:1.9; margin-bottom:3.5rem;">
+        Before the real debates begin, each blockchain has the opportunity to build a <strong style="color:var(--white)">chain dossier</strong> — a structured repository of technical facts, rhetorical positions, known counterarguments, and persona guidelines. This dossier trains an AI representative that can debate in the chain's voice. <strong style="color:var(--white)">When no human has been nominated, the AI steps in automatically.</strong> The trial period tests the quality of each dossier and allows communities to refine their AI representative before the main bracket.
+      </p>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="ai-how-grid">
+      <div class="ai-how-card reveal">
+        <div class="ai-how-step">01</div>
+        <div class="ai-how-icon">🗂</div>
+        <div class="ai-how-title">Build the Chain Dossier</div>
+        <div class="ai-how-text">Each blockchain's community contributes to a structured folder of markdown files covering technical architecture, consensus philosophy, key arguments, known weaknesses, and spokesperson persona. <strong>Any contributor can open a PR.</strong> The organizing committee merges and curates.</div>
+      </div>
+      <div class="ai-how-card reveal reveal-delay-1">
+        <div class="ai-how-step">02</div>
+        <div class="ai-how-icon">🤖</div>
+        <div class="ai-how-title">AI Trains on the Dossier</div>
+        <div class="ai-how-text">A Claude-based agent ingests the dossier and generates opening statements, rebuttals, and closing arguments in the chain's voice. The AI uses <strong>only the dossier's facts</strong> — no hallucination, no off-chain opinions. All AI arguments are citation-traceable back to the source files.</div>
+      </div>
+      <div class="ai-how-card reveal reveal-delay-2">
+        <div class="ai-how-step">03</div>
+        <div class="ai-how-icon">👤</div>
+        <div class="ai-how-title">Human Override Available</div>
+        <div class="ai-how-text">A nominated human can take over at any point — even mid-bracket. The AI is always a <strong>fallback, not a replacement.</strong> For the trial period, AI vs. AI debates are scored by the same rubric as human debates, surfacing which dossiers are strong and which need more depth.</div>
+      </div>
+    </div>
+
+    <!-- DOSSIER STRUCTURE -->
+    <div class="dossier-section reveal">
+      <p class="section-label">Repository Architecture</p>
+      <h3 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; margin-bottom:0.5rem; letter-spacing:0.05em;">Chain Dossier Structure</h3>
+      <div class="section-divider" style="background:var(--ai-blue)"></div>
+      <p style="font-size:0.8rem; color:var(--muted); margin-bottom:2.5rem; line-height:1.9; max-width:600px;">
+        Each chain gets a dedicated folder in the <code style="color:var(--ai-blue); font-size:0.75rem;">chains/</code> directory of the public GitHub repository. The structure is standardized — every chain uses the same file schema so the AI can be consistently prompted.
+      </p>
+      <div class="dossier-grid">
+        <div class="dossier-tree">
+          <div class="dossier-tree-header">// chains/[chain-name]/ — example: chains/quai-network/</div>
+          <div class="tree-line"><span class="tree-folder">chains/quai-network/</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-ai">README.md</span> &nbsp;<span class="tree-comment">← identity, thesis, one-liner</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-file">consensus.md</span> &nbsp;<span class="tree-comment">← how PoEM / PoW works</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-file">tokenomics.md</span> &nbsp;<span class="tree-comment">← QUAI / Qi dual-token model</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-file">arguments.md</span> &nbsp;<span class="tree-comment">← key debate positions</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-file">counterargs.md</span> &nbsp;<span class="tree-comment">← known weaknesses + responses</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-file">sources.md</span> &nbsp;<span class="tree-comment">← whitepapers, talks, citations</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-ai">persona.md</span> &nbsp;<span class="tree-comment">← AI voice, tone, style guide</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-file">history.md</span> &nbsp;<span class="tree-comment">← timeline, key milestones</span></div>
+          <div class="tree-line">&nbsp;&nbsp;<span class="tree-folder">extras/</span> &nbsp;<span class="tree-comment">← essays, blog posts, talks</span></div>
+          <div class="tree-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">*.md</span> &nbsp;<span class="tree-comment">← any supporting material</span></div>
+        </div>
+        <div class="dossier-fields">
+          <div class="dossier-field">
+            <div class="dossier-field-name">README.md — Chain Identity</div>
+            <div class="dossier-field-desc">One-paragraph thesis. What problem does this chain solve? What is its core bet about how blockchains should work? Written as a manifesto, not a marketing pitch.</div>
+            <span class="dossier-field-req req-required">Required</span>
+          </div>
+          <div class="dossier-field">
+            <div class="dossier-field-name">arguments.md — Debate Positions</div>
+            <div class="dossier-field-desc">The five strongest arguments this chain can make across all six debate topic areas. Structured as assertion → evidence → implication. The AI draws primarily from this file.</div>
+            <span class="dossier-field-req req-required">Required</span>
+          </div>
+          <div class="dossier-field">
+            <div class="dossier-field-name">counterargs.md — Steelmanned Weaknesses</div>
+            <div class="dossier-field-desc">Every serious critique the chain faces, steelmanned honestly, followed by the strongest available response. If the AI can't answer a critique, it will say so — which counts against the score.</div>
+            <span class="dossier-field-req req-required">Required</span>
+          </div>
+          <div class="dossier-field">
+            <div class="dossier-field-name">persona.md — AI Voice Guide</div>
+            <div class="dossier-field-desc">How the AI representative should present itself. Tone (technical vs. accessible), rhetorical style, phrases to avoid, how to handle hostile cross-examination.</div>
+            <span class="dossier-field-req req-required">Required</span>
+          </div>
+          <div class="dossier-field">
+            <div class="dossier-field-name">extras/ — Supporting Material</div>
+            <div class="dossier-field-desc">Blog posts, research papers, recorded talks, forum discussions. The richer the extras folder, the more nuanced the AI's responses. No word limit.</div>
+            <span class="dossier-field-req req-optional">Optional but Recommended</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI READINESS GRID -->
+    <div class="readiness-section reveal">
+      <p class="section-label">Dossier Status Tracker</p>
+      <h3 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; margin-bottom:0.5rem; letter-spacing:0.05em;">AI Readiness: 64 Chains</h3>
+      <div class="section-divider" style="background:var(--ai-blue)"></div>
+      <div class="readiness-legend">
+        <div class="legend-item"><div class="legend-dot dot-ready"></div> Dossier Complete — AI Ready</div>
+        <div class="legend-item"><div class="legend-dot dot-partial"></div> Dossier Partial — In Progress</div>
+        <div class="legend-item"><div class="legend-dot dot-pending"></div> Not Started — Contributions Welcome</div>
+      </div>
+      <div class="readiness-grid" id="readiness-grid">
+        <!-- populated by JS -->
+      </div>
+      <div class="readiness-counts">
+        <div class="readiness-count"><div class="readiness-count-num count-ready">0</div><div class="readiness-count-label">AI Ready</div></div>
+        <div class="readiness-count"><div class="readiness-count-num count-partial">0</div><div class="readiness-count-label">In Progress</div></div>
+        <div class="readiness-count"><div class="readiness-count-num count-pending">64</div><div class="readiness-count-label">Not Started</div></div>
+      </div>
+      <p style="font-size:0.72rem; color:var(--surface3); margin-top:1.5rem; letter-spacing:0.08em;">
+        // Dossier contributions open · Submit PRs to github.com/blockchain-debate-championship/chains
+      </p>
+    </div>
+
+    <!-- TRIAL DEMO -->
+    <div class="trial-demo reveal">
+      <div class="trial-demo-header">
+        <div>
+          <div class="trial-demo-title">⬡ RUN A TRIAL DEBATE</div>
+          <div class="trial-demo-subtitle">Simulate an AI-vs-AI debate match using existing dossier material. Results are not official scores.</div>
+        </div>
+        <span class="ai-trial-tag" style="margin-left:auto; align-self:start;">Simulation Only</span>
+      </div>
+      <div class="trial-selector">
+        <div>
+          <div style="font-size:0.6rem; letter-spacing:0.2em; color:var(--ai-blue); text-transform:uppercase; margin-bottom:0.5rem;">Chain A (Proposition)</div>
+          <select class="trial-chain-select" id="chain-a">
+            <option value="">— Select Chain —</option>
+            <option value="bitcoin">Bitcoin (BTC)</option>
+            <option value="quai">Quai Network (QUAI)</option>
+            <option value="ethereum">Ethereum (ETH)</option>
+            <option value="cardano">Cardano (ADA)</option>
+            <option value="ergo">Ergo (ERG)</option>
+            <option value="solana">Solana (SOL)</option>
+            <option value="monero">Monero (XMR)</option>
+          </select>
+        </div>
+        <div class="trial-vs">VS</div>
+        <div>
+          <div style="font-size:0.6rem; letter-spacing:0.2em; color:var(--gold); text-transform:uppercase; margin-bottom:0.5rem;">Chain B (Opposition)</div>
+          <select class="trial-chain-select" id="chain-b" style="border-color:rgba(245,200,66,0.22);">
+            <option value="">— Select Chain —</option>
+            <option value="bitcoin">Bitcoin (BTC)</option>
+            <option value="quai">Quai Network (QUAI)</option>
+            <option value="ethereum">Ethereum (ETH)</option>
+            <option value="cardano">Cardano (ADA)</option>
+            <option value="ergo">Ergo (ERG)</option>
+            <option value="solana">Solana (SOL)</option>
+            <option value="monero">Monero (XMR)</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-size:0.6rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; margin-bottom:0.8rem;">Debate Motion</div>
+        <select class="trial-chain-select" id="trial-motion" style="border-color:var(--border);">
+          <option value="pow">Proof of Work is the only honest consensus mechanism.</option>
+          <option value="privacy">On-chain privacy is a fundamental right, not a feature.</option>
+          <option value="scaling">Sharding is preferable to Layer 2 solutions for scaling.</option>
+          <option value="defi">DeFi without decentralized settlement is not DeFi.</option>
+          <option value="energy">Energy expenditure in consensus is a feature, not a bug.</option>
+        </select>
+      </div>
+      <div class="trial-mode-row">
+        <div style="font-size:0.6rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; align-self:center; margin-right:0.5rem;">Mode:</div>
+        <button class="trial-mode-btn active" onclick="setMode(this,'ai-ai')">🤖 AI vs AI</button>
+        <button class="trial-mode-btn" onclick="setMode(this,'human-ai')">👤 Human vs AI</button>
+        <button class="trial-mode-btn" onclick="setMode(this,'ai-human')">🤖 AI vs Human</button>
+      </div>
+      <button class="trial-run-btn" id="run-trial-btn" onclick="runTrial()">
+        ▶ Run Simulation
+      </button>
+      <div class="trial-output" id="trial-output"></div>
+    </div>
+
+    <!-- TRIAL TIMELINE -->
+    <div class="reveal">
+      <p class="section-label" style="margin-bottom:1.5rem;">Trial Period Schedule</p>
+      <div class="trial-timeline">
+        <div class="trial-phase">
+          <div class="trial-phase-num">01</div>
+          <div class="trial-phase-name">Dossier Intake</div>
+          <div class="trial-phase-desc">Communities submit PRs to the chains/ repository. Organizers review and merge. Minimum viable dossier: README + arguments + counterargs.</div>
+          <div class="trial-phase-date">// Now → Jan 15, 2026</div>
+        </div>
+        <div class="trial-phase">
+          <div class="trial-phase-num">02</div>
+          <div class="trial-phase-name">AI Calibration</div>
+          <div class="trial-phase-desc">Each dossier is ingested and test debates are generated. Wolfram Research fact-checks AI technical claims. Feedback is published as GitHub Issues for each chain.</div>
+          <div class="trial-phase-date">// Jan 15 → Feb 1, 2026</div>
+        </div>
+        <div class="trial-phase">
+          <div class="trial-phase-num">03</div>
+          <div class="trial-phase-name">Public Trial Matches</div>
+          <div class="trial-phase-desc">10 AI-vs-AI trial debates are run publicly. Community votes on debate quality. Chains with low-quality AI performance are flagged for dossier improvement.</div>
+          <div class="trial-phase-date">// Feb 1 → Feb 22, 2026</div>
+        </div>
+        <div class="trial-phase">
+          <div class="trial-phase-num">04</div>
+          <div class="trial-phase-name">Human Override Deadline</div>
+          <div class="trial-phase-desc">Any chain that nominates a human representative by this date replaces their AI. Chains without nominations enter the main bracket with their AI representative.</div>
+          <div class="trial-phase-date">// Feb 22, 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="text-align:center; margin-top:4rem;">
+      <a href="https://github.com" target="_blank" class="btn-ai" style="padding:0.9rem 2.5rem; font-size:0.78rem;">
+        ↗ Contribute to a Chain Dossier on GitHub
+      </a>
+      <span style="display:inline-block; width:1rem;"></span>
+      <a href="#register" class="btn-primary" style="font-size:0.78rem;">
+        Nominate a Human Rep Instead →
+      </a>
+    </div>
+
   </div>
 </section>
 
@@ -1380,6 +1861,17 @@
           <li><a href="#competitors">All 64 Chains</a></li>
           <li><a href="#topics">Debate Topics</a></li>
           <li><a href="#register">Nominations</a></li>
+          <li><a href="#ai-trial" style="color:var(--ai-blue)">⬡ AI Trial Info</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5 style="color:var(--ai-blue)">AI System</h5>
+        <ul>
+          <li><a href="#ai-trial" style="color:var(--ai-blue)">Trial Period Overview</a></li>
+          <li><a href="https://github.com" target="_blank" style="color:var(--ai-blue)">Chain Dossier Repo →</a></li>
+          <li><a href="#ai-trial">Dossier Template</a></li>
+          <li><a href="#ai-trial">AI Readiness Tracker</a></li>
+          <li><a href="#ai-trial">Run Trial Debate</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1395,7 +1887,7 @@
     </div>
     <div class="footer-bottom">
       <p>© 2026 Blockchain Debate Championship · Inspired by <a href="https://www.utxoa.org/">UTXO Alliance</a></p>
-      <p style="font-family:'IBM Plex Mono'; font-size:0.6rem;">// LAUNCH MARCH 1, 2026 · 64 CHAINS · 63 DEBATES · 1 MANIFESTO</p>
+      <p style="font-family:'IBM Plex Mono'; font-size:0.6rem;">// LAUNCH MARCH 1, 2026 · 64 CHAINS · 63 DEBATES · 1 MANIFESTO · <span style="color:var(--ai-blue)">AI TRIAL ACTIVE</span></p>
     </div>
   </div>
 </footer>
@@ -1414,8 +1906,17 @@
       <dt>Debate Status</dt>
       <dd style="color:var(--accent-green)">✓ Eligible for nomination · Deadline Feb 22, 2026</dd>
     </dl>
-    <div style="margin-top:2rem;">
-      <a href="#register" class="btn-primary" onclick="closeModal()" style="font-size:0.7rem; padding:0.7rem 1.5rem;">Nominate a Rep for This Chain →</a>
+    <div class="modal-ai-status">
+      <div>
+        <div class="modal-ai-label">AI Dossier Status</div>
+        <div style="font-size:0.75rem; color:var(--muted); margin-top:0.3rem;" id="modal-ai-desc">No dossier submitted yet. Community contributions welcome.</div>
+      </div>
+      <span class="modal-ai-badge ai-badge-pending" id="modal-ai-badge">Pending</span>
+    </div>
+    <div class="modal-ai-actions">
+      <a href="#ai-trial" class="btn-ai" onclick="closeModal()">View AI Trial Info</a>
+      <a href="https://github.com" target="_blank" class="btn-ai">↗ Submit Dossier PR</a>
+      <a href="#register" class="btn-primary" onclick="closeModal()" style="font-size:0.7rem; padding:0.7rem 1.5rem;">Nominate a Rep →</a>
     </div>
   </div>
 </div>
@@ -1427,7 +1928,44 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Modal
+  // ── AI DOSSIER STATUS DATA ──
+  // status: 'ready' | 'partial' | 'pending'
+  const chainStatuses = {
+    'Bitcoin': 'pending', 'Ethereum': 'pending', 'Cardano': 'pending', 'Quai Network': 'pending',
+    'Solana': 'pending', 'Ergo': 'pending', 'Nervos': 'pending', 'Polkadot': 'pending',
+    'Cosmos': 'pending', 'Avalanche': 'pending', 'Arbitrum': 'pending', 'Stacks': 'pending',
+    'Alephium': 'pending', 'Near': 'pending', 'Optimism': 'pending', 'Zcash': 'pending',
+    'Litecoin': 'pending', 'Monero': 'pending', 'Dogecoin': 'pending', 'Kaspa': 'pending',
+    'Ravencoin': 'pending', 'Bitcoin Cash': 'pending', 'Dash': 'pending', 'Decred': 'pending',
+    'Flux': 'pending', 'Komodo': 'pending', 'Digibyte': 'pending', 'Vertcoin': 'pending',
+    'Flux': 'pending', 'Syscoin': 'pending', 'Firo': 'pending', 'Horizen': 'pending',
+    'Tezos': 'pending', 'Algorand': 'pending', 'Fantom': 'pending', 'Hedera': 'pending',
+    'IOTA': 'pending', 'Stellar': 'pending', 'Ripple': 'pending', 'Nano': 'pending',
+    'Sui': 'pending', 'Aptos': 'pending', 'Sei': 'pending', 'Injective': 'pending',
+    'dYdX': 'pending', 'Celestia': 'pending', 'Mina': 'pending', 'Aleo': 'pending',
+    'Base': 'pending', 'zkSync': 'pending', 'StarkNet': 'pending', 'Polygon': 'pending',
+    'Linea': 'pending', 'Scroll': 'pending', 'Blast': 'pending', 'Mantle': 'pending',
+    'ICP': 'pending', 'Filecoin': 'pending', 'Arweave': 'pending', 'Akash': 'pending',
+    'Chainlink': 'pending', 'Thorchain': 'pending', 'Radix': 'pending', 'MultiversX': 'pending'
+  };
+
+  // Build AI readiness grid
+  (function buildReadinessGrid() {
+    const grid = document.getElementById('readiness-grid');
+    if (!grid) return;
+    const names = Object.keys(chainStatuses);
+    names.forEach(name => {
+      const status = chainStatuses[name];
+      const chip = document.createElement('div');
+      chip.className = 'readiness-chip';
+      chip.title = name + ' — ' + (status === 'ready' ? 'AI Ready' : status === 'partial' ? 'In Progress' : 'Not Started');
+      chip.innerHTML = `<div class="readiness-chip-name">${name}</div><div class="readiness-chip-status status-${status}"></div>`;
+      chip.onclick = () => chip.style.borderColor = 'var(--ai-blue)';
+      grid.appendChild(chip);
+    });
+  })();
+
+  // ── MODAL ──
   function openModal(name, ticker, type, desc, consensus, launch, arch) {
     const types = { utxo: 'UTXO Model', evm: 'EVM / Account Model', l2: 'Layer 2 Rollup', other: 'Specialized / Other' };
     document.getElementById('modal-name').textContent = name + ' (' + ticker + ')';
@@ -1436,6 +1974,23 @@
     document.getElementById('modal-consensus').textContent = consensus;
     document.getElementById('modal-launch').textContent = launch;
     document.getElementById('modal-arch').textContent = arch;
+
+    // AI dossier status
+    const status = chainStatuses[name] || 'pending';
+    const badge = document.getElementById('modal-ai-badge');
+    const aiDesc = document.getElementById('modal-ai-desc');
+    badge.className = 'modal-ai-badge ai-badge-' + status;
+    if (status === 'ready') {
+      badge.textContent = '✓ AI Ready';
+      aiDesc.textContent = 'Dossier complete. AI representative is trained and ready to debate.';
+    } else if (status === 'partial') {
+      badge.textContent = '◑ In Progress';
+      aiDesc.textContent = 'Dossier partially submitted. Missing some required files. Contributions welcome.';
+    } else {
+      badge.textContent = '○ Pending';
+      aiDesc.textContent = 'No dossier submitted yet. Community contributions welcome on GitHub.';
+    }
+
     document.getElementById('chainModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -1447,6 +2002,81 @@
     if (e.target === this) closeModal();
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // ── AI TRIAL MODE TOGGLE ──
+  let trialMode = 'ai-ai';
+  function setMode(btn, mode) {
+    trialMode = mode;
+    document.querySelectorAll('.trial-mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // ── AI TRIAL SIMULATION ──
+  const trialScripts = {
+    'pow': {
+      'bitcoin': { prop: "Bitcoin's Proof of Work consensus is the only mechanism that creates a physical, thermodynamically irreversible anchor for monetary value. Each hash is a one-way function — entropy flows outward, and that entropic commitment is what makes the ledger honest. No other consensus system achieves this." },
+      'ethereum': { opp: "The question before us assumes energy expenditure is a prerequisite for honesty. Ethereum's transition to Proof of Stake demonstrates that validator economic stake can substitute for physical energy as the honesty bond — at a fraction of the environmental cost." },
+      'quai': { prop: "Quai Network extends Bitcoin's PoW insight: not only must each hash commit entropy, but the fork-choice rule must preserve the full causal structure of every hash trial. PoEM — Proof of Entropy Minima — eliminates degeneracy that classical Nakamoto consensus leaves unaddressed." },
+      'cardano': { opp: "Proof of Work's energy expenditure is not a feature — it is overhead. Cardano's Ouroboros Praos achieves Nakamoto-style security properties through cryptographic sortition without burning megawatts. The honest ledger is secured by economic stake, not heat." },
+      'ergo': { prop: "Ergo's Autolykos PoW is memory-hard by design, making ASIC dominance economically irrational and distributing mining broadly. The thermodynamic commitment is real, egalitarian, and provably Sybil-resistant in a way no stake-weighted system can replicate." },
+      'default_prop': { prop: "Proof of Work grounds consensus in physical reality. No system that relies solely on cryptographic promises and economic incentives can offer the same thermodynamic guarantee against history revision. Energy is the only honest arbiter." },
+      'default_opp': { opp: "The proposition conflates physical irreversibility with ledger integrity. Proof of Stake and its variants achieve finality through cryptographic and economic means that are, by any measurable security analysis, equivalent or superior to energy-intensive PoW — without the ecological externality." }
+    }
+  };
+
+  async function runTrial() {
+    const chainA = document.getElementById('chain-a').value;
+    const chainB = document.getElementById('chain-b').value;
+    const motion = document.getElementById('trial-motion').value;
+
+    if (!chainA || !chainB) { alert('Please select both chains.'); return; }
+    if (chainA === chainB) { alert('Select two different chains.'); return; }
+
+    const output = document.getElementById('trial-output');
+    const btn = document.getElementById('run-trial-btn');
+    output.classList.add('visible');
+    btn.disabled = true;
+    output.innerHTML = '';
+
+    const chainAName = document.getElementById('chain-a').options[document.getElementById('chain-a').selectedIndex].text;
+    const chainBName = document.getElementById('chain-b').options[document.getElementById('chain-b').selectedIndex].text;
+
+    const lines = [
+      { cls: 'system', text: `// SIMULATION — ${trialMode.toUpperCase()} MODE — ${new Date().toLocaleTimeString()}` },
+      { cls: 'system', text: `// Motion: "${document.getElementById('trial-motion').options[document.getElementById('trial-motion').selectedIndex].text}"` },
+      { cls: 'system', text: `// Dossier status: ${chainAName} [${chainStatuses[chainAName.split(' (')[0]] || 'pending'}] · ${chainBName} [${chainStatuses[chainBName.split(' (')[0]] || 'pending'}]` },
+      { cls: 'system', text: '' },
+      { cls: 'speaker-a', text: `[${chainAName} — PROPOSITION OPENING]` },
+      { cls: 'speaker-a', text: getArgument(chainA, motion, 'prop') },
+      { cls: 'system', text: '' },
+      { cls: 'speaker-b', text: `[${chainBName} — OPPOSITION OPENING]` },
+      { cls: 'speaker-b', text: getArgument(chainB, motion, 'opp') },
+      { cls: 'system', text: '' },
+      { cls: 'system', text: `// NOTE: This is a pre-dossier simulation using baseline arguments.` },
+      { cls: 'system', text: `// Argument quality will improve significantly once chain dossiers are submitted.` },
+      { cls: 'system', text: `// → Contribute at: github.com/blockchain-debate-championship/chains` },
+    ];
+
+    for (const line of lines) {
+      await delay(line.text ? 180 : 80);
+      const div = document.createElement('div');
+      div.className = 'trial-output-line ' + line.cls;
+      div.textContent = line.text || '\u00a0';
+      output.appendChild(div);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    btn.disabled = false;
+  }
+
+  function getArgument(chain, motion, role) {
+    const scripts = trialScripts[motion] || trialScripts['pow'];
+    if (scripts[chain] && scripts[chain][role]) return scripts[chain][role];
+    return role === 'prop' ? (scripts['default_prop'] || {}).prop || 'Dossier argument pending submission.' 
+                           : (scripts['default_opp'] || {}).opp || 'Dossier argument pending submission.';
+  }
+
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   // Smooth anchor offset for fixed nav
   document.querySelectorAll('a[href^="#"]').forEach(a => {
