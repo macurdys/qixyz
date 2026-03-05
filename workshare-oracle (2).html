@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkShare Oracle — Verifiable Randomness from PoEM | qi.xyz</title>
+    <meta name="description" content="Every hash that qualifies as a workshare is a verifiably random output. The lagging non-zero digits become entropy-anchored oracle feeds — powering Wolfram Mega Oracle with PoW-secured randomness.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.12);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.35);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.12);
+            --qi-amber-glow: rgba(255, 184, 0, 0.35);
+            --qi-red: #ff3366;
+            --qi-green: #39FF14;
+            --qi-purple: #bf5af2;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.1);
+            --border-bright: rgba(0, 240, 255, 0.28);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #3a4558;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            font-size: 17px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== SCANLINE OVERLAY ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ===== NOISE TEXTURE ===== */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            opacity: 0.018;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* ===== BACK NAV ===== */
+        .back-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: rgba(6, 8, 13, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 100;
+            gap: 20px;
+        }
+        .back-nav a {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .back-nav a:hover { color: var(--qi-cyan); }
+        .back-nav .sep { color: var(--text-dim); }
+        .back-nav .page-title {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--qi-cyan);
+            text-transform: uppercase;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Painting background */
+        .hero-painting {
+            position: absolute;
+            inset: 0;
+            background-image: url('randomness.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.18;
+            filter: saturate(1.4) contrast(1.1);
+            pointer-events: none;
+        }
+
+        /* Dark vignette over painting */
+        .hero-painting-vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(6,8,13,0.7) 65%, rgba(6,8,13,0.95) 100%);
+            pointer-events: none;
+        }
+
+        /* Radial glow behind hero */
+        .hero-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px; height: 700px;
+            background: radial-gradient(ellipse, rgba(255,184,0,0.07) 0%, rgba(0,240,255,0.05) 40%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Falling entropy stream */
+        .entropy-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .entropy-column {
+            position: absolute;
+            top: -20px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            line-height: 1.5;
+            color: rgba(0, 240, 255, 0.08);
+            white-space: nowrap;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            from { transform: translateY(-100px); }
+            to   { transform: translateY(110vh); }
+        }
+
+        /* ===== PROTO TAG ===== */
+        .proto-tag {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--qi-amber);
+            text-transform: uppercase;
+            border: 1px solid rgba(255,184,0,0.3);
+            padding: 4px 12px;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(38px, 7vw, 80px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-align: center;
+            line-height: 1.05;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title .line1 { color: var(--text-primary); }
+        .hero-title .line2 {
+            color: var(--qi-amber);
+            text-shadow: 0 0 40px rgba(255,184,0,0.5);
+            display: block;
+        }
+
+        .hero-sub {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 20px;
+            max-width: 560px;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== LIVE ORACLE DISPLAY ===== */
+        .oracle-display {
+            margin-top: 52px;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .oracle-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .oracle-header-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        .oracle-header-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--qi-green);
+        }
+        .pulse-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--qi-green);
+            box-shadow: 0 0 8px var(--qi-green);
+            animation: pulse-green 1.2s ease-in-out infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .hash-stream {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            border-top: 2px solid var(--qi-amber);
+            padding: 20px 24px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 2;
+            position: relative;
+            overflow: hidden;
+        }
+        .hash-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .hash-row.visible { opacity: 1; transform: translateX(0); }
+        .hash-row.fading { opacity: 0.3; }
+
+        .hash-index {
+            color: var(--text-dim);
+            font-size: 10px;
+            min-width: 36px;
+        }
+        .hash-type {
+            font-size: 9px;
+            letter-spacing: 2px;
+            padding: 2px 7px;
+            border-radius: 2px;
+            min-width: 68px;
+            text-align: center;
+        }
+        .hash-type.workshare {
+            background: rgba(255,184,0,0.1);
+            border: 1px solid rgba(255,184,0,0.3);
+            color: var(--qi-amber);
+        }
+        .hash-type.block {
+            background: rgba(0,240,255,0.08);
+            border: 1px solid rgba(0,240,255,0.25);
+            color: var(--qi-cyan);
+        }
+        .hash-type.miss {
+            background: rgba(58,69,88,0.3);
+            border: 1px solid var(--border-dim);
+            color: var(--text-dim);
+        }
+
+        .hash-value {
+            flex: 1;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+        .hash-leading { color: var(--text-dim); }
+        .hash-separator { color: rgba(255,184,0,0.2); }
+        .hash-trailing {
+            color: var(--qi-amber);
+            text-shadow: 0 0 12px rgba(255,184,0,0.6);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .hash-trailing.cyan-trail {
+            color: var(--qi-cyan);
+            text-shadow: 0 0 12px rgba(0,240,255,0.6);
+        }
+        .hash-entropy {
+            font-size: 10px;
+            color: var(--text-dim);
+            min-width: 80px;
+            text-align: right;
+        }
+        .hash-entropy.active {
+            color: var(--qi-amber);
+        }
+
+        /* ===== EXTRACTED RANDOMNESS PANEL ===== */
+        .rng-panel {
+            margin-top: 2px;
+            background: rgba(255,184,0,0.04);
+            border: 1px solid rgba(255,184,0,0.2);
+            border-top: none;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .rng-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--qi-amber);
+            text-transform: uppercase;
+            min-width: 120px;
+        }
+        .rng-outputs {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .rng-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .rng-item-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+        }
+        .rng-item-value {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--qi-amber);
+            text-shadow: 0 0 16px rgba(255,184,0,0.5);
+            transition: all 0.3s;
+            min-width: 60px;
+        }
+        .rng-item-value.flash {
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,184,0,1);
+        }
+
+        /* ===== SECTION LAYOUT ===== */
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .section { margin-bottom: 80px; }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: var(--qi-cyan);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(22px, 4vw, 36px);
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .section-body {
+            font-family: var(--font-body);
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            max-width: 720px;
+        }
+        .section-body p + p { margin-top: 16px; }
+        .highlight { color: var(--qi-amber); font-weight: 600; }
+        .highlight-cyan { color: var(--qi-cyan); font-weight: 600; }
+        .mono-inline {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            background: var(--qi-cyan-dim);
+            border: 1px solid var(--border-dim);
+            padding: 2px 8px;
+            color: var(--qi-cyan);
+        }
+
+        /* ===== MECHANIC GRID ===== */
+        .mechanic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2px;
+            margin-top: 32px;
+        }
+        .mechanic-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .mechanic-card:hover { border-color: var(--border-bright); }
+        .mechanic-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+        }
+        .mechanic-card.cyan::before { background: var(--qi-cyan); }
+        .mechanic-card.amber::before { background: var(--qi-amber); }
+        .mechanic-card.purple::before { background: var(--qi-purple); }
+        .mechanic-card.green::before { background: var(--qi-green); }
+
+        .mechanic-num {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .mechanic-card.cyan .mechanic-num { color: var(--qi-cyan); }
+        .mechanic-card.amber .mechanic-num { color: var(--qi-amber); }
+        .mechanic-card.purple .mechanic-num { color: var(--qi-purple); }
+        .mechanic-card.green .mechanic-num { color: var(--qi-green); }
+
+        .mechanic-title {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .mechanic-text {
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ===== HASH ANATOMY ===== */
+        .hash-anatomy {
+            margin-top: 32px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 32px;
+        }
+        .anatomy-hash {
+            font-family: var(--font-mono);
+            font-size: clamp(10px, 1.5vw, 14px);
+            letter-spacing: 2px;
+            word-break: break-all;
+            line-height: 2;
+            margin-bottom: 24px;
+        }
+        .anatomy-zero { color: var(--text-dim); }
+        .anatomy-nonzero {
+            color: var(--qi-amber);
+            text-shadow: 0 0 10px rgba(255,184,0,0.6);
+            animation: flicker 4s ease-in-out infinite;
+        }
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 1; }
+            97% { opacity: 0.6; }
+        }
+        .anatomy-labels {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .anatomy-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+        }
+        .anatomy-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+        .anatomy-dot.zero { background: var(--text-dim); }
+        .anatomy-dot.nonzero {
+            background: var(--qi-amber);
+            box-shadow: 0 0 8px rgba(255,184,0,0.6);
+        }
+
+        /* ===== ORACLE ARCHITECTURE ===== */
+        .arch-diagram {
+            margin-top: 32px;
+            display: grid;
+            grid-template-columns: 1fr 40px 1fr 40px 1fr;
+            gap: 0;
+            align-items: center;
+        }
+        @media (max-width: 700px) {
+            .arch-diagram {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto auto;
+            }
+            .arch-arrow { transform: rotate(90deg); }
+        }
+        .arch-node {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+        }
+        .arch-node.cyan { border-top: 2px solid var(--qi-cyan); }
+        .arch-node.amber { border-top: 2px solid var(--qi-amber); }
+        .arch-node.purple { border-top: 2px solid var(--qi-purple); }
+        .arch-node-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .arch-node-title {
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        .arch-node-sub {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .arch-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--qi-amber);
+            font-size: 20px;
+            opacity: 0.6;
+        }
+
+        /* ===== COMPARISON TABLE ===== */
+        .compare-table {
+            margin-top: 32px;
+            border: 1px solid var(--border-dim);
+            overflow: hidden;
+        }
+        .compare-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .compare-row:last-child { border-bottom: none; }
+        .compare-row.header {
+            background: var(--bg-panel);
+        }
+        .compare-cell {
+            padding: 16px 20px;
+            border-right: 1px solid var(--border-dim);
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .compare-cell:last-child { border-right: none; }
+        .compare-row.header .compare-cell {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        .compare-cell.good {
+            color: var(--qi-green);
+            font-weight: 600;
+        }
+        .compare-cell.bad {
+            color: var(--qi-red);
+            opacity: 0.7;
+        }
+        .compare-cell.label {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* ===== PAPER CITATION ===== */
+        .paper-cite {
+            margin-top: 32px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            border-left: 3px solid var(--qi-cyan);
+            padding: 24px 28px;
+        }
+        .paper-cite-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--qi-cyan);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .paper-cite-title {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .paper-cite-authors {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        .paper-cite-abstract {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .paper-cite a {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--qi-cyan);
+            text-decoration: none;
+        }
+        .paper-cite a:hover { text-decoration: underline; }
+
+        /* ===== MEGA WOLFRAM PANEL ===== */
+        .mega-panel {
+            margin-top: 32px;
+            background: linear-gradient(135deg, rgba(191,90,242,0.06) 0%, rgba(0,240,255,0.04) 100%);
+            border: 1px solid rgba(191,90,242,0.2);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .mega-panel::before {
+            content: 'WOLFRAM MEGA ORACLE';
+            position: absolute;
+            top: 16px; right: 20px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: rgba(191,90,242,0.3);
+        }
+        .mega-panel-title {
+            font-family: var(--font-display);
+            font-size: clamp(20px, 3vw, 30px);
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--qi-purple);
+            text-shadow: 0 0 30px rgba(191,90,242,0.4);
+            margin-bottom: 16px;
+        }
+        .mega-panel-sub {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+        .mega-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .mega-feature {
+            border: 1px solid rgba(191,90,242,0.15);
+            padding: 16px;
+            background: rgba(6,8,13,0.6);
+        }
+        .mega-feature-title {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--qi-purple);
+            margin-bottom: 6px;
+        }
+        .mega-feature-text {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ===== SIGNAL FINDING ===== */
+        .signal-intro {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 720px;
+            margin-bottom: 40px;
+        }
+        .signal-intro .highlight { color: var(--qi-cyan); }
+        .signal-intro .highlight-amber { color: var(--qi-amber); }
+
+        /* The "dark space" visual — node discovery diagram */
+        .signal-space {
+            position: relative;
+            width: 100%;
+            height: 340px;
+            background: #04060a;
+            border: 1px solid var(--border-dim);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .signal-space canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .signal-space-label {
+            position: absolute;
+            top: 16px; left: 20px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        .signal-space-legend {
+            position: absolute;
+            bottom: 14px; right: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 2;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+        }
+        .legend-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Three data source cards */
+        .source-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2px;
+            margin-bottom: 40px;
+        }
+        .source-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            padding: 28px 28px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.25s, background 0.25s;
+        }
+        .source-card:hover {
+            border-color: var(--border-bright);
+            background: #0e1620;
+        }
+        .source-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+        }
+        .source-card.chain::after  { background: linear-gradient(90deg, var(--qi-cyan), transparent); }
+        .source-card.wolfram::after { background: linear-gradient(90deg, var(--qi-purple), transparent); }
+        .source-card.price::after  { background: linear-gradient(90deg, var(--qi-amber), transparent); }
+
+        .source-icon {
+            font-size: 32px;
+            margin-bottom: 14px;
+            display: block;
+        }
+        .source-title {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        .source-card.chain  .source-title { color: var(--qi-cyan); }
+        .source-card.wolfram .source-title { color: var(--qi-purple); }
+        .source-card.price  .source-title { color: var(--qi-amber); }
+        .source-desc {
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+        .source-signal-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            border-top: 1px solid var(--border-dim);
+            padding-top: 12px;
+            line-height: 1.6;
+        }
+        .source-signal-tag span {
+            color: var(--qi-green);
+        }
+
+        /* The "signal = credential" callout box */
+        .signal-callout {
+            background: linear-gradient(135deg, rgba(0,240,255,0.04) 0%, rgba(57,255,20,0.03) 100%);
+            border: 1px solid rgba(0,240,255,0.18);
+            border-left: 3px solid var(--qi-cyan);
+            padding: 28px 32px;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+        @media (max-width: 600px) { .signal-callout { flex-direction: column; } }
+        .signal-callout-icon {
+            font-size: 36px;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .signal-callout-body {}
+        .signal-callout-title {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--qi-cyan);
+            margin-bottom: 10px;
+        }
+        .signal-callout-text {
+            font-family: var(--font-body);
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .signal-callout-text strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* ===== CTA ===== */
+        .cta-section {
+            text-align: center;
+            padding: 60px 24px;
+            border-top: 1px solid var(--border-dim);
+        }
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .cta-link {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: var(--qi-cyan);
+            text-decoration: none;
+        }
+        .cta-link:hover { text-decoration: underline; }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border-dim);
+            margin: 60px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== BACK NAV ===== -->
+    <nav class="back-nav">
+        <a href="index.html">← qi.xyz</a>
+        <span class="sep">/</span>
+        <span class="page-title">WorkShare Oracle</span>
+    </nav>
+
+    <!-- ===== FALLING ENTROPY BACKGROUND ===== -->
+    <div class="entropy-bg" id="entropyBg"></div>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-painting"></div>
+        <div class="hero-painting-vignette"></div>
+        <div class="hero-glow"></div>
+        <div class="proto-tag">Proto-15 · Oracle · Concept</div>
+        <h1 class="hero-title">
+            <span class="line1">WORKSHARE</span>
+            <span class="line2">ORACLE</span>
+        </h1>
+        <p class="hero-sub">
+            Every hash that qualifies as a workshare is a verifiable random output.<br>
+            The lagging non-zero digits become entropy-anchored oracle feeds.
+        </p>
+
+        <!-- ===== LIVE ORACLE DISPLAY ===== -->
+        <div class="oracle-display">
+            <div class="oracle-header">
+                <span class="oracle-header-label">// live workshare stream · PoEM²</span>
+                <span class="oracle-header-status">
+                    <span class="pulse-dot"></span>
+                    MINING
+                </span>
+            </div>
+            <div class="hash-stream" id="hashStream">
+                <!-- JS populated -->
+            </div>
+            <div class="rng-panel">
+                <span class="rng-label">// oracle outputs</span>
+                <div class="rng-outputs">
+                    <div class="rng-item">
+                        <span class="rng-item-label">RAND INT [0–65535]</span>
+                        <span class="rng-item-value" id="rngInt">—</span>
+                    </div>
+                    <div class="rng-item">
+                        <span class="rng-item-label">RAND [0.0–1.0]</span>
+                        <span class="rng-item-value" id="rngFloat">—</span>
+                    </div>
+                    <div class="rng-item">
+                        <span class="rng-item-label">ENTROPY BITS</span>
+                        <span class="rng-item-value" id="rngBits">—</span>
+                    </div>
+                    <div class="rng-item">
+                        <span class="rng-item-label">WORKSHARES / MIN</span>
+                        <span class="rng-item-value" id="rngRate">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="content">
+
+        <!-- SECTION: WHAT IS THIS -->
+        <section class="section">
+            <div class="section-label">// the mechanism</div>
+            <h2 class="section-title">Workshares Are Already<br>Generating Random Numbers</h2>
+            <div class="section-body">
+                <p>
+                    In Quai Network's <span class="highlight-cyan">PoEM²</span> protocol, miners continuously search for hashes that meet a 
+                    <span class="highlight">lower difficulty threshold</span> than full blocks. These are workshares — lightweight 
+                    proofs broadcast to the network every few seconds, used to estimate mining power and split rewards proportionally.
+                </p>
+                <p>
+                    A workshare hash looks like: <span class="mono-inline">0000000000000000[...RANDOM DIGITS...]</span>. The leading zeros satisfy the 
+                    difficulty requirement. Everything after — the <span class="highlight">lagging non-zero sequence</span> — is statistically 
+                    indistinguishable from random. No one controls it. It costs real energy to produce. It's 
+                    publicly verifiable. It's already there.
+                </p>
+                <p>
+                    We extract those trailing digits and use them as oracle inputs. One mechanism, 
+                    two purposes: <span class="highlight">fair reward distribution</span> and 
+                    <span class="highlight">verifiable randomness</span>.
+                </p>
+            </div>
+
+            <!-- Hash anatomy -->
+            <div class="hash-anatomy">
+                <div class="section-label" style="margin-bottom:16px;">// workshare hash anatomy</div>
+                <div class="anatomy-hash">
+                    <span class="anatomy-zero">00000000000000000000000000000000000000000000000000000000000000</span><span class="anatomy-nonzero">3f8a2c91eb47d06</span>
+                </div>
+                <div class="anatomy-labels">
+                    <div class="anatomy-label">
+                        <div class="anatomy-dot zero"></div>
+                        LEADING ZEROS — satisfies PoW difficulty threshold
+                    </div>
+                    <div class="anatomy-label">
+                        <div class="anatomy-dot nonzero"></div>
+                        LAGGING NON-ZERO DIGITS — oracle entropy output
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION: DUAL PURPOSE -->
+        <section class="section">
+            <div class="section-label">// dual-purpose extraction</div>
+            <h2 class="section-title">One Hash. Two Jobs.</h2>
+            <div class="section-body">
+                <p>The workshare mechanism already exists for reward fairness. We give it a second job at zero marginal cost to the protocol.</p>
+            </div>
+
+            <div class="mechanic-grid">
+                <div class="mechanic-card amber">
+                    <div class="mechanic-num">01</div>
+                    <div class="mechanic-title">FAIR REWARD DISTRIBUTION</div>
+                    <div class="mechanic-text">
+                        Per arXiv:2503.10185, workshares enable Proportional Reward Splitting (PRS) — estimating each miner's hashrate contribution 20–50× more frequently than block rewards alone. Nash equilibrium. Selfish mining eliminated.
+                    </div>
+                </div>
+                <div class="mechanic-card cyan">
+                    <div class="mechanic-num">02</div>
+                    <div class="mechanic-title">VERIFIABLE RANDOM ORACLE</div>
+                    <div class="mechanic-text">
+                        The lagging non-zero digits of each qualifying hash are extracted as entropy. Unpredictable before publication. Publicly verifiable after. Energy-cost anchored. No trusted party required.
+                    </div>
+                </div>
+                <div class="mechanic-card purple">
+                    <div class="mechanic-num">03</div>
+                    <div class="mechanic-title">WOLFRAM MEGA ORACLE INPUT</div>
+                    <div class="mechanic-text">
+                        WorkShare entropy seeds Wolfram's deterministic computation layer. Natural language queries hit MCP servers, workshare values provide tamper-proof randomness anchors. P2P trust via PoW identity.
+                    </div>
+                </div>
+                <div class="mechanic-card green">
+                    <div class="mechanic-num">04</div>
+                    <div class="mechanic-title">HIGH FREQUENCY OUTPUT</div>
+                    <div class="mechanic-text">
+                        Workshares arrive 20–50× more often than blocks. Where Bitcoin generates one random beacon every ~10 minutes, WorkShare Oracle generates fresh entropy every few seconds — suitable for real-time DeFi applications.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION: ARCHITECTURE -->
+        <section class="section">
+            <div class="section-label">// system architecture</div>
+            <h2 class="section-title">From Hash to Oracle</h2>
+            <div class="section-body">
+                <p>The pipeline converts PoW side-products into structured, verifiable oracle data ready for on-chain settlement.</p>
+            </div>
+
+            <div class="arch-diagram">
+                <div class="arch-node amber">
+                    <div class="arch-node-icon">⛏</div>
+                    <div class="arch-node-title">MINER</div>
+                    <div class="arch-node-sub">Finds hash meeting workshare difficulty threshold<br><br>Broadcasts to PoEM² network</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node cyan">
+                    <div class="arch-node-icon">⊕</div>
+                    <div class="arch-node-title">EXTRACTOR</div>
+                    <div class="arch-node-sub">Strips leading zeros<br>Captures lagging non-zero sequence<br>Computes entropy bits</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node purple">
+                    <div class="arch-node-icon">◈</div>
+                    <div class="arch-node-title">MEGA ORACLE</div>
+                    <div class="arch-node-sub">MCP interprets natural-language queries<br>Wolfram grounds answers<br>WorkShare seeds randomness</div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION: VS TABLE -->
+        <section class="section">
+            <div class="section-label">// competitive analysis</div>
+            <h2 class="section-title">Why Not Chainlink?</h2>
+            <div class="section-body">
+                <p>Existing VRF solutions require trusted oracles, token staking, or off-chain coordination. WorkShare Oracle requires none of these — the randomness is a free byproduct of consensus itself.</p>
+            </div>
+
+            <div class="compare-table">
+                <div class="compare-row header">
+                    <div class="compare-cell"></div>
+                    <div class="compare-cell">Traditional VRF</div>
+                    <div class="compare-cell">WorkShare Oracle</div>
+                </div>
+                <div class="compare-row">
+                    <div class="compare-cell label">Trust Model</div>
+                    <div class="compare-cell bad">Token staking + committee</div>
+                    <div class="compare-cell good">PoW identity, public accountability</div>
+                </div>
+                <div class="compare-row">
+                    <div class="compare-cell label">Latency</div>
+                    <div class="compare-cell bad">~1 block (~13s Ethereum)</div>
+                    <div class="compare-cell good">Every workshare (~2–4s)</div>
+                </div>
+                <div class="compare-row">
+                    <div class="compare-cell label">Throughput</div>
+                    <div class="compare-cell bad">1 random value / block</div>
+                    <div class="compare-cell good">20–50× more frequent than blocks</div>
+                </div>
+                <div class="compare-row">
+                    <div class="compare-cell label">Marginal Cost</div>
+                    <div class="compare-cell bad">Gas fees + oracle fees</div>
+                    <div class="compare-cell good">Zero — side-product of mining</div>
+                </div>
+                <div class="compare-row">
+                    <div class="compare-cell label">Verifiability</div>
+                    <div class="compare-cell bad">Off-chain proof required</div>
+                    <div class="compare-cell good">On-chain, hash-verifiable</div>
+                </div>
+                <div class="compare-row">
+                    <div class="compare-cell label">Energy Anchoring</div>
+                    <div class="compare-cell bad">None</div>
+                    <div class="compare-cell good">Direct — real joules, real entropy</div>
+                </div>
+                <div class="compare-row">
+                    <div class="compare-cell label">Tokenomics</div>
+                    <div class="compare-cell bad">LINK required, speculative</div>
+                    <div class="compare-cell good">None — Qi for settlement (optional)</div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION: WOLFRAM MEGA ORACLE -->
+        <section class="section">
+            <div class="section-label">// integration layer</div>
+            <h2 class="section-title">Powered by Wolfram Mega Oracle</h2>
+            <div class="section-body">
+                <p>WorkShare Oracle is the entropy layer for <span class="highlight" style="color: var(--qi-purple);">Wolfram Mega Oracle</span> — a two-layer architecture combining MCP + Wolfram Language for deterministic query resolution with Mega P2P for trust, discovery, and reputation.</p>
+            </div>
+
+            <div class="mega-panel">
+                <div class="mega-panel-title">WOLFRAM MEGA ORACLE</div>
+                <div class="mega-panel-sub">
+                    MCP + Wolfram solves what you ask and how you get answers.<br>
+                    Mega solves who you ask and why you trust them.<br>
+                    WorkShare Oracle solves where the randomness comes from.
+                </div>
+                <div class="mega-features">
+                    <div class="mega-feature">
+                        <div class="mega-feature-title">// LAYER 1 · MCP ENGINE</div>
+                        <div class="mega-feature-text">LLM interprets natural language. MCP constrains to verified tools and schemas. Wolfram data sources provide deterministic grounding. No hallucinations.</div>
+                    </div>
+                    <div class="mega-feature">
+                        <div class="mega-feature-title">// LAYER 2 · MEGA P2P</div>
+                        <div class="mega-feature-text">PoW identity, not token staking. Oracles broadcast capability with PoW-backed spam protection. Malleability reports build or destroy reputation. Fully P2P.</div>
+                    </div>
+                    <div class="mega-feature">
+                        <div class="mega-feature-title">// LAYER 0 · WORKSHARE VRF</div>
+                        <div class="mega-feature-text">WorkShare lagging digits seed all randomness requests. On-chain, energy-backed, zero marginal cost. Feeds Layer 1 with tamper-proof entropy anchors.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION: SIGNAL FINDING -->
+        <section class="section">
+            <div class="section-label">// node discovery problem</div>
+            <h2 class="section-title">The Signal Finding Problem</h2>
+
+            <p class="signal-intro">
+                Oracle nodes are <span class="highlight">hard to find</span>. In a fully P2P network with no central directory, 
+                any node can claim to be a reliable data source. Most are noisy, stale, or actively adversarial. 
+                <span class="highlight-amber">You need a way to distinguish signal from noise before you ever send a query.</span>
+                <br><br>
+                WorkShare outputs solve this. A node that is continuously publishing verifiable workshare entropy is 
+                demonstrably online, demonstrably doing real computational work, and demonstrably producing 
+                outputs that cannot be predicted or manipulated in advance. That's not just randomness — 
+                it's a <span class="highlight">live proof of clean operation</span>. The entropy stream is the node's credential.
+            </p>
+
+            <!-- Node discovery visualization -->
+            <div class="signal-space">
+                <div class="signal-space-label">// p2p node space · signal detection</div>
+                <canvas id="nodeCanvas"></canvas>
+                <div class="signal-space-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:rgba(57,255,20,0.9);box-shadow:0 0 6px #39FF14;"></div>
+                        WORKSHARE ORACLE — broadcasting signal
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:rgba(255,184,0,0.5);"></div>
+                        ACTIVE NODE — no signal
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:rgba(255,51,102,0.4);"></div>
+                        ADVERSARIAL / STALE
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:rgba(58,69,88,0.6);"></div>
+                        UNKNOWN / DARK
+                    </div>
+                </div>
+            </div>
+
+            <!-- Three data source types -->
+            <div class="source-grid">
+                <div class="source-card chain">
+                    <span class="source-icon">⛓</span>
+                    <div class="source-title">BLOCKCHAIN DATA</div>
+                    <div class="source-desc">
+                        Oracle nodes serve live blockchain state: account balances, transaction proofs, block headers, smart contract outputs. A bad actor serving falsified chain data can manipulate DeFi outcomes silently.
+                    </div>
+                    <div class="source-signal-tag">
+                        SIGNAL CHECK: <span>workshare stream confirms node is on the canonical chain and actively hashing — not replaying stale state from a fork.</span>
+                    </div>
+                </div>
+                <div class="source-card wolfram">
+                    <span class="source-icon">◈</span>
+                    <div class="source-title">WOLFRAM DATA REPOSITORY</div>
+                    <div class="source-desc">
+                        Nodes serve queries resolved via Wolfram Language — curated datasets, computed answers, scientific constants, geospatial data. Stale or tampered Wolfram outputs are undetectable without an independent freshness proof.
+                    </div>
+                    <div class="source-signal-tag">
+                        SIGNAL CHECK: <span>workshare timestamps anchor Wolfram query responses to real clock time. A node generating fresh entropy cannot be serving cached data from last week.</span>
+                    </div>
+                </div>
+                <div class="source-card price">
+                    <span class="source-icon">◎</span>
+                    <div class="source-title">PRICE FEED DATA</div>
+                    <div class="source-desc">
+                        Price oracles are the highest-value attack surface in DeFi. A manipulated feed can drain a protocol in a single block. Selecting a trustworthy price oracle from an anonymous P2P pool is the hardest cold-start problem in the space.
+                    </div>
+                    <div class="source-signal-tag">
+                        SIGNAL CHECK: <span>workshare entropy proves computational skin-in-the-game. Fabricating a convincing signal stream costs real energy — the same deterrent that secures the chain.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core insight callout -->
+            <div class="signal-callout">
+                <div class="signal-callout-icon">◉</div>
+                <div class="signal-callout-body">
+                    <div class="signal-callout-title">THE ENTROPY STREAM IS THE REPUTATION</div>
+                    <div class="signal-callout-text">
+                        A node that produces a <strong>continuous, unbroken stream of verifiable workshare outputs</strong> has demonstrated 
+                        three things simultaneously: it is online, it is doing real work, and its outputs cannot be pre-computed or 
+                        spoofed. In the Mega P2P discovery layer, this stream becomes the node's <strong>public identity and reputation anchor</strong> — 
+                        a beacon that is cheap to verify and expensive to fake. Nodes that go dark, produce irregular outputs, 
+                        or fail statistical randomness tests are automatically deprioritized. 
+                        <strong>Finding signal in a dark P2P space is no longer guesswork — it's physics.</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION: PAPER -->
+        <section class="section">
+            <div class="section-label">// academic source</div>
+            <h2 class="section-title">Built on Published Research</h2>
+            <div class="section-body">
+                <p>The workshare mechanism is formally defined in a paper by Quai Network and Common Prefix, proving that PoEM² with Proportional Reward Splitting achieves Nash equilibrium with near-optimal fairness.</p>
+            </div>
+
+            <div class="paper-cite">
+                <div class="paper-cite-label">// arXiv:2503.10185 · March 2025</div>
+                <div class="paper-cite-title">Optimal Reward Allocation via Proportional Splitting</div>
+                <div class="paper-cite-authors">Quai Network + Common Prefix Collaboration</div>
+                <div class="paper-cite-abstract">
+                    PRS leverages lightweight "workshares" — low-PoW objects satisfying a difficulty threshold below block level — to estimate miners' power distribution and allocate rewards fairly. Workshares are recorded on-chain in PoEM², enabling a 20–50× improvement in reward payment frequency. The analysis shows PRS achieves near-optimal fairness, outperforming Nakamoto Consensus, FruitChains, and Reward Splitting across established metrics, with minimal storage overhead.
+                </div>
+                <a href="https://arxiv.org/abs/2503.10185" target="_blank">arxiv.org/abs/2503.10185 →</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <div class="cta-title">Part of the qi.xyz Ecosystem</div>
+        <a href="index.html" class="cta-link">← Return to Docking Station</a>
+    </div>
+
+    <script>
+    // ===== ENTROPY BACKGROUND COLUMNS =====
+    (function() {
+        const bg = document.getElementById('entropyBg');
+        const chars = '0123456789abcdef';
+        for (let i = 0; i < 18; i++) {
+            const col = document.createElement('div');
+            col.className = 'entropy-column';
+            col.style.left = (i * 5.8) + '%';
+            col.style.animationDuration = (12 + Math.random() * 20) + 's';
+            col.style.animationDelay = (-Math.random() * 20) + 's';
+            let str = '';
+            for (let j = 0; j < 60; j++) str += chars[Math.floor(Math.random()*16)];
+            col.textContent = str;
+            bg.appendChild(col);
+        }
+    })();
+
+    // ===== NODE DISCOVERY CANVAS =====
+    (function() {
+        const canvas = document.getElementById('nodeCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width  = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const W = () => canvas.width;
+        const H = () => canvas.height;
+
+        // Node types: oracle, active, adversarial, dark
+        const nodeTypes = [
+            { type: 'oracle',      color: '#39FF14', glow: 'rgba(57,255,20,0.5)',    size: 5,  count: 6  },
+            { type: 'active',      color: '#ffb800', glow: 'rgba(255,184,0,0.25)',   size: 3.5,count: 14 },
+            { type: 'adversarial', color: '#ff3366', glow: 'rgba(255,51,102,0.2)',   size: 3,  count: 8  },
+            { type: 'dark',        color: '#3a4558', glow: 'rgba(58,69,88,0.15)',    size: 2.5,count: 22 },
+        ];
+
+        let nodes = [];
+
+        function initNodes() {
+            nodes = [];
+            nodeTypes.forEach(nt => {
+                for (let i = 0; i < nt.count; i++) {
+                    nodes.push({
+                        x: 0.05 * W() + Math.random() * 0.90 * W(),
+                        y: 0.05 * H() + Math.random() * 0.90 * H(),
+                        vx: (Math.random() - 0.5) * 0.25,
+                        vy: (Math.random() - 0.5) * 0.25,
+                        ...nt,
+                        pulsePhase: Math.random() * Math.PI * 2,
+                        pulseSpeed: 0.02 + Math.random() * 0.03,
+                        signalRing: nt.type === 'oracle' ? Math.random() * 60 : null,
+                    });
+                }
+            });
+        }
+        initNodes();
+
+        function draw(t) {
+            ctx.clearRect(0, 0, W(), H());
+
+            // Background grid
+            ctx.strokeStyle = 'rgba(0,240,255,0.04)';
+            ctx.lineWidth = 0.5;
+            const step = 40;
+            for (let x = 0; x < W(); x += step) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H()); ctx.stroke();
+            }
+            for (let y = 0; y < H(); y += step) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W(), y); ctx.stroke();
+            }
+
+            // Draw connections between close oracle nodes and others
+            nodes.forEach((a, i) => {
+                if (a.type !== 'oracle') return;
+                nodes.forEach((b, j) => {
+                    if (j <= i) return;
+                    const dx = b.x - a.x, dy = b.y - a.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 180 && b.type !== 'adversarial') {
+                        const alpha = (1 - dist/180) * (b.type === 'oracle' ? 0.2 : 0.07);
+                        ctx.strokeStyle = `rgba(57,255,20,${alpha})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.setLineDash([3, 6]);
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                });
+            });
+
+            // Draw nodes
+            nodes.forEach(n => {
+                n.pulsePhase += n.pulseSpeed;
+                const pulse = 0.5 + 0.5 * Math.sin(n.pulsePhase);
+
+                // Signal rings for oracle nodes
+                if (n.type === 'oracle') {
+                    n.signalRing += 0.8;
+                    if (n.signalRing > 70) n.signalRing = 0;
+                    const ringAlpha = (1 - n.signalRing / 70) * 0.35;
+                    ctx.strokeStyle = `rgba(57,255,20,${ringAlpha})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.signalRing, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // Second ring offset
+                    const r2 = (n.signalRing + 25) % 70;
+                    const a2 = (1 - r2/70) * 0.2;
+                    ctx.strokeStyle = `rgba(57,255,20,${a2})`;
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, r2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // Glow
+                const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.size * (n.type === 'oracle' ? 5 : 3.5));
+                const glowAlpha = n.type === 'oracle' ? (0.4 + 0.25 * pulse) : (0.15 + 0.1 * pulse);
+                grd.addColorStop(0, n.glow.replace(')', `,${glowAlpha})`).replace('rgba(', 'rgba('));
+                // simpler:
+                grd.addColorStop(0, n.type === 'oracle'
+                    ? `rgba(57,255,20,${0.35 + 0.2 * pulse})`
+                    : n.type === 'active'
+                    ? `rgba(255,184,0,${0.15 + 0.08 * pulse})`
+                    : n.type === 'adversarial'
+                    ? `rgba(255,51,102,${0.12 + 0.06 * pulse})`
+                    : `rgba(58,69,88,0.08)`
+                );
+                grd.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grd;
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.size * 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Core dot
+                ctx.fillStyle = n.type === 'oracle'
+                    ? `rgba(57,255,20,${0.8 + 0.2 * pulse})`
+                    : n.color;
+                ctx.shadowColor = n.type === 'oracle' ? '#39FF14' : 'transparent';
+                ctx.shadowBlur  = n.type === 'oracle' ? 8 : 0;
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Move
+                n.x += n.vx;
+                n.y += n.vy;
+                if (n.x < 10 || n.x > W() - 10) n.vx *= -1;
+                if (n.y < 10 || n.y > H() - 10) n.vy *= -1;
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+    })();
+
+    // ===== HASH STREAM SIMULATOR =====
+    const stream = document.getElementById('hashStream');
+    const MAX_ROWS = 6;
+    let rows = [];
+    let hashIndex = Math.floor(Math.random() * 100000);
+    let workshareCount = 0;
+    let startTime = Date.now();
+    let lastWsTime = Date.now();
+
+    function genHex(n) {
+        let s = '';
+        const chars = '0123456789abcdef';
+        for (let i = 0; i < n; i++) s += chars[Math.floor(Math.random() * 16)];
+        return s;
+    }
+
+    function genWorkshareHash() {
+        // Leading zeros: 12–16 zeros, then non-zero trailer
+        const zeros = 12 + Math.floor(Math.random() * 5);
+        const leading = '0'.repeat(zeros);
+        const firstNonZero = '123456789abcdef'[Math.floor(Math.random() * 15)];
+        const trailing = firstNonZero + genHex(63 - zeros);
+        return { hash: leading + trailing, zeros, trailing: firstNonZero + trailing.substring(1, 16) };
+    }
+
+    function genBlockHash() {
+        const zeros = 18 + Math.floor(Math.random() * 4);
+        const leading = '0'.repeat(zeros);
+        return { hash: leading + genHex(64 - zeros), zeros, trailing: genHex(10) };
+    }
+
+    function genMissHash() {
+        const zeros = 5 + Math.floor(Math.random() * 6);
+        const leading = '0'.repeat(zeros);
+        return { hash: leading + genHex(64 - zeros), zeros, trailing: null };
+    }
+
+    function laggingBytes(trailingHex) {
+        return parseInt(trailingHex.substring(0, 4), 16);
+    }
+
+    function addRow(type) {
+        let data, typeClass, typeLabel;
+
+        if (type === 'workshare') {
+            data = genWorkshareHash();
+            typeClass = 'workshare';
+            typeLabel = 'WORKSHARE';
+        } else if (type === 'block') {
+            data = genBlockHash();
+            typeClass = 'block';
+            typeLabel = 'BLOCK';
+        } else {
+            data = genMissHash();
+            typeClass = 'miss';
+            typeLabel = 'MISS';
+        }
+
+        // Build hash display
+        const fullHash = data.hash;
+        const splitAt = data.zeros;
+        const leadingPart = fullHash.substring(0, splitAt);
+        const nonZeroPart = fullHash.substring(splitAt);
+        const displayTrail = nonZeroPart.substring(0, 12);
+        const hashRest = nonZeroPart.substring(12);
+
+        const row = document.createElement('div');
+        row.className = 'hash-row';
+        row.innerHTML = `
+            <span class="hash-index">#${hashIndex.toString(16).toUpperCase().padStart(6,'0')}</span>
+            <span class="hash-type ${typeClass}">${typeLabel}</span>
+            <span class="hash-value">
+                <span class="hash-leading">${leadingPart + hashRest.substring(0, Math.min(hashRest.length, 42))}</span>
+                ${type !== 'miss' ? `<span class="hash-separator">│</span><span class="hash-trailing ${type === 'block' ? 'cyan-trail' : ''}">${displayTrail}</span>` : ''}
+            </span>
+            <span class="hash-entropy ${type !== 'miss' ? 'active' : ''}">
+                ${type !== 'miss' ? `H=${(data.zeros * 4).toString().padStart(3)} bits` : '—'}
+            </span>
+        `;
+
+        stream.appendChild(row);
+        rows.push(row);
+
+        // Trigger animation
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => row.classList.add('visible'));
+        });
+
+        // Fade old rows
+        rows.forEach((r, i) => {
+            if (i < rows.length - 3) r.classList.add('fading');
+        });
+
+        // Remove excess rows
+        while (rows.length > MAX_ROWS) {
+            const old = rows.shift();
+            old.remove();
+        }
+
+        // Update oracle outputs if workshare or block
+        if (type === 'workshare' || type === 'block') {
+            workshareCount++;
+            lastWsTime = Date.now();
+
+            const trail = nonZeroPart.substring(0, 8);
+            const intVal = parseInt(trail.substring(0, 4), 16);
+            const floatVal = (intVal / 65535).toFixed(5);
+            const bits = data.zeros * 4;
+            const elapsed = (Date.now() - startTime) / 60000;
+            const rate = Math.round(workshareCount / Math.max(elapsed, 0.01));
+
+            const flash = (el, val) => {
+                el.textContent = val;
+                el.classList.add('flash');
+                setTimeout(() => el.classList.remove('flash'), 200);
+            };
+
+            flash(document.getElementById('rngInt'), intVal.toString().padStart(5, '0'));
+            flash(document.getElementById('rngFloat'), floatVal);
+            flash(document.getElementById('rngBits'), bits + ' b');
+            document.getElementById('rngRate').textContent = rate + '/m';
+        }
+
+        hashIndex++;
+    }
+
+    // Scheduling: mix of misses, workshares, occasional blocks
+    function scheduleNext() {
+        const r = Math.random();
+        let type, delay;
+
+        if (r < 0.55) {
+            type = 'miss'; delay = 180 + Math.random() * 300;
+        } else if (r < 0.97) {
+            type = 'workshare'; delay = 400 + Math.random() * 600;
+        } else {
+            type = 'block'; delay = 1200 + Math.random() * 800;
+        }
+
+        setTimeout(() => {
+            addRow(type);
+            scheduleNext();
+        }, delay);
+    }
+
+    // Seed initial rows
+    for (let i = 0; i < 3; i++) {
+        setTimeout(() => addRow(i === 1 ? 'workshare' : 'miss'), i * 200);
+    }
+    setTimeout(scheduleNext, 700);
+    </script>
+</body>
+</html>
