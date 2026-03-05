@@ -375,22 +375,130 @@
     }
     .topic-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.7; }
 
-    /* ── JUDGING ── */
+    /* ── SCORING / PREDICTION MARKET ── */
     #judging { background: var(--surface); }
-    .judging-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
-    .judge-card {
+
+    .scoring-split {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
+      margin-bottom: 3rem;
+    }
+    .scoring-split-label {
+      font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;
+      margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid;
+    }
+    .label-market { color: var(--accent-green); border-color: rgba(46,232,160,0.25); }
+    .label-judges { color: var(--muted); border-color: var(--border); }
+
+    /* Market card */
+    .market-card {
+      background: var(--surface2); border: 1px solid rgba(46,232,160,0.25);
+      padding: 2rem; position: relative; overflow: hidden;
+    }
+    .market-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--accent-green);
+    }
+    .market-live-dot {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent-green); margin-right: 0.5rem;
+      animation: aiPulse 1.8s ease-in-out infinite;
+    }
+    .market-live-label {
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent-green); margin-bottom: 1.5rem; display: flex; align-items: center;
+    }
+    .market-match-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+      color: var(--white); letter-spacing: 0.05em; margin-bottom: 1.5rem;
+    }
+    .market-odds-row {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      gap: 1rem; margin-bottom: 1rem;
+    }
+    .market-chain { text-align: center; }
+    .market-chain-name { font-size: 0.75rem; font-weight: 600; color: var(--white); margin-bottom: 0.3rem; }
+    .market-chain-pct {
+      font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1;
+    }
+    .pct-a { color: var(--gold); }
+    .pct-b { color: var(--ai-blue); }
+    .market-vs-sep { font-family: 'Bebas Neue'; font-size: 1.2rem; color: var(--muted); }
+    .market-bar {
+      height: 6px; background: var(--surface3); margin: 1rem 0;
+      position: relative; overflow: hidden;
+    }
+    .market-bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--gold) 0%, var(--gold) var(--pct-a), var(--ai-blue) var(--pct-a), var(--ai-blue) 100%);
+      transition: all 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+    .market-stats {
+      display: flex; justify-content: space-between; margin-top: 1rem;
+      font-size: 0.65rem; color: var(--muted); letter-spacing: 0.08em;
+    }
+    .market-stat-val { color: var(--white); font-weight: 600; }
+    .market-phases {
+      margin-top: 1.5rem; padding-top: 1.2rem;
+      border-top: 1px solid rgba(46,232,160,0.15);
+    }
+    .market-phase-row {
+      display: flex; align-items: center; gap: 0.8rem;
+      font-size: 0.68rem; color: var(--muted); margin-bottom: 0.5rem;
+    }
+    .market-phase-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+    .phase-open { background: var(--accent-green); }
+    .phase-live { background: var(--gold); animation: aiPulse 1.8s infinite; }
+    .phase-closed { background: var(--surface3); border: 1px solid var(--muted); }
+    .market-phase-name { color: var(--white); }
+    .market-cta {
+      display: inline-block; margin-top: 1.5rem;
+      background: rgba(46,232,160,0.1); border: 1px solid rgba(46,232,160,0.3);
+      color: var(--accent-green); padding: 0.6rem 1.2rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .market-cta:hover { background: rgba(46,232,160,0.18); border-color: var(--accent-green); }
+
+    /* Judge commentary panel */
+    .judge-panel {
       background: var(--surface2); border: 1px solid var(--border);
-      padding: 1.5rem 1rem; text-align: center; transition: all 0.3s;
+      padding: 2rem; position: relative;
     }
-    .judge-card:hover { border-color: var(--gold); }
-    .judge-score {
-      font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem;
-      color: var(--gold); line-height: 1;
+    .judge-panel::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--muted);
     }
-    .judge-pct { font-size: 0.65rem; color: var(--muted); }
-    .judge-criterion {
-      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--white); margin-top: 0.7rem; line-height: 1.4;
+    .judge-criteria { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; }
+    .judge-criterion-row {
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
+      gap: 1rem; padding: 0.8rem 1rem;
+      background: var(--surface); border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .judge-criterion-row:hover { border-color: var(--gold-dim); }
+    .judge-criterion-name { font-size: 0.72rem; color: var(--white); }
+    .judge-criterion-sub { font-size: 0.62rem; color: var(--muted); margin-top: 0.15rem; }
+    .judge-weight {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+      color: var(--muted); line-height: 1; text-align: right;
+    }
+    .judge-weight span { font-size: 0.8rem; }
+
+    .market-explainer {
+      background: var(--surface2); border: 1px solid rgba(46,232,160,0.2);
+      padding: 1.5rem 2rem; margin-top: 2rem;
+    }
+    .market-explainer-title {
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent-green); margin-bottom: 0.8rem;
+    }
+    .market-explainer p { font-size: 0.78rem; color: var(--muted); line-height: 1.8; }
+    .market-explainer p strong { color: var(--white); }
+
+    @media (max-width: 900px) {
+      .scoring-split { grid-template-columns: 1fr; }
     }
 
     /* ── REGISTER CTA ── */
@@ -471,7 +579,6 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .about-grid, .rules-grid, .chains-grid { grid-template-columns: 1fr 1fr; }
-      .judging-grid { grid-template-columns: repeat(3, 1fr); }
       .footer-top { grid-template-columns: 1fr 1fr; }
       .topics-grid { grid-template-columns: 1fr; }
     }
@@ -480,7 +587,6 @@
       .nav-links { display: none; }
       .chains-grid { grid-template-columns: 1fr 1fr; }
       .rules-grid, .about-grid { grid-template-columns: 1fr; }
-      .judging-grid { grid-template-columns: 1fr 1fr; }
       .footer-top { grid-template-columns: 1fr; }
       .hero-meta { gap: 1.5rem; flex-wrap: wrap; }
     }
@@ -1159,14 +1265,14 @@
       <div class="rule-card reveal">
         <div class="rule-num">04</div>
         <div class="rule-icon">⚖️</div>
-        <div class="rule-title">Scoring System</div>
-        <div class="rule-text">A panel of 3 independent judges scores each debate across 5 criteria: Technical Accuracy (30%), Clarity of Argument (25%), Rebuttal Quality (20%), Evidence Quality (15%), and Decorum (10%). Scores are published publicly.</div>
+        <div class="rule-title">Market-Decided Outcomes</div>
+        <div class="rule-text">A live prediction market opens 24 hours before each debate, denominated in Qi. The chain with the higher market probability at close advances. A panel of 3 independent judges publishes scored commentary on Technical Accuracy (30%), Clarity (25%), Rebuttal (20%), Evidence (15%), and Decorum (10%) — advisory only.</div>
       </div>
       <div class="rule-card reveal reveal-delay-1">
         <div class="rule-num">05</div>
         <div class="rule-icon">🌐</div>
-        <div class="rule-title">Chain Agnostic Judges</div>
-        <div class="rule-text">Judges are selected from academia, standards bodies, and neutral research organizations. No judge may hold > 0.5% of their portfolio in any chain they judge. Conflicts must be disclosed and recused. Wolfram Research serves as a neutral arbiter.</div>
+        <div class="rule-title">Judge Independence</div>
+        <div class="rule-text">Judges are selected from academia, standards bodies, and neutral research organizations. No judge may hold > 0.5% of their portfolio in any chain they cover. Their commentary is published alongside market data — not used to override market outcomes. Wolfram Research independently fact-checks all technical claims within 48 hours.</div>
       </div>
       <div class="rule-card reveal reveal-delay-2">
         <div class="rule-num">06</div>
@@ -1778,47 +1884,107 @@
       <p class="section-label">Scoring System</p>
       <h2 class="section-title">How Debates Are Scored</h2>
       <div class="section-divider"></div>
-      <p style="font-size:0.82rem; color:var(--muted); max-width:600px; line-height:1.9; margin-bottom:3rem;">
-        Three independent judges score each criterion independently. Scores are published with full commentary. 
-        All judging rubrics and conflict-of-interest disclosures are available pre-debate.
+      <p style="font-size:0.82rem; color:var(--muted); max-width:660px; line-height:1.9; margin-bottom:3rem;">
+        The market decides who won. Judges offer their opinions. <strong style="color:var(--white)">A live prediction market opens 24 hours before each debate and closes 1 hour after it ends.</strong> The chain with the higher market probability at close advances. Judge commentary is published alongside market data as analytical record — not as binding scores.
       </p>
     </div>
-    <div class="judging-grid reveal">
-      <div class="judge-card">
-        <div class="judge-score">30<span style="font-size:1.2rem">%</span></div>
-        <div class="judge-pct">of total score</div>
-        <div class="judge-criterion">Technical Accuracy</div>
+
+    <div class="scoring-split reveal">
+
+      <!-- LEFT: PREDICTION MARKET -->
+      <div>
+        <div class="scoring-split-label label-market">⬡ Prediction Market — Decides the Winner</div>
+        <div class="market-card">
+          <div class="market-live-label"><span class="market-live-dot"></span> Live Demo — Round 1 · Match 01</div>
+          <div class="market-match-title">Bitcoin vs. Ethereum</div>
+          <div class="market-odds-row">
+            <div class="market-chain">
+              <div class="market-chain-name">Bitcoin (BTC)</div>
+              <div class="market-chain-pct pct-a" id="pct-a">62%</div>
+              <div style="font-size:0.6rem; color:var(--muted); margin-top:0.3rem;">Proposition</div>
+            </div>
+            <div class="market-vs-sep">VS</div>
+            <div class="market-chain">
+              <div class="market-chain-name">Ethereum (ETH)</div>
+              <div class="market-chain-pct pct-b" id="pct-b">38%</div>
+              <div style="font-size:0.6rem; color:var(--muted); margin-top:0.3rem;">Opposition</div>
+            </div>
+          </div>
+          <div class="market-bar">
+            <div class="market-bar-fill" id="market-bar" style="--pct-a: 62%"></div>
+          </div>
+          <div class="market-stats">
+            <span>Volume: <span class="market-stat-val" id="market-vol">4,218 Qi</span></span>
+            <span>Traders: <span class="market-stat-val">183</span></span>
+            <span>Closes: <span class="market-stat-val">1h 22m</span></span>
+          </div>
+          <div class="market-phases">
+            <div class="market-phase-row"><div class="market-phase-dot phase-open"></div><span class="market-phase-name">Pre-Debate Open</span> &nbsp;— market opens 24h before, baseline odds set</div>
+            <div class="market-phase-row"><div class="market-phase-dot phase-live"></div><span class="market-phase-name">Live Debate</span> &nbsp;— odds update in real time as arguments land</div>
+            <div class="market-phase-row"><div class="market-phase-dot phase-closed"></div><span class="market-phase-name">Post-Debate Close</span> &nbsp;— market closes 1h after debate ends, winner declared</div>
+          </div>
+          <button class="market-cta" onclick="animateMarket()">▶ Simulate Odds Shift</button>
+        </div>
+        <div class="market-explainer reveal">
+          <div class="market-explainer-title">Why Markets, Not Judges?</div>
+          <p>Prediction markets aggregate the beliefs of thousands of observers who have skin in the game. <strong>No single expert's bias can swing a result.</strong> Markets are Sybil-resistant, manipulation-resistant at scale, and have a track record of outperforming expert panels at forecasting contested outcomes. Debate outcomes are denominated in <strong>Qi</strong> — the energy-dollar token — making the settlement itself a statement about information value.</p>
+        </div>
       </div>
-      <div class="judge-card">
-        <div class="judge-score">25<span style="font-size:1.2rem">%</span></div>
-        <div class="judge-pct">of total score</div>
-        <div class="judge-criterion">Clarity of Argument</div>
-      </div>
-      <div class="judge-card">
-        <div class="judge-score">20<span style="font-size:1.2rem">%</span></div>
-        <div class="judge-pct">of total score</div>
-        <div class="judge-criterion">Rebuttal Quality</div>
-      </div>
-      <div class="judge-card">
-        <div class="judge-score">15<span style="font-size:1.2rem">%</span></div>
-        <div class="judge-pct">of total score</div>
-        <div class="judge-criterion">Evidence & Citation Quality</div>
-      </div>
-      <div class="judge-card">
-        <div class="judge-score">10<span style="font-size:1.2rem">%</span></div>
-        <div class="judge-pct">of total score</div>
-        <div class="judge-criterion">Decorum & Sportsmanship</div>
+
+      <!-- RIGHT: JUDGE COMMENTARY -->
+      <div>
+        <div class="scoring-split-label label-judges">◎ Judge Commentary — Advisory Only</div>
+        <div class="judge-panel">
+          <p style="font-size:0.75rem; color:var(--muted); line-height:1.8; margin-bottom:1.5rem;">
+            Three independent judges publish scored commentary on each debate. Their analysis is public record and informs the <em style="color:var(--white)">Consensus Manifesto</em> — but does not determine bracket advancement. Judges flag technical inaccuracies, which Wolfram Research verifies within 48 hours.
+          </p>
+          <div class="judge-criteria">
+            <div class="judge-criterion-row">
+              <div><div class="judge-criterion-name">Technical Accuracy</div><div class="judge-criterion-sub">Factual correctness of on-chain claims</div></div>
+              <div class="judge-weight">30<span>%</span></div>
+            </div>
+            <div class="judge-criterion-row">
+              <div><div class="judge-criterion-name">Clarity of Argument</div><div class="judge-criterion-sub">Logical structure, accessibility</div></div>
+              <div class="judge-weight">25<span>%</span></div>
+            </div>
+            <div class="judge-criterion-row">
+              <div><div class="judge-criterion-name">Rebuttal Quality</div><div class="judge-criterion-sub">Engagement with opponent's actual claims</div></div>
+              <div class="judge-weight">20<span>%</span></div>
+            </div>
+            <div class="judge-criterion-row">
+              <div><div class="judge-criterion-name">Evidence & Citation</div><div class="judge-criterion-sub">Quality of sourced material</div></div>
+              <div class="judge-weight">15<span>%</span></div>
+            </div>
+            <div class="judge-criterion-row">
+              <div><div class="judge-criterion-name">Decorum</div><div class="judge-criterion-sub">Sportsmanship, signal-to-noise</div></div>
+              <div class="judge-weight">10<span>%</span></div>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem; padding:1rem; background:var(--surface); border:1px solid var(--border);">
+            <p style="font-size:0.68rem; color:var(--muted); line-height:1.8;">
+              <strong style="color:var(--white)">Wolfram Research</strong> serves as neutral arbiter of technical claims, publishing a post-debate fact-check within 48 hours. No judge may hold a position in, receive grants from, or be employed by any chain in their assigned bracket.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <div style="margin-top: 2rem; background: var(--surface2); border: 1px solid var(--border); padding: 1.5rem 2rem;" class="reveal">
-      <h4 style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem;">Judge Independence Guarantee</h4>
-      <p style="font-size:0.78rem; color:var(--muted); line-height:1.8;">
-        Judges are drawn from academic blockchain research, cryptography, computer science, and monetary economics. 
-        <strong style="color:var(--white)">Wolfram Research</strong> serves as the neutral arbiter of technical claims and publishes a post-debate 
-        technical fact-check within 48 hours of each match. No judge may hold positions in, receive grants from, or have 
-        employment relationships with any chain in their assigned bracket. All disclosures are public.
-      </p>
+
+    <!-- MARKET EXPLAINER STRIP -->
+    <div style="background:var(--surface2); border:1px solid rgba(46,232,160,0.2); padding:1.5rem 2rem; display:grid; grid-template-columns:repeat(3,1fr); gap:2rem;" class="reveal">
+      <div>
+        <div style="font-size:0.6rem; letter-spacing:0.2em; color:var(--accent-green); text-transform:uppercase; margin-bottom:0.5rem;">Settlement Token</div>
+        <div style="font-size:0.85rem; color:var(--white); line-height:1.7;">All market positions denominated in <strong>Qi</strong>. Winners receive Qi payouts proportional to stake and timing of entry.</div>
+      </div>
+      <div>
+        <div style="font-size:0.6rem; letter-spacing:0.2em; color:var(--accent-green); text-transform:uppercase; margin-bottom:0.5rem;">Anti-Manipulation</div>
+        <div style="font-size:0.85rem; color:var(--white); line-height:1.7;">Per-wallet position caps enforce during pre-debate window. Large moves trigger a 10-minute pause and recalibration.</div>
+      </div>
+      <div>
+        <div style="font-size:0.6rem; letter-spacing:0.2em; color:var(--accent-green); text-transform:uppercase; margin-bottom:0.5rem;">Public Archive</div>
+        <div style="font-size:0.85rem; color:var(--white); line-height:1.7;">Full market tick history, judge commentary, and Wolfram fact-check published on-chain within 48 hours of each match.</div>
+      </div>
     </div>
+
   </div>
 </section>
 
@@ -2076,7 +2242,23 @@
                            : (scripts['default_opp'] || {}).opp || 'Dossier argument pending submission.';
   }
 
-  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+  // ── MARKET SIMULATION ──
+  let marketState = { a: 62, vol: 4218 };
+  function animateMarket() {
+    const step = () => {
+      const swing = (Math.random() - 0.45) * 6;
+      marketState.a = Math.min(85, Math.max(15, marketState.a + swing));
+      marketState.vol += Math.floor(Math.random() * 120 + 30);
+      const b = 100 - marketState.a;
+      document.getElementById('pct-a').textContent = Math.round(marketState.a) + '%';
+      document.getElementById('pct-b').textContent = Math.round(b) + '%';
+      document.getElementById('market-bar').style.setProperty('--pct-a', Math.round(marketState.a) + '%');
+      document.getElementById('market-vol').textContent = marketState.vol.toLocaleString() + ' Qi';
+    };
+    for (let i = 0; i < 8; i++) setTimeout(step, i * 300);
+  }
+
+
 
   // Smooth anchor offset for fixed nav
   document.querySelectorAll('a[href^="#"]').forEach(a => {
