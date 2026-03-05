@@ -11,6 +11,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1206,6 +1207,50 @@
                     </div>
                 </a>
 
+                <!-- WorkShare Oracle -->
+                <a href="workshare-oracle.html" class="carousel-card" data-color="amber" style="flex: 0 0 420px;">
+                    <div class="carousel-card-visual" style="height:280px; overflow:hidden; position:relative;">
+
+                        <!-- Pollock painting hero -->
+                        <img src="randomness.png" alt="WorkShare Oracle — Verifiable Randomness from PoEM"
+                            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.1) contrast(1.05);" />
+
+                        <!-- Vignette -->
+                        <div style="position:absolute;inset:0;
+                            background:linear-gradient(to bottom,rgba(6,8,13,0.08) 0%,rgba(6,8,13,0.15) 40%,rgba(6,8,13,0.78) 75%,rgba(6,8,13,0.94) 100%);
+                            pointer-events:none;z-index:1;"></div>
+
+                        <!-- Scanlines -->
+                        <div style="position:absolute;inset:0;
+                            background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+                            pointer-events:none;z-index:2;"></div>
+
+                        <!-- Live hash ticker -->
+                        <div id="wsCardHashDisplay" style="position:absolute;top:36%;left:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;width:94%;"></div>
+
+                        <!-- Oracle output bar -->
+                        <div style="position:absolute;bottom:0;left:0;right:0;z-index:4;
+                            background:rgba(6,8,13,0.88);border-top:1px solid rgba(255,184,0,0.3);
+                            backdrop-filter:blur(6px);padding:9px 16px;
+                            display:flex;align-items:center;gap:14px;">
+                            <div style="width:6px;height:6px;border-radius:50%;flex-shrink:0;
+                                background:#39FF14;box-shadow:0 0 8px #39FF14;
+                                animation:wsPulse 1.2s ease-in-out infinite;"></div>
+                            <span style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,184,0,0.45);text-transform:uppercase;flex-shrink:0;">rand →</span>
+                            <span id="wsCardRng" style="font-family:'Share Tech Mono',monospace;font-size:15px;font-weight:bold;color:#ffb800;text-shadow:0 0 14px rgba(255,184,0,0.8);letter-spacing:3px;">——————</span>
+                            <span id="wsCardBits" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(0,240,255,0.5);letter-spacing:2px;margin-left:auto;flex-shrink:0;">— bits</span>
+                        </div>
+
+                        <span class="card-tag-top" style="background:rgba(6,8,13,0.8);backdrop-filter:blur(4px);border-color:rgba(255,184,0,0.3);color:#ffb800;">Proto-15</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>WorkShare Oracle</h3>
+                        <p>The lagging non-zero digits of every workshare hash are a verifiable random output. Signal in a dark P2P space — powering Wolfram Mega Oracle with PoW-secured entropy at 20–50× block frequency.</p>
+                        <span class="card-link">workshare-oracle.html →</span>
+                    </div>
+                </a>
+
                 <!-- 16 — Your Idea Here -->
                 <a href="https://discord.gg/quai" target="_blank" class="carousel-card" data-color="red">
                     <div class="carousel-card-visual carousel-card-img">
@@ -1388,6 +1433,60 @@
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+    </script>
+
+    <!-- ===== WORKSHARE ORACLE CARD ANIMATION ===== -->
+    <style>
+        @keyframes wsPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.3; transform: scale(0.6); }
+        }
+    </style>
+    <script>
+    (function() {
+        const disp   = document.getElementById('wsCardHashDisplay');
+        const rngEl  = document.getElementById('wsCardRng');
+        const bitsEl = document.getElementById('wsCardBits');
+        if (!disp) return;
+
+        const chars = '0123456789abcdef';
+        function genHex(n) {
+            let s = '';
+            for (let i = 0; i < n; i++) s += chars[Math.floor(Math.random() * 16)];
+            return s;
+        }
+
+        let hashes = [];
+
+        function refreshHash() {
+            const zeros = 12 + Math.floor(Math.random() * 5);
+            const hash  = '0'.repeat(zeros) + genHex(64 - zeros);
+            const trail = hash.substring(zeros, zeros + 14);
+            const rest  = hash.substring(zeros + 14);
+
+            const row = document.createElement('div');
+            row.style.cssText = 'font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1.5px;margin-bottom:3px;word-break:break-all;opacity:0;transition:opacity 0.35s;';
+            row.innerHTML =
+                '<span style="color:rgba(255,255,255,0.11)">' + '0'.repeat(zeros) + rest.substring(0, 36) + '</span>' +
+                '<span style="color:#ffb800;text-shadow:0 0 10px rgba(255,184,0,0.8);font-weight:bold;letter-spacing:2.5px;">' + trail + '</span>';
+
+            disp.insertBefore(row, disp.firstChild);
+            requestAnimationFrame(() => requestAnimationFrame(() => { row.style.opacity = '1'; }));
+
+            hashes.push(row);
+            if (hashes.length > 3) {
+                const old = hashes.shift();
+                old.style.opacity = '0.1';
+                setTimeout(() => old.remove(), 400);
+            }
+
+            if (rngEl)  rngEl.textContent  = parseInt(trail.substring(0, 4), 16).toString().padStart(5, '0');
+            if (bitsEl) bitsEl.textContent = (zeros * 4) + ' bits';
+        }
+
+        refreshHash();
+        setInterval(refreshHash, 1400 + Math.random() * 700);
+    })();
     </script>
 
 </body>
