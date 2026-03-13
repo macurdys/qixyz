@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOAP Marathon — Carousel Card Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Rajdhani:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #06080d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            gap: 40px;
+            flex-wrap: wrap;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* ──────────────────────────────────────────────────────
+           COPY EVERYTHING BELOW THIS LINE INTO index.html
+           ────────────────────────────────────────────────────── */
+
+        /* ── CARD ── */
+        .carousel-card { text-decoration: none; color: inherit; display: block; }
+        .carousel-card-soap {
+            flex: 0 0 340px;
+            border: 1px solid rgba(0,240,255,0.12);
+            background: #111822;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .carousel-card-soap:hover {
+            border-color: rgba(255,184,0,0.35);
+            box-shadow: 0 0 40px rgba(255,184,0,0.06);
+        }
+
+        /* ── CARD VISUAL (clock area) ── */
+        .soap-card-visual {
+            height: 260px;
+            background: #07090f;
+            border-bottom: 1px solid rgba(255,184,0,0.12);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px 16px;
+        }
+
+        /* Animated grid overlay */
+        .soap-card-visual::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,240,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.025) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+        }
+
+        /* Amber radial glow */
+        .soap-card-visual::after {
+            content: '';
+            position: absolute;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,184,0,0.08) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        /* Tag + status */
+        .card-tag-top {
+            position: absolute; top: 10px; left: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 9px; letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #7a8a9e;
+            background: rgba(6,8,13,0.8);
+            padding: 3px 8px;
+            backdrop-filter: blur(4px);
+            z-index: 2;
+        }
+        .card-status {
+            position: absolute; top: 12px; right: 12px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #ffb800;
+            box-shadow: 0 0 8px rgba(255,184,0,0.6);
+            z-index: 2;
+            animation: pulse-amber 2s ease-in-out infinite;
+        }
+        @keyframes pulse-amber {
+            0%,100% { opacity: 1; box-shadow: 0 0 8px rgba(255,184,0,0.6); }
+            50%      { opacity: 0.5; box-shadow: 0 0 4px rgba(255,184,0,0.3); }
+        }
+
+        /* ── CLOCK INSIDE CARD ── */
+        .card-clock-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 8px; letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255,184,0,0.5);
+            margin-bottom: 10px;
+            position: relative; z-index: 2;
+        }
+
+        .card-clock {
+            display: flex;
+            align-items: flex-start;
+            gap: 2px;
+            position: relative; z-index: 2;
+        }
+
+        .card-clock-unit {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 3px;
+        }
+
+        .card-digit {
+            font-family: 'Orbitron', monospace;
+            font-size: 46px; font-weight: 900;
+            line-height: 1;
+            color: #ffb800;
+            text-shadow:
+                0 0 12px rgba(255,184,0,0.7),
+                0 0 40px rgba(255,184,0,0.2);
+            min-width: 1.05em;
+            text-align: center;
+            transition: text-shadow 0.1s;
+            letter-spacing: 1px;
+        }
+        .card-digit.card-flash {
+            text-shadow:
+                0 0 20px rgba(255,184,0,1),
+                0 0 60px rgba(255,184,0,0.4);
+        }
+
+        .card-digit-lbl {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 7px; letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #4a5568;
+        }
+
+        .card-sep {
+            font-family: 'Orbitron', monospace;
+            font-size: 38px; font-weight: 900;
+            color: rgba(255,184,0,0.25);
+            line-height: 1;
+            padding-top: 4px;
+            animation: card-blink 1s step-end infinite;
+        }
+        @keyframes card-blink {
+            0%,100% { opacity: 0.25; }
+            50%      { opacity: 0.07; }
+        }
+
+        /* Live strip at bottom of visual */
+        .card-live-strip {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(0deg, rgba(6,8,13,0.96) 0%, transparent 100%);
+            padding: 8px 12px 6px;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+        }
+        .card-live-left {
+            display: flex; align-items: center; gap: 5px;
+        }
+        .card-ping {
+            position: relative; width: 7px; height: 7px;
+        }
+        .card-ping span {
+            display: block; position: absolute; inset: 0; border-radius: 50%;
+        }
+        .card-ping-out { background: #39FF14; opacity: 0.6; animation: ping-c 1.4s ease-out infinite; }
+        .card-ping-in  { background: #39FF14; }
+        @keyframes ping-c {
+            0%   { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+        .card-live-txt {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 8px; letter-spacing: 2px;
+            color: #39FF14; text-transform: uppercase;
+        }
+        .card-hr-txt {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 8px; letter-spacing: 2px;
+            color: #4a5568; text-transform: uppercase;
+        }
+        .card-hr-txt span { color: #00f0ff; }
+
+        /* ── CARD BODY ── */
+        .carousel-card-body {
+            padding: 20px 20px 24px;
+        }
+        .carousel-card-body h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 16px; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: #e8ecf0; margin-bottom: 8px;
+        }
+        .carousel-card-body p {
+            font-size: 13px; font-weight: 400;
+            color: #7a8a9e; line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .card-stats-mini {
+            display: flex; gap: 0;
+            border: 1px solid rgba(0,240,255,0.08);
+            margin-bottom: 12px;
+        }
+        .csm-item {
+            flex: 1; padding: 8px 6px; text-align: center;
+            border-right: 1px solid rgba(0,240,255,0.08);
+        }
+        .csm-item:last-child { border-right: none; }
+        .csm-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 12px; font-weight: 700;
+            color: #ffb800; display: block;
+        }
+        .csm-lbl {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 7px; letter-spacing: 1px;
+            color: #4a5568; text-transform: uppercase;
+            display: block; margin-top: 2px;
+        }
+        .card-link {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px; color: #00f0ff;
+            letter-spacing: 2px; text-transform: uppercase;
+            opacity: 0.7; transition: opacity 0.3s;
+        }
+        .carousel-card-soap:hover .card-link { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     PASTE THIS CARD INTO carousel-track in index.html
+     (between existing cards, in order)
+     ══════════════════════════════════════════════════════ -->
+
+<a href="soap-marathon.html" class="carousel-card carousel-card-soap" data-color="amber">
+
+    <div class="soap-card-visual">
+
+        <span class="card-tag-top">Proto-16</span>
+        <span class="card-status"></span>
+
+        <div class="card-clock-label">⏱ Marathon Countdown</div>
+
+        <div class="card-clock">
+            <div class="card-clock-unit">
+                <div class="card-digit" id="cc-days">--</div>
+                <div class="card-digit-lbl">Days</div>
+            </div>
+            <div class="card-sep">:</div>
+            <div class="card-clock-unit">
+                <div class="card-digit" id="cc-hours">--</div>
+                <div class="card-digit-lbl">Hrs</div>
+            </div>
+            <div class="card-sep">:</div>
+            <div class="card-clock-unit">
+                <div class="card-digit" id="cc-mins">--</div>
+                <div class="card-digit-lbl">Min</div>
+            </div>
+            <div class="card-sep">:</div>
+            <div class="card-clock-unit">
+                <div class="card-digit" id="cc-secs">--</div>
+                <div class="card-digit-lbl">Sec</div>
+            </div>
+        </div>
+
+        <div class="card-live-strip">
+            <div class="card-live-left">
+                <div class="card-ping">
+                    <span class="card-ping-out"></span>
+                    <span class="card-ping-in"></span>
+                </div>
+                <span class="card-live-txt">Hashing Live</span>
+            </div>
+            <span class="card-hr-txt"><span id="cc-hr">460</span> PH/s SHA-256</span>
+        </div>
+
+    </div>
+
+    <div class="carousel-card-body">
+        <h3>SOAP Marathon</h3>
+        <p>30 days to mine a Bitcoin block through SOAP merge-mining. $219,000 in QUAI buybacks — automatically, no governance.</p>
+
+        <div class="card-stats-mini">
+            <div class="csm-item">
+                <span class="csm-val">$219K</span>
+                <span class="csm-lbl">Per Block</span>
+            </div>
+            <div class="csm-item">
+                <span class="csm-val">70%</span>
+                <span class="csm-lbl">30d Odds</span>
+            </div>
+            <div class="csm-item">
+                <span class="csm-val">460PH</span>
+                <span class="csm-lbl">Live Hash</span>
+            </div>
+        </div>
+
+        <span class="card-link">soap-marathon.html →</span>
+    </div>
+</a>
+
+<!-- ══════════════════════════════════════════════════════
+     PASTE THIS SCRIPT BLOCK near bottom of index.html
+     (before closing </body>)
+     ══════════════════════════════════════════════════════ -->
+<script>
+(function() {
+    // 30 days from now — update this once the official start date is set
+    var TARGET = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+    var pad = function(n) { return String(Math.floor(n)).padStart(2, '0'); };
+
+    var eDays  = document.getElementById('cc-days');
+    var eHours = document.getElementById('cc-hours');
+    var eMins  = document.getElementById('cc-mins');
+    var eSecs  = document.getElementById('cc-secs');
+    var eHR    = document.getElementById('cc-hr');
+
+    if (!eDays) return; // Guard if card not on page
+
+    var prevSec = -1;
+
+    function tick() {
+        var diff = Math.max(0, TARGET - Date.now());
+        var tot  = Math.floor(diff / 1000);
+        var d = Math.floor(tot / 86400);
+        var h = Math.floor((tot % 86400) / 3600);
+        var m = Math.floor((tot % 3600) / 60);
+        var s = tot % 60;
+
+        eDays.textContent  = pad(d);
+        eHours.textContent = pad(h);
+        eMins.textContent  = pad(m);
+        eSecs.textContent  = pad(s);
+
+        if (s !== prevSec) {
+            eSecs.classList.add('card-flash');
+            setTimeout(function() { eSecs.classList.remove('card-flash'); }, 120);
+            prevSec = s;
+        }
+    }
+
+    tick();
+    setInterval(tick, 250);
+
+    // Gentle hashrate drift
+    var hr = 460;
+    setInterval(function() {
+        hr += (Math.random() - 0.5) * 3;
+        hr = Math.max(450, Math.min(475, hr));
+        if (eHR) eHR.textContent = hr.toFixed(1);
+    }, 3000);
+})();
+</script>
+
+</body>
+</html>
