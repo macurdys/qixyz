@@ -12,6 +12,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -437,6 +438,64 @@
             .carousel-card { flex: 0 0 280px; }
             .carousel-card-featured { flex: 0 0 300px; }
             footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
+        }
+
+        /* ===== SOAP MARATHON CARD ===== */
+        .carousel-card-soap-marathon {
+            border: 1px solid rgba(0,240,255,0.12);
+            background: #111822;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .carousel-card-soap-marathon:hover {
+            border-color: rgba(255,184,0,0.35);
+            box-shadow: 0 0 40px rgba(255,184,0,0.06);
+        }
+        .soap-marathon-visual {
+            height: 230px;
+            background: #07090f;
+            border-bottom: 1px solid rgba(255,184,0,0.12);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 16px 40px;
+        }
+        .soap-cd-digit {
+            font-family: 'Orbitron', monospace;
+            font-size: 44px;
+            font-weight: 900;
+            line-height: 1;
+            color: #ffb800;
+            text-shadow: 0 0 12px rgba(255,184,0,0.7), 0 0 40px rgba(255,184,0,0.2);
+            min-width: 1.08em;
+            text-align: center;
+            transition: text-shadow 0.1s;
+            letter-spacing: 1px;
+        }
+        .soap-cd-digit.soap-flash {
+            text-shadow: 0 0 24px rgba(255,184,0,1), 0 0 70px rgba(255,184,0,0.4);
+        }
+        .soap-cd-lbl {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 7px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #4a5568;
+        }
+        .soap-cd-sep {
+            font-family: 'Orbitron', monospace;
+            font-size: 36px;
+            font-weight: 900;
+            color: rgba(255,184,0,0.22);
+            line-height: 1;
+            padding-top: 4px;
+            animation: soap-blink 1s step-end infinite;
+        }
+        @keyframes soap-blink {
+            0%,100% { opacity: 0.22; }
+            50%      { opacity: 0.06; }
         }
 
         .animate { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -1251,7 +1310,100 @@
                     </div>
                 </a>
 
-                <!-- 16 — Your Idea Here -->
+                <!-- 16 — SOAP Marathon -->
+                <a href="soap-marathon.html" class="carousel-card carousel-card-soap-marathon" data-color="amber" style="flex: 0 0 340px;">
+                    <div class="soap-marathon-visual">
+
+                        <span class="card-tag-top" style="background:rgba(6,8,13,0.85);backdrop-filter:blur(4px);border-color:rgba(255,184,0,0.3);color:#ffb800;">Proto-16</span>
+                        <span class="card-status concept" style="background:#ffb800;box-shadow:0 0 8px rgba(255,184,0,0.6);"></span>
+
+                        <!-- animated grid bg inside card -->
+                        <div style="position:absolute;inset:0;
+                            background-image:
+                                linear-gradient(rgba(0,240,255,0.025) 1px, transparent 1px),
+                                linear-gradient(90deg,rgba(0,240,255,0.025) 1px, transparent 1px);
+                            background-size:28px 28px;pointer-events:none;z-index:0;"></div>
+
+                        <!-- amber radial glow -->
+                        <div style="position:absolute;inset:0;
+                            background:radial-gradient(ellipse at 50% 50%, rgba(255,184,0,0.07) 0%, transparent 65%);
+                            pointer-events:none;z-index:0;"></div>
+
+                        <!-- Clock label -->
+                        <div style="position:relative;z-index:2;
+                            font-family:'Share Tech Mono',monospace;font-size:8px;
+                            letter-spacing:3px;text-transform:uppercase;
+                            color:rgba(255,184,0,0.5);margin-bottom:10px;">
+                            ⏱ MARATHON COUNTDOWN
+                        </div>
+
+                        <!-- COUNTDOWN DIGITS -->
+                        <div style="position:relative;z-index:2;display:flex;align-items:flex-start;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                <div id="cc-days" class="soap-cd-digit">--</div>
+                                <div class="soap-cd-lbl">DAYS</div>
+                            </div>
+                            <div class="soap-cd-sep">:</div>
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                <div id="cc-hours" class="soap-cd-digit">--</div>
+                                <div class="soap-cd-lbl">HRS</div>
+                            </div>
+                            <div class="soap-cd-sep">:</div>
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                <div id="cc-mins" class="soap-cd-digit">--</div>
+                                <div class="soap-cd-lbl">MIN</div>
+                            </div>
+                            <div class="soap-cd-sep">:</div>
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                                <div id="cc-secs" class="soap-cd-digit">--</div>
+                                <div class="soap-cd-lbl">SEC</div>
+                            </div>
+                        </div>
+
+                        <!-- Live strip -->
+                        <div style="position:absolute;bottom:0;left:0;right:0;z-index:2;
+                            background:linear-gradient(0deg, rgba(6,8,13,0.97) 0%, transparent 100%);
+                            padding:8px 12px 7px;
+                            display:flex;align-items:center;justify-content:space-between;">
+                            <div style="display:flex;align-items:center;gap:5px;">
+                                <div style="position:relative;width:7px;height:7px;">
+                                    <span style="display:block;position:absolute;inset:0;border-radius:50%;
+                                        background:#39FF14;opacity:0.6;
+                                        animation:wsPulse 1.4s ease-out infinite;"></span>
+                                    <span style="display:block;position:absolute;inset:0;border-radius:50%;background:#39FF14;"></span>
+                                </div>
+                                <span style="font-family:'Share Tech Mono',monospace;font-size:8px;
+                                    letter-spacing:2px;color:#39FF14;text-transform:uppercase;">Hashing Live</span>
+                            </div>
+                            <span style="font-family:'Share Tech Mono',monospace;font-size:8px;
+                                letter-spacing:2px;color:#4a5568;text-transform:uppercase;">
+                                <span id="cc-hr" style="color:#00f0ff;">460</span> PH/s
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="carousel-card-body">
+                        <h3>SOAP Marathon</h3>
+                        <p>30 days to mine a Bitcoin block through SOAP merge-mining. $219,000 in QUAI buybacks — protocol-enforced, no governance, no middlemen.</p>
+                        <div style="display:flex;gap:0;border:1px solid rgba(0,240,255,0.08);margin-bottom:12px;">
+                            <div style="flex:1;padding:7px 6px;text-align:center;border-right:1px solid rgba(0,240,255,0.08);">
+                                <span style="display:block;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#ffb800;">$219K</span>
+                                <span style="display:block;font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;color:#4a5568;text-transform:uppercase;margin-top:2px;">Per Block</span>
+                            </div>
+                            <div style="flex:1;padding:7px 6px;text-align:center;border-right:1px solid rgba(0,240,255,0.08);">
+                                <span style="display:block;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#00f0ff;">70%</span>
+                                <span style="display:block;font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;color:#4a5568;text-transform:uppercase;margin-top:2px;">30d Odds</span>
+                            </div>
+                            <div style="flex:1;padding:7px 6px;text-align:center;">
+                                <span style="display:block;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#ffb800;">460PH</span>
+                                <span style="display:block;font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;color:#4a5568;text-transform:uppercase;margin-top:2px;">Live Hash</span>
+                            </div>
+                        </div>
+                        <span class="card-link">soap-marathon.html →</span>
+                    </div>
+                </a>
+
+                <!-- 17 — Your Idea Here -->
                 <a href="https://discord.gg/quai" target="_blank" class="carousel-card" data-color="red">
                     <div class="carousel-card-visual carousel-card-img">
                         <img src="hangar.png" alt="Open Bay" />
@@ -1486,6 +1638,52 @@
 
         refreshHash();
         setInterval(refreshHash, 1400 + Math.random() * 700);
+    })();
+    </script>
+
+    <!-- ===== SOAP MARATHON COUNTDOWN ===== -->
+    <script>
+    (function() {
+        // 30 days from page load — swap for a hard date once marathon starts:
+        // var TARGET = new Date('2026-04-15T00:00:00Z');
+        var TARGET = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+        var pad = function(n) { return String(Math.floor(n)).padStart(2, '0'); };
+        var eDays  = document.getElementById('cc-days');
+        var eHours = document.getElementById('cc-hours');
+        var eMins  = document.getElementById('cc-mins');
+        var eSecs  = document.getElementById('cc-secs');
+        var eHR    = document.getElementById('cc-hr');
+
+        if (!eDays) return;
+        var prevSec = -1;
+
+        function tick() {
+            var diff = Math.max(0, TARGET - Date.now());
+            var tot  = Math.floor(diff / 1000);
+            var d = Math.floor(tot / 86400);
+            var h = Math.floor((tot % 86400) / 3600);
+            var m = Math.floor((tot % 3600) / 60);
+            var s = tot % 60;
+            eDays.textContent  = pad(d);
+            eHours.textContent = pad(h);
+            eMins.textContent  = pad(m);
+            eSecs.textContent  = pad(s);
+            if (s !== prevSec) {
+                eSecs.classList.add('soap-flash');
+                setTimeout(function() { eSecs.classList.remove('soap-flash'); }, 130);
+                prevSec = s;
+            }
+        }
+        tick();
+        setInterval(tick, 250);
+
+        var hr = 460;
+        setInterval(function() {
+            hr += (Math.random() - 0.5) * 3;
+            hr = Math.max(450, Math.min(475, hr));
+            if (eHR) eHR.textContent = hr.toFixed(1);
+        }, 3000);
     })();
     </script>
 
