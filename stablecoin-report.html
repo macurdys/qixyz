@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State of Stablecoins | Qi.xyz Research</title>
+    <meta name="description" content="Institutional-grade stablecoin market intelligence. $150B+ in coverage. Free download.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --qi-cyan: #00f0ff;
+            --qi-cyan-dim: rgba(0, 240, 255, 0.1);
+            --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+            --qi-amber: #ffb800;
+            --qi-amber-dim: rgba(255, 184, 0, 0.12);
+            --qi-amber-glow: rgba(255, 184, 0, 0.4);
+            --qi-green: #39FF14;
+            --qi-red: #ff3366;
+            --bg-deep: #06080d;
+            --bg-panel: #0c1018;
+            --bg-card: #111822;
+            --border-dim: rgba(0, 240, 255, 0.1);
+            --border-bright: rgba(0, 240, 255, 0.28);
+            --text-primary: #e8ecf0;
+            --text-secondary: #7a8a9e;
+            --text-dim: #4a5568;
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scrollbar-width: thin; scrollbar-color: var(--qi-cyan) var(--bg-deep); }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            font-size: 17px;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── scanlines ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 240, 255, 0.007) 2px,
+                rgba(0, 240, 255, 0.007) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ── grid bg ── */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(6, 8, 13, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 0 40px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--qi-cyan);
+            text-decoration: none;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--qi-cyan-glow);
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .nav-links a:hover { color: var(--qi-cyan); text-shadow: 0 0 10px var(--qi-cyan-glow); }
+        .nav-back {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-back:hover { color: var(--qi-cyan); }
+
+        /* ── MAIN LAYOUT ── */
+        main {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px 40px;
+        }
+
+        /* radial ambient glow */
+        .ambient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 30% 50%, rgba(0, 240, 255, 0.04) 0%, transparent 55%),
+                radial-gradient(ellipse at 75% 40%, rgba(255, 184, 0, 0.04) 0%, transparent 55%);
+        }
+
+        /* ── REPORT CARD ── */
+        .report-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1040px;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 1px rgba(0,240,255,0.06),
+                0 32px 80px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transform: translateY(24px);
+            animation: card-in 0.8s cubic-bezier(0.25,0.1,0.25,1) 0.2s forwards;
+        }
+
+        @keyframes card-in {
+            to { opacity: 1; transform: none; }
+        }
+
+        /* Top edge glow line */
+        .report-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--qi-cyan) 40%, var(--qi-amber) 60%, transparent 100%);
+            opacity: 0.6;
+            z-index: 10;
+        }
+
+        /* ── LEFT: CONTENT ── */
+        .content-area {
+            padding: 64px 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* corner bracket decoration */
+        .content-area::before {
+            content: '';
+            position: absolute;
+            top: 24px; left: 24px;
+            width: 32px; height: 32px;
+            border-top: 1px solid var(--border-bright);
+            border-left: 1px solid var(--border-bright);
+            opacity: 0.5;
+        }
+
+        .badge {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--qi-amber);
+            border: 1px solid rgba(255, 184, 0, 0.25);
+            padding: 5px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 28px;
+            width: fit-content;
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--qi-amber);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--qi-amber-glow);
+            animation: blink-amber 2s step-end infinite;
+        }
+
+        @keyframes blink-amber {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.2; }
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        h1 span { color: var(--qi-cyan); text-shadow: 0 0 30px var(--qi-cyan-glow); }
+
+        p.description {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 36px;
+            line-height: 1.75;
+            max-width: 380px;
+        }
+
+        /* stat row */
+        .stat-row {
+            display: flex;
+            gap: 28px;
+            margin-bottom: 36px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-val {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--qi-cyan);
+            letter-spacing: 1px;
+        }
+
+        .stat-lbl {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: var(--border-dim);
+            align-self: stretch;
+        }
+
+        /* form */
+        .download-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap::before {
+            content: '//';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            background: rgba(6, 8, 13, 0.8);
+            border: 1px solid var(--border-dim);
+            padding: 15px 16px 15px 40px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            border-radius: 0;
+        }
+
+        input[type="email"]::placeholder { color: var(--text-dim); }
+
+        input[type="email"]:focus {
+            border-color: var(--qi-cyan);
+            box-shadow: 0 0 0 1px rgba(0,240,255,0.15), 0 0 20px rgba(0,240,255,0.06);
+        }
+
+        .btn-download {
+            background: var(--qi-cyan);
+            color: var(--bg-deep);
+            border: none;
+            padding: 16px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: box-shadow 0.25s, transform 0.15s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+        }
+
+        .btn-download::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .btn-download:hover {
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.35), 0 0 60px rgba(0, 240, 255, 0.12);
+            transform: translateY(-1px);
+        }
+        .btn-download:hover::after { transform: translateX(100%); }
+
+        /* checkmarks */
+        .checklist {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .check-item {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .check-item::before {
+            content: '✓';
+            color: var(--qi-green);
+            font-size: 11px;
+        }
+
+        /* ── RIGHT: PREVIEW ── */
+        .preview-area {
+            background:
+                radial-gradient(ellipse at 60% 30%, rgba(255,184,0,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(0,240,255,0.05) 0%, transparent 50%),
+                linear-gradient(145deg, #0f1420 0%, #06080d 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 48px 40px;
+            position: relative;
+            border-left: 1px solid var(--border-dim);
+            gap: 28px;
+        }
+
+        /* corner bracket right side */
+        .preview-area::after {
+            content: '';
+            position: absolute;
+            bottom: 24px; right: 24px;
+            width: 32px; height: 32px;
+            border-bottom: 1px solid var(--border-bright);
+            border-right: 1px solid var(--border-bright);
+            opacity: 0.4;
+        }
+
+        /* ── REPORT MOCKUP ── */
+        .report-mockup {
+            width: 220px;
+            height: 300px;
+            position: relative;
+            transform: rotate(2deg);
+            transition: transform 0.4s ease;
+            filter: drop-shadow(0 24px 48px rgba(0,0,0,0.7));
+            cursor: pointer;
+        }
+
+        .report-mockup:hover {
+            transform: rotate(-2deg) scale(1.04) translateY(-4px);
+        }
+
+        /* Mockup shadow copy */
+        .report-mockup-shadow {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            transform: translate(8px, 10px);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .report-cover {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(140deg, #0d1520 0%, #07090f 100%);
+            border: 1px solid rgba(255,184,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 18px 18px;
+        }
+
+        /* Cover top bar */
+        .cover-bar {
+            height: 2px;
+            background: linear-gradient(90deg, var(--qi-amber), var(--qi-cyan));
+            margin-bottom: 14px;
+            box-shadow: 0 0 10px var(--qi-amber-glow);
+        }
+
+        .cover-logo {
+            font-family: var(--font-display);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: var(--qi-cyan);
+            text-shadow: 0 0 12px var(--qi-cyan-glow);
+            margin-bottom: 6px;
+        }
+
+        .cover-label {
+            font-family: var(--font-mono);
+            font-size: 7px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* Mini chart SVG inside cover */
+        .cover-chart {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 0;
+        }
+
+        .cover-title-block {
+            border-top: 1px solid rgba(255,184,0,0.2);
+            padding-top: 12px;
+        }
+
+        .cover-title {
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--qi-amber);
+            line-height: 1.3;
+            text-shadow: 0 0 14px var(--qi-amber-glow);
+        }
+
+        .cover-subtitle {
+            font-family: var(--font-mono);
+            font-size: 7px;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .cover-year {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 900;
+            color: rgba(255,184,0,0.12);
+            letter-spacing: 4px;
+            position: absolute;
+            bottom: 16px;
+            right: 14px;
+        }
+
+        /* ── LIVE TICKER ── */
+        .ticker {
+            width: 100%;
+            background: rgba(6,8,13,0.7);
+            border: 1px solid var(--border-dim);
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ticker-label {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .ticker-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+
+        .ticker-name {
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .ticker-val {
+            color: var(--text-primary);
+            letter-spacing: 1px;
+        }
+
+        .ticker-change {
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+        .ticker-change.up { color: var(--qi-green); }
+        .ticker-change.dn { color: var(--qi-red); }
+
+        .ticker-bar {
+            height: 1px;
+            background: var(--border-dim);
+            margin: 4px 0;
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 780px) {
+            .report-container {
+                grid-template-columns: 1fr;
+            }
+            .preview-area {
+                order: -1;
+                padding: 48px 24px 36px;
+                border-left: none;
+                border-bottom: 1px solid var(--border-dim);
+            }
+            .report-mockup { transform: rotate(0deg); }
+            .content-area { padding: 44px 32px 52px; }
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .stat-row { gap: 16px; }
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        .content-area > * {
+            opacity: 0;
+            animation: fade-up 0.6s ease forwards;
+        }
+        .badge         { animation-delay: 0.5s; }
+        h1             { animation-delay: 0.65s; }
+        p.description  { animation-delay: 0.75s; }
+        .stat-row      { animation-delay: 0.85s; }
+        .download-form { animation-delay: 0.95s; }
+        .checklist     { animation-delay: 1.05s; }
+
+        .preview-area > * {
+            opacity: 0;
+            animation: fade-up 0.7s ease forwards;
+        }
+        .report-mockup { animation-delay: 0.7s; }
+        .ticker        { animation-delay: 0.9s; }
+
+        /* success state */
+        .success-msg {
+            display: none;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--qi-green);
+            border: 1px solid rgba(57,255,20,0.25);
+            padding: 14px 16px;
+            text-align: center;
+        }
+        .success-msg.active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="ambient"></div>
+
+<!-- ── NAV ── -->
+<nav>
+    <a href="index.html" class="nav-logo">Qi</a>
+    <ul class="nav-links">
+        <li><a href="index.html#carousel">Protos</a></li>
+        <li><a href="https://thermoeconomics.info" target="_blank">Research</a></li>
+        <li><a href="https://americanenergymoney.com" target="_blank">AEM</a></li>
+    </ul>
+    <a href="index.html" class="nav-back">← Station</a>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+    <div class="report-container">
+
+        <!-- LEFT: CONTENT -->
+        <section class="content-area">
+
+            <span class="badge">Q4 2024 · Quarterly Intelligence</span>
+
+            <h1>State of<br><span>Stablecoins</span></h1>
+
+            <p class="description">
+                Institutional-grade coverage of the $150B+ stablecoin market.
+                Liquidity flows, peg stability analysis, and the rise of yield-bearing
+                instruments — all in one free report.
+            </p>
+
+            <div class="stat-row">
+                <div class="stat">
+                    <span class="stat-val">$150B+</span>
+                    <span class="stat-lbl">Market Cap</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-val">45</span>
+                    <span class="stat-lbl">Pages</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-val">12</span>
+                    <span class="stat-lbl">Protocols</span>
+                </div>
+            </div>
+
+            <form class="download-form" id="reportForm">
+                <div class="input-wrap">
+                    <input type="email" id="emailInput" placeholder="work@institution.xyz" required>
+                </div>
+                <button type="submit" class="btn-download">Download Free Report</button>
+            </form>
+
+            <div class="success-msg" id="successMsg">
+                ◆ Confirmed — report sent to your inbox
+            </div>
+
+            <div class="checklist">
+                <span class="check-item">45 Pages of Data</span>
+                <span class="check-item">Full CSV Dataset</span>
+                <span class="check-item">PDF Format</span>
+                <span class="check-item">No Paywall</span>
+            </div>
+
+        </section>
+
+        <!-- RIGHT: PREVIEW -->
+        <section class="preview-area">
+
+            <!-- Report Cover Mockup -->
+            <div class="report-mockup">
+                <div class="report-mockup-shadow"></div>
+                <div class="report-cover">
+                    <div class="cover-bar"></div>
+
+                    <div>
+                        <div class="cover-logo">QI.XYZ</div>
+                        <div class="cover-label">Research Division · Energy Money</div>
+                    </div>
+
+                    <!-- Mini inline chart -->
+                    <div class="cover-chart">
+                        <svg viewBox="0 0 180 90" xmlns="http://www.w3.org/2000/svg" width="180" height="90">
+                            <defs>
+                                <linearGradient id="chartFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#ffb800" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="#ffb800" stop-opacity="0"/>
+                                </linearGradient>
+                                <filter id="cg">
+                                    <feGaussianBlur stdDeviation="1.5"/>
+                                </filter>
+                            </defs>
+                            <!-- Grid lines -->
+                            <line x1="0" y1="22" x2="180" y2="22" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+                            <line x1="0" y1="44" x2="180" y2="44" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+                            <line x1="0" y1="66" x2="180" y2="66" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+                            <!-- Area fill -->
+                            <path d="M0 70 L18 62 L36 58 L54 52 L72 44 L90 38 L108 42 L126 28 L144 20 L162 14 L180 10 L180 90 L0 90 Z"
+                                  fill="url(#chartFill)"/>
+                            <!-- Glow line -->
+                            <path d="M0 70 L18 62 L36 58 L54 52 L72 44 L90 38 L108 42 L126 28 L144 20 L162 14 L180 10"
+                                  fill="none" stroke="#ffb800" stroke-width="3" stroke-opacity="0.25" filter="url(#cg)"/>
+                            <!-- Main line -->
+                            <path d="M0 70 L18 62 L36 58 L54 52 L72 44 L90 38 L108 42 L126 28 L144 20 L162 14 L180 10"
+                                  fill="none" stroke="#ffb800" stroke-width="1.5"/>
+                            <!-- End dot -->
+                            <circle cx="180" cy="10" r="3" fill="#ffb800"/>
+                            <circle cx="180" cy="10" r="5" fill="#ffb800" opacity="0.2">
+                                <animate attributeName="r" values="3;7;3" dur="2s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite"/>
+                            </circle>
+                            <!-- Y axis labels -->
+                            <text x="2" y="70" font-family="'Share Tech Mono',monospace" font-size="6" fill="rgba(255,255,255,0.2)">$80B</text>
+                            <text x="2" y="44" font-family="'Share Tech Mono',monospace" font-size="6" fill="rgba(255,255,255,0.2)">$120B</text>
+                            <text x="2" y="18" font-family="'Share Tech Mono',monospace" font-size="6" fill="rgba(255,255,255,0.2)">$160B</text>
+                        </svg>
+                    </div>
+
+                    <div class="cover-title-block">
+                        <div class="cover-title">STATE OF<br>STABLECOINS</div>
+                        <div class="cover-subtitle">2024 · QI.XYZ RESEARCH DIVISION</div>
+                    </div>
+
+                    <div class="cover-year">2024</div>
+                </div>
+            </div>
+
+            <!-- Live Market Ticker -->
+            <div class="ticker">
+                <div class="ticker-label">// Live Stablecoin Feed</div>
+                <div class="ticker-row">
+                    <span class="ticker-name">USDT</span>
+                    <span class="ticker-val" id="t1">$83.42B</span>
+                    <span class="ticker-change up" id="c1">+0.02%</span>
+                </div>
+                <div class="ticker-bar"></div>
+                <div class="ticker-row">
+                    <span class="ticker-name">USDC</span>
+                    <span class="ticker-val" id="t2">$35.18B</span>
+                    <span class="ticker-change up" id="c2">+0.01%</span>
+                </div>
+                <div class="ticker-bar"></div>
+                <div class="ticker-row">
+                    <span class="ticker-name">DAI</span>
+                    <span class="ticker-val" id="t3">$5.72B</span>
+                    <span class="ticker-change dn" id="c3">-0.01%</span>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</main>
+
+<script>
+    // Form submit
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('emailInput').value;
+        if (!email) return;
+        this.style.display = 'none';
+        document.getElementById('successMsg').classList.add('active');
+    });
+
+    // Ticker jitter
+    const tickers = [
+        { el: document.getElementById('t1'), chEl: document.getElementById('c1'), base: 83.42 },
+        { el: document.getElementById('t2'), chEl: document.getElementById('c2'), base: 35.18 },
+        { el: document.getElementById('t3'), chEl: document.getElementById('c3'), base: 5.72 }
+    ];
+
+    function jitterTicker() {
+        tickers.forEach(t => {
+            const delta = (Math.random() - 0.5) * 0.04;
+            t.base = Math.max(0, t.base + delta);
+            const pct = ((delta / t.base) * 100).toFixed(2);
+            t.el.textContent = '$' + t.base.toFixed(2) + 'B';
+            const up = delta >= 0;
+            t.chEl.textContent = (up ? '+' : '') + pct + '%';
+            t.chEl.className = 'ticker-change ' + (up ? 'up' : 'dn');
+        });
+    }
+
+    setInterval(jitterTicker, 2200);
+</script>
+
+</body>
+</html>
