@@ -4,6 +4,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1424,6 +1434,178 @@
                             </div>
                         </div>
                         <span class="card-link">quaffle.html →</span>
+                    </div>
+                </a>
+
+                <!-- Consensus Solar — PoS·PoW·PoS Junction -->
+                <a href="consensus-solar.html" class="carousel-card" data-color="green" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:280px;background:#072010;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;">
+
+                        <!-- Inline SVG: p–n–p solar junction visual -->
+                        <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;">
+                            <defs>
+                                <!-- Sun glow filter -->
+                                <filter id="csg-sun" x="-80%" y="-80%" width="260%" height="260%">
+                                    <feGaussianBlur stdDeviation="6" result="blur"/>
+                                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
+                                <filter id="csg-elec" x="-200%" y="-200%" width="500%" height="500%">
+                                    <feGaussianBlur stdDeviation="3"/>
+                                </filter>
+                                <!-- Gradient for depletion zone -->
+                                <linearGradient id="csg-dep" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#f5c518" stop-opacity="0.7"/>
+                                    <stop offset="50%" stop-color="#2ecc5e" stop-opacity="1"/>
+                                    <stop offset="100%" stop-color="#0d1b4b" stop-opacity="0.7"/>
+                                </linearGradient>
+                                <!-- Radial glow for sun -->
+                                <radialGradient id="csg-sunglow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="rgba(255,240,100,0.25)"/>
+                                    <stop offset="100%" stop-color="rgba(255,200,0,0)"/>
+                                </radialGradient>
+                                <!-- Top PoS layer gradient -->
+                                <linearGradient id="csg-pos" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#c49a00"/>
+                                    <stop offset="50%" stop-color="#f5c518"/>
+                                    <stop offset="100%" stop-color="#ffe066"/>
+                                </linearGradient>
+                                <!-- PoW layer gradient -->
+                                <linearGradient id="csg-pow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#0d1b4b"/>
+                                    <stop offset="50%" stop-color="#1a2f7a"/>
+                                    <stop offset="100%" stop-color="#243670"/>
+                                </linearGradient>
+                                <!-- Bottom PoS layer gradient -->
+                                <linearGradient id="csg-pos2" x1="100%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#f5c518"/>
+                                    <stop offset="50%" stop-color="#ffe066"/>
+                                    <stop offset="100%" stop-color="#c49a00"/>
+                                </linearGradient>
+                                <!-- P-type grid pattern -->
+                                <pattern id="csg-pgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+                                    <circle cx="8" cy="8" r="1.2" fill="rgba(0,0,0,0.12)"/>
+                                </pattern>
+                                <!-- N-type grid pattern -->
+                                <pattern id="csg-ngrid" width="16" height="16" patternUnits="userSpaceOnUse">
+                                    <rect x="6" y="6" width="4" height="4" fill="none" stroke="rgba(46,204,94,0.12)" stroke-width="0.5"/>
+                                </pattern>
+                            </defs>
+
+                            <!-- Deep green background -->
+                            <rect width="420" height="280" fill="#072010"/>
+
+                            <!-- Ambient sun glow halo -->
+                            <ellipse cx="210" cy="26" rx="90" ry="40" fill="url(#csg-sunglow)"/>
+
+                            <!-- Sun body -->
+                            <circle cx="210" cy="20" r="14" fill="url(#csg-sunglow)" filter="url(#csg-sun)" opacity="0.4"/>
+                            <circle cx="210" cy="20" r="10" fill="#fff9a0"/>
+                            <circle cx="210" cy="20" r="7" fill="#ffdd00"/>
+
+                            <!-- Photon arrows (5) -->
+                            <g opacity="0.85">
+                                <line x1="140" y1="34" x2="140" y2="54" stroke="#f5c518" stroke-width="1.5" opacity="0.7">
+                                    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.8s" begin="0s" repeatCount="indefinite"/>
+                                </line>
+                                <polygon points="136,54 144,54 140,60" fill="#f5c518" opacity="0.7"/>
+
+                                <line x1="170" y1="34" x2="170" y2="54" stroke="#f5c518" stroke-width="1.5" opacity="0.7">
+                                    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+                                </line>
+                                <polygon points="166,54 174,54 170,60" fill="#f5c518" opacity="0.7"/>
+
+                                <line x1="210" y1="34" x2="210" y2="54" stroke="#f5c518" stroke-width="2">
+                                    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+                                </line>
+                                <polygon points="206,54 214,54 210,60" fill="#f5c518"/>
+
+                                <line x1="250" y1="34" x2="250" y2="54" stroke="#f5c518" stroke-width="1.5" opacity="0.7">
+                                    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.8s" begin="0.9s" repeatCount="indefinite"/>
+                                </line>
+                                <polygon points="246,54 254,54 250,60" fill="#f5c518" opacity="0.7"/>
+
+                                <line x1="280" y1="34" x2="280" y2="54" stroke="#f5c518" stroke-width="1.5" opacity="0.7">
+                                    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.8s" begin="1.2s" repeatCount="indefinite"/>
+                                </line>
+                                <polygon points="276,54 284,54 280,60" fill="#f5c518" opacity="0.7"/>
+                            </g>
+
+                            <!-- ── P-TYPE TOP: Proof of Stake ── -->
+                            <rect x="20" y="62" width="380" height="62" rx="4" fill="url(#csg-pos)"/>
+                            <rect x="20" y="62" width="380" height="62" rx="4" fill="url(#csg-pgrid)"/>
+                            <!-- P-type label -->
+                            <text x="30" y="80" font-family="'Share Tech Mono',monospace" font-size="7" fill="rgba(0,0,0,0.5)" letter-spacing="2">P-TYPE · POSITIVE CARRIER</text>
+                            <text x="30" y="98" font-family="'Orbitron',monospace" font-size="13" font-weight="900" fill="rgba(0,0,0,0.75)">PROOF OF STAKE</text>
+                            <text x="30" y="113" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(0,0,0,0.5)" letter-spacing="1">Social consensus · economic value of reward</text>
+                            <!-- Hole symbols (+ charges) -->
+                            <g fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1">
+                                <circle cx="330" cy="85" r="5"/><text x="327" y="89" font-size="8" fill="rgba(0,0,0,0.2)">+</text>
+                                <circle cx="350" cy="95" r="5"/><text x="347" y="99" font-size="8" fill="rgba(0,0,0,0.2)">+</text>
+                                <circle cx="370" cy="82" r="5"/><text x="367" y="86" font-size="8" fill="rgba(0,0,0,0.2)">+</text>
+                                <circle cx="345" cy="74" r="4"/><text x="342" y="78" font-size="7" fill="rgba(0,0,0,0.2)">+</text>
+                            </g>
+
+                            <!-- ── DEPLETION ZONE 1 ── -->
+                            <rect x="20" y="124" width="380" height="5" fill="url(#csg-dep)"/>
+                            <text x="300" y="122" font-family="'Share Tech Mono',monospace" font-size="6" fill="#2ecc5e" letter-spacing="1.5">P–N JUNCTION</text>
+
+                            <!-- ── N-TYPE: Proof of Work ── -->
+                            <rect x="20" y="129" width="380" height="74" rx="0" fill="url(#csg-pow)"/>
+                            <rect x="20" y="129" width="380" height="74" fill="url(#csg-ngrid)"/>
+                            <!-- N-type label -->
+                            <text x="30" y="148" font-family="'Share Tech Mono',monospace" font-size="7" fill="rgba(46,204,94,0.7)" letter-spacing="2">N-TYPE · ELECTRON CARRIER</text>
+                            <text x="30" y="167" font-family="'Orbitron',monospace" font-size="13" font-weight="900" fill="rgba(255,255,255,0.9)">PROOF OF WORK</text>
+                            <text x="30" y="183" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(255,255,255,0.45)" letter-spacing="1">Thermodynamic substrate · physics-enforced cost</text>
+                            <!-- Electron dots (animated) -->
+                            <g>
+                                <circle cx="360" cy="150" r="3.5" fill="#2ecc5e" opacity="0.9">
+                                    <animate attributeName="cy" values="130;200;130" dur="2s" begin="0s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0;1;0" dur="2s" begin="0s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="360" cy="150" r="5" fill="#2ecc5e" opacity="0.25" filter="url(#csg-elec)">
+                                    <animate attributeName="cy" values="130;200;130" dur="2s" begin="0s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0;0.3;0" dur="2s" begin="0s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="360" cy="165" r="3.5" fill="#2ecc5e" opacity="0.9">
+                                    <animate attributeName="cy" values="130;200;130" dur="2s" begin="0.66s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0;1;0" dur="2s" begin="0.66s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="360" cy="180" r="3.5" fill="#2ecc5e" opacity="0.9">
+                                    <animate attributeName="cy" values="130;200;130" dur="2s" begin="1.33s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0;1;0" dur="2s" begin="1.33s" repeatCount="indefinite"/>
+                                </circle>
+                            </g>
+
+                            <!-- ── DEPLETION ZONE 2 ── -->
+                            <rect x="20" y="203" width="380" height="5" fill="url(#csg-dep)"/>
+                            <text x="20" y="201" font-family="'Share Tech Mono',monospace" font-size="6" fill="#2ecc5e" letter-spacing="1.5">N–P JUNCTION</text>
+
+                            <!-- ── P-TYPE BOTTOM: Proof of Stake ── -->
+                            <rect x="20" y="208" width="380" height="55" rx="0" fill="url(#csg-pos2)"/>
+                            <rect x="20" y="208" width="380" height="55" fill="url(#csg-pgrid)"/>
+                            <text x="30" y="226" font-family="'Share Tech Mono',monospace" font-size="7" fill="rgba(0,0,0,0.5)" letter-spacing="2">P-TYPE · POSITIVE CARRIER</text>
+                            <text x="30" y="244" font-family="'Orbitron',monospace" font-size="13" font-weight="900" fill="rgba(0,0,0,0.75)">PROOF OF STAKE</text>
+                            <text x="30" y="257" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(0,0,0,0.5)" letter-spacing="1">Settlement · finality · reward distribution</text>
+                            <!-- Hole symbols bottom -->
+                            <g fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1">
+                                <circle cx="340" cy="228" r="5"/><text x="337" y="232" font-size="8" fill="rgba(0,0,0,0.2)">+</text>
+                                <circle cx="360" cy="242" r="5"/><text x="357" y="246" font-size="8" fill="rgba(0,0,0,0.2)">+</text>
+                                <circle cx="375" cy="225" r="4"/><text x="372" y="229" font-size="7" fill="rgba(0,0,0,0.2)">+</text>
+                            </g>
+
+                            <!-- ── OUTPUT BAR ── -->
+                            <rect x="20" y="263" width="380" height="12" rx="0" fill="rgba(46,204,94,0.12)" stroke="rgba(46,204,94,0.3)" stroke-width="0.5"/>
+                            <text x="210" y="272" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="#2ecc5e" text-anchor="middle" letter-spacing="2">⚡ CONSENSUS CURRENT OUTPUT ⚡</text>
+                        </svg>
+
+                        <!-- Card overlay badges -->
+                        <span class="card-tag-top" style="background:rgba(7,32,16,0.85);backdrop-filter:blur(4px);border-color:rgba(46,204,94,0.4);color:#2ecc5e;">Theory</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Consensus Solar</h3>
+                        <p>A p–n–p junction model of blockchain consensus. Proof of Stake governs the value variable that makes Proof of Work's thermodynamic cost binding. Neither layer alone produces current.</p>
+                        <span class="card-link">consensus-solar.html →</span>
                     </div>
                 </a>
 
