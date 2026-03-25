@@ -1609,6 +1609,169 @@
                     </div>
                 </a>
 
+                <!-- Stablecoin Report -->
+                <a href="stablecoin-report.html" class="carousel-card" data-color="amber" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:280px;background:#07090f;overflow:hidden;position:relative;">
+
+                        <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;">
+                            <defs>
+                                <linearGradient id="srg-bar" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00f0ff"/>
+                                    <stop offset="100%" stop-color="#ffb800"/>
+                                </linearGradient>
+                                <linearGradient id="srg-fill" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#ffb800" stop-opacity="0.35"/>
+                                    <stop offset="100%" stop-color="#ffb800" stop-opacity="0"/>
+                                </linearGradient>
+                                <linearGradient id="srg-btn" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00f0ff"/>
+                                    <stop offset="100%" stop-color="#00d4e8"/>
+                                </linearGradient>
+                                <filter id="srg-glow">
+                                    <feGaussianBlur stdDeviation="3" result="blur"/>
+                                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
+                                <filter id="srg-softglow">
+                                    <feGaussianBlur stdDeviation="2"/>
+                                </filter>
+                                <!-- Ambient amber radial -->
+                                <radialGradient id="srg-amb" cx="75%" cy="30%" r="50%">
+                                    <stop offset="0%" stop-color="rgba(255,184,0,0.09)"/>
+                                    <stop offset="100%" stop-color="rgba(255,184,0,0)"/>
+                                </radialGradient>
+                                <radialGradient id="srg-camb" cx="25%" cy="75%" r="40%">
+                                    <stop offset="0%" stop-color="rgba(0,240,255,0.06)"/>
+                                    <stop offset="100%" stop-color="rgba(0,240,255,0)"/>
+                                </radialGradient>
+                            </defs>
+
+                            <!-- Background -->
+                            <rect width="420" height="280" fill="#07090f"/>
+                            <rect width="420" height="280" fill="url(#srg-amb)"/>
+                            <rect width="420" height="280" fill="url(#srg-camb)"/>
+
+                            <!-- Grid -->
+                            <g stroke="rgba(0,240,255,0.045)" stroke-width="0.5">
+                                <line x1="0" y1="46" x2="420" y2="46"/>
+                                <line x1="0" y1="92" x2="420" y2="92"/>
+                                <line x1="0" y1="138" x2="420" y2="138"/>
+                                <line x1="0" y1="184" x2="420" y2="184"/>
+                                <line x1="70" y1="0" x2="70" y2="280"/>
+                                <line x1="140" y1="0" x2="140" y2="280"/>
+                                <line x1="210" y1="0" x2="210" y2="280"/>
+                                <line x1="280" y1="0" x2="280" y2="280"/>
+                                <line x1="350" y1="0" x2="350" y2="280"/>
+                            </g>
+
+                            <!-- ─── REPORT CARD MOCKUP (centered-left) ─── -->
+                            <!-- Shadow -->
+                            <rect x="58" y="26" width="148" height="200" rx="3" fill="rgba(0,0,0,0.55)" transform="translate(6,8)"/>
+                            <!-- Cover body -->
+                            <rect x="58" y="26" width="148" height="200" rx="3" fill="#0d1520" stroke="rgba(255,184,0,0.22)" stroke-width="0.8"/>
+                            <!-- Top gradient bar -->
+                            <rect x="58" y="26" width="148" height="2.5" rx="1" fill="url(#srg-bar)"/>
+                            <!-- Amber glow under bar -->
+                            <rect x="58" y="26" width="148" height="6" fill="url(#srg-bar)" opacity="0.15" filter="url(#srg-softglow)"/>
+
+                            <!-- QI.XYZ label -->
+                            <text x="68" y="44" font-family="'Orbitron',monospace" font-size="8.5" font-weight="700" fill="#00f0ff" letter-spacing="2.5" filter="url(#srg-softglow)">QI.XYZ</text>
+                            <!-- Sub label -->
+                            <text x="68" y="54" font-family="'Share Tech Mono',monospace" font-size="6" fill="rgba(122,138,158,0.9)" letter-spacing="1.5">RESEARCH DIVISION · ENERGY MONEY</text>
+
+                            <!-- Chart area grid lines -->
+                            <line x1="68" y1="100" x2="196" y2="100" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                            <line x1="68" y1="118" x2="196" y2="118" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                            <line x1="68" y1="136" x2="196" y2="136" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+
+                            <!-- Y-axis labels -->
+                            <text x="68" y="99" font-family="'Share Tech Mono',monospace" font-size="5.5" fill="rgba(255,255,255,0.18)">$160B</text>
+                            <text x="68" y="117" font-family="'Share Tech Mono',monospace" font-size="5.5" fill="rgba(255,255,255,0.18)">$120B</text>
+                            <text x="68" y="136" font-family="'Share Tech Mono',monospace" font-size="5.5" fill="rgba(255,255,255,0.18)">$80B</text>
+
+                            <!-- Chart fill area -->
+                            <path d="M88 148 L104 140 L119 134 L133 125 L147 114 L161 107 L172 110 L184 98 L194 88 L194 155 L88 155 Z"
+                                  fill="url(#srg-fill)"/>
+                            <!-- Chart glow line -->
+                            <path d="M88 148 L104 140 L119 134 L133 125 L147 114 L161 107 L172 110 L184 98 L194 88"
+                                  fill="none" stroke="#ffb800" stroke-width="3.5" stroke-opacity="0.2" filter="url(#srg-softglow)"/>
+                            <!-- Chart main line -->
+                            <path d="M88 148 L104 140 L119 134 L133 125 L147 114 L161 107 L172 110 L184 98 L194 88"
+                                  fill="none" stroke="#ffb800" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- End dot pulse -->
+                            <circle cx="194" cy="88" r="2.5" fill="#ffb800" filter="url(#srg-glow)"/>
+                            <circle cx="194" cy="88" r="5" fill="#ffb800" opacity="0.2">
+                                <animate attributeName="r" values="2.5;7;2.5" dur="2s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.25;0;0.25" dur="2s" repeatCount="indefinite"/>
+                            </circle>
+
+                            <!-- Cover bottom: title block -->
+                            <line x1="68" y1="166" x2="196" y2="166" stroke="rgba(255,184,0,0.18)" stroke-width="0.7"/>
+                            <text x="68" y="180" font-family="'Orbitron',monospace" font-size="10.5" font-weight="900" fill="#ffb800" letter-spacing="1" filter="url(#srg-softglow)">STATE OF</text>
+                            <text x="68" y="194" font-family="'Orbitron',monospace" font-size="10.5" font-weight="900" fill="#ffb800" letter-spacing="1" filter="url(#srg-softglow)">STABLECOINS</text>
+                            <text x="68" y="207" font-family="'Share Tech Mono',monospace" font-size="6" fill="rgba(122,138,158,0.8)" letter-spacing="1.5">2024 · QI.XYZ RESEARCH DIVISION</text>
+
+                            <!-- Ghosted 2024 watermark -->
+                            <text x="78" y="220" font-family="'Orbitron',monospace" font-size="20" font-weight="900" fill="rgba(255,184,0,0.07)" letter-spacing="3">2024</text>
+
+                            <!-- ─── DOWNLOAD BUTTON (below card) ─── -->
+                            <!-- Button outer glow -->
+                            <rect x="58" y="238" width="304" height="34" rx="2" fill="url(#srg-btn)" opacity="0.15" filter="url(#srg-softglow)"/>
+                            <!-- Button body -->
+                            <rect x="58" y="238" width="304" height="34" rx="2" fill="url(#srg-btn)"/>
+                            <!-- Button shimmer sheen -->
+                            <rect x="58" y="238" width="152" height="34" rx="2" fill="rgba(255,255,255,0.06)"/>
+                            <!-- Button label -->
+                            <text x="210" y="260" font-family="'Orbitron',monospace" font-size="9.5" font-weight="700" fill="#06080d" letter-spacing="3" text-anchor="middle">DOWNLOAD FREE REPORT</text>
+
+                            <!-- Live dot indicators (right of mockup) -->
+                            <circle cx="252" cy="60" r="3" fill="#39FF14" opacity="0.9">
+                                <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="260" y="64" font-family="'Share Tech Mono',monospace" font-size="7" fill="rgba(57,255,20,0.7)" letter-spacing="1.5">LIVE</text>
+
+                            <!-- Ticker rows (right side) -->
+                            <text x="252" y="88" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(122,138,158,0.8)" letter-spacing="1">USDT</text>
+                            <text x="370" y="88" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(232,236,240,0.9)" letter-spacing="1" text-anchor="end">$83.4B</text>
+                            <text x="410" y="88" font-family="'Share Tech Mono',monospace" font-size="6.5" fill="#39FF14" text-anchor="end">+0.02%</text>
+
+                            <line x1="252" y1="94" x2="410" y2="94" stroke="rgba(0,240,255,0.06)" stroke-width="0.5"/>
+
+                            <text x="252" y="108" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(122,138,158,0.8)" letter-spacing="1">USDC</text>
+                            <text x="370" y="108" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(232,236,240,0.9)" letter-spacing="1" text-anchor="end">$35.2B</text>
+                            <text x="410" y="108" font-family="'Share Tech Mono',monospace" font-size="6.5" fill="#39FF14" text-anchor="end">+0.01%</text>
+
+                            <line x1="252" y1="114" x2="410" y2="114" stroke="rgba(0,240,255,0.06)" stroke-width="0.5"/>
+
+                            <text x="252" y="128" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(122,138,158,0.8)" letter-spacing="1">DAI</text>
+                            <text x="370" y="128" font-family="'Share Tech Mono',monospace" font-size="7.5" fill="rgba(232,236,240,0.9)" letter-spacing="1" text-anchor="end">$5.72B</text>
+                            <text x="410" y="128" font-family="'Share Tech Mono',monospace" font-size="6.5" fill="#ff3366" text-anchor="end">-0.01%</text>
+
+                            <!-- Stats below ticker -->
+                            <line x1="252" y1="144" x2="410" y2="144" stroke="rgba(0,240,255,0.1)" stroke-width="0.5"/>
+
+                            <text x="252" y="162" font-family="'Orbitron',monospace" font-size="13" font-weight="800" fill="#00f0ff" filter="url(#srg-softglow)">$150B+</text>
+                            <text x="252" y="172" font-family="'Share Tech Mono',monospace" font-size="6.5" fill="rgba(74,85,104,1)" letter-spacing="1.5">MARKET CAP</text>
+
+                            <text x="340" y="162" font-family="'Orbitron',monospace" font-size="13" font-weight="800" fill="#ffb800" filter="url(#srg-softglow)">45</text>
+                            <text x="340" y="172" font-family="'Share Tech Mono',monospace" font-size="6.5" fill="rgba(74,85,104,1)" letter-spacing="1.5">PAGES</text>
+
+                            <text x="252" y="194" font-family="'Orbitron',monospace" font-size="13" font-weight="800" fill="#00f0ff" filter="url(#srg-softglow)">12</text>
+                            <text x="252" y="204" font-family="'Share Tech Mono',monospace" font-size="6.5" fill="rgba(74,85,104,1)" letter-spacing="1.5">PROTOCOLS</text>
+
+                            <text x="340" y="194" font-family="'Orbitron',monospace" font-size="13" font-weight="800" fill="#39FF14" filter="url(#srg-softglow)">FREE</text>
+                            <text x="340" y="204" font-family="'Share Tech Mono',monospace" font-size="6.5" fill="rgba(74,85,104,1)" letter-spacing="1.5">DOWNLOAD</text>
+                        </svg>
+
+                        <span class="card-tag-top" style="background:rgba(6,8,13,0.85);backdrop-filter:blur(4px);border-color:rgba(255,184,0,0.3);color:#ffb800;">Report</span>
+                        <span class="card-status concept"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>State of Stablecoins</h3>
+                        <p>Institutional-grade coverage of the $150B+ stablecoin market. Liquidity flows, peg stability analysis, and the rise of yield-bearing instruments. Free download.</p>
+                        <span class="card-link">stablecoin-report.html →</span>
+                    </div>
+                </a>
+
                 <!-- 17 — Your Idea Here -->
                 <a href="https://discord.gg/quai" target="_blank" class="carousel-card" data-color="red">
                     <div class="carousel-card-visual carousel-card-img">
