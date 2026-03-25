@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consensus Solar — PoS · PoW · PoS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Epilogue:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --stake: #f5c518;
+    --stake-light: #fff3a0;
+    --stake-dark: #c49a00;
+    --work: #0d1b4b;
+    --work-light: #1a2f7a;
+    --work-mid: #243670;
+    --green: #1a7a3c;
+    --green-bright: #2ecc5e;
+    --green-light: #e8faf0;
+    --white: #ffffff;
+    --off-white: #f7fdf9;
+    --text: #0a1a10;
+    --text-muted: #4a7060;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Epilogue', sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ──────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(160deg, #0a2e16 0%, #0d3b1e 40%, #083010 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(46,204,94,0.12) 0%, transparent 65%),
+                radial-gradient(ellipse at 20% 80%, rgba(245,197,24,0.08) 0%, transparent 50%);
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--green-bright);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 7vw, 82px);
+    color: var(--white);
+    text-align: center;
+    line-height: 1.05;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.4s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--green-bright);
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 64px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.6s forwards;
+  }
+
+  /* ─── SOLAR PANEL ───────────────────────────────────── */
+  .panel-wrap {
+    width: min(680px, 92vw);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.9s forwards;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Sun rays */
+  .sun-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .sun {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff9a0 0%, #ffdd00 40%, #ffa500 100%);
+    box-shadow: 0 0 40px 12px rgba(255,221,0,0.45), 0 0 80px 30px rgba(255,165,0,0.2);
+    margin-bottom: 0;
+    animation: pulse-sun 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-sun {
+    0%, 100% { box-shadow: 0 0 40px 12px rgba(255,221,0,0.45), 0 0 80px 30px rgba(255,165,0,0.2); }
+    50% { box-shadow: 0 0 60px 20px rgba(255,221,0,0.65), 0 0 110px 45px rgba(255,165,0,0.3); }
+  }
+
+  /* Photon arrows */
+  .photons {
+    display: flex;
+    gap: 48px;
+    margin-bottom: -2px;
+  }
+
+  .photon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .photon-line {
+    width: 2px;
+    height: 32px;
+    background: linear-gradient(to bottom, rgba(255,221,0,0.9), rgba(255,221,0,0.3));
+    animation: photon-flow 1.8s ease-in-out infinite;
+  }
+
+  .photon:nth-child(2) .photon-line { animation-delay: 0.3s; }
+  .photon:nth-child(3) .photon-line { animation-delay: 0.6s; }
+  .photon:nth-child(4) .photon-line { animation-delay: 0.9s; }
+  .photon:nth-child(5) .photon-line { animation-delay: 1.2s; }
+
+  @keyframes photon-flow {
+    0%, 100% { opacity: 0.4; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  .photon-arrow {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid rgba(255,221,0,0.7);
+  }
+
+  /* The panel itself */
+  .panel {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(46,204,94,0.25);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(46,204,94,0.1);
+    position: relative;
+  }
+
+  /* Layer labels on side */
+  .panel-with-labels {
+    display: grid;
+    grid-template-columns: 52px 1fr 52px;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .side-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* Layers */
+  .layer {
+    padding: 28px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: filter 0.3s;
+  }
+
+  .layer:hover { filter: brightness(1.06); }
+
+  .layer-pos-top {
+    background: linear-gradient(135deg, #d4a800 0%, #f5c518 35%, #ffe066 100%);
+    min-height: 110px;
+  }
+
+  .layer-n {
+    background: linear-gradient(135deg, var(--work) 0%, var(--work-light) 50%, var(--work-mid) 100%);
+    min-height: 140px;
+    border-top: 2px solid rgba(46,204,94,0.4);
+    border-bottom: 2px solid rgba(46,204,94,0.4);
+  }
+
+  .layer-pos-bot {
+    background: linear-gradient(135deg, #f5c518 0%, #ffe066 50%, #d4a800 100%);
+    min-height: 110px;
+  }
+
+  .layer-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .layer-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+
+  .layer-pos-top .layer-badge, .layer-pos-bot .layer-badge {
+    background: rgba(0,0,0,0.18);
+    color: rgba(0,0,0,0.75);
+  }
+
+  .layer-n .layer-badge {
+    background: rgba(46,204,94,0.18);
+    color: var(--green-bright);
+  }
+
+  .layer-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .layer-pos-top .layer-title, .layer-pos-bot .layer-title {
+    color: rgba(0,0,0,0.8);
+  }
+
+  .layer-n .layer-title {
+    color: var(--white);
+  }
+
+  .layer-desc {
+    font-size: 12px;
+    line-height: 1.6;
+    font-weight: 300;
+    max-width: 420px;
+  }
+
+  .layer-pos-top .layer-desc, .layer-pos-bot .layer-desc {
+    color: rgba(0,0,0,0.65);
+  }
+
+  .layer-n .layer-desc {
+    color: rgba(255,255,255,0.65);
+  }
+
+  /* Electron flow animation in N layer */
+  .electron-track {
+    position: absolute;
+    right: 36px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .electron {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green-bright);
+    box-shadow: 0 0 12px 4px rgba(46,204,94,0.6);
+    position: absolute;
+    animation: electron-move 2s linear infinite;
+  }
+
+  .electron:nth-child(2) { animation-delay: 0.66s; }
+  .electron:nth-child(3) { animation-delay: 1.33s; }
+
+  @keyframes electron-move {
+    0% { top: -10px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: calc(100% + 10px); opacity: 0; }
+  }
+
+  /* Junction lines */
+  .junction-label {
+    position: absolute;
+    right: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green-bright);
+    background: rgba(0,20,10,0.7);
+    padding: 2px 6px;
+    border-radius: 2px;
+    top: -8px;
+    transform: translateY(-50%);
+  }
+
+  /* ─── DEPLETION ZONE ──────────────── */
+  .depletion-wrap {
+    position: relative;
+    height: 8px;
+    background: linear-gradient(90deg, rgba(245,197,24,0.5), rgba(46,204,94,0.8), rgba(13,27,75,0.5));
+    overflow: visible;
+  }
+
+  /* ─── CURRENT OUTPUT ────────────────────────────────── */
+  .output-bar {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: rgba(46,204,94,0.08);
+    border: 1px solid rgba(46,204,94,0.25);
+    border-radius: 8px;
+  }
+
+  .output-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--green-bright);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(46,204,94,0.5);
+    animation: pulse-sun 2.5s ease-in-out infinite;
+  }
+
+  .output-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--green-bright);
+    line-height: 1.6;
+  }
+
+  .output-text strong {
+    color: var(--white);
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* ─── TEXT ARGUMENT ─────────────────────────────────── */
+  .argument-section {
+    background: var(--white);
+    padding: 80px 24px;
+    position: relative;
+  }
+
+  .argument-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 48px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  /* Mini solar diagram (ASCII-style) */
+  .solar-ascii {
+    background: var(--off-white);
+    border: 1px solid rgba(26,122,60,0.15);
+    border-radius: 10px;
+    padding: 32px;
+    margin-bottom: 56px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    overflow-x: auto;
+  }
+
+  .ascii-sun {
+    color: #c49a00;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+
+  .ascii-rays {
+    color: #f5c518;
+    text-align: center;
+    margin-bottom: 2px;
+    letter-spacing: 8px;
+    font-size: 16px;
+  }
+
+  .ascii-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .ascii-row {
+    display: flex;
+    align-items: stretch;
+    margin: 2px 0;
+  }
+
+  .ascii-block {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 11px;
+    line-height: 1.5;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ascii-stake {
+    background: linear-gradient(135deg, #fff8d0, #fff3a0);
+    border: 1px solid #f5c518;
+    color: #7a5c00;
+  }
+
+  .ascii-work {
+    background: linear-gradient(135deg, #0d1b4b, #1a2f7a);
+    border: 1px solid rgba(46,204,94,0.3);
+    color: rgba(255,255,255,0.85);
+  }
+
+  .ascii-junction {
+    height: 6px;
+    background: linear-gradient(90deg, #f5c518, #2ecc5e, #0d1b4b);
+    border-radius: 1px;
+    margin: 2px 0;
+  }
+
+  .ascii-output {
+    text-align: center;
+    padding: 10px;
+    background: rgba(46,204,94,0.08);
+    border: 1px solid rgba(46,204,94,0.3);
+    border-radius: 4px;
+    color: var(--green);
+    font-size: 11px;
+    margin-top: 8px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .ascii-title {
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .ascii-sub {
+    font-size: 10px;
+    opacity: 0.75;
+  }
+
+  .connector-line {
+    text-align: center;
+    color: rgba(46,204,94,0.6);
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 2px 0;
+  }
+
+  /* ─── ARTICLE ───────────────────────────────────────── */
+  .article-section {
+    background: var(--off-white);
+    padding: 80px 24px;
+  }
+
+  .article-inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .article-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 3px;
+    border: 1px solid;
+  }
+
+  .tag-pos { border-color: var(--stake-dark); color: var(--stake-dark); background: rgba(245,197,24,0.08); }
+  .tag-work { border-color: var(--work-light); color: var(--work-light); background: rgba(13,27,75,0.05); }
+  .tag-green { border-color: var(--green); color: var(--green); background: rgba(26,122,60,0.06); }
+
+  .article-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4.5vw, 42px);
+    line-height: 1.12;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .article-title em { font-style: italic; color: var(--green); }
+
+  .article-deck {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    font-weight: 300;
+    border-left: 3px solid var(--green-bright);
+    padding-left: 18px;
+  }
+
+  .article-body p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #2a3a2e;
+    margin-bottom: 22px;
+    font-weight: 300;
+  }
+
+  .article-body strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .article-body .highlight-pos {
+    color: var(--stake-dark);
+    font-weight: 600;
+  }
+
+  .article-body .highlight-work {
+    color: var(--work-light);
+    font-weight: 600;
+  }
+
+  .article-body .highlight-green {
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .pull-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 3vw, 24px);
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--text);
+    border-top: 2px solid var(--green-bright);
+    border-bottom: 1px solid rgba(46,204,94,0.2);
+    padding: 24px 0;
+    margin: 36px 0;
+  }
+
+  .layer-diagram-inline {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    margin: 32px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .ldi-row {
+    padding: 14px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .ldi-pos {
+    background: linear-gradient(90deg, #fff3a0, #ffe066);
+    color: #7a5c00;
+  }
+
+  .ldi-work {
+    background: linear-gradient(90deg, #0d1b4b, #1a2f7a);
+    color: rgba(255,255,255,0.8);
+  }
+
+  .ldi-junction {
+    height: 4px;
+    background: linear-gradient(90deg, #f5c518, #2ecc5e, #0d1b4b);
+  }
+
+  .ldi-label { font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; }
+  .ldi-value { opacity: 0.65; font-size: 10px; }
+
+  /* ─── FOOTER ────────────────────────────────────────── */
+  .footer {
+    background: #0a2e16;
+    padding: 32px 24px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.25);
+    text-transform: uppercase;
+  }
+
+  .footer span { color: var(--green-bright); }
+
+  /* ─── ANIMATIONS ─────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-label">Consensus Architecture · Solar Analogy</div>
+  <h1 class="hero-title">The <em>Proof</em> Junction</h1>
+  <p class="hero-sub">A p–n–p model of how Proof of Stake governs the value variable that gives Proof of Work its security, and how all three layers produce current together.</p>
+
+  <div class="panel-wrap">
+
+    <!-- Sun -->
+    <div class="sun-container">
+      <div class="sun"></div>
+    </div>
+
+    <!-- Photons -->
+    <div class="photons" style="justify-content:center; margin-top:10px;">
+      <div class="photon"><div class="photon-line"></div><div class="photon-arrow"></div></div>
+      <div class="photon"><div class="photon-line"></div><div class="photon-arrow"></div></div>
+      <div class="photon"><div class="photon-line"></div><div class="photon-arrow"></div></div>
+      <div class="photon"><div class="photon-line"></div><div class="photon-arrow"></div></div>
+      <div class="photon"><div class="photon-line"></div><div class="photon-arrow"></div></div>
+    </div>
+
+    <!-- Panel -->
+    <div class="panel-with-labels">
+
+      <div class="side-label" style="color:rgba(245,197,24,0.4);">Stake Layer</div>
+
+      <div class="panel">
+
+        <!-- P-type top: PoS -->
+        <div class="layer layer-pos-top">
+          <div class="layer-header">
+            <span class="layer-badge">P-Type · Positive Carrier</span>
+          </div>
+          <div class="layer-title">Proof of Stake</div>
+          <div class="layer-desc">Social consensus layer. Governs the economic value of the reward — the variable that makes thermodynamic cost meaningful. Rich in <em>holes</em>: open positions, validator slots, economic incentive.</div>
+        </div>
+
+        <!-- Junction 1 -->
+        <div class="depletion-wrap" style="position:relative;">
+          <span class="junction-label">P–N Junction · Value meets Physics</span>
+        </div>
+
+        <!-- N-type: PoW -->
+        <div class="layer layer-n">
+          <div class="layer-header">
+            <span class="layer-badge">N-Type · Electron Carrier</span>
+          </div>
+          <div class="layer-title">Proof of Work</div>
+          <div class="layer-desc">Thermodynamic substrate. Enforces cost through irreversible energy dissipation. Cannot be instantiated from within a value system — it is the physical ground that anchors all cost claims.</div>
+          <div class="electron-track">
+            <div class="electron"></div>
+            <div class="electron"></div>
+            <div class="electron"></div>
+          </div>
+        </div>
+
+        <!-- Junction 2 -->
+        <div class="depletion-wrap">
+          <span class="junction-label" style="top:auto; bottom:-8px; transform:translateY(50%);">N–P Junction · Physics meets Settlement</span>
+        </div>
+
+        <!-- P-type bottom: PoS -->
+        <div class="layer layer-pos-bot">
+          <div class="layer-header">
+            <span class="layer-badge">P-Type · Positive Carrier</span>
+          </div>
+          <div class="layer-title">Proof of Stake</div>
+          <div class="layer-desc">Settlement and finality layer. Collects the current generated at the junction, distributes rewards, and translates physical work into economic finality. The output terminal of the cell.</div>
+        </div>
+
+      </div>
+
+      <div class="side-label" style="color:rgba(13,27,75,0.6);">Work Layer</div>
+
+    </div>
+
+    <!-- Output -->
+    <div class="output-bar">
+      <div class="output-icon">⚡</div>
+      <div class="output-text">
+        <strong>Output: Consensus Current</strong>
+        Physics enforces exclusivity · Economics enforces value · Together they produce irreversible, trustless finality
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══ TEXT ARGUMENT ══ -->
+<section class="argument-section">
+  <div class="argument-inner">
+
+    <div class="section-eyebrow fade-in">The Simplified Argument</div>
+    <h2 class="section-title fade-in">A <em>solar cell</em> needs<br>both junctions to work</h2>
+
+    <!-- ASCII solar diagram -->
+    <div class="solar-ascii fade-in">
+      <div class="ascii-sun">☀  INCOMING VALUE SIGNAL  ☀</div>
+      <div class="ascii-rays">↓ ↓ ↓ ↓ ↓</div>
+
+      <div class="ascii-row">
+        <div class="ascii-block ascii-stake">
+          <div class="ascii-title">[ P-TYPE ]  PROOF OF STAKE — top</div>
+          <div class="ascii-sub">Social consensus · economic value · hole-rich layer</div>
+          <div class="ascii-sub">Governs: what the reward is worth</div>
+        </div>
+      </div>
+
+      <div class="ascii-junction"></div>
+
+      <div class="ascii-row">
+        <div class="ascii-block ascii-work">
+          <div class="ascii-title">[ N-TYPE ]  PROOF OF WORK — center</div>
+          <div class="ascii-sub">Thermodynamic substrate · electron-rich · physically grounded</div>
+          <div class="ascii-sub">Governs: that the cost is real · enforced by physics not rules</div>
+        </div>
+      </div>
+
+      <div class="ascii-junction"></div>
+
+      <div class="ascii-row">
+        <div class="ascii-block ascii-stake">
+          <div class="ascii-title">[ P-TYPE ]  PROOF OF STAKE — bottom</div>
+          <div class="ascii-sub">Finality · settlement · reward distribution</div>
+          <div class="ascii-sub">Collects the current the junction produces</div>
+        </div>
+      </div>
+
+      <div class="connector-line">↓ ↓ ↓</div>
+      <div class="ascii-output">⚡ OUTPUT: Trustless, Irreversible, Economically Grounded Consensus ⚡</div>
+    </div>
+
+    <div class="fade-in">
+      <p style="font-family:'DM Mono',monospace; font-size:11px; line-height:2; color:var(--text-muted); padding: 24px; background:rgba(26,122,60,0.04); border-left: 3px solid var(--green-bright); border-radius:4px;">
+        <strong style="color:var(--text); display:block; margin-bottom:8px;">The Core Logic in Plain Language</strong>
+        PoW enforces that cost is real — but physics is indifferent to value.<br>
+        PoS governs what the reward is worth — but value without physical ground is synthetic.<br>
+        The junction between them is where work becomes worth and worth becomes work.<br><br>
+        Like a solar cell: neither the P-layer alone nor the N-layer alone generates current.<br>
+        The electric field at the <strong>depletion zone</strong> — where they meet — is what drives electrons.<br>
+        Remove either layer and you have material, not a cell.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══ ARTICLE ══ -->
+<section class="article-section">
+  <div class="article-inner">
+
+    <div class="article-meta fade-in">
+      <span class="article-tag tag-pos">Proof of Stake</span>
+      <span class="article-tag tag-work">Proof of Work</span>
+      <span class="article-tag tag-green">Thermoeconomics</span>
+    </div>
+
+    <h2 class="article-title fade-in">When All Proofs Come Together:<br><em>The Solar Cell of Consensus</em></h2>
+
+    <p class="article-deck fade-in">
+      The debate between Proof of Stake and Proof of Work has been framed as a competition. But the more precise framing — borrowed from semiconductor physics — is that they are complementary layers in a junction architecture. Neither is complete alone.
+    </p>
+
+    <div class="article-body fade-in">
+
+      <p>In a silicon solar cell, a <strong>p-type layer</strong> (rich in positive holes) is placed adjacent to an <strong>n-type layer</strong> (rich in free electrons). At the junction between them, charge separation occurs spontaneously. When photons arrive, electrons are knocked loose and swept across the junction — producing current. Remove either layer and you have semiconductor material. You do not have a cell.</p>
+
+      <p>The consensus architecture of a robust blockchain maps directly onto this geometry. <span class="highlight-work">Proof of Work is the N-type layer</span>: dense with electrons, grounded in physics, enforcing that computation costs are real and externally verified. The cost is not a rule inside the system — it is thermodynamic. You cannot vote on two forks simultaneously without paying for both in energy. Physics enforces exclusivity.</p>
+
+      <p><span class="highlight-pos">Proof of Stake is the P-type layer</span>: rich in economic coordination, governing the variable that Proof of Work alone cannot touch — the <em>value</em> of the reward. A miner expending a megawatt of electricity to mine a worthless coin generates only heat. Security in PoW is not energy dissipated; it is energy dissipated in pursuit of something economically meaningful. That economic meaning is what PoS governs directly.</p>
+
+      <div class="pull-quote fade-in">
+        "Thermodynamics is fixed. Economic value is the variable. And PoS governs the variable that makes the physics binding."
+      </div>
+
+      <p>This reframes the standard hierarchy argument. Yes, PoW is more <em>ontologically</em> fundamental — you can have energy expenditure without economic value, but you cannot have economic value without physical substrate underneath it eventually. But PoS is more <em>economically</em> fundamental in the operational sense: it governs the precondition that makes PoW security non-trivial. Both claims are simultaneously true at different layers of the stack.</p>
+
+      <div class="layer-diagram-inline fade-in">
+        <div class="ldi-row ldi-pos">
+          <span class="ldi-label">Proof of Stake — Top</span>
+          <span class="ldi-value">Social consensus · economic value of reward</span>
+        </div>
+        <div class="ldi-junction"></div>
+        <div class="ldi-row ldi-work">
+          <span class="ldi-label">Proof of Work — Center</span>
+          <span class="ldi-value">Thermodynamic cost · physical grounding</span>
+        </div>
+        <div class="ldi-junction"></div>
+        <div class="ldi-row ldi-pos">
+          <span class="ldi-label">Proof of Stake — Bottom</span>
+          <span class="ldi-value">Finality · settlement · reward distribution</span>
+        </div>
+      </div>
+
+      <p>The <strong class="highlight-green">depletion zone</strong> — the junction between them — is where the real work happens. In a solar cell, this is where the electric field forms and electrons are swept in a directed current. In a consensus system, this is where physical cost and economic value meet and mutually constrain each other. The nothing-at-stake problem that afflicts pure PoS is not a flaw in PoS's design — it is the symptom of running P-type material without an N-type substrate. There is no junction. There is no field. There is no current.</p>
+
+      <p>Conversely, pure PoW without the PoS coordination layer is N-type material without terminals. The electrons move — the work is done — but the current has nowhere to go. Early Bitcoin mining pools reveal this: they are, structurally, stake-weighted voting systems governing capital allocation <em>above</em> the thermodynamic execution layer. The PoS coordination was always there, just implicit.</p>
+
+      <p>The synthesis is not a compromise. It is the recognition that <strong>all proofs are necessary layers</strong>. Proof of Work provides the irreversible physical ground. Proof of Stake provides the economic valuation layer. At the junction between them, consensus current flows — trustless, grounded, and finalized. This is not merely a metaphor. It is the architecture.</p>
+
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <span>Consensus Solar</span> · PoS–PoW–PoS Junction Architecture · thermoeconomics.info
+</footer>
+
+<script>
+  // Scroll-triggered fade-ins
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
