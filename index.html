@@ -14,6 +14,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -501,6 +502,189 @@
 
         .animate { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
         .animate.in-view { opacity: 1; transform: translateY(0); }
+
+        /* ===== CAROUSEL SECTION TITLES ===== */
+        .carousel-section-title {
+            font-family: var(--font-display);
+            font-size: clamp(22px, 3.5vw, 38px);
+            font-weight: 900;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            line-height: 1.1;
+        }
+        .carousel-section-title .title-accent {
+            color: var(--qi-cyan);
+            text-shadow: 0 0 30px var(--qi-cyan-glow), 0 0 60px rgba(0,240,255,0.1);
+        }
+        .carousel-section-title-row {
+            margin-bottom: 20px;
+        }
+        .carousel-section-subtitle {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+        .carousel-section-subtitle::before { content: '// '; color: rgba(0,240,255,0.25); }
+
+        /* ===== QUAI OFFICIAL CAROUSEL — BRAND GUIDE STRICT ===== */
+        /* Colors per Quai Brand Guide 2022:
+           QUAI_red #E22901 | pure_black #000000 | dark_grey #0F0F0F
+           mid_grey #646464 | light_grey #A1A1A1 | pure_white #FFFFFF   */
+        :root {
+            --quai-red:   #E22901;
+            --quai-white: #FFFFFF;
+            --quai-off-white: #E2E2E2;
+            --quai-black: #000000;
+            --quai-dark:  #0F0F0F;
+            --quai-mid:   #646464;
+            --quai-light: #A1A1A1;
+        }
+
+        /* Full-bleed red band */
+        .carousel-quai {
+            background: var(--quai-red);
+            border-top: none;
+            border-bottom: none;
+            margin-left: 0; margin-right: 0;
+            padding-left: 0; padding-right: 0;
+        }
+
+        /* Section title — white on red */
+        .carousel-quai .carousel-section-title {
+            color: var(--quai-white);
+            text-shadow: none;
+        }
+        .carousel-quai .carousel-section-title .title-accent {
+            color: var(--quai-black);
+            text-shadow: none;
+        }
+
+        /* Subheading on red */
+        .carousel-quai .carousel-section-subtitle {
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 3px;
+        }
+        .carousel-quai .carousel-section-subtitle::before {
+            content: '> ';
+            color: var(--quai-black);
+        }
+
+        /* Label on red */
+        .carousel-quai .carousel-label {
+            color: var(--quai-black);
+        }
+        .carousel-quai .carousel-label::before { color: rgba(0,0,0,0.4); }
+
+        /* Nav buttons on red — black border/text, white fill on hover */
+        .carousel-quai .carousel-btn {
+            border-color: rgba(0,0,0,0.35);
+            color: var(--quai-black);
+            background: transparent;
+            box-shadow: none;
+        }
+        .carousel-quai .carousel-btn:hover {
+            border-color: var(--quai-black);
+            background: var(--quai-black);
+            color: var(--quai-white);
+            box-shadow: none;
+        }
+
+        /* Dots on red */
+        .carousel-quai .carousel-dot {
+            background: rgba(0,0,0,0.3);
+        }
+        .carousel-quai .carousel-dot.active {
+            background: var(--quai-black);
+            box-shadow: none;
+            width: 24px;
+        }
+
+        /* Track fade edges — match red bg */
+        .carousel-quai .carousel-track-wrapper::before { background: linear-gradient(90deg, var(--quai-red), transparent); }
+        .carousel-quai .carousel-track-wrapper::after  { background: linear-gradient(-90deg, var(--quai-red), transparent); }
+
+        /* Cards — black on red */
+        .carousel-quai .carousel-card {
+            background: var(--quai-black);
+            border: 1px solid rgba(0,0,0,0.5);
+            box-shadow: none;
+        }
+        .carousel-quai .carousel-card:hover {
+            border-color: var(--quai-white);
+            box-shadow: none;
+            transform: translateY(-6px);
+        }
+        /* Top accent line — solid white */
+        .carousel-quai .carousel-card::before {
+            background: var(--quai-white);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .carousel-quai .carousel-card:hover::before { opacity: 1; }
+
+        /* Card body */
+        .carousel-quai .carousel-card-body h3 {
+            color: var(--quai-white);
+            letter-spacing: 3px;
+        }
+        .carousel-quai .carousel-card-body p {
+            color: var(--quai-light);
+        }
+        .carousel-quai .carousel-card-body .card-link {
+            color: var(--quai-red);
+            font-size: 10px;
+            letter-spacing: 3px;
+        }
+        .carousel-quai .carousel-card-body .card-link::before {
+            content: '> ';
+        }
+
+        /* Card tag — on black cards, red border, white text */
+        .carousel-quai .card-tag-top {
+            background: var(--quai-black) !important;
+            border: 1px solid rgba(255,255,255,0.25) !important;
+            color: var(--quai-white) !important;
+            font-size: 9px;
+            letter-spacing: 3px;
+            backdrop-filter: none;
+        }
+
+        /* Logo placeholder — pure black card visual, red Q mark */
+        .quai-logo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: var(--quai-black);
+            position: relative;
+        }
+        .quai-logo-q {
+            width: 76px;
+            height: 76px;
+        }
+        /* Wordmark in off-white, tracked wide */
+        .quai-logo-wordmark {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 6px;
+            color: var(--quai-off-white);
+            text-transform: uppercase;
+        }
+        /* Thin white rule */
+        .quai-logo-rule {
+            width: 32px;
+            height: 1px;
+            background: var(--quai-white);
+        }
     </style>
 </head>
 <body class="locked">
@@ -533,8 +717,168 @@
     <!-- ===== STATION CONTENT (hidden until unveiled) ===== -->
     <div class="station-content" id="stationContent">
 
+    <!-- CAROUSEL: QUAI NETWORK OFFICIAL SITES -->
+    <div class="carousel-section carousel-quai" id="quai-carousel">
+        <div class="carousel-section-title-row">
+            <div class="carousel-section-title"><span class="title-accent">QUAI NETWORK</span> OFFICIAL SITES</div>
+            <div class="carousel-section-subtitle">Official resources &amp; ecosystem portals</div>
+        </div>
+        <div class="carousel-header">
+            <div class="carousel-label">Official Resources</div>
+            <div class="carousel-controls">
+                <button class="carousel-btn" id="quaiCarouselPrev">‹</button>
+                <button class="carousel-btn" id="quaiCarouselNext">›</button>
+            </div>
+        </div>
+        <div class="carousel-track-wrapper">
+            <div class="carousel-track" id="quaiCarouselTrack">
+
+                <!-- 1 — Quai Network Main Site -->
+                <a href="https://qu.ai" target="_blank" class="carousel-card" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Red filled disc -->
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <!-- Black Q ring inside -->
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <!-- Black tail -->
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">QUAI NETWORK</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Main Site</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>qu.ai</h3>
+                        <p>The official Quai Network homepage. Multi-chain architecture, energy-based tokenomics, and the vision for programmable money at planetary scale.</p>
+                        <span class="card-link">qu.ai</span>
+                    </div>
+                </a>
+
+                <!-- 2 — Documentation -->
+                <a href="https://docs.qu.ai" target="_blank" class="carousel-card" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">DOCUMENTATION</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Dev Docs</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>docs.qu.ai</h3>
+                        <p>Full technical documentation. Node setup, RPC APIs, smart contract deployment, Qi tokenomics deep-dives, and the PoEM consensus specification.</p>
+                        <span class="card-link">docs.qu.ai</span>
+                    </div>
+                </a>
+
+                <!-- 3 — Block Explorer -->
+                <a href="https://quaiscan.io" target="_blank" class="carousel-card" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">BLOCK EXPLORER</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Explorer</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>quaiscan.io</h3>
+                        <p>Real-time blockchain explorer. Track transactions across all 13 zones, view block data, inspect smart contracts, and monitor network entropy in motion.</p>
+                        <span class="card-link">quaiscan.io</span>
+                    </div>
+                </a>
+
+                <!-- 4 — Discord -->
+                <a href="https://discord.gg/quai" target="_blank" class="carousel-card" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">COMMUNITY</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Discord</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Discord</h3>
+                        <p>The official Quai Network community server. Connect with miners, developers, and researchers. Share proposals and participate in governance discussions.</p>
+                        <span class="card-link">discord.gg/quai</span>
+                    </div>
+                </a>
+
+                <!-- 5 — X / Twitter -->
+                <a href="https://x.com/QuaiNetwork" target="_blank" class="carousel-card" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">X / TWITTER</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Social</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>@QuaiNetwork</h3>
+                        <p>Follow for real-time protocol updates, mainnet announcements, ecosystem spotlights, and team communications from Dominant Strategies.</p>
+                        <span class="card-link">x.com/QuaiNetwork</span>
+                    </div>
+                </a>
+
+                <!-- 6 — GitHub -->
+                <a href="https://github.com/dominant-strategies" target="_blank" class="carousel-card" style="flex:0 0 420px;">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">OPEN SOURCE</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">GitHub</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>dominant-strategies</h3>
+                        <p>All Quai Network source code is open. Explore go-quai, the SDK, PoEM implementation, and all tooling repos maintained by the core protocol team.</p>
+                        <span class="card-link">github.com/dominant-strategies</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+        <div class="carousel-dots" id="quaiCarouselDots"></div>
+    </div>
+
     <!-- CAROUSEL: IDEAS INVENTORY -->
     <div class="carousel-section" id="carousel">
+        <div class="carousel-section-title-row">
+            <div class="carousel-section-title"><span class="title-accent">QI XYZ</span> PROTOTYPES</div>
+            <div class="carousel-section-subtitle">Experimental builds &amp; ideas inventory</div>
+        </div>
         <div class="carousel-header">
             <div class="carousel-label">Ideas Inventory</div>
             <div class="carousel-controls">
@@ -1954,6 +2298,72 @@
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+
+        // ===== QUAI NETWORK OFFICIAL CAROUSEL =====
+        (function() {
+            const qTrack = document.getElementById('quaiCarouselTrack');
+            const qCards = qTrack.querySelectorAll('.carousel-card');
+            const qDots  = document.getElementById('quaiCarouselDots');
+            const qCardWidth = 444;
+            let qIndex = 0;
+            let qAutoplay;
+
+            function qVisible() { return Math.floor(qTrack.parentElement.offsetWidth / qCardWidth) || 1; }
+            function qMax()     { return Math.max(0, qCards.length - qVisible()); }
+
+            function qBuildDots() {
+                qDots.innerHTML = '';
+                for (let i = 0; i <= qMax(); i++) {
+                    const d = document.createElement('button');
+                    d.classList.add('carousel-dot');
+                    if (i === qIndex) d.classList.add('active');
+                    d.addEventListener('click', () => qGoTo(i));
+                    qDots.appendChild(d);
+                }
+            }
+
+            function qUpdate() {
+                qTrack.style.transform = `translateX(-${qIndex * qCardWidth}px)`;
+                qDots.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === qIndex));
+            }
+
+            function qGoTo(i) {
+                qIndex = Math.min(Math.max(0, i), qMax());
+                qUpdate();
+                qReset();
+            }
+
+            function qReset() {
+                clearInterval(qAutoplay);
+                qAutoplay = setInterval(() => qGoTo(qIndex >= qMax() ? 0 : qIndex + 1), 5000);
+            }
+
+            document.getElementById('quaiCarouselNext').addEventListener('click', () => qGoTo(qIndex >= qMax() ? 0 : qIndex + 1));
+            document.getElementById('quaiCarouselPrev').addEventListener('click', () => qGoTo(qIndex <= 0 ? qMax() : qIndex - 1));
+
+            // Touch
+            let qTouchX = 0;
+            qTrack.addEventListener('touchstart', e => { qTouchX = e.touches[0].clientX; }, { passive: true });
+            qTrack.addEventListener('touchend', e => {
+                const d = qTouchX - e.changedTouches[0].clientX;
+                if (Math.abs(d) > 50) d > 0 ? qGoTo(qIndex + 1) : qGoTo(qIndex - 1);
+            }, { passive: true });
+
+            // Mouse drag
+            const qWrapper = qTrack.parentElement;
+            let qDrag = false, qDragX = 0, qDragged = false;
+            qWrapper.style.cursor = 'grab'; qWrapper.style.userSelect = 'none';
+            qWrapper.addEventListener('mousedown', e => { qDrag = true; qDragged = false; qWrapper.style.cursor = 'grabbing'; qDragX = e.pageX; clearInterval(qAutoplay); e.preventDefault(); });
+            qWrapper.addEventListener('mouseleave', () => { if (qDrag) { qDrag = false; qWrapper.style.cursor = 'grab'; qUpdate(); qReset(); } });
+            qWrapper.addEventListener('mouseup', e => { if (!qDrag) return; qDrag = false; qWrapper.style.cursor = 'grab'; const d = qDragX - e.pageX; if (Math.abs(d) > 50) { qDragged = true; qGoTo(d > 0 ? qIndex + 1 : qIndex - 1); } else { qUpdate(); } qReset(); });
+            qWrapper.addEventListener('mousemove', e => { if (!qDrag) return; e.preventDefault(); qTrack.style.transform = `translateX(-${qIndex * qCardWidth + (qDragX - e.pageX)}px)`; });
+            qWrapper.addEventListener('click', e => { if (qDragged) { e.preventDefault(); e.stopPropagation(); qDragged = false; } }, true);
+
+            qBuildDots();
+            qUpdate();
+            qReset();
+            window.addEventListener('resize', () => { qBuildDots(); qGoTo(Math.min(qIndex, qMax())); });
+        })();
     </script>
 
     <!-- ===== WORKSHARE ORACLE CARD ANIMATION ===== -->
