@@ -227,7 +227,7 @@
         }
 
         .carousel-card {
-            flex: 0 0 420px;
+            flex: 0 0 315px;
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
             padding: 0;
@@ -251,7 +251,7 @@
         .carousel-card:hover::before { opacity: 1; }
 
         .carousel-card-visual {
-            height: 280px;
+            height: 210px;
             background: var(--bg-panel);
             display: flex; align-items: center; justify-content: center;
             position: relative;
@@ -327,10 +327,10 @@
         .carousel-card[data-color="red"] .carousel-card-visual { border-bottom: 1px solid rgba(255, 51, 102, 0.15); }
         .carousel-card[data-color="red"] .card-glyph { color: var(--qi-red); }
 
-        .carousel-card-body { padding: 28px 24px 32px; }
-        .carousel-card-body h3 { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
-        .carousel-card-body p { font-size: 15px; font-weight: 400; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
-        .carousel-card-body .card-link { font-family: var(--font-mono); font-size: 11px; color: var(--qi-cyan); letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; transition: opacity 0.3s; }
+        .carousel-card-body { padding: 21px 18px 24px; }
+        .carousel-card-body h3 { font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: 2px; margin-bottom: 9px; text-transform: uppercase; }
+        .carousel-card-body p { font-size: 13px; font-weight: 400; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+        .carousel-card-body .card-link { font-family: var(--font-mono); font-size: 10px; color: var(--qi-cyan); letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; transition: opacity 0.3s; }
         .carousel-card:hover .card-link { opacity: 1; }
 
         .carousel-dots {
@@ -2287,7 +2287,7 @@
         const track = document.getElementById('carouselTrack');
         const cards = track.querySelectorAll('.carousel-card');
         const dotsContainer = document.getElementById('carouselDots');
-        const cardWidth = 444; // card width (420) + gap (24)
+        const cardWidth = 339; // card width (315) + gap (24)
         let currentIndex = 0;
         let autoplayInterval;
 
