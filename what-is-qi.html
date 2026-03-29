@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Is Qi? — qi.xyz</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body { background: #06080d; color: #e8ecf0; font-family: 'Share Tech Mono', monospace; display: flex; flex-direction: column; min-height: 100vh; }
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 60px; border-bottom: 1px solid rgba(0,240,255,0.12); background: rgba(6,8,13,0.95); flex-shrink: 0; }
+        .nav-logo { font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 700; color: #00f0ff; text-decoration: none; letter-spacing: 4px; text-shadow: 0 0 20px rgba(0,240,255,0.4); }
+        .nav-back { font-size: 11px; color: #4a5568; text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .nav-back:hover { color: #00f0ff; }
+        .nav-back::before { content: '← '; }
+        .page-header { text-align: center; padding: 48px 24px 32px; flex-shrink: 0; }
+        .page-header h1 { font-family: 'Orbitron', monospace; font-size: clamp(28px, 5vw, 56px); font-weight: 900; letter-spacing: 8px; color: #e8ecf0; }
+        .page-header h1 span { color: #00f0ff; text-shadow: 0 0 30px rgba(0,240,255,0.5); }
+        .page-header p { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #4a5568; margin-top: 12px; }
+        .pdf-wrap { flex: 1; padding: 0 24px 48px; display: flex; flex-direction: column; }
+        iframe { flex: 1; width: 100%; min-height: 80vh; border: 1px solid rgba(0,240,255,0.12); background: #111822; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">QI</a>
+        <a href="/" class="nav-back">Back to qi.xyz</a>
+    </nav>
+    <div class="page-header">
+        <h1>WHAT IS <span>QI</span>?</h1>
+        <p>// Essay — Energy Money — qi.xyz — 2026</p>
+    </div>
+    <div class="pdf-wrap">
+        <iframe src="what-is-qi.pdf" type="application/pdf"></iframe>
+    </div>
+</body>
+</html>
