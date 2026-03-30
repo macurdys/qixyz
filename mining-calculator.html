@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -248,6 +249,114 @@
             .side-grid { grid-template-columns: 1fr; }
             .metrics-grid { grid-template-columns: 1fr; }
         }
+
+        /* ── MONTE CARLO ── */
+        .mc-section { margin-top: 48px; }
+        .mc-divider {
+            border: none; border-top: 1px solid var(--border-dim);
+            margin-bottom: 32px;
+        }
+        .mc-title-row { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+        .mc-badge {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px;
+            color: var(--qi-purple); border: 1px solid rgba(191,90,242,0.3);
+            padding: 2px 8px; text-transform: uppercase;
+        }
+        .mc-subtitle { font-family: var(--font-body); font-size: 15px; color: var(--text-secondary); margin-bottom: 24px; }
+
+        .mc-params-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .mc-param { }
+        .mc-param-label {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--text-dim);
+            display: flex; justify-content: space-between; margin-bottom: 6px;
+        }
+        .mc-param-label span { color: var(--qi-purple); font-size: 11px; }
+        .mc-range {
+            display: flex; gap: 8px; align-items: center;
+        }
+        .mc-range input[type=number] {
+            width: 72px; background: var(--bg-deep);
+            border: 1px solid var(--border-dim); padding: 7px 10px;
+            color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;
+            outline: none;
+        }
+        .mc-range input[type=number]:focus { border-color: var(--qi-purple); }
+        .mc-range-sep { color: var(--text-dim); font-size: 11px; font-family: var(--font-mono); }
+        .mc-slider-wrap { display: flex; flex-direction: column; gap: 4px; }
+        .mc-slider-wrap input[type=range] {
+            accent-color: var(--qi-purple); width: 100%;
+        }
+
+        .mc-run-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+        .mc-run-btn {
+            font-family: var(--font-display); font-size: 11px; font-weight: 600;
+            letter-spacing: 3px; text-transform: uppercase;
+            background: transparent; border: 1px solid var(--qi-purple);
+            color: var(--qi-purple); padding: 12px 28px; cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .mc-run-btn:hover { background: rgba(191,90,242,0.1); box-shadow: 0 0 16px rgba(191,90,242,0.2); }
+        .mc-run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .mc-n-select {
+            background: var(--bg-deep); border: 1px solid var(--border-dim);
+            color: var(--text-secondary); font-family: var(--font-mono); font-size: 11px;
+            padding: 10px 12px; outline: none;
+        }
+        .mc-progress-text { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+
+        .mc-results { margin-top: 28px; }
+        .mc-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px; margin-bottom: 24px;
+        }
+        .mc-stat {
+            background: var(--bg-card); border: 1px solid var(--border-dim);
+            padding: 14px 16px;
+        }
+        .mc-stat-label {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+        }
+        .mc-stat-btc { font-family: var(--font-mono); font-size: 15px; color: var(--qi-orange); margin-bottom: 3px; }
+        .mc-stat-quai { font-family: var(--font-mono); font-size: 15px; color: var(--qi-emerald); }
+        .mc-stat-single { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+        .mc-stat-single.purple { color: var(--qi-purple); }
+        .mc-stat-single.good { color: var(--qi-green); }
+        .mc-stat-single.warn { color: var(--qi-amber); }
+
+        .mc-charts-grid {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 16px;
+        }
+        .mc-chart-card {
+            background: var(--bg-card); border: 1px solid var(--border-dim); padding: 18px;
+        }
+        .mc-chart-title {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .mc-legend { display: flex; gap: 16px; }
+        .mc-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-secondary); }
+        .mc-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .mc-note {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            margin-top: 20px; text-align: center; letter-spacing: 1px;
+            padding-top: 16px; border-top: 1px solid var(--border-dim);
+        }
+
+        @media (max-width: 900px) {
+            .mc-charts-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -262,12 +371,293 @@
     <div class="main-container">
 
         <div class="page-header">
-            <div class="page-label">Tool — Mining Profitability</div>
-            <div class="page-title">Mining Calculator</div>
-            <div class="page-subtitle">BTC vs QUAI — Same Hardware, Different Networks</div>
+            <div class="page-label">Qi.xyz — Interactive Learning</div>
+            <div class="page-title">Monte Carlo &amp; Mining</div>
+            <div class="page-subtitle">From coin flips to probabilistic profitability — build intuition, then apply it</div>
         </div>
 
-        <div class="calc-layout">
+        <div class="mc-section">
+            <hr class="mc-divider">
+            <div class="mc-title-row">
+                <div class="page-label" style="margin-bottom:0;">Section 01 — Gaussian Coin Flip Board</div>
+                <span class="mc-badge">Intuition</span>
+            </div>
+            <div class="mc-subtitle">Each flip is ±1 (heads or tails). Run thousands of independent trials and watch the Central Limit Theorem emerge — the sum of random variables converges to a bell curve regardless of the underlying distribution. This is the foundation of all Monte Carlo reasoning.</div>
+            <div class="card" style="padding:24px;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px;">
+                    <div class="mc-param">
+                        <div class="mc-param-label">Coin bias (p heads) <span id="coinBiasLabel">50%</span></div>
+                        <input type="range" id="coinBias" min="1" max="99" value="50" step="1" style="accent-color:var(--qi-cyan);width:100%;">
+                    </div>
+                    <div class="mc-param">
+                        <div class="mc-param-label">Flips per trial <span id="coinFlipsLabel">50</span></div>
+                        <input type="range" id="coinFlips" min="10" max="500" value="50" step="10" style="accent-color:var(--qi-cyan);width:100%;">
+                    </div>
+                    <div class="mc-param">
+                        <div class="mc-param-label">Number of trials <span id="coinTrialsLabel">2,000</span></div>
+                        <input type="range" id="coinTrials" min="200" max="10000" value="2000" step="200" style="accent-color:var(--qi-cyan);width:100%;">
+                    </div>
+                    <div style="display:flex;align-items:flex-end;">
+                        <button class="mc-run-btn" id="coinRunBtn" style="border-color:var(--qi-cyan);color:var(--qi-cyan);">▶ Flip Coins</button>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;" id="coinResults">
+                    <div>
+                        <div class="mc-chart-title">Sum distribution across all trials</div>
+                        <div style="position:relative;height:240px;"><canvas id="coinHistChart"></canvas></div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;">
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">Theoretical mean</div>
+                            <div class="mc-stat-single" id="coinTheoMean" style="color:var(--qi-cyan);font-size:18px;">—</div>
+                        </div>
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">Observed mean</div>
+                            <div class="mc-stat-single" id="coinObsMean" style="color:var(--qi-cyan);font-size:18px;">—</div>
+                        </div>
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">Theoretical σ</div>
+                            <div class="mc-stat-single" id="coinTheoSd" style="color:var(--qi-amber);font-size:18px;">—</div>
+                        </div>
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">Observed σ</div>
+                            <div class="mc-stat-single" id="coinObsSd" style="color:var(--qi-amber);font-size:18px;">—</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mc-note" style="margin-top:16px;">
+                    Mean = n×(2p−1) &nbsp;|&nbsp; σ = 2√(np(1−p)) &nbsp;|&nbsp; As n→∞ the histogram converges to N(mean, σ²) regardless of p.
+                    This is why miners can model revenue as a Gaussian even though each block find is a Bernoulli trial.
+                </div>
+            </div>
+        </div><!-- /section-1 -->
+
+        <div class="mc-section">
+            <hr class="mc-divider">
+            <div class="mc-title-row">
+                <div class="page-label" style="margin-bottom:0;">Section 02 — Monte Carlo Estimation</div>
+                <span class="mc-badge">Convergence</span>
+            </div>
+            <div class="mc-subtitle">The core MC loop: sample uniformly, evaluate a condition, aggregate the fraction. Here we estimate π by checking whether random points land inside a unit circle. Watch the 1/√N convergence rate — doubling samples halves the noise, not halves the error.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="card" style="padding:20px;">
+                    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:16px;">
+                        <div class="mc-param">
+                            <div class="mc-param-label">Batch size <span id="piBatchLabel">500</span></div>
+                            <input type="range" id="piBatch" min="0" max="6" value="2" step="1" style="accent-color:var(--qi-purple);width:100%;">
+                        </div>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <button class="mc-run-btn" id="piRunBtn">▶ Add Batch</button>
+                            <button class="mc-run-btn" id="piResetBtn" style="border-color:var(--text-dim);color:var(--text-dim);">Reset</button>
+                        </div>
+                    </div>
+                    <canvas id="piDotCanvas" width="280" height="280" style="border:1px solid var(--border-dim);display:block;max-width:100%;"></canvas>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:16px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">Total samples</div>
+                            <div class="mc-stat-single" id="piTotal" style="color:var(--qi-cyan);font-size:18px;">0</div>
+                        </div>
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">π estimate</div>
+                            <div class="mc-stat-single" id="piEst" style="color:var(--qi-green);font-size:18px;">—</div>
+                        </div>
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">Error from π</div>
+                            <div class="mc-stat-single" id="piErr" style="color:var(--qi-red);font-size:18px;">—</div>
+                        </div>
+                        <div class="mc-stat">
+                            <div class="mc-stat-label">Inside circle</div>
+                            <div class="mc-stat-single" id="piInside" style="color:var(--qi-amber);font-size:18px;">0</div>
+                        </div>
+                    </div>
+                    <div class="mc-chart-card" style="flex:1;">
+                        <div class="mc-chart-title">π estimate convergence</div>
+                        <div style="position:relative;height:200px;"><canvas id="piConvChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /section-2 -->
+
+        <!-- ══════════════════════════════════════════ -->
+        <!--  SECTION 03 – PROFITABILITY MONTE CARLO   -->
+        <!-- ══════════════════════════════════════════ -->
+        <div class="mc-section">
+            <hr class="mc-divider">
+            <div class="mc-title-row">
+                <div class="page-label" style="margin-bottom:0;">Section 03 — Profitability Monte Carlo</div>
+                <span class="mc-badge">Applied</span>
+            </div>
+            <div class="mc-subtitle">
+                GBM price paths, stochastic difficulty growth, and electricity cost uncertainty — propagated through the full mining revenue model across thousands of scenarios.
+            </div>
+            <div class="card" style="padding:24px;">
+                <div class="card-header" style="color:var(--qi-purple); margin-bottom:20px;">
+                    <span class="dot" style="background:var(--qi-purple);box-shadow:0 0 8px rgba(191,90,242,0.5);"></span>
+                    Uncertainty Inputs
+                </div>
+
+                <div class="mc-params-grid">
+                    <!-- BTC price vol -->
+                    <div class="mc-param">
+                        <div class="mc-param-label">BTC monthly price vol <span id="btcVolLabel">15%</span></div>
+                        <div class="mc-slider-wrap">
+                            <input type="range" id="btcVolSlider" min="1" max="50" value="15" step="1">
+                        </div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">Geometric Brownian Motion σ/month</div>
+                    </div>
+
+                    <!-- QUAI price vol -->
+                    <div class="mc-param">
+                        <div class="mc-param-label">QUAI monthly price vol <span id="quaiVolLabel">30%</span></div>
+                        <div class="mc-slider-wrap">
+                            <input type="range" id="quaiVolSlider" min="1" max="80" value="30" step="1">
+                        </div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">Higher for emerging asset</div>
+                    </div>
+
+                    <!-- BTC diff growth range -->
+                    <div class="mc-param">
+                        <div class="mc-param-label">BTC diff growth/mo range (%)</div>
+                        <div class="mc-range">
+                            <input type="number" id="btcDiffMin" value="0" step="0.5">
+                            <span class="mc-range-sep">→</span>
+                            <input type="number" id="btcDiffMax" value="5" step="0.5">
+                        </div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">Uniform distribution</div>
+                    </div>
+
+                    <!-- QUAI diff growth range -->
+                    <div class="mc-param">
+                        <div class="mc-param-label">QUAI diff growth/mo range (%)</div>
+                        <div class="mc-range">
+                            <input type="number" id="quaiDiffMin" value="0" step="0.5">
+                            <span class="mc-range-sep">→</span>
+                            <input type="number" id="quaiDiffMax" value="8" step="0.5">
+                        </div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">Uniform distribution</div>
+                    </div>
+
+                    <!-- Electricity range -->
+                    <div class="mc-param">
+                        <div class="mc-param-label">Electricity cost range ($/kWh)</div>
+                        <div class="mc-range">
+                            <input type="number" id="elecMin" value="0.06" step="0.01">
+                            <span class="mc-range-sep">→</span>
+                            <input type="number" id="elecMax" value="0.12" step="0.01">
+                        </div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">Fixed per simulation draw</div>
+                    </div>
+
+                    <!-- Price drift -->
+                    <div class="mc-param">
+                        <div class="mc-param-label">Annual price drift <span id="driftLabel">0%</span></div>
+                        <div class="mc-slider-wrap">
+                            <input type="range" id="driftSlider" min="-50" max="200" value="0" step="5">
+                        </div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">Applied equally to both prices</div>
+                    </div>
+                </div>
+
+                <div class="mc-run-row">
+                    <button class="mc-run-btn" id="mcRunBtn">▶ Run Simulation</button>
+                    <select class="mc-n-select" id="mcN">
+                        <option value="1000">1,000 sims</option>
+                        <option value="5000" selected>5,000 sims</option>
+                        <option value="10000">10,000 sims</option>
+                    </select>
+                    <span class="mc-progress-text" id="mcProgressText"></span>
+                </div>
+            </div>
+
+            <!-- RESULTS -->
+            <div class="mc-results" id="mcResults" style="display:none;">
+
+                <div class="mc-stat-grid">
+                    <div class="mc-stat">
+                        <div class="mc-stat-label">Expected Net (period)</div>
+                        <div class="mc-stat-btc" id="mcBtcExpected">—</div>
+                        <div class="mc-stat-quai" id="mcQuaiExpected">—</div>
+                    </div>
+                    <div class="mc-stat">
+                        <div class="mc-stat-label">P5 / P95 Net — BTC</div>
+                        <div class="mc-stat-btc" id="mcBtcRange">—</div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">5th to 95th percentile</div>
+                    </div>
+                    <div class="mc-stat">
+                        <div class="mc-stat-label">P5 / P95 Net — QUAI</div>
+                        <div class="mc-stat-quai" id="mcQuaiRange">—</div>
+                        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;">5th to 95th percentile</div>
+                    </div>
+                    <div class="mc-stat">
+                        <div class="mc-stat-label">P(BTC profitable)</div>
+                        <div class="mc-stat-single" id="mcBtcProb" style="color:var(--qi-orange);">—</div>
+                    </div>
+                    <div class="mc-stat">
+                        <div class="mc-stat-label">P(QUAI profitable)</div>
+                        <div class="mc-stat-single" id="mcQuaiProb" style="color:var(--qi-emerald);">—</div>
+                    </div>
+                    <div class="mc-stat">
+                        <div class="mc-stat-label">P(QUAI beats BTC)</div>
+                        <div class="mc-stat-single purple" id="mcQuaiBeatsBtc">—</div>
+                    </div>
+                </div>
+
+                <div class="mc-charts-grid">
+                    <!-- Fan chart -->
+                    <div class="mc-chart-card">
+                        <div class="mc-chart-title">
+                            <span>Cumulative Net Profit — P5 / P50 / P95 Bands</span>
+                            <div class="mc-legend">
+                                <div class="mc-legend-item"><div class="mc-legend-dot" style="background:var(--qi-orange);"></div> BTC</div>
+                                <div class="mc-legend-item"><div class="mc-legend-dot" style="background:var(--qi-emerald);"></div> QUAI</div>
+                            </div>
+                        </div>
+                        <div style="position:relative;height:280px;">
+                            <canvas id="fanChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Distribution histogram -->
+                    <div class="mc-chart-card">
+                        <div class="mc-chart-title">
+                            <span>Final Period Net — Distribution</span>
+                            <div class="mc-legend">
+                                <div class="mc-legend-item"><div class="mc-legend-dot" style="background:var(--qi-orange);"></div> BTC</div>
+                                <div class="mc-legend-item"><div class="mc-legend-dot" style="background:var(--qi-emerald);"></div> QUAI</div>
+                            </div>
+                        </div>
+                        <div style="position:relative;height:280px;">
+                            <canvas id="distChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mc-note">
+                    Each simulation independently samples price paths (GBM), difficulty growth (uniform), and electricity cost (uniform).
+                    Capex deducted. Results show post-capex net income over the projection period.
+                    Past distributions do not predict future outcomes.
+                </div>
+            </div>
+        
+        </div><!-- /section-3 -->
+
+        <!-- ══════════════════════════════════════════ -->
+        <!--  SECTION 04 – DETERMINISTIC CALCULATOR    -->
+        <!-- ══════════════════════════════════════════ -->
+        <div class="mc-section">
+            <hr class="mc-divider">
+            <div class="mc-title-row">
+                <div class="page-label" style="margin-bottom:0;">Section 04 — Point Estimate Calculator</div>
+                <span class="mc-badge">Deterministic</span>
+            </div>
+            <div class="mc-subtitle">
+                Single-scenario projection using fixed inputs. Use this after Monte Carlo to dial in your base case, understand the formula mechanics, or generate a specific monthly table.
+            </div>
+        </div>
+                <div class="calc-layout">
 
             <!-- ===== INPUTS PANEL ===== -->
             <div style="display:flex;flex-direction:column;gap:16px;">
@@ -450,8 +840,9 @@
                     Formula: Daily Coins = (Your Hashrate ÷ Network Hashrate) × Daily Emission
                 </div>
             </div>
-        </div>
-    </div>
+        </div><!-- /calc-layout -->
+
+    </div><!-- /main-container -->
 
     <script>
         const BLOCKS_PER_DAY = 144;
@@ -592,6 +983,426 @@
 
         // Initial calc
         calculate();
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script>
+    // ── SLIDER LABELS ──
+    const btcVolSlider = document.getElementById('btcVolSlider');
+    const quaiVolSlider = document.getElementById('quaiVolSlider');
+    const driftSlider = document.getElementById('driftSlider');
+    btcVolSlider.addEventListener('input', () => {
+        document.getElementById('btcVolLabel').textContent = btcVolSlider.value + '%';
+    });
+    quaiVolSlider.addEventListener('input', () => {
+        document.getElementById('quaiVolLabel').textContent = quaiVolSlider.value + '%';
+    });
+    driftSlider.addEventListener('input', () => {
+        const v = +driftSlider.value;
+        document.getElementById('driftLabel').textContent = (v >= 0 ? '+' : '') + v + '%';
+    });
+
+    // ── STAT HELPERS ──
+    function quantile(sorted, p) {
+        const idx = p * (sorted.length - 1);
+        const lo = Math.floor(idx), hi = Math.ceil(idx);
+        return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+    }
+    function randNorm() {
+        const u1 = Math.random(), u2 = Math.random();
+        return Math.sqrt(-2 * Math.log(u1 || 1e-10)) * Math.cos(2 * Math.PI * u2);
+    }
+    function fmtC(n) {
+        const abs = Math.abs(n), sign = n < 0 ? '-' : '';
+        if (abs >= 1e6) return sign + '$' + (abs / 1e6).toFixed(2) + 'M';
+        if (abs >= 1e3) return sign + '$' + (abs / 1e3).toFixed(1) + 'K';
+        return sign + '$' + abs.toFixed(0);
+    }
+
+    // ── SIMULATION CORE ──
+    function runMC() {
+        const btn = document.getElementById('mcRunBtn');
+        const progressEl = document.getElementById('mcProgressText');
+        btn.disabled = true;
+        progressEl.textContent = 'Running...';
+
+        setTimeout(() => {
+            // Read main calculator inputs
+            const p = {};
+            ['hashrateTH','powerKW','capexUSD','powerCost','poolFee','months',
+             'btcPrice','btcNetworkEH','btcBlockReward',
+             'quaiPrice','quaiNetworkPH','quaiDailyEmission'].forEach(f => {
+                p[f] = parseFloat(document.getElementById(f).value) || 0;
+            });
+
+            const N = parseInt(document.getElementById('mcN').value);
+            const M = Math.max(1, p.months);
+
+            // MC uncertainty params
+            const btcSigma  = parseFloat(btcVolSlider.value) / 100;
+            const quaiSigma = parseFloat(quaiVolSlider.value) / 100;
+            const annualDrift = parseFloat(driftSlider.value) / 100;
+            const monthlyDrift = annualDrift / 12;
+            const btcDiffMin  = parseFloat(document.getElementById('btcDiffMin').value) / 100;
+            const btcDiffMax  = parseFloat(document.getElementById('btcDiffMax').value) / 100;
+            const quaiDiffMin = parseFloat(document.getElementById('quaiDiffMin').value) / 100;
+            const quaiDiffMax = parseFloat(document.getElementById('quaiDiffMax').value) / 100;
+            const elecMin  = parseFloat(document.getElementById('elecMin').value);
+            const elecMax  = parseFloat(document.getElementById('elecMax').value);
+
+            // Derived constants
+            const btcNetworkTH  = p.btcNetworkEH * 1e6;
+            const quaiNetworkTH = p.quaiNetworkPH * 1e3;
+            const btcShare  = p.hashrateTH / btcNetworkTH;
+            const quaiShare = p.hashrateTH / quaiNetworkTH;
+            const btcDailyCoinsBase  = btcShare * 144 * p.btcBlockReward;
+            const quaiDailyCoinsBase = quaiShare * p.quaiDailyEmission;
+            const POOL = 1 - p.poolFee / 100;
+            const DAYS = 30;
+
+            // Storage: [sim][month] cumulative net after capex
+            // We'll store only the final cumulative per sim for histogram
+            // And per-month arrays for fan chart (track percentiles)
+            const btcMonthly  = Array.from({length: M}, () => new Float64Array(N));
+            const quaiMonthly = Array.from({length: M}, () => new Float64Array(N));
+
+            for (let s = 0; s < N; s++) {
+                // Draw elec cost once per sim
+                const elec = elecMin + Math.random() * (elecMax - elecMin);
+                const dailyPower = p.powerKW * 24 * elec;
+                const monthlyPower = dailyPower * DAYS;
+
+                let btcPrice  = p.btcPrice;
+                let quaiPrice = p.quaiPrice;
+                let btcCum  = -p.capexUSD;
+                let quaiCum = -p.capexUSD;
+                // Track cumulative difficulty multiplier (compounding)
+                let btcDiffCum  = 1;
+                let quaiDiffCum = 1;
+
+                for (let m = 0; m < M; m++) {
+                    // Price random walk (GBM): P(t+1) = P(t)*exp((μ - σ²/2) + σ*Z)
+                    const btcZ  = randNorm();
+                    const quaiZ = randNorm();
+                    btcPrice  *= Math.exp((monthlyDrift - 0.5 * btcSigma  * btcSigma)  + btcSigma  * btcZ);
+                    quaiPrice *= Math.exp((monthlyDrift - 0.5 * quaiSigma * quaiSigma) + quaiSigma * quaiZ);
+                    btcPrice  = Math.max(btcPrice,  0.01);
+                    quaiPrice = Math.max(quaiPrice, 0.0001);
+
+                    // Draw difficulty growth for this month
+                    const btcDiffG  = btcDiffMin  + Math.random() * (btcDiffMax  - btcDiffMin);
+                    const quaiDiffG = quaiDiffMin + Math.random() * (quaiDiffMax - quaiDiffMin);
+                    btcDiffCum  *= (1 + btcDiffG);
+                    quaiDiffCum *= (1 + quaiDiffG);
+
+                    const mBtcRev  = (btcDailyCoinsBase  / btcDiffCum)  * DAYS * btcPrice  * POOL;
+                    const mQuaiRev = (quaiDailyCoinsBase / quaiDiffCum) * DAYS * quaiPrice * POOL;
+
+                    const mBtcProfit  = mBtcRev  - monthlyPower;
+                    const mQuaiProfit = mQuaiRev - monthlyPower;
+
+                    btcCum  += mBtcProfit;
+                    quaiCum += mQuaiProfit;
+
+                    btcMonthly[m][s]  = btcCum;
+                    quaiMonthly[m][s] = quaiCum;
+                }
+            }
+
+            // ── COMPUTE PERCENTILES PER MONTH ──
+            const labels = Array.from({length: M}, (_, i) => 'Mo ' + (i + 1));
+
+            function bandSeries(monthlyData) {
+                const p5 = [], p50 = [], p95 = [];
+                for (let m = 0; m < M; m++) {
+                    const sorted = Array.from(monthlyData[m]).sort((a, b) => a - b);
+                    p5.push(quantile(sorted, 0.05));
+                    p50.push(quantile(sorted, 0.50));
+                    p95.push(quantile(sorted, 0.95));
+                }
+                return { p5, p50, p95 };
+            }
+
+            const btcBands  = bandSeries(btcMonthly);
+            const quaiBands = bandSeries(quaiMonthly);
+
+            // Final period arrays for histogram and stats
+            const btcFinal  = Array.from(btcMonthly[M - 1]).sort((a, b) => a - b);
+            const quaiFinal = Array.from(quaiMonthly[M - 1]).sort((a, b) => a - b);
+
+            // ── STATS ──
+            const mean = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+            const btcMean  = mean(btcFinal);
+            const quaiMean = mean(quaiFinal);
+
+            const btcP5   = quantile(btcFinal,  0.05);
+            const btcP95  = quantile(btcFinal,  0.95);
+            const quaiP5  = quantile(quaiFinal, 0.05);
+            const quaiP95 = quantile(quaiFinal, 0.95);
+
+            const btcProfitProb  = btcFinal.filter(v => v > 0).length / N;
+            const quaiProfitProb = quaiFinal.filter(v => v > 0).length / N;
+
+            const btcArr  = Array.from(btcMonthly[M - 1]);
+            const quaiArr = Array.from(quaiMonthly[M - 1]);
+            const quaiBeatsBtc = btcArr.filter((b, i) => quaiArr[i] > b).length / N;
+
+            // ── UPDATE STATS ──
+            document.getElementById('mcBtcExpected').textContent  = fmtC(btcMean)  + ' BTC';
+            document.getElementById('mcQuaiExpected').textContent = fmtC(quaiMean) + ' QUAI';
+            document.getElementById('mcBtcRange').textContent     = fmtC(btcP5)  + ' → ' + fmtC(btcP95);
+            document.getElementById('mcQuaiRange').textContent    = fmtC(quaiP5) + ' → ' + fmtC(quaiP95);
+            document.getElementById('mcBtcProb').textContent      = (btcProfitProb  * 100).toFixed(1) + '%';
+            document.getElementById('mcQuaiProb').textContent     = (quaiProfitProb * 100).toFixed(1) + '%';
+            document.getElementById('mcQuaiBeatsBtc').textContent = (quaiBeatsBtc   * 100).toFixed(1) + '%';
+
+            // Color P(profitable) based on value
+            const btcProbEl  = document.getElementById('mcBtcProb');
+            const quaiProbEl = document.getElementById('mcQuaiProb');
+            btcProbEl.style.color  = btcProfitProb  > 0.7 ? 'var(--qi-green)'  : btcProfitProb  > 0.4 ? 'var(--qi-amber)' : 'var(--qi-red)';
+            quaiProbEl.style.color = quaiProfitProb > 0.7 ? 'var(--qi-green)'  : quaiProfitProb > 0.4 ? 'var(--qi-amber)' : 'var(--qi-red)';
+
+            // ── FAN CHART ──
+            if (window._fanChart) window._fanChart.destroy();
+            const fanCtx = document.getElementById('fanChart').getContext('2d');
+            window._fanChart = new Chart(fanCtx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        // BTC band
+                        { label: 'BTC P5',  data: btcBands.p5,  borderColor: 'rgba(251,146,60,0)', pointRadius: 0, fill: false, tension: 0.3 },
+                        { label: 'BTC P95', data: btcBands.p95, borderColor: 'rgba(251,146,60,0.2)', borderWidth: 1, pointRadius: 0, fill: '-1', backgroundColor: 'rgba(251,146,60,0.08)', tension: 0.3 },
+                        { label: 'BTC P50', data: btcBands.p50, borderColor: '#fb923c', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.3 },
+                        // QUAI band
+                        { label: 'QUAI P5',  data: quaiBands.p5,  borderColor: 'rgba(16,185,129,0)', pointRadius: 0, fill: false, tension: 0.3 },
+                        { label: 'QUAI P95', data: quaiBands.p95, borderColor: 'rgba(16,185,129,0.2)', borderWidth: 1, pointRadius: 0, fill: '-1', backgroundColor: 'rgba(16,185,129,0.08)', tension: 0.3 },
+                        { label: 'QUAI P50', data: quaiBands.p50, borderColor: '#10b981', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.3 },
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            filter: item => ['BTC P50','QUAI P50','BTC P5','BTC P95','QUAI P5','QUAI P95'].includes(item.dataset.label),
+                            callbacks: {
+                                label: ctx => ctx.dataset.label + ': ' + fmtC(ctx.parsed.y)
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#4a5568', font: { size: 10, family: 'Share Tech Mono' }, maxTicksLimit: 8 }, grid: { color: 'rgba(0,240,255,0.04)' } },
+                        y: {
+                            ticks: { color: '#4a5568', font: { size: 10, family: 'Share Tech Mono' }, callback: v => fmtC(v) },
+                            grid: { color: 'rgba(0,240,255,0.04)' },
+                        }
+                    }
+                }
+            });
+
+            // ── DISTRIBUTION HISTOGRAM ──
+            // Build bins from combined min/max
+            const allFinal = [...btcFinal, ...quaiFinal];
+            const lo = Math.min(...allFinal), hi = Math.max(...allFinal);
+            const BINS = 30;
+            const binW = (hi - lo) / BINS || 1;
+            const btcHist  = new Array(BINS).fill(0);
+            const quaiHist = new Array(BINS).fill(0);
+            btcFinal.forEach(v  => { const b = Math.min(BINS - 1, Math.floor((v - lo) / binW)); btcHist[b]++; });
+            quaiFinal.forEach(v => { const b = Math.min(BINS - 1, Math.floor((v - lo) / binW)); quaiHist[b]++; });
+            const binLabels = Array.from({length: BINS}, (_, i) => fmtC(lo + (i + 0.5) * binW));
+
+            if (window._distChart) window._distChart.destroy();
+            const distCtx = document.getElementById('distChart').getContext('2d');
+            window._distChart = new Chart(distCtx, {
+                type: 'bar',
+                data: {
+                    labels: binLabels,
+                    datasets: [
+                        { label: 'BTC',  data: btcHist,  backgroundColor: 'rgba(251,146,60,0.5)',  borderColor: 'rgba(251,146,60,0.8)',  borderWidth: 1 },
+                        { label: 'QUAI', data: quaiHist, backgroundColor: 'rgba(16,185,129,0.35)', borderColor: 'rgba(16,185,129,0.7)', borderWidth: 1 },
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#4a5568', font: { size: 9 }, maxTicksLimit: 6, maxRotation: 30 }, grid: { display: false } },
+                        y: { ticks: { color: '#4a5568', font: { size: 10 } }, grid: { color: 'rgba(0,240,255,0.04)' } }
+                    }
+                }
+            });
+
+            document.getElementById('mcResults').style.display = 'block';
+            btn.disabled = false;
+            progressEl.textContent = N.toLocaleString() + ' simulations complete';
+        }, 20); // allow UI to update before blocking compute
+    }
+
+    document.getElementById('mcRunBtn').addEventListener('click', runMC);
+
+    // ══════════════════════════════════════════════════
+    //  SECTION 1 — GAUSSIAN COIN FLIP BOARD
+    // ══════════════════════════════════════════════════
+    const batchSizesMap = [50,100,200,500,1000,2000,5000];
+    document.getElementById('coinBias').addEventListener('input', function(){ document.getElementById('coinBiasLabel').textContent = this.value + '%'; });
+    document.getElementById('coinFlips').addEventListener('input', function(){ document.getElementById('coinFlipsLabel').textContent = (+this.value).toLocaleString(); });
+    document.getElementById('coinTrials').addEventListener('input', function(){ document.getElementById('coinTrialsLabel').textContent = (+this.value).toLocaleString(); });
+
+    let coinHistChart = null;
+    document.getElementById('coinRunBtn').addEventListener('click', function() {
+        const p     = parseFloat(document.getElementById('coinBias').value) / 100;
+        const n     = parseInt(document.getElementById('coinFlips').value);
+        const trials = parseInt(document.getElementById('coinTrials').value);
+
+        // Run trials: each trial sums n ±1 flips
+        const results = new Float32Array(trials);
+        for (let t = 0; t < trials; t++) {
+            let sum = 0;
+            for (let i = 0; i < n; i++) sum += (Math.random() < p) ? 1 : -1;
+            results[t] = sum;
+        }
+        const sorted = Array.from(results).sort((a,b) => a-b);
+        const mean = arr => arr.reduce((s,v)=>s+v,0)/arr.length;
+        const m = mean(sorted);
+        const sd = Math.sqrt(mean(sorted.map(v=>(v-m)**2)));
+
+        const theoMean = n*(2*p-1);
+        const theoSd   = 2*Math.sqrt(n*p*(1-p));
+
+        document.getElementById('coinTheoMean').textContent = theoMean.toFixed(2);
+        document.getElementById('coinObsMean').textContent  = m.toFixed(2);
+        document.getElementById('coinTheoSd').textContent   = theoSd.toFixed(2);
+        document.getElementById('coinObsSd').textContent    = sd.toFixed(2);
+
+        // Build histogram
+        const lo = sorted[0], hi = sorted[sorted.length-1];
+        const BINS = Math.min(60, Math.round(hi - lo + 1));
+        const binW = (hi - lo) / BINS || 1;
+        const hist = new Array(BINS).fill(0);
+        sorted.forEach(v => { const b = Math.min(BINS-1, Math.floor((v-lo)/binW)); hist[b]++; });
+        const binLabels = Array.from({length:BINS}, (_,i) => Math.round(lo + (i+0.5)*binW));
+
+        // Overlay normal curve (scaled to match histogram counts)
+        const normalCurve = binLabels.map(x => {
+            const z = (x - theoMean) / theoSd;
+            return (trials * binW / theoSd) * (1/Math.sqrt(2*Math.PI)) * Math.exp(-0.5*z*z);
+        });
+
+        if (coinHistChart) coinHistChart.destroy();
+        coinHistChart = new Chart(document.getElementById('coinHistChart').getContext('2d'), {
+            data: {
+                labels: binLabels,
+                datasets: [
+                    { type:'bar',  label:'Observed', data: hist, backgroundColor:'rgba(0,240,255,0.25)', borderColor:'rgba(0,240,255,0.6)', borderWidth:1 },
+                    { type:'line', label:'Normal fit', data: normalCurve, borderColor:'#ffb800', borderWidth:2, pointRadius:0, tension:0.4 }
+                ]
+            },
+            options: {
+                responsive:true, maintainAspectRatio:false,
+                plugins:{ legend:{ display:false } },
+                scales:{
+                    x:{ ticks:{ color:'#4a5568', font:{size:9}, maxTicksLimit:10 }, grid:{ display:false } },
+                    y:{ ticks:{ color:'#4a5568', font:{size:10} }, grid:{ color:'rgba(0,240,255,0.04)' } }
+                }
+            }
+        });
+    });
+
+    // ══════════════════════════════════════════════════
+    //  SECTION 2 — PI ESTIMATION (EDUCATIONAL MC)
+    // ══════════════════════════════════════════════════
+    const PI_BATCH_SIZES = [50,100,200,500,1000,5000,10000];
+    document.getElementById('piBatch').addEventListener('input', function(){
+        document.getElementById('piBatchLabel').textContent = PI_BATCH_SIZES[+this.value].toLocaleString();
+    });
+
+    let piTotal = 0, piInside = 0, piEstimates = [], piLabels = [];
+    let piConvChart = null;
+
+    const piCanvas = document.getElementById('piDotCanvas');
+    const piCtx = piCanvas.getContext('2d');
+    const W = piCanvas.width;
+
+    function drawPiArc() {
+        piCtx.strokeStyle = 'rgba(0,240,255,0.3)';
+        piCtx.lineWidth = 1.5;
+        piCtx.beginPath();
+        piCtx.arc(0, 0, W, 0, Math.PI/2);
+        piCtx.stroke();
+        piCtx.lineWidth = 1;
+    }
+    drawPiArc();
+
+    document.getElementById('piResetBtn').addEventListener('click', function() {
+        piTotal = 0; piInside = 0; piEstimates = []; piLabels = [];
+        piCtx.clearRect(0,0,W,W);
+        drawPiArc();
+        document.getElementById('piTotal').textContent = '0';
+        document.getElementById('piEst').textContent = '—';
+        document.getElementById('piErr').textContent = '—';
+        document.getElementById('piInside').textContent = '0';
+        if (piConvChart) { piConvChart.data.labels=[]; piConvChart.data.datasets[0].data=[]; piConvChart.data.datasets[1].data=[]; piConvChart.update('none'); }
+    });
+
+    document.getElementById('piRunBtn').addEventListener('click', function() {
+        const size = PI_BATCH_SIZES[+document.getElementById('piBatch').value];
+        const pts = [];
+        for (let i = 0; i < size; i++) {
+            const x = Math.random(), y = Math.random();
+            const inside = x*x + y*y <= 1;
+            if (inside) piInside++;
+            piTotal++;
+            if (piTotal <= 8000) pts.push([x, y, inside]);
+        }
+        // Draw dots
+        if (piTotal <= 8000) {
+            pts.forEach(([x,y,inside]) => {
+                piCtx.beginPath();
+                piCtx.arc(x*W, y*W, 1.5, 0, Math.PI*2);
+                piCtx.fillStyle = inside ? '#39FF14' : '#ff3366';
+                piCtx.fill();
+            });
+            drawPiArc();
+        }
+
+        const est = 4 * piInside / piTotal;
+        piEstimates.push(est);
+        piLabels.push(piTotal.toLocaleString());
+
+        document.getElementById('piTotal').textContent  = piTotal.toLocaleString();
+        document.getElementById('piEst').textContent    = est.toFixed(5);
+        document.getElementById('piErr').textContent    = Math.abs(est - Math.PI).toFixed(5);
+        document.getElementById('piInside').textContent = piInside.toLocaleString();
+
+        if (!piConvChart) {
+            piConvChart = new Chart(document.getElementById('piConvChart').getContext('2d'), {
+                type:'line',
+                data:{
+                    labels: piLabels,
+                    datasets:[
+                        { label:'MC estimate', data: piEstimates, borderColor:'#39FF14', pointRadius:3, borderWidth:1.5, tension:0.3, backgroundColor:'transparent' },
+                        { label:'True π',      data: piEstimates.map(()=>Math.PI), borderColor:'rgba(255,184,0,0.6)', borderDash:[4,3], pointRadius:0, borderWidth:1 }
+                    ]
+                },
+                options:{
+                    responsive:true, maintainAspectRatio:false,
+                    plugins:{ legend:{ display:false } },
+                    scales:{
+                        x:{ ticks:{ color:'#4a5568', font:{size:9}, maxTicksLimit:6 }, grid:{ display:false } },
+                        y:{ min:2.5, max:3.8, ticks:{ color:'#4a5568', font:{size:10} }, grid:{ color:'rgba(0,240,255,0.04)' } }
+                    }
+                }
+            });
+        } else {
+            piConvChart.data.labels = piLabels;
+            piConvChart.data.datasets[0].data = piEstimates;
+            piConvChart.data.datasets[1].data = piEstimates.map(()=>Math.PI);
+            piConvChart.update('none');
+        }
+    });
     </script>
 
 </body>
