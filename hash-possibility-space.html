@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hash Possibility Space — Quai Network</title>
+    <meta name="description" content="Every valid Quai hash contains more information than the network consumes. A map of the latent possibility space inside already-produced work.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink:       #111111;
+            --ink-mid:   #3A3A3A;
+            --ink-light: #777777;
+            --paper:     #F5F3EF;
+            --paper-2:   #EDEAE4;
+            --paper-3:   #E0DDD5;
+            --rule:      1px solid #B8B4AC;
+            --rule-bold: 2px solid #111111;
+            --rule-3:    3px solid #111111;
+            --shadow:    6px 6px 0px #111111;
+            --shadow-sm: 3px 3px 0px #111111;
+            --font-title: 'Bebas Neue', sans-serif;
+            --font-body:  'Barlow Condensed', sans-serif;
+            --font-mono:  'Courier Prime', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--paper);
+            color: var(--ink);
+            font-size: 18px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(17,17,17,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(17,17,17,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: var(--ink);
+            border-bottom: var(--rule-bold);
+            padding: 0 48px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { font-family: var(--font-title); font-size: 22px; color: var(--paper); text-decoration: none; letter-spacing: 4px; }
+        .nav-links { display: flex; gap: 36px; list-style: none; }
+        .nav-links a { font-family: var(--font-mono); font-size: 11px; color: var(--paper-3); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--paper); }
+        .nav-badge { font-family: var(--font-mono); font-size: 10px; background: var(--paper); color: var(--ink); padding: 3px 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: var(--rule-bold);
+            z-index: 1;
+            margin-top: 56px;
+        }
+
+        .hero-left {
+            border-right: var(--rule-bold);
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated bit grid background */
+        .hero-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 28px,
+                rgba(245,243,239,0.03) 28px,
+                rgba(245,243,239,0.03) 29px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 28px,
+                rgba(245,243,239,0.03) 28px,
+                rgba(245,243,239,0.03) 29px
+            );
+            pointer-events: none;
+        }
+
+        .hero-hash-display {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: rgba(245,243,239,0.15);
+            line-height: 1.8;
+            letter-spacing: 1px;
+            margin-bottom: 48px;
+            position: relative;
+        }
+
+        .hash-line { display: flex; gap: 2px; flex-wrap: wrap; margin-bottom: 4px; }
+        .hb { display: inline-block; width: 9px; height: 9px; border: 1px solid rgba(245,243,239,0.08); }
+        .hb.used-lead  { background: rgba(245,243,239,0.7); border-color: rgba(245,243,239,0.9); }
+        .hb.mid        { background: rgba(245,243,239,0.12); border-color: rgba(245,243,239,0.12); }
+        .hb.used-trail { background: rgba(226,41,1,0.6); border-color: rgba(226,41,1,0.9); }
+        .hb.latent-a   { background: rgba(255,184,0,0.4); border-color: rgba(255,184,0,0.6); }
+        .hb.latent-b   { background: rgba(100,200,255,0.3); border-color: rgba(100,200,255,0.5); }
+
+        .hash-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--paper-3);
+        }
+        .legend-swatch {
+            width: 12px; height: 12px;
+            border: 1px solid rgba(245,243,239,0.3);
+            flex-shrink: 0;
+        }
+        .ls-lead  { background: rgba(245,243,239,0.7); }
+        .ls-mid   { background: rgba(245,243,239,0.12); }
+        .ls-a     { background: rgba(255,184,0,0.5); border-color: rgba(255,184,0,0.7); }
+        .ls-b     { background: rgba(100,200,255,0.4); border-color: rgba(100,200,255,0.6); }
+
+        .hero-left-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(245,243,239,0.4);
+            margin-bottom: 8px;
+        }
+        .hero-left-title {
+            font-family: var(--font-title);
+            font-size: clamp(48px, 5vw, 72px);
+            line-height: 0.92;
+            color: var(--paper);
+            letter-spacing: 2px;
+        }
+        .hero-left-title span { display: block; color: rgba(245,243,239,0.35); }
+
+        .hero-content {
+            padding: 80px 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-tag {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-tag::before { content: ''; display: inline-block; width: 24px; height: 2px; background: var(--ink); }
+
+        .hero h1 {
+            font-family: var(--font-title);
+            font-size: clamp(56px, 7vw, 110px);
+            line-height: 0.92;
+            letter-spacing: 2px;
+            color: var(--ink);
+            margin-bottom: 32px;
+        }
+        .hero h1 span { display: block; color: var(--ink-light); }
+
+        .hero-rule { width: 100%; height: 2px; background: var(--ink); margin-bottom: 32px; }
+
+        .hero-desc {
+            font-size: 19px;
+            font-weight: 300;
+            color: var(--ink-mid);
+            line-height: 1.7;
+            max-width: 480px;
+            margin-bottom: 40px;
+        }
+
+        .hero-status-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .status-chip {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: var(--rule-bold);
+            padding: 6px 14px;
+        }
+        .status-chip.dark { background: var(--ink); color: var(--paper); }
+
+        /* ===== SECTIONS ===== */
+        section {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 48px;
+            border-bottom: var(--rule);
+        }
+
+        .section-header { display: flex; align-items: flex-start; gap: 32px; margin-bottom: 56px; }
+        .section-num { font-family: var(--font-title); font-size: 72px; line-height: 1; color: var(--paper-3); flex-shrink: 0; margin-top: -8px; }
+        .section-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 8px; }
+        .section-title { font-family: var(--font-title); font-size: clamp(36px, 4vw, 56px); letter-spacing: 1px; color: var(--ink); line-height: 1; }
+
+        /* ===== HASH ANATOMY ===== */
+        .anatomy-block {
+            border: var(--rule-bold);
+            box-shadow: var(--shadow);
+            background: var(--ink);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .anatomy-header {
+            padding: 14px 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--paper-3);
+            display: flex;
+            justify-content: space-between;
+        }
+        .anatomy-hash {
+            padding: 28px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--paper);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            line-height: 2;
+        }
+        .seg {
+            padding: 2px 6px;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        .seg-zeros { background: rgba(245,243,239,0.85); color: var(--ink); font-weight: 700; }
+        .seg-mid   { color: rgba(245,243,239,0.35); }
+        .seg-oracle { background: rgba(255,184,0,0.25); color: rgba(255,184,0,1); border: 1px solid rgba(255,184,0,0.4); }
+        .seg-shadow { background: rgba(100,200,255,0.15); color: rgba(100,200,255,1); border: 1px solid rgba(100,200,255,0.3); }
+
+        .anatomy-legend {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .al-cell {
+            padding: 16px 20px;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            font-family: var(--font-mono);
+            font-size: 10px;
+        }
+        .al-cell:last-child { border-right: none; }
+        .al-label { letter-spacing: 2px; text-transform: uppercase; color: var(--paper-3); margin-bottom: 4px; font-size: 9px; }
+        .al-val { font-size: 11px; }
+        .al-val.c-white { color: var(--paper); }
+        .al-val.c-dim { color: rgba(245,243,239,0.3); }
+        .al-val.c-amber { color: rgba(255,184,0,1); }
+        .al-val.c-blue  { color: rgba(100,200,255,1); }
+
+        /* ===== CONCEPT GRID ===== */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border: var(--rule-bold);
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+        .concept-cell { padding: 36px 40px; border-right: var(--rule-bold); border-bottom: var(--rule-bold); }
+        .concept-cell:nth-child(2n) { border-right: none; }
+        .concept-cell:nth-last-child(-n+2) { border-bottom: none; }
+        .concept-cell-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 12px; }
+        .concept-cell h3 { font-family: var(--font-title); font-size: 28px; letter-spacing: 1px; color: var(--ink); margin-bottom: 12px; }
+        .concept-cell p { font-weight: 300; color: var(--ink-mid); font-size: 16px; line-height: 1.7; }
+        .concept-cell.dark { background: var(--ink); }
+        .concept-cell.dark .concept-cell-label { color: var(--paper-3); }
+        .concept-cell.dark h3 { color: var(--paper); }
+        .concept-cell.dark p { color: var(--paper-3); }
+
+        /* ===== EXAMPLE CARDS ===== */
+        .example-stack { display: flex; flex-direction: column; gap: 0; border: var(--rule-bold); box-shadow: var(--shadow); }
+
+        .example-card {
+            display: grid;
+            grid-template-columns: 280px 1fr 1fr;
+            border-bottom: var(--rule-bold);
+        }
+        .example-card:last-child { border-bottom: none; }
+
+        .ex-index {
+            padding: 36px 32px;
+            border-right: var(--rule-bold);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .ex-num {
+            font-family: var(--font-title);
+            font-size: 64px;
+            line-height: 1;
+            color: var(--paper-3);
+        }
+        .ex-name {
+            font-family: var(--font-title);
+            font-size: 22px;
+            letter-spacing: 1px;
+            color: var(--ink);
+            line-height: 1.1;
+        }
+        .ex-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            margin-top: 8px;
+        }
+
+        .ex-index.dark { background: var(--ink); }
+        .ex-index.dark .ex-num { color: rgba(245,243,239,0.2); }
+        .ex-index.dark .ex-name { color: var(--paper); }
+        .ex-index.dark .ex-tag { color: var(--paper-3); }
+
+        .ex-mechanism {
+            padding: 36px 32px;
+            border-right: var(--rule-bold);
+            background: var(--paper-2);
+        }
+        .ex-col-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 10px; }
+        .ex-col-title { font-family: var(--font-title); font-size: 20px; letter-spacing: 1px; color: var(--ink); margin-bottom: 10px; }
+        .ex-col-body { font-weight: 300; color: var(--ink-mid); font-size: 15px; line-height: 1.7; }
+
+        .ex-why { padding: 36px 32px; }
+
+        /* ===== MATH MODULE ===== */
+        .math-module {
+            background: var(--paper-2);
+            border: var(--rule-bold);
+            box-shadow: var(--shadow);
+            padding: 0;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+        .math-header {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 16px 32px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .math-body { padding: 36px 40px; }
+        .eq-row {
+            display: grid;
+            grid-template-columns: 1fr 60px 1fr;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: var(--rule);
+        }
+        .eq-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .eq-side { padding: 20px 24px; border: var(--rule-bold); background: var(--paper); }
+        .eq-side.dark-side { background: var(--ink); border-color: var(--ink); }
+        .eq-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 8px; }
+        .eq-side.dark-side .eq-label { color: var(--paper-3); }
+        .eq-formula { font-family: var(--font-mono); font-size: 16px; color: var(--ink); line-height: 1.4; }
+        .eq-side.dark-side .eq-formula { color: var(--paper); }
+        .eq-desc { font-size: 14px; font-weight: 300; color: var(--ink-mid); margin-top: 8px; font-family: var(--font-body); }
+        .eq-side.dark-side .eq-desc { color: var(--paper-3); }
+        .eq-sym { font-family: var(--font-title); font-size: 40px; color: var(--ink-light); text-align: center; }
+
+        /* ===== CALLOUT ===== */
+        .callout {
+            border: var(--rule-3);
+            box-shadow: var(--shadow);
+            padding: 36px 40px;
+            position: relative;
+            background: var(--paper);
+            margin: 40px 0;
+        }
+        .callout-corner { position: absolute; font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px; color: var(--ink-light); }
+        .callout-corner.tl { top: 10px; left: 14px; }
+        .callout-corner.br { bottom: 10px; right: 14px; }
+        .callout h3 { font-family: var(--font-title); font-size: 28px; letter-spacing: 1px; margin-bottom: 16px; }
+        .callout p { font-weight: 300; color: var(--ink-mid); font-size: 17px; line-height: 1.75; }
+        .callout.highlight { background: var(--ink); color: var(--paper); box-shadow: none; }
+        .callout.highlight h3 { color: var(--paper); }
+        .callout.highlight p { color: var(--paper-3); }
+        .callout.highlight .callout-corner { color: var(--paper-3); }
+
+        /* ===== POSSIBILITY TABLE ===== */
+        .poss-table { width: 100%; border-collapse: collapse; border: var(--rule-bold); box-shadow: var(--shadow); font-family: var(--font-mono); font-size: 13px; margin-top: 40px; }
+        .poss-table thead { background: var(--ink); color: var(--paper); }
+        .poss-table th { padding: 14px 20px; text-align: left; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; font-weight: 400; border-right: 1px solid rgba(255,255,255,0.1); }
+        .poss-table th:last-child { border-right: none; }
+        .poss-table td { padding: 16px 20px; border-bottom: var(--rule); border-right: var(--rule); vertical-align: top; font-size: 12px; }
+        .poss-table td:last-child { border-right: none; }
+        .poss-table tr:last-child td { border-bottom: none; }
+        .poss-table tr:nth-child(even) td { background: var(--paper-2); }
+        .cell-primary { font-weight: 700; color: var(--ink); font-size: 13px; display: block; margin-bottom: 2px; }
+        .cell-note { font-size: 11px; color: var(--ink-light); font-family: var(--font-body); font-weight: 300; }
+        .badge { display: inline-block; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border: 1px solid var(--ink-light); color: var(--ink-mid); margin-top: 4px; }
+        .badge.live { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+
+        /* ===== TWO COL ===== */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+        /* ===== BUTTONS ===== */
+        .btn-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 40px; }
+        .btn {
+            font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
+            text-transform: uppercase; text-decoration: none; padding: 12px 24px;
+            border: var(--rule-bold); color: var(--ink); background: var(--paper);
+            box-shadow: var(--shadow-sm); transition: all 0.15s; display: inline-block;
+        }
+        .btn:hover { background: var(--ink); color: var(--paper); }
+        .btn.primary { background: var(--ink); color: var(--paper); }
+        .btn.primary:hover { background: var(--ink-mid); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: relative; z-index: 1;
+            background: var(--ink); border-top: var(--rule-bold);
+            padding: 48px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .footer-logo { font-family: var(--font-title); font-size: 24px; color: var(--paper); text-decoration: none; letter-spacing: 4px; }
+        .footer-links { display: flex; gap: 28px; }
+        .footer-links a { font-family: var(--font-mono); font-size: 10px; color: var(--paper-3); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--paper); }
+        .footer-text { font-family: var(--font-mono); font-size: 11px; color: var(--paper-3); letter-spacing: 2px; text-align: right; }
+
+        /* ===== ANIMATION ===== */
+        .fade-in { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .fade-in.visible { opacity: 1; transform: none; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; }
+            .hero-left { min-height: 50vw; }
+            .hero-content { padding: 48px 28px; }
+            .two-col, .concept-grid { grid-template-columns: 1fr; }
+            .concept-cell { border-right: none !important; }
+            .eq-row { grid-template-columns: 1fr; }
+            .eq-sym { transform: rotate(90deg); }
+            .example-card { grid-template-columns: 1fr; }
+            .ex-index, .ex-mechanism { border-right: none; border-bottom: var(--rule-bold); }
+            .anatomy-legend { grid-template-columns: 1fr 1fr; }
+            section { padding: 60px 24px; }
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 24px; }
+            .footer-links { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-logo">QI</a>
+        <ul class="nav-links">
+            <li><a href="index.html">← Back to Station</a></li>
+            <li><a href="quais-shadow.html">Quai's Shadow</a></li>
+            <li><a href="workshare-oracle.html">Workshare Oracle</a></li>
+            <li><a href="https://thermoeconomics.info" target="_blank">Thermoeconomics</a></li>
+        </ul>
+        <div class="nav-badge">Research</div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero" style="max-width:100%; margin-top:56px;">
+        <div class="hero-left">
+            <div class="hero-left-label">256-bit hash anatomy — what quai reads vs. what remains</div>
+            <div class="hero-hash-display" id="heroHashDisplay"></div>
+            <div class="hash-legend">
+                <div class="legend-row"><div class="legend-swatch ls-lead"></div>Leading zeros — consumed by PoEM difficulty</div>
+                <div class="legend-row"><div class="legend-swatch ls-mid"></div>Middle digest — unconsumed, statistically random</div>
+                <div class="legend-row"><div class="legend-swatch ls-a"></div>Lagging entropy — oracle randomness extraction</div>
+                <div class="legend-row"><div class="legend-swatch ls-b"></div>Trailing structure — shadow / holographic projection</div>
+            </div>
+            <div class="hero-left-label">fig. 01 — the unconsumed hash space</div>
+            <div class="hero-left-title">
+                HASH SPACE
+                <span>POSSIBILITY</span>
+                <span>MAP</span>
+            </div>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-tag">Theoretical Research — Open Space</div>
+            <h1>
+                MORE THAN
+                <span>ONE</span>
+                TRUTH
+            </h1>
+            <div class="hero-rule"></div>
+            <p class="hero-desc">Every valid Quai hash contains potentially many symmetric or asymmetric truths. PoEM consumes the leading zeros. Everything else — the lagging digits, the trailing structure, the middle entropy — is latent possibility space. Same work already paid for. Different readings not yet taken.</p>
+            <div class="hero-status-row">
+                <div class="status-chip dark">Open Research</div>
+                <div class="status-chip">Zero Marginal Cost</div>
+                <div class="status-chip">Quai-Native</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 01: THE PRINCIPLE -->
+    <section id="principle">
+        <div class="section-header fade-in">
+            <div class="section-num">01</div>
+            <div class="section-meta">
+                <div class="section-label">The Core Observation</div>
+                <div class="section-title">WHAT QUAI USES — AND WHAT REMAINS</div>
+            </div>
+        </div>
+
+        <div class="concept-grid fade-in">
+            <div class="concept-cell dark">
+                <div class="concept-cell-label">What PoEM Consumes</div>
+                <h3>The Leading Zeros</h3>
+                <p>Quai's Proof-of-Entropy-Minima reads the number of leading zero bits in a 256-bit hash digest. This count determines workshare tier, block validity, difficulty, and all economic outputs — Qi emission, QUAI reward, and chain ordering. One signal. Deeply used.</p>
+            </div>
+            <div class="concept-cell">
+                <div class="concept-cell-label">What Remains</div>
+                <h3>At Least Half — Possibly All 256</h3>
+                <p>After the leading zeros, the remaining bits are statistically indistinguishable from random. No miner controls them. They cost real energy to produce. They are publicly verifiable and globally timestamped. They are simply never read for any purpose. And the useful region isn't just what's left over — projections can be defined over the entire hash, including the leading zeros themselves. The possibility space is as large as we choose to make it.</p>
+            </div>
+            <div class="concept-cell">
+                <div class="concept-cell-label">The Key Property</div>
+                <h3>Pure Randomness</h3>
+                <p>The unconsumed portion of the hash is not merely unread — it is the highest-quality randomness available on the network. Unpredictable before publication, verifiable after, anchored to physical energy expenditure, and immune to manipulation without redoing the work. No oracle can match this.</p>
+            </div>
+            <div class="concept-cell dark">
+                <div class="concept-cell-label">The Implication</div>
+                <h3>Any Rule Applied Here Is Free</h3>
+                <p>Any constraint, projection, or reading applied to the unconsumed hash space costs the network nothing. The work is already done. The miner is already paid. What emerges from defining a new rule over this space is not a cost — it is a discovery of something that was already there.</p>
+            </div>
+        </div>
+
+        <div class="callout fade-in">
+            <div class="callout-corner tl">CENTRAL CLAIM</div>
+            <div class="callout-corner br">QUAI HASH SPACE — DRAFT THESIS</div>
+            <h3>The Timescale Question</h3>
+            <p>Pure randomness makes possible any slice or sampling of the hash with some constraint or rule capable of being found or produced. What matters is the timescale at which you need the signal to occur — and what use case that timescale solves for. A trailing-ones count produces an infrequent high-value signal. Lagging non-zero digits produce a high-frequency low-latency signal. The hash space supports both, and everything in between, simultaneously.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 02: ANATOMY -->
+    <section id="anatomy">
+        <div class="section-header fade-in">
+            <div class="section-num">02</div>
+            <div class="section-meta">
+                <div class="section-label">Hash Structure</div>
+                <div class="section-title">THE ANATOMY OF A WORKSHARE</div>
+            </div>
+        </div>
+
+        <div class="anatomy-block fade-in">
+            <div class="anatomy-header">
+                <span>Fig. 02 — Workshare hash: what each region means</span>
+                <span>256-BIT SHA-256 DIGEST</span>
+            </div>
+            <div class="anatomy-hash">
+                <span class="seg seg-zeros">0000 0000 0000 0000 0000</span>
+                <span class="seg seg-mid">1 0 1 1 0 0 1 0 1 1 0 1 0 0 1 1 1 0 0 1 0 1 0 0 1 1 0 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1</span>
+                <span class="seg seg-oracle">3f 8a 2c 91 eb 47 d0 6c</span>
+                <span class="seg seg-shadow">1 1 1 1 1 1 1</span>
+            </div>
+            <div class="anatomy-legend">
+                <div class="al-cell">
+                    <div class="al-label">Region</div>
+                    <div class="al-val c-white">Leading Zeros</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">PoEM reads this as</div>
+                    <div class="al-val c-white">Difficulty / workshare tier</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Economic output</div>
+                    <div class="al-val c-white">Qi emission · block reward · chain ordering</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Status</div>
+                    <div class="al-val c-white">Fully consumed</div>
+                </div>
+
+                <div class="al-cell">
+                    <div class="al-label">Region</div>
+                    <div class="al-val c-dim">Middle digest</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">PoEM reads this as</div>
+                    <div class="al-val c-dim">Nothing</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Economic output</div>
+                    <div class="al-val c-dim">None assigned</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Status</div>
+                    <div class="al-val c-dim">Unconsumed — statistically random</div>
+                </div>
+
+                <div class="al-cell">
+                    <div class="al-label">Region</div>
+                    <div class="al-val c-amber">Lagging non-zero digits</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Projection reads this as</div>
+                    <div class="al-val c-amber">Entropy seed for oracle feeds</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Application output</div>
+                    <div class="al-val c-amber">Verifiable randomness · node reputation</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Status</div>
+                    <div class="al-val c-amber">Workshare Oracle — prototype live</div>
+                </div>
+
+                <div class="al-cell">
+                    <div class="al-label">Region</div>
+                    <div class="al-val c-blue">Trailing structure</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Projection reads this as</div>
+                    <div class="al-val c-blue">Shadow difficulty / holographic chain</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Application output</div>
+                    <div class="al-val c-blue">Alternate validity condition · entropy maxima</div>
+                </div>
+                <div class="al-cell">
+                    <div class="al-label">Status</div>
+                    <div class="al-val c-blue">Quai's Shadow — theoretical</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="math-module fade-in">
+            <div class="math-header">
+                <span>The Projection Principle — Formal Statement</span>
+                <span>DRAFT — UNVERIFIED</span>
+            </div>
+            <div class="math-body">
+                <div class="eq-row">
+                    <div class="eq-side">
+                        <div class="eq-label">PoEM — What It Reads</div>
+                        <div class="eq-formula">D = CLZ(H)</div>
+                        <div class="eq-desc">Count Leading Zeros of hash H. This single integer drives the entire Quai economic system. ~236 bits of H are never examined.</div>
+                    </div>
+                    <div class="eq-sym">+</div>
+                    <div class="eq-side dark-side">
+                        <div class="eq-label">Remainder — What It Ignores</div>
+                        <div class="eq-formula">R = H &amp; ((2<sup>256−D</sup>) − 1)</div>
+                        <div class="eq-desc">All bits after the leading zeros. Uniformly distributed. Energy-anchored. Already paid for. Available for any projection P(R) at zero marginal cost.</div>
+                    </div>
+                </div>
+                <div class="eq-row">
+                    <div class="eq-side">
+                        <div class="eq-label">Example Projection A — Oracle</div>
+                        <div class="eq-formula">P<sub>oracle</sub>(H) = H mod 2<sup>k</sup></div>
+                        <div class="eq-desc">Extract the k lowest-order bits as an entropy seed. High frequency — every workshare. Low latency. Suitable for randomness, price feeds, sampling.</div>
+                    </div>
+                    <div class="eq-sym">|</div>
+                    <div class="eq-side dark-side">
+                        <div class="eq-label">Example Projection B — Shadow</div>
+                        <div class="eq-formula">P<sub>shadow</sub>(H) = CLZ(~H)</div>
+                        <div class="eq-desc">Bitwise NOT H, then count leading zeros. Low frequency — only when trailing ones accumulate to difficulty D. Suitable for chain-level constructions.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 03: THREE EXAMPLES -->
+    <section id="examples">
+        <div class="section-header fade-in">
+            <div class="section-num">03</div>
+            <div class="section-meta">
+                <div class="section-label">Concrete Instantiations</div>
+                <div class="section-title">THREE READINGS OF THE SAME HASH</div>
+            </div>
+        </div>
+
+        <div class="example-stack fade-in">
+
+            <!-- Example 01 -->
+            <div class="example-card">
+                <div class="ex-index dark">
+                    <div>
+                        <div class="ex-num">01</div>
+                        <div class="ex-name">WORKSHARE ORACLE</div>
+                        <div class="ex-tag">Proto-15 · Deployed Concept</div>
+                    </div>
+                    <div class="ex-tag" style="color:rgba(255,184,0,0.9);">▲ Lagging entropy region</div>
+                </div>
+                <div class="ex-mechanism">
+                    <div class="ex-col-label">// Mechanism</div>
+                    <div class="ex-col-title">Lagging Non-Zero Digits → Entropy Feed</div>
+                    <p class="ex-col-body">Every workshare hash already satisfies a difficulty threshold via its leading zeros. The remaining digits — the lagging non-zero sequence — are statistically indistinguishable from random. Extract them. Use them as oracle inputs. One hash computation. Two outputs. Workshares are produced every few seconds across every active zone, yielding a continuous high-frequency entropy stream.</p>
+                </div>
+                <div class="ex-why">
+                    <div class="ex-col-label">// Why It Matters</div>
+                    <div class="ex-col-title">No Oracle Dependency</div>
+                    <p class="ex-col-body">Projects currently rely on Chainlink or similar trusted feeds for randomness. Workshare entropy is superior: unpredictable before publication, verifiable after, anchored to real energy cost, and impossible to manipulate without redoing computational work. The entropy stream also serves as node reputation — a continuous proof of live operation that cannot be spoofed cheaply.</p>
+                </div>
+            </div>
+
+            <!-- Example 02 -->
+            <div class="example-card">
+                <div class="ex-index">
+                    <div>
+                        <div class="ex-num">02</div>
+                        <div class="ex-name">QUAI'S SHADOW</div>
+                        <div class="ex-tag">Theoretical · Spec 0.1</div>
+                    </div>
+                    <div class="ex-tag" style="color:rgba(100,200,255,0.9);">▲ Trailing structure region</div>
+                </div>
+                <div class="ex-mechanism" style="background:var(--paper);">
+                    <div class="ex-col-label">// Mechanism</div>
+                    <div class="ex-col-title">Trailing Ones → Shadow Validity Condition</div>
+                    <p class="ex-col-body">Flip the hash via bitwise NOT: H' = ~H. Now count leading zeros of H'. This is equivalent to counting trailing ones of H — a structurally symmetric difficulty condition. At difficulty D, the probability of satisfying the shadow condition is identical to the probability of satisfying the Quai condition: 2<sup>−D</sup>. Same statistical work. Opposite end of the digest. A complete alternate validity condition for zero additional energy.</p>
+                </div>
+                <div class="ex-why">
+                    <div class="ex-col-label">// Why It Matters</div>
+                    <div class="ex-col-title">Entropy Maxima vs. Minima</div>
+                    <p class="ex-col-body">PoEM selects entropy minima — the most ordered state reachable from the most work. The shadow condition may select entropy maxima — the most disordered valid state. Together they bound the full thermodynamic range of the computation. Dual-valid blocks satisfying both conditions simultaneously are rare (probability 2<sup>−2D</sup>) and may represent points of thermodynamic symmetry — natural anchors between the two readings.</p>
+                </div>
+            </div>
+
+            <!-- Example 03 -->
+            <div class="example-card">
+                <div class="ex-index dark">
+                    <div>
+                        <div class="ex-num">03</div>
+                        <div class="ex-name">NODE IDENTITY LAYER</div>
+                        <div class="ex-tag">Conceptual · Unexplored</div>
+                    </div>
+                    <div class="ex-tag" style="color:rgba(245,243,239,0.5);">▲ Cumulative stream</div>
+                </div>
+                <div class="ex-mechanism">
+                    <div class="ex-col-label">// Mechanism</div>
+                    <div class="ex-col-title">Continuous Entropy Stream → Proof of Identity</div>
+                    <p class="ex-col-body">A node producing an unbroken stream of verifiable workshare outputs over time creates a unique statistical fingerprint. The cumulative distribution of its hash outputs is measurable, timestamped, and expensive to fake. No two nodes produce identical streams. The stream cannot be pre-computed, replayed from a different point in time, or generated without actively hashing. It is a native Sybil-resistance mechanism requiring no separate identity infrastructure.</p>
+                </div>
+                <div class="ex-why">
+                    <div class="ex-col-label">// Why It Matters</div>
+                    <div class="ex-col-title">Signal in a Dark P2P Space</div>
+                    <p class="ex-col-body">In a fully decentralized P2P network, finding trustworthy nodes is the hardest cold-start problem. Any node can claim to be reliable. Most are noisy, stale, or adversarial. A node with a live entropy stream is demonstrably online, demonstrably doing real work, and demonstrably on the canonical chain. The entropy stream is the credential — cheap to verify, expensive to fake. Finding signal in a dark P2P space becomes physics, not guesswork.</p>
+                </div>
+            </div>
+
+            <!-- Example 04 -->
+            <div class="example-card" style="border-bottom:none;">
+                <div class="ex-index dark">
+                    <div>
+                        <div class="ex-num">04</div>
+                        <div class="ex-name">ELEMENTARY CELLULAR AUTOMATA</div>
+                        <div class="ex-tag">Theoretical · Wolfram Physics</div>
+                    </div>
+                    <div class="ex-tag" style="color:rgba(245,243,239,0.5);">▲ Full hash as initial condition</div>
+                </div>
+                <div class="ex-mechanism">
+                    <div class="ex-col-label">// Mechanism</div>
+                    <div class="ex-col-title">Hash Bits → ECA Initial Condition → Rule Evolution</div>
+                    <p class="ex-col-body">Treat the 256-bit hash output as the initial row of a Wolfram Elementary Cellular Automaton. Apply a chosen rule — Rule 30 for cryptographic-quality randomness, Rule 110 for universal computation — and evolve forward. Each workshare produces a fresh, unpredictable, energy-anchored seed. The ECA evolution is deterministic and publicly reproducible from the hash alone. Anyone with the hash can verify the full output sequence. No trusted party. No additional computation cost beyond the hash already produced.</p>
+                </div>
+                <div class="ex-why">
+                    <div class="ex-col-label">// Why It Matters</div>
+                    <div class="ex-col-title">Rule 30 · Rule 110 · Universal Substrate</div>
+                    <p class="ex-col-body">Rule 30 is Wolfram's canonical pseudorandom generator — its center column passes statistical randomness tests that many purpose-built PRNGs fail. Seeded by a PoW hash, it produces a randomness stream no adversary can predict without solving the hash first. Rule 110 is more profound: it is a proven universal Turing machine. A hash-seeded Rule 110 evolution can, in principle, perform any computation — slowly, but verifiably and without trust. This means the unconsumed hash space is not merely a randomness source. It is a substrate for arbitrary verified computation, anchored to proof of work, running on top of Quai's existing mining with no additional energy cost.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 04: PATTERN CATALOG -->
+    <section id="catalog">
+        <div class="section-header fade-in">
+            <div class="section-num">04</div>
+            <div class="section-meta">
+                <div class="section-label">Possibility Space Index</div>
+                <div class="section-title">100 PATTERNS IN EVERY HASH</div>
+            </div>
+        </div>
+
+        <div class="callout fade-in" style="margin-top:0;">
+            <div class="callout-corner tl">DESIGN PRINCIPLE</div>
+            <h3>Any Rule Is a Construction</h3>
+            <p>Every entry below is a constraint that can be evaluated against a valid Quai hash at zero marginal cost. Some are positional. Some are relational. Some require the hash to match the binary expansion of a mathematical constant, or to seed an Elementary Cellular Automaton that halts. What determines usefulness is not the pattern itself — it is the timescale at which it occurs and the application that timescale serves.</p>
+        </div>
+
+        <div class="fade-in" style="background:var(--paper-2); border:var(--rule-bold); box-shadow:var(--shadow); overflow:hidden;">
+            <div style="background:var(--ink); color:var(--paper); padding:14px 28px; font-family:var(--font-mono); font-size:10px; letter-spacing:3px; text-transform:uppercase; display:flex; justify-content:space-between; align-items:center;">
+                <span>Pattern Catalog — Hash Possibility Space</span>
+                <span id="catalog-count" style="font-family:var(--font-mono); font-size:10px; color:var(--paper-3);">100 patterns</span>
+            </div>
+            <div style="padding:20px 24px;">
+                <div style="display:flex; gap:10px; margin-bottom:14px; align-items:center;">
+                    <input type="text" id="catalog-search" placeholder="Search patterns..." style="flex:1; font-family:var(--font-mono); font-size:12px; background:var(--paper); border:var(--rule-bold); padding:8px 12px; color:var(--ink); outline:none;">
+                </div>
+                <div id="catalog-cats" style="margin-bottom:16px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+                <div id="catalog-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:8px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 05: THE GENERAL PRINCIPLE -->
+    <section id="principle-general">
+        <div class="section-header fade-in">
+            <div class="section-num">05</div>
+            <div class="section-meta">
+                <div class="section-label">The Generalization</div>
+                <div class="section-title">THE HOLOGRAPHIC HASH PRINCIPLE</div>
+            </div>
+        </div>
+
+        <div class="callout highlight fade-in" style="margin-top:0;">
+            <div class="callout-corner tl">THESIS</div>
+            <h3>One Hash. Many Constructions.</h3>
+            <p>Any rule, constraint, or projection applied to the unconsumed region of a valid Quai hash defines a new useful construction — at zero marginal cost to the network. The relevant design questions are not whether it is possible, but what timescale the construction operates on, what use case that timescale serves, and whether the signal is frequent enough to be practical for that use case. The examples above operate across three different timescales: every workshare (seconds), every shadow-valid block (rare), and the cumulative stream over time. Each occupies a different part of the possibility space. None of them conflict. All of them are already being produced.</p>
+        </div>
+
+        <table class="poss-table fade-in">
+            <thead>
+                <tr>
+                    <th>Construction</th>
+                    <th>Hash Region</th>
+                    <th>Timescale</th>
+                    <th>Use Case</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="cell-primary">PoEM Difficulty</span><span class="cell-note">The existing system</span></td>
+                    <td><span class="cell-primary">Leading zeros</span></td>
+                    <td>Every workshare (~seconds)</td>
+                    <td>Block validity · Qi emission · chain ordering</td>
+                    <td><span class="badge live">Live</span></td>
+                </tr>
+                <tr>
+                    <td><span class="cell-primary">Workshare Oracle</span><span class="cell-note">Proto-15</span></td>
+                    <td><span class="cell-primary">Lagging non-zero digits</span></td>
+                    <td>Every workshare (~seconds)</td>
+                    <td>Verifiable randomness · oracle feeds · DeFi</td>
+                    <td><span class="badge live">Prototype</span></td>
+                </tr>
+                <tr>
+                    <td><span class="cell-primary">Node Identity</span><span class="cell-note">Entropy stream fingerprint</span></td>
+                    <td><span class="cell-primary">Cumulative stream distribution</span></td>
+                    <td>Continuous / statistical</td>
+                    <td>P2P trust · Sybil resistance · oracle reputation</td>
+                    <td><span class="badge">Conceptual</span></td>
+                </tr>
+                <tr>
+                    <td><span class="cell-primary">Shadow Chain</span><span class="cell-note">Quai's Shadow spec</span></td>
+                    <td><span class="cell-primary">Trailing ones (via NOT)</span></td>
+                    <td>Shadow-valid blocks (rare at high D)</td>
+                    <td>Entropy maxima · holographic chain construction</td>
+                    <td><span class="badge">Theoretical</span></td>
+                </tr>
+                <tr>
+                    <td><span class="cell-primary">Cross-Zone Sync</span><span class="cell-note">Unexplored</span></td>
+                    <td><span class="cell-primary">Relational — simultaneous zone hashes</span></td>
+                    <td>Block height coincidence</td>
+                    <td>Coordination primitive · timing anchor</td>
+                    <td><span class="badge">Open question</span></td>
+                </tr>
+                <tr>
+                    <td><span class="cell-primary">Middle-Band Sampling</span><span class="cell-note">Unexplored</span></td>
+                    <td><span class="cell-primary">Arbitrary bit-window within digest</span></td>
+                    <td>Defined by sampling rule</td>
+                    <td>Parameterized randomness · application-specific feeds</td>
+                    <td><span class="badge">Open question</span></td>
+                </tr>
+                <tr>
+                    <td><span class="cell-primary">ECA Rule 30</span><span class="cell-note">Hash-seeded pseudorandomness</span></td>
+                    <td><span class="cell-primary">Full 256-bit hash as initial row</span></td>
+                    <td>Every workshare (~seconds)</td>
+                    <td>High-quality PRNG · statistical randomness · sampling</td>
+                    <td><span class="badge">Theoretical</span></td>
+                </tr>
+                <tr>
+                    <td><span class="cell-primary">ECA Rule 110</span><span class="cell-note">Universal Turing machine substrate</span></td>
+                    <td><span class="cell-primary">Full 256-bit hash as initial condition</span></td>
+                    <td>Computation-depth dependent</td>
+                    <td>Verified arbitrary computation · trustless execution</td>
+                    <td><span class="badge">Theoretical</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="btn-row fade-in">
+            <a href="workshare-oracle.html" class="btn primary">Workshare Oracle — Proto-15</a>
+            <a href="quais-shadow.html" class="btn">Quai's Shadow — Spec 0.1</a>
+            <a href="https://thermoeconomics.info" target="_blank" class="btn">Thermoeconomics Research</a>
+        </div>
+    </section>
+
+    <!-- SECTION 06: OPEN QUESTIONS -->
+    <section id="questions">
+        <div class="section-header fade-in">
+            <div class="section-num">06</div>
+            <div class="section-meta">
+                <div class="section-label">Open Research</div>
+                <div class="section-title">WHAT REMAINS UNKNOWN</div>
+            </div>
+        </div>
+
+        <div class="two-col fade-in">
+            <div>
+                <div class="callout" style="margin-top:0; margin-bottom:24px;">
+                    <div class="callout-corner tl">Q.01</div>
+                    <h3>How Many Projections?</h3>
+                    <p>Is there a principled upper bound on the number of independent useful constructions that can be defined over a 256-bit hash? Or is the possibility space effectively unlimited, constrained only by the imagination of the designer and the timescale requirements of the use case?</p>
+                </div>
+                <div class="callout" style="margin-top:0;">
+                    <div class="callout-corner tl">Q.03</div>
+                    <h3>Do Projections Interfere?</h3>
+                    <p>If multiple constructions are reading different regions of the same hash simultaneously, can they create perverse incentives for miners? Could a miner optimize for a shadow condition or oracle output in a way that subtly degrades PoEM's entropy-minimization property?</p>
+                </div>
+            </div>
+            <div>
+                <div class="callout" style="margin-top:0; margin-bottom:24px;">
+                    <div class="callout-corner tl">Q.02</div>
+                    <h3>Zone vs. Region vs. Prime?</h3>
+                    <p>Zones produce workshares and are the source of hash randomness. Region and Prime are header chains with accounting roles. Does the optimal projection depend on which layer of the hierarchy produces it? Do region and prime headers enable projection types that zone hashes cannot?</p>
+                </div>
+                <div class="callout" style="margin-top:0;">
+                    <div class="callout-corner tl">Q.04</div>
+                    <h3>Wolfram as the Consumer?</h3>
+                    <p>If the hash possibility space is a stream of free verifiable randomness at multiple timescales, is Wolfram Mega Oracle the natural aggregator of all projections — treating each construction as a separate entropy channel feeding deterministic computation?</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout highlight fade-in">
+            <div class="callout-corner tl">THERMOECONOMIC NOTE</div>
+            <h3>Physics as Infrastructure</h3>
+            <p>PoEM selects for entropy minima — the most ordered state reachable from the most work. The unconsumed hash space encodes everything PoEM did not need to reach that state. It is, in thermodynamic terms, the dissipated degrees of freedom. Putting them to use is not a modification of the system. It is a more complete reading of the physics that was already happening. The work was already done. The energy was already spent. The question is only how much of what was produced we choose to look at.</p>
+        </div>
+    </section>
+
+    <footer>
+        <a href="index.html" class="footer-logo">QI</a>
+        <div class="footer-links">
+            <a href="index.html">Station</a>
+            <a href="quais-shadow.html">Quai's Shadow</a>
+            <a href="workshare-oracle.html">Workshare Oracle</a>
+            <a href="https://thermoeconomics.info" target="_blank">Thermoeconomics</a>
+            <a href="https://americanenergymoney.com" target="_blank">Energy Money</a>
+        </div>
+        <div class="footer-text">
+            HASH POSSIBILITY SPACE — DOC 0.1<br>
+            OPEN RESEARCH // QI NETWORK
+        </div>
+    </footer>
+
+    <script>
+        // ===== HERO HASH BIT DISPLAY =====
+        function buildHeroHash() {
+            const display = document.getElementById('heroHashDisplay');
+            if (!display) return;
+
+            for (let row = 0; row < 4; row++) {
+                const line = document.createElement('div');
+                line.className = 'hash-line';
+
+                for (let i = 0; i < 64; i++) {
+                    const b = document.createElement('div');
+                    b.className = 'hb';
+
+                    // Row 0: show leading zeros + shadow trailing
+                    // Row 1-3: show oracle region + mid
+                    const pos = row * 64 + i;
+
+                    if (pos < 20) {
+                        b.classList.add('used-lead');
+                    } else if (pos >= 220 && pos < 228) {
+                        b.classList.add('latent-a'); // oracle region
+                    } else if (pos >= 248) {
+                        b.classList.add('latent-b'); // shadow trailing
+                    } else {
+                        b.classList.add(Math.random() > 0.5 ? 'mid' : 'hb');
+                    }
+
+                    line.appendChild(b);
+                }
+                display.appendChild(line);
+            }
+        }
+
+        buildHeroHash();
+
+        // ===== SCROLL ANIMATIONS =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) e.target.classList.add('visible');
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // ===== PATTERN CATALOG =====
+        const CATS = [
+            {id:'pos',   label:'Positional',     color:'#1a1a1a', bg:'#E0DDD5'},
+            {id:'count', label:'Counting',        color:'#F5F3EF', bg:'#3A3A3A'},
+            {id:'run',   label:'Runs',            color:'#1a1a1a', bg:'#EDEAE4'},
+            {id:'sym',   label:'Symmetry',        color:'#F5F3EF', bg:'#555555'},
+            {id:'math',  label:'Math Constants',  color:'#1a1a1a', bg:'#D8D4CC'},
+            {id:'eca',   label:'ECA / Wolfram',   color:'#F5F3EF', bg:'#111111'},
+            {id:'nt',    label:'Number Theory',   color:'#1a1a1a', bg:'#E8E4DC'},
+            {id:'rel',   label:'Relational',      color:'#F5F3EF', bg:'#444444'},
+            {id:'known', label:'Known Patterns',  color:'#1a1a1a', bg:'#CFCBC3'},
+            {id:'info',  label:'Info-Theoretic',  color:'#F5F3EF', bg:'#222222'},
+        ];
+
+        const PATTERNS = [
+            {n:1,  cat:'pos',   name:'Leading zeros',                desc:'Count of consecutive 0-bits from bit 0. PoEM — the existing system.'},
+            {n:2,  cat:'pos',   name:'Trailing ones',                desc:'Count of consecutive 1-bits from bit 255. Quai\'s Shadow inversion.'},
+            {n:3,  cat:'pos',   name:'Leading ones',                 desc:'Count of consecutive 1-bits from bit 0. Symmetric complement to PoEM.'},
+            {n:4,  cat:'pos',   name:'Trailing zeros',               desc:'Consecutive 0-bits from bit 255 inward. Shadow of the shadow.'},
+            {n:5,  cat:'pos',   name:'Leading zero byte',            desc:'First full byte = 0x00. 8-bit coarse difficulty signal.'},
+            {n:6,  cat:'pos',   name:'Trailing one byte',            desc:'Last full byte = 0xFF. Byte-level shadow difficulty.'},
+            {n:7,  cat:'pos',   name:'Second-order leading zeros',   desc:'Count zeros from first 1-bit onward — leading zeros of the tail.'},
+            {n:8,  cat:'pos',   name:'Centered zeros',               desc:'Count consecutive 0-bits starting from bit 128. Middle-anchored signal.'},
+            {n:9,  cat:'pos',   name:'Alternating start 01',         desc:'Hash begins with 010101... — count of valid alternating prefix.'},
+            {n:10, cat:'pos',   name:'Alternating start 10',         desc:'Hash begins with 101010... — inverse alternating prefix count.'},
+            {n:11, cat:'count', name:'Hamming weight = target',      desc:'Total popcount equals a specific value N. Selects balanced hashes.'},
+            {n:12, cat:'count', name:'Perfect balance',              desc:'Exactly 128 zeros and 128 ones. Maximum entropy population.'},
+            {n:13, cat:'count', name:'Majority ones',                desc:'More than 128 bits are 1. Simple majority condition.'},
+            {n:14, cat:'count', name:'Majority zeros',               desc:'More than 128 bits are 0. Inverse majority condition.'},
+            {n:15, cat:'count', name:'Hamming weight is prime',      desc:'Total 1-count is prime. Combines number theory with bit structure.'},
+            {n:16, cat:'count', name:'Hamming weight is square',     desc:'Total 1-count is a perfect square (16, 25, 36, 49, 64...).'},
+            {n:17, cat:'count', name:'Hamming weight is Fibonacci',  desc:'Total 1-count is a Fibonacci number (1,2,3,5,8,13,21,34,55,89,144).'},
+            {n:18, cat:'count', name:'Even byte popcounts',          desc:'Every 8-bit byte has an even number of 1s. Parity-consistent hash.'},
+            {n:19, cat:'count', name:'Balanced halves',              desc:'First 128 bits perfectly balanced AND last 128 bits perfectly balanced.'},
+            {n:20, cat:'count', name:'Sparse hash',                  desc:'Fewer than 32 bits set to 1. Less than 12.5% density.'},
+            {n:21, cat:'run',   name:'Run of 5 zeros anywhere',      desc:'Any 5 consecutive 0-bits exist somewhere in the hash.'},
+            {n:22, cat:'run',   name:'Run of 5 ones anywhere',       desc:'Any 5 consecutive 1-bits exist somewhere in the hash.'},
+            {n:23, cat:'run',   name:'Run of 8 zeros anywhere',      desc:'Any 8 consecutive 0-bits. Equivalent to a zero byte somewhere.'},
+            {n:24, cat:'run',   name:'Run of 8 ones anywhere',       desc:'Any 8 consecutive 1-bits. Equivalent to 0xFF byte somewhere.'},
+            {n:25, cat:'run',   name:'01 repeated 4x anywhere',      desc:'Substring 01010101 found anywhere in the 256 bits.'},
+            {n:26, cat:'run',   name:'10 repeated 4x anywhere',      desc:'Substring 10101010 found anywhere in the 256 bits.'},
+            {n:27, cat:'run',   name:'111000 pattern anywhere',      desc:'Three consecutive 1s immediately followed by three 0s anywhere.'},
+            {n:28, cat:'run',   name:'000111 pattern anywhere',      desc:'Three zeros followed by three ones anywhere. Mirror of above.'},
+            {n:29, cat:'run',   name:'Longest run ≥ 12',             desc:'Maximum run of any identical bit reaches 12 or more.'},
+            {n:30, cat:'run',   name:'No run exceeds 4',             desc:'All runs are short — high local entropy, no obvious structure.'},
+            {n:31, cat:'sym',   name:'Full palindrome',              desc:'Hash reversed bit-for-bit equals itself. Probability 2⁻¹²⁷.'},
+            {n:32, cat:'sym',   name:'Global complement mirror',     desc:'First 128 bits = bitwise NOT of last 128 bits exactly.'},
+            {n:33, cat:'sym',   name:'Byte-end palindrome',          desc:'First byte reversed = last byte. Coarse-grained palindrome test.'},
+            {n:34, cat:'sym',   name:'XOR cancellation halves',      desc:'First 128 bits XOR last 128 bits = 0. Two halves are identical.'},
+            {n:35, cat:'sym',   name:'Odd-bit palindrome',           desc:'Bits at odd positions 1,3,5,...,255 form a palindrome sequence.'},
+            {n:36, cat:'sym',   name:'Even-bit palindrome',          desc:'Bits at even positions 0,2,4,...,254 form a palindrome sequence.'},
+            {n:37, cat:'sym',   name:'Rotational invariant',         desc:'Rotating hash by 128 positions produces an identical bit pattern.'},
+            {n:38, cat:'sym',   name:'Quarter-weight equality',      desc:'All four 64-bit quadrants have the same popcount.'},
+            {n:39, cat:'sym',   name:'Period-4 repetition',          desc:'Hash can be expressed as a 64-bit block repeated exactly 4 times.'},
+            {n:40, cat:'sym',   name:'Period-2 repetition',          desc:'First 128 bits = last 128 bits exactly. Period-2 structure.'},
+            {n:41, cat:'math',  name:'Binary digits of π',           desc:'First N non-leading bits match the binary expansion of pi after leading zeros.'},
+            {n:42, cat:'math',  name:'Binary digits of e',           desc:'First N bits after leading zeros match binary Euler\'s number.'},
+            {n:43, cat:'math',  name:'Binary digits of φ (phi)',     desc:'First N bits match binary golden ratio 1.6180339887...'},
+            {n:44, cat:'math',  name:'Binary digits of √2',          desc:'First N bits match 1.01101010000010011110...'},
+            {n:45, cat:'math',  name:'Binary digits of √3',          desc:'First N bits match binary 1.1011101101100111101...'},
+            {n:46, cat:'math',  name:'Binary digits of ln(2)',        desc:'First N bits match 0.10110001011100100001011...'},
+            {n:47, cat:'math',  name:'Binary digits of 1/π',         desc:'First N bits match binary reciprocal of pi.'},
+            {n:48, cat:'math',  name:'Euler–Mascheroni γ',           desc:'First N bits match γ = 0.5772156649... in binary.'},
+            {n:49, cat:'math',  name:'Feigenbaum constant δ',        desc:'First N bits match δ = 4.669201660910... in binary.'},
+            {n:50, cat:'math',  name:'Apéry\'s constant ζ(3)',       desc:'First N bits match ζ(3) = 1.2020569031... in binary.'},
+            {n:51, cat:'eca',   name:'Rule 30 — center column',      desc:'Hash seeds Rule 30 ECA; center column read for N steps yields 1s > 90%.'},
+            {n:52, cat:'eca',   name:'Rule 30 — row recurrence',     desc:'Rule 30 evolution from hash re-produces the original row within 256 steps.'},
+            {n:53, cat:'eca',   name:'Rule 110 — halting proxy',     desc:'Hash seeds a Rule 110 UTM; a marked region halts within N steps.'},
+            {n:54, cat:'eca',   name:'Rule 110 — glider survival',   desc:'Hash seeds Rule 110; at least one glider structure persists past step 128.'},
+            {n:55, cat:'eca',   name:'Rule 90 — checkerboard',       desc:'Rule 90 evolution from hash produces a checkerboard row within 8 steps.'},
+            {n:56, cat:'eca',   name:'Rule 150 — symmetric',         desc:'Hash seeds Rule 150; evolution is symmetric about center column.'},
+            {n:57, cat:'eca',   name:'Rule 184 — jam-free',          desc:'Hash seeds Rule 184 (traffic); no jam forms in first 64 steps.'},
+            {n:58, cat:'eca',   name:'Rule 54 — glider emission',    desc:'Hash seeds Rule 54; a glider structure appears within 32 steps.'},
+            {n:59, cat:'eca',   name:'Class 4 — still life',         desc:'ECA evolution under any Class 4 rule reaches a static row within N steps.'},
+            {n:60, cat:'eca',   name:'ECA period detection',         desc:'ECA evolution from hash re-visits the original row in ≤ 64 steps.'},
+            {n:61, cat:'nt',    name:'Hash value is prime',          desc:'256-bit integer interpretation of hash is a prime number. Extremely rare.'},
+            {n:62, cat:'nt',    name:'First 64 bits is prime',       desc:'Leading 64-bit window interpreted as integer is prime.'},
+            {n:63, cat:'nt',    name:'First 32 bits is prime',       desc:'Leading 32-bit window is prime. More frequent, still structured.'},
+            {n:64, cat:'nt',    name:'Hash mod 360 = 0',             desc:'Hash value divisible by 360. Circular coordinate anchor.'},
+            {n:65, cat:'nt',    name:'Hamming dist to genesis ≤ N',  desc:'Bit distance to Quai genesis hash is below threshold N.'},
+            {n:66, cat:'nt',    name:'Contains Mersenne prime bits', desc:'Any contiguous window contains binary of a known Mersenne prime.'},
+            {n:67, cat:'nt',    name:'Byte sum is perfect square',   desc:'Sum of all 32 bytes (0–255) is a perfect square.'},
+            {n:68, cat:'nt',    name:'Nibble palindrome',            desc:'All 64 nibbles (4-bit groups) read the same forwards and backwards.'},
+            {n:69, cat:'nt',    name:'Valid curve point',            desc:'256-bit value is a valid x-coordinate on secp256k1. ~50% probability.'},
+            {n:70, cat:'nt',    name:'Byte product ends in 0',       desc:'Product of non-zero bytes mod 10 = 0. Multiplicative digit condition.'},
+            {n:71, cat:'rel',   name:'Bit[i] = Bit[255−i] all i',   desc:'Full index-mirror palindrome. Much stricter than substring palindrome.'},
+            {n:72, cat:'rel',   name:'Halves identical',             desc:'Bit[i] = Bit[i+128] for all i. Two identical 128-bit halves.'},
+            {n:73, cat:'rel',   name:'Halves complement',            desc:'Bit[i] ≠ Bit[i+128] for all i. Global shadow condition across halves.'},
+            {n:74, cat:'rel',   name:'Stride-8 zeros',               desc:'Bits at positions 0,8,16,...,248 are all 0. Sparse regular zeros.'},
+            {n:75, cat:'rel',   name:'Stride-8 ones',                desc:'Bits at positions 0,8,16,...,248 are all 1. Sparse regular ones.'},
+            {n:76, cat:'rel',   name:'Prime-position zeros',         desc:'Bits at prime-numbered positions (2,3,5,7,11,...) are all 0.'},
+            {n:77, cat:'rel',   name:'Prime-position ones',          desc:'Bits at prime-numbered positions are all 1.'},
+            {n:78, cat:'rel',   name:'Fibonacci-position zeros',     desc:'Bits at positions 1,2,3,5,8,13,21,34,55,89,144,233 are all 0.'},
+            {n:79, cat:'rel',   name:'Fibonacci-position ones',      desc:'Bits at Fibonacci positions are all 1.'},
+            {n:80, cat:'rel',   name:'XOR with rotation = all ones', desc:'Hash XOR its own 1-bit rotation = 0xFFF...F. Maximum rotational difference.'},
+            {n:81, cat:'known', name:'Contains ASCII "QUAI"',        desc:'32-bit substring matching binary ASCII for "QUAI" exists anywhere.'},
+            {n:82, cat:'known', name:'Contains 0xDEADBEEF',         desc:'32-bit hex value 0xDEADBEEF found anywhere in the 256 bits.'},
+            {n:83, cat:'known', name:'Contains 0xCAFEBABE',         desc:'Java class magic number found anywhere. Arbitrary cultural marker.'},
+            {n:84, cat:'known', name:'Matches genesis prefix',       desc:'First N bits match the Quai mainnet genesis block hash prefix.'},
+            {n:85, cat:'known', name:'Encodes current block height', desc:'Some 32-bit window equals binary of current block height.'},
+            {n:86, cat:'known', name:'Encodes Planck constant bits', desc:'Some window matches binary mantissa of Planck\'s constant (6.626×10⁻³⁴).'},
+            {n:87, cat:'known', name:'Encodes speed of light bits',  desc:'Some window matches binary of c = 299,792,458 m/s.'},
+            {n:88, cat:'known', name:'Encodes Avogadro\'s number',   desc:'Some window matches binary mantissa of Nₐ = 6.022×10²³.'},
+            {n:89, cat:'known', name:'Contains SHA-256("0") prefix', desc:'32-bit prefix of SHA-256("0") found as substring anywhere.'},
+            {n:90, cat:'known', name:'Matches Satoshi address bits', desc:'Some 160-bit window matches the P2PKH hash of the genesis coinbase.'},
+            {n:91, cat:'info',  name:'Near-max Shannon entropy',     desc:'Byte-level Shannon entropy of the 32 bytes exceeds 7.9 bits/byte.'},
+            {n:92, cat:'info',  name:'Passes NIST frequency test',   desc:'Proportion of 1s is within [0.48, 0.52]. Near-perfect bit balance.'},
+            {n:93, cat:'info',  name:'No autocorrelation at lag 1',  desc:'Bit[i] XOR Bit[i+1] is balanced — no sequential correlation.'},
+            {n:94, cat:'info',  name:'Spectral flatness',            desc:'DFT of bit sequence has no dominant frequency component.'},
+            {n:95, cat:'info',  name:'All 256 byte values present',  desc:'Every possible byte value 0x00–0xFF appears in the 32-byte hash.'},
+            {n:96, cat:'info',  name:'Max run < log₂(256)',          desc:'Longest identical run shorter than 8 bits — no obvious structure.'},
+            {n:97, cat:'info',  name:'Incompressible proxy',         desc:'Run-length encoding of the hash exceeds 240 bits — not compressible.'},
+            {n:98, cat:'info',  name:'Balanced quadrants',           desc:'All four 64-bit sections have popcount within ±4 of 32.'},
+            {n:99, cat:'info',  name:'High cross-entropy with prev', desc:'Hamming distance to previous block\'s hash exceeds 100 bits.'},
+            {n:100,cat:'info',  name:'Min-entropy threshold',        desc:'Min-entropy of byte distribution (most-likely byte prob) < 1/32.'},
+        ];
+
+        const catMap = Object.fromEntries(CATS.map(c => [c.id, c]));
+        let catalogActive = 'all';
+
+        function buildCatalogCats() {
+            const el = document.getElementById('catalog-cats');
+            if (!el) return;
+            const mkBtn = (id, label, n) => {
+                const b = document.createElement('button');
+                b.id = 'ccat-' + id;
+                b.textContent = label + (n !== undefined ? ' (' + n + ')' : '');
+                b.style.cssText = 'font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border:var(--rule-bold);background:var(--paper);color:var(--ink-mid);cursor:pointer;margin:2px;';
+                b.onclick = () => { catalogActive = id; renderCatalog(); };
+                el.appendChild(b);
+            };
+            mkBtn('all', 'All', 100);
+            CATS.forEach(c => mkBtn(c.id, c.label, PATTERNS.filter(p => p.cat === c.id).length));
+        }
+
+        function renderCatalog() {
+            const q = (document.getElementById('catalog-search').value || '').toLowerCase();
+            const grid = document.getElementById('catalog-grid');
+            const countEl = document.getElementById('catalog-count');
+            if (!grid) return;
+
+            document.querySelectorAll('[id^="ccat-"]').forEach(b => {
+                b.style.background = 'var(--paper)';
+                b.style.color = 'var(--ink-mid)';
+            });
+            const ab = document.getElementById('ccat-' + catalogActive);
+            if (ab) { ab.style.background = 'var(--ink)'; ab.style.color = 'var(--paper)'; }
+
+            const filtered = PATTERNS.filter(p =>
+                (catalogActive === 'all' || p.cat === catalogActive) &&
+                (!q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))
+            );
+
+            if (countEl) countEl.textContent = filtered.length + ' pattern' + (filtered.length !== 1 ? 's' : '');
+            grid.innerHTML = '';
+
+            filtered.forEach(p => {
+                const c = catMap[p.cat];
+                const card = document.createElement('div');
+                card.style.cssText = 'background:var(--paper);border:var(--rule);padding:14px 16px;';
+                card.innerHTML =
+                    '<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--ink-light);margin-bottom:4px;">' + String(p.n).padStart(3,'0') + '</div>' +
+                    '<div style="font-family:var(--font-title);font-size:18px;letter-spacing:1px;color:var(--ink);margin-bottom:6px;line-height:1.1;">' + p.name + '</div>' +
+                    '<div style="font-family:var(--font-body);font-size:14px;font-weight:300;color:var(--ink-mid);line-height:1.6;">' + p.desc + '</div>' +
+                    '<span style="display:inline-block;margin-top:8px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:2px 8px;background:' + c.bg + ';color:' + c.color + ';">' + c.label + '</span>';
+                grid.appendChild(card);
+            });
+        }
+
+        buildCatalogCats();
+        renderCatalog();
+        document.getElementById('catalog-search').addEventListener('input', renderCatalog);
+    </script>
+</body>
+</html>
