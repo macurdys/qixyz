@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -511,21 +512,9 @@
 
     <!-- HERO -->
     <div class="hero" style="max-width:100%; margin-top:56px;">
-        <div class="hero-left">
-            <div class="hero-left-label">256-bit hash anatomy — what quai reads vs. what remains</div>
-            <div class="hero-hash-display" id="heroHashDisplay"></div>
-            <div class="hash-legend">
-                <div class="legend-row"><div class="legend-swatch ls-lead"></div>Leading zeros — consumed by PoEM difficulty</div>
-                <div class="legend-row"><div class="legend-swatch ls-mid"></div>Middle digest — unconsumed, statistically random</div>
-                <div class="legend-row"><div class="legend-swatch ls-a"></div>Lagging entropy — oracle randomness extraction</div>
-                <div class="legend-row"><div class="legend-swatch ls-b"></div>Trailing structure — shadow / holographic projection</div>
-            </div>
-            <div class="hero-left-label">fig. 01 — the unconsumed hash space</div>
-            <div class="hero-left-title">
-                HASH SPACE
-                <span>POSSIBILITY</span>
-                <span>MAP</span>
-            </div>
+        <div class="hero-left" style="padding:0; background:#06080d;">
+            <img src="Hash Space Possibility Map.jpeg" alt="Hash Space Possibility Map"
+                style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;opacity:0.92;" />
         </div>
 
         <div class="hero-content">
@@ -829,8 +818,12 @@
 
         <div class="callout fade-in" style="margin-top:0;">
             <div class="callout-corner tl">DESIGN PRINCIPLE</div>
-            <h3>Any Rule Is a Construction</h3>
-            <p>Every entry below is a constraint that can be evaluated against a valid Quai hash at zero marginal cost. Some are positional. Some are relational. Some require the hash to match the binary expansion of a mathematical constant, or to seed an Elementary Cellular Automaton that halts. What determines usefulness is not the pattern itself — it is the timescale at which it occurs and the application that timescale serves.</p>
+            <div class="callout-corner br">READING vs. RANKING</div>
+            <h3>Not Every Pattern Is the Same Kind of Useful</h3>
+            <p>Every entry below is a constraint that can be evaluated against a valid Quai hash at zero marginal cost. But patterns serve two fundamentally different purposes — and conflating them is a design error.</p>
+            <p style="margin-top:16px;"><strong>Reading</strong> — extracting a signal for an application: oracle feeds, randomness, node identity, ECA seeding. These patterns don't need a clean probability model. They just need to be unpredictable, verifiable, and useful at the right timescale.</p>
+            <p style="margin-top:12px;"><strong>Ranking</strong> — selecting a canonical chain state through consensus. These patterns must satisfy a harder set of requirements: easy to verify, impossible to bias except by brute force, precisely rankable, stable across all nodes, and calibratable for difficulty adjustment. The probability of producing the pattern must be derivable cleanly — otherwise difficulty adjustment becomes swampy.</p>
+            <p style="margin-top:12px;">Leading zeros won historically because the probability is gloriously simple: P(n leading zeros) = 2⁻ⁿ. Any candidate ranking pattern must clear that same bar. The catalog below marks each pattern <strong>Tractable</strong> — clean probability model, consensus-viable — or <strong>Swampy</strong> — interesting, but the math gets murky under difficulty adjustment.</p>
         </div>
 
         <div class="fade-in" style="background:var(--paper-2); border:var(--rule-bold); box-shadow:var(--shadow); overflow:hidden;">
@@ -1034,8 +1027,6 @@
             }
         }
 
-        buildHeroHash();
-
         // ===== SCROLL ANIMATIONS =====
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => {
@@ -1060,124 +1051,157 @@
         ];
 
         const PATTERNS = [
-            {n:1,  cat:'pos',   name:'Leading zeros',                desc:'Count of consecutive 0-bits from bit 0. PoEM — the existing system.'},
-            {n:2,  cat:'pos',   name:'Trailing ones',                desc:'Count of consecutive 1-bits from bit 255. Quai\'s Shadow inversion.'},
-            {n:3,  cat:'pos',   name:'Leading ones',                 desc:'Count of consecutive 1-bits from bit 0. Symmetric complement to PoEM.'},
-            {n:4,  cat:'pos',   name:'Trailing zeros',               desc:'Consecutive 0-bits from bit 255 inward. Shadow of the shadow.'},
-            {n:5,  cat:'pos',   name:'Leading zero byte',            desc:'First full byte = 0x00. 8-bit coarse difficulty signal.'},
-            {n:6,  cat:'pos',   name:'Trailing one byte',            desc:'Last full byte = 0xFF. Byte-level shadow difficulty.'},
-            {n:7,  cat:'pos',   name:'Second-order leading zeros',   desc:'Count zeros from first 1-bit onward — leading zeros of the tail.'},
-            {n:8,  cat:'pos',   name:'Centered zeros',               desc:'Count consecutive 0-bits starting from bit 128. Middle-anchored signal.'},
-            {n:9,  cat:'pos',   name:'Alternating start 01',         desc:'Hash begins with 010101... — count of valid alternating prefix.'},
-            {n:10, cat:'pos',   name:'Alternating start 10',         desc:'Hash begins with 101010... — inverse alternating prefix count.'},
-            {n:11, cat:'count', name:'Hamming weight = target',      desc:'Total popcount equals a specific value N. Selects balanced hashes.'},
-            {n:12, cat:'count', name:'Perfect balance',              desc:'Exactly 128 zeros and 128 ones. Maximum entropy population.'},
-            {n:13, cat:'count', name:'Majority ones',                desc:'More than 128 bits are 1. Simple majority condition.'},
-            {n:14, cat:'count', name:'Majority zeros',               desc:'More than 128 bits are 0. Inverse majority condition.'},
-            {n:15, cat:'count', name:'Hamming weight is prime',      desc:'Total 1-count is prime. Combines number theory with bit structure.'},
-            {n:16, cat:'count', name:'Hamming weight is square',     desc:'Total 1-count is a perfect square (16, 25, 36, 49, 64...).'},
-            {n:17, cat:'count', name:'Hamming weight is Fibonacci',  desc:'Total 1-count is a Fibonacci number (1,2,3,5,8,13,21,34,55,89,144).'},
-            {n:18, cat:'count', name:'Even byte popcounts',          desc:'Every 8-bit byte has an even number of 1s. Parity-consistent hash.'},
-            {n:19, cat:'count', name:'Balanced halves',              desc:'First 128 bits perfectly balanced AND last 128 bits perfectly balanced.'},
-            {n:20, cat:'count', name:'Sparse hash',                  desc:'Fewer than 32 bits set to 1. Less than 12.5% density.'},
-            {n:21, cat:'run',   name:'Run of 5 zeros anywhere',      desc:'Any 5 consecutive 0-bits exist somewhere in the hash.'},
-            {n:22, cat:'run',   name:'Run of 5 ones anywhere',       desc:'Any 5 consecutive 1-bits exist somewhere in the hash.'},
-            {n:23, cat:'run',   name:'Run of 8 zeros anywhere',      desc:'Any 8 consecutive 0-bits. Equivalent to a zero byte somewhere.'},
-            {n:24, cat:'run',   name:'Run of 8 ones anywhere',       desc:'Any 8 consecutive 1-bits. Equivalent to 0xFF byte somewhere.'},
-            {n:25, cat:'run',   name:'01 repeated 4x anywhere',      desc:'Substring 01010101 found anywhere in the 256 bits.'},
-            {n:26, cat:'run',   name:'10 repeated 4x anywhere',      desc:'Substring 10101010 found anywhere in the 256 bits.'},
-            {n:27, cat:'run',   name:'111000 pattern anywhere',      desc:'Three consecutive 1s immediately followed by three 0s anywhere.'},
-            {n:28, cat:'run',   name:'000111 pattern anywhere',      desc:'Three zeros followed by three ones anywhere. Mirror of above.'},
-            {n:29, cat:'run',   name:'Longest run ≥ 12',             desc:'Maximum run of any identical bit reaches 12 or more.'},
-            {n:30, cat:'run',   name:'No run exceeds 4',             desc:'All runs are short — high local entropy, no obvious structure.'},
-            {n:31, cat:'sym',   name:'Full palindrome',              desc:'Hash reversed bit-for-bit equals itself. Probability 2⁻¹²⁷.'},
-            {n:32, cat:'sym',   name:'Global complement mirror',     desc:'First 128 bits = bitwise NOT of last 128 bits exactly.'},
-            {n:33, cat:'sym',   name:'Byte-end palindrome',          desc:'First byte reversed = last byte. Coarse-grained palindrome test.'},
-            {n:34, cat:'sym',   name:'XOR cancellation halves',      desc:'First 128 bits XOR last 128 bits = 0. Two halves are identical.'},
-            {n:35, cat:'sym',   name:'Odd-bit palindrome',           desc:'Bits at odd positions 1,3,5,...,255 form a palindrome sequence.'},
-            {n:36, cat:'sym',   name:'Even-bit palindrome',          desc:'Bits at even positions 0,2,4,...,254 form a palindrome sequence.'},
-            {n:37, cat:'sym',   name:'Rotational invariant',         desc:'Rotating hash by 128 positions produces an identical bit pattern.'},
-            {n:38, cat:'sym',   name:'Quarter-weight equality',      desc:'All four 64-bit quadrants have the same popcount.'},
-            {n:39, cat:'sym',   name:'Period-4 repetition',          desc:'Hash can be expressed as a 64-bit block repeated exactly 4 times.'},
-            {n:40, cat:'sym',   name:'Period-2 repetition',          desc:'First 128 bits = last 128 bits exactly. Period-2 structure.'},
-            {n:41, cat:'math',  name:'Binary digits of π',           desc:'First N non-leading bits match the binary expansion of pi after leading zeros.'},
-            {n:42, cat:'math',  name:'Binary digits of e',           desc:'First N bits after leading zeros match binary Euler\'s number.'},
-            {n:43, cat:'math',  name:'Binary digits of φ (phi)',     desc:'First N bits match binary golden ratio 1.6180339887...'},
-            {n:44, cat:'math',  name:'Binary digits of √2',          desc:'First N bits match 1.01101010000010011110...'},
-            {n:45, cat:'math',  name:'Binary digits of √3',          desc:'First N bits match binary 1.1011101101100111101...'},
-            {n:46, cat:'math',  name:'Binary digits of ln(2)',        desc:'First N bits match 0.10110001011100100001011...'},
-            {n:47, cat:'math',  name:'Binary digits of 1/π',         desc:'First N bits match binary reciprocal of pi.'},
-            {n:48, cat:'math',  name:'Euler–Mascheroni γ',           desc:'First N bits match γ = 0.5772156649... in binary.'},
-            {n:49, cat:'math',  name:'Feigenbaum constant δ',        desc:'First N bits match δ = 4.669201660910... in binary.'},
-            {n:50, cat:'math',  name:'Apéry\'s constant ζ(3)',       desc:'First N bits match ζ(3) = 1.2020569031... in binary.'},
-            {n:51, cat:'eca',   name:'Rule 30 — center column',      desc:'Hash seeds Rule 30 ECA; center column read for N steps yields 1s > 90%.'},
-            {n:52, cat:'eca',   name:'Rule 30 — row recurrence',     desc:'Rule 30 evolution from hash re-produces the original row within 256 steps.'},
-            {n:53, cat:'eca',   name:'Rule 110 — halting proxy',     desc:'Hash seeds a Rule 110 UTM; a marked region halts within N steps.'},
-            {n:54, cat:'eca',   name:'Rule 110 — glider survival',   desc:'Hash seeds Rule 110; at least one glider structure persists past step 128.'},
-            {n:55, cat:'eca',   name:'Rule 90 — checkerboard',       desc:'Rule 90 evolution from hash produces a checkerboard row within 8 steps.'},
-            {n:56, cat:'eca',   name:'Rule 150 — symmetric',         desc:'Hash seeds Rule 150; evolution is symmetric about center column.'},
-            {n:57, cat:'eca',   name:'Rule 184 — jam-free',          desc:'Hash seeds Rule 184 (traffic); no jam forms in first 64 steps.'},
-            {n:58, cat:'eca',   name:'Rule 54 — glider emission',    desc:'Hash seeds Rule 54; a glider structure appears within 32 steps.'},
-            {n:59, cat:'eca',   name:'Class 4 — still life',         desc:'ECA evolution under any Class 4 rule reaches a static row within N steps.'},
-            {n:60, cat:'eca',   name:'ECA period detection',         desc:'ECA evolution from hash re-visits the original row in ≤ 64 steps.'},
-            {n:61, cat:'nt',    name:'Hash value is prime',          desc:'256-bit integer interpretation of hash is a prime number. Extremely rare.'},
-            {n:62, cat:'nt',    name:'First 64 bits is prime',       desc:'Leading 64-bit window interpreted as integer is prime.'},
-            {n:63, cat:'nt',    name:'First 32 bits is prime',       desc:'Leading 32-bit window is prime. More frequent, still structured.'},
-            {n:64, cat:'nt',    name:'Hash mod 360 = 0',             desc:'Hash value divisible by 360. Circular coordinate anchor.'},
-            {n:65, cat:'nt',    name:'Hamming dist to genesis ≤ N',  desc:'Bit distance to Quai genesis hash is below threshold N.'},
-            {n:66, cat:'nt',    name:'Contains Mersenne prime bits', desc:'Any contiguous window contains binary of a known Mersenne prime.'},
-            {n:67, cat:'nt',    name:'Byte sum is perfect square',   desc:'Sum of all 32 bytes (0–255) is a perfect square.'},
-            {n:68, cat:'nt',    name:'Nibble palindrome',            desc:'All 64 nibbles (4-bit groups) read the same forwards and backwards.'},
-            {n:69, cat:'nt',    name:'Valid curve point',            desc:'256-bit value is a valid x-coordinate on secp256k1. ~50% probability.'},
-            {n:70, cat:'nt',    name:'Byte product ends in 0',       desc:'Product of non-zero bytes mod 10 = 0. Multiplicative digit condition.'},
-            {n:71, cat:'rel',   name:'Bit[i] = Bit[255−i] all i',   desc:'Full index-mirror palindrome. Much stricter than substring palindrome.'},
-            {n:72, cat:'rel',   name:'Halves identical',             desc:'Bit[i] = Bit[i+128] for all i. Two identical 128-bit halves.'},
-            {n:73, cat:'rel',   name:'Halves complement',            desc:'Bit[i] ≠ Bit[i+128] for all i. Global shadow condition across halves.'},
-            {n:74, cat:'rel',   name:'Stride-8 zeros',               desc:'Bits at positions 0,8,16,...,248 are all 0. Sparse regular zeros.'},
-            {n:75, cat:'rel',   name:'Stride-8 ones',                desc:'Bits at positions 0,8,16,...,248 are all 1. Sparse regular ones.'},
-            {n:76, cat:'rel',   name:'Prime-position zeros',         desc:'Bits at prime-numbered positions (2,3,5,7,11,...) are all 0.'},
-            {n:77, cat:'rel',   name:'Prime-position ones',          desc:'Bits at prime-numbered positions are all 1.'},
-            {n:78, cat:'rel',   name:'Fibonacci-position zeros',     desc:'Bits at positions 1,2,3,5,8,13,21,34,55,89,144,233 are all 0.'},
-            {n:79, cat:'rel',   name:'Fibonacci-position ones',      desc:'Bits at Fibonacci positions are all 1.'},
-            {n:80, cat:'rel',   name:'XOR with rotation = all ones', desc:'Hash XOR its own 1-bit rotation = 0xFFF...F. Maximum rotational difference.'},
-            {n:81, cat:'known', name:'Contains ASCII "QUAI"',        desc:'32-bit substring matching binary ASCII for "QUAI" exists anywhere.'},
-            {n:82, cat:'known', name:'Contains 0xDEADBEEF',         desc:'32-bit hex value 0xDEADBEEF found anywhere in the 256 bits.'},
-            {n:83, cat:'known', name:'Contains 0xCAFEBABE',         desc:'Java class magic number found anywhere. Arbitrary cultural marker.'},
-            {n:84, cat:'known', name:'Matches genesis prefix',       desc:'First N bits match the Quai mainnet genesis block hash prefix.'},
-            {n:85, cat:'known', name:'Encodes current block height', desc:'Some 32-bit window equals binary of current block height.'},
-            {n:86, cat:'known', name:'Encodes Planck constant bits', desc:'Some window matches binary mantissa of Planck\'s constant (6.626×10⁻³⁴).'},
-            {n:87, cat:'known', name:'Encodes speed of light bits',  desc:'Some window matches binary of c = 299,792,458 m/s.'},
-            {n:88, cat:'known', name:'Encodes Avogadro\'s number',   desc:'Some window matches binary mantissa of Nₐ = 6.022×10²³.'},
-            {n:89, cat:'known', name:'Contains SHA-256("0") prefix', desc:'32-bit prefix of SHA-256("0") found as substring anywhere.'},
-            {n:90, cat:'known', name:'Matches Satoshi address bits', desc:'Some 160-bit window matches the P2PKH hash of the genesis coinbase.'},
-            {n:91, cat:'info',  name:'Near-max Shannon entropy',     desc:'Byte-level Shannon entropy of the 32 bytes exceeds 7.9 bits/byte.'},
-            {n:92, cat:'info',  name:'Passes NIST frequency test',   desc:'Proportion of 1s is within [0.48, 0.52]. Near-perfect bit balance.'},
-            {n:93, cat:'info',  name:'No autocorrelation at lag 1',  desc:'Bit[i] XOR Bit[i+1] is balanced — no sequential correlation.'},
-            {n:94, cat:'info',  name:'Spectral flatness',            desc:'DFT of bit sequence has no dominant frequency component.'},
-            {n:95, cat:'info',  name:'All 256 byte values present',  desc:'Every possible byte value 0x00–0xFF appears in the 32-byte hash.'},
-            {n:96, cat:'info',  name:'Max run < log₂(256)',          desc:'Longest identical run shorter than 8 bits — no obvious structure.'},
-            {n:97, cat:'info',  name:'Incompressible proxy',         desc:'Run-length encoding of the hash exceeds 240 bits — not compressible.'},
-            {n:98, cat:'info',  name:'Balanced quadrants',           desc:'All four 64-bit sections have popcount within ±4 of 32.'},
-            {n:99, cat:'info',  name:'High cross-entropy with prev', desc:'Hamming distance to previous block\'s hash exceeds 100 bits.'},
-            {n:100,cat:'info',  name:'Min-entropy threshold',        desc:'Min-entropy of byte distribution (most-likely byte prob) < 1/32.'},
+            {n:1,  cat:'pos',   rank:'tractable',   name:'Leading zeros',                desc:'Count of consecutive 0-bits from bit 0. PoEM — the existing system. P = 2⁻ⁿ.'},
+            {n:2,  cat:'pos',   rank:'tractable',   name:'Trailing ones',                desc:'Count of consecutive 1-bits from bit 255. Quai\'s Shadow. P = 2⁻ⁿ, identical to leading zeros.'},
+            {n:3,  cat:'pos',   rank:'tractable',   name:'Leading ones',                 desc:'Count of consecutive 1-bits from bit 0. Symmetric complement to PoEM. P = 2⁻ⁿ.'},
+            {n:4,  cat:'pos',   rank:'tractable',   name:'Trailing zeros',               desc:'Consecutive 0-bits from bit 255 inward. Shadow of the shadow. P = 2⁻ⁿ.'},
+            {n:5,  cat:'pos',   rank:'tractable',   name:'Leading zero byte',            desc:'First full byte = 0x00. 8-bit coarse difficulty signal. P = 2⁻⁸.'},
+            {n:6,  cat:'pos',   rank:'tractable',   name:'Trailing one byte',            desc:'Last full byte = 0xFF. Byte-level shadow difficulty. P = 2⁻⁸.'},
+            {n:7,  cat:'pos',   rank:'tractable',   name:'Second-order leading zeros',   desc:'Count zeros from first 1-bit onward — leading zeros of the tail. Clean geometric distribution.'},
+            {n:8,  cat:'pos',   rank:'tractable',   name:'Centered zeros',               desc:'Consecutive 0-bits from bit 128. Middle-anchored. P = 2⁻ⁿ, same model as leading zeros.'},
+            {n:9,  cat:'pos',   rank:'tractable',   name:'Alternating start 01',         desc:'Hash begins with 010101... P(length ≥ n) = 2⁻ⁿ. Clean geometric, easy to rank.'},
+            {n:10, cat:'pos',   rank:'tractable',   name:'Alternating start 10',         desc:'Hash begins with 101010... Inverse alternating. Same clean P = 2⁻ⁿ model.'},
+            {n:11, cat:'count', rank:'tractable',   name:'Hamming weight = target',      desc:'Total popcount equals N. Binomial distribution, exact probability derivable. Clean difficulty model.'},
+            {n:12, cat:'count', rank:'tractable',   name:'Perfect balance',              desc:'Exactly 128 zeros and 128 ones. P = C(256,128)/2²⁵⁶ ≈ 5×10⁻³. Rare and precisely calculable.'},
+            {n:13, cat:'count', rank:'tractable',   name:'Majority ones',                desc:'More than 128 bits are 1. P ≈ 0.5. Too common for consensus ranking but clean for reading.'},
+            {n:14, cat:'count', rank:'tractable',   name:'Majority zeros',               desc:'More than 128 bits are 0. P ≈ 0.5. Inverse majority. Same clean binomial model.'},
+            {n:15, cat:'count', rank:'swampy',name:'Hamming weight is prime',      desc:'Total 1-count is prime. Prime density is irregular — no closed-form probability model. Swampy for difficulty adjustment.'},
+            {n:16, cat:'count', rank:'swampy',name:'Hamming weight is square',     desc:'1-count is a perfect square. Irregular density of squares makes difficulty tuning unreliable.'},
+            {n:17, cat:'count', rank:'swampy',name:'Hamming weight is Fibonacci',  desc:'1-count is a Fibonacci number. Fibonacci density thins out fast — variance explodes at high difficulty.'},
+            {n:18, cat:'count', rank:'tractable',   name:'Even byte popcounts',          desc:'Every byte has even popcount. P = (1/2)³² = 2⁻³². Parity-consistent. Clean and verifiable.'},
+            {n:19, cat:'count', rank:'tractable',   name:'Balanced halves',              desc:'Both 128-bit halves perfectly balanced. Product of two binomial probabilities — derivable and stable.'},
+            {n:20, cat:'count', rank:'tractable',   name:'Sparse hash',                  desc:'Fewer than 32 bits set. Cumulative binomial tail — calculable. Clean rarity gradient.'},
+            {n:21, cat:'run',   rank:'tractable',   name:'Run of 5 zeros anywhere',      desc:'Any 5 consecutive 0-bits anywhere. Geometric approximation holds well. P ≈ 1−(1−2⁻⁵)²⁵².'},
+            {n:22, cat:'run',   rank:'tractable',   name:'Run of 5 ones anywhere',       desc:'Any 5 consecutive 1-bits anywhere. Same clean geometric approximation.'},
+            {n:23, cat:'run',   rank:'tractable',   name:'Run of 8 zeros anywhere',      desc:'Any zero byte somewhere. P ≈ 1−(255/256)³². Exactly modelable.'},
+            {n:24, cat:'run',   rank:'tractable',   name:'Run of 8 ones anywhere',       desc:'Any 0xFF byte somewhere. Same clean probability model as run of 8 zeros.'},
+            {n:25, cat:'run',   rank:'tractable',   name:'01 repeated 4x anywhere',      desc:'Pattern 01010101 anywhere. Fixed-length substring match. P ≈ 249/2⁸. Clean.'},
+            {n:26, cat:'run',   rank:'tractable',   name:'10 repeated 4x anywhere',      desc:'Pattern 10101010 anywhere. Same clean substring probability.'},
+            {n:27, cat:'run',   rank:'tractable',   name:'111000 pattern anywhere',      desc:'Six-bit motif anywhere. Fixed probability per window, clean geometric sum.'},
+            {n:28, cat:'run',   rank:'tractable',   name:'000111 pattern anywhere',      desc:'Mirror six-bit motif. Same clean probability model.'},
+            {n:29, cat:'run',   rank:'tractable',   name:'Longest run ≥ 12',             desc:'Max run reaches 12. Extreme value distribution of run lengths — well-studied, modelable.'},
+            {n:30, cat:'run',   rank:'swampy',name:'No run exceeds 4',             desc:'Joint condition across all runs. Probability of maximum run staying below threshold has complex dependencies. Swampy.'},
+            {n:31, cat:'sym',   rank:'tractable',   name:'Full palindrome',              desc:'Hash is its own bitwise reverse. Exactly 2⁻¹²⁷ of hashes satisfy this. Gloriously rare and clean.'},
+            {n:32, cat:'sym',   rank:'tractable',   name:'Global complement mirror',     desc:'First 128 bits = NOT of last 128 bits. P = 2⁻¹²⁸. Clean and precisely rankable.'},
+            {n:33, cat:'sym',   rank:'tractable',   name:'Byte-end palindrome',          desc:'First byte reversed = last byte. P = 2⁻⁸. Coarse but perfectly clean probability model.'},
+            {n:34, cat:'sym',   rank:'tractable',   name:'XOR cancellation halves',      desc:'Halves XOR to zero — i.e. identical. P = 2⁻¹²⁸. Clean.'},
+            {n:35, cat:'sym',   rank:'tractable',   name:'Odd-bit palindrome',           desc:'128 odd-indexed bits form a palindrome. P = 2⁻⁶⁴. Derivable and stable.'},
+            {n:36, cat:'sym',   rank:'tractable',   name:'Even-bit palindrome',          desc:'128 even-indexed bits form a palindrome. P = 2⁻⁶⁴. Same clean model.'},
+            {n:37, cat:'sym',   rank:'tractable',   name:'Rotational invariant',         desc:'Hash unchanged after 128-bit rotation. P = 2⁻¹²⁸. Equivalent to halves-identical condition.'},
+            {n:38, cat:'sym',   rank:'swampy',name:'Quarter-weight equality',      desc:'All four 64-bit quadrants same popcount. Multinomial probability — complex to derive cleanly for difficulty tuning.'},
+            {n:39, cat:'sym',   rank:'tractable',   name:'Period-4 repetition',          desc:'64-bit block repeated 4 times. P = 2⁻¹⁹². Clean — only 64 free bits.'},
+            {n:40, cat:'sym',   rank:'tractable',   name:'Period-2 repetition',          desc:'128-bit block repeated twice. P = 2⁻¹²⁸. Clean and precisely rankable.'},
+            {n:41, cat:'math',  rank:'swampy',name:'Binary digits of π',           desc:'Bits match binary π after leading zeros. No tractable probability model — match length distribution requires knowing normality of π. Swampy.'},
+            {n:42, cat:'math',  rank:'swampy',name:'Binary digits of e',           desc:'Bits match binary e. Same swampy dependency on normality conjecture — unproven, probability model unreliable.'},
+            {n:43, cat:'math',  rank:'swampy',name:'Binary digits of φ (phi)',     desc:'Bits match binary golden ratio. Normality of φ unproven — no clean difficulty model possible.'},
+            {n:44, cat:'math',  rank:'swampy',name:'Binary digits of √2',          desc:'Bits match binary √2. Irrational but normality unproven — probability of n-bit match not cleanly derivable.'},
+            {n:45, cat:'math',  rank:'swampy',name:'Binary digits of √3',          desc:'Bits match binary √3. Same swampy normality problem.'},
+            {n:46, cat:'math',  rank:'swampy',name:'Binary digits of ln(2)',        desc:'Bits match binary ln(2). Normality unproven. Probability model for difficulty adjustment is unreliable.'},
+            {n:47, cat:'math',  rank:'swampy',name:'Binary digits of 1/π',         desc:'Bits match binary 1/π. Swampy — no clean probability derivation without normality proof.'},
+            {n:48, cat:'math',  rank:'swampy',name:'Euler–Mascheroni γ',           desc:'Bits match γ = 0.5772... Even rationality of γ is unproven — probability model is entirely swampy.'},
+            {n:49, cat:'math',  rank:'swampy',name:'Feigenbaum constant δ',        desc:'Bits match δ = 4.6692... Transcendental but no normality result — swampy for consensus.'},
+            {n:50, cat:'math',  rank:'swampy',name:'Apéry\'s constant ζ(3)',       desc:'Bits match ζ(3) = 1.2020... Irrationality proven, normality unknown — swampy probability model.'},
+            {n:51, cat:'eca',   rank:'swampy',name:'Rule 30 — center column',      desc:'Hash seeds Rule 30; center column statistics evaluated. No closed-form probability — computationally intensive to model.'},
+            {n:52, cat:'eca',   rank:'swampy',name:'Rule 30 — row recurrence',     desc:'Rule 30 re-produces original row within N steps. Period distribution of ECA from random seeds has no clean formula.'},
+            {n:53, cat:'eca',   rank:'swampy',name:'Rule 110 — halting proxy',     desc:'Rule 110 is a universal Turing machine — halting is undecidable in general. Maximally swampy for consensus.'},
+            {n:54, cat:'eca',   rank:'swampy',name:'Rule 110 — glider survival',   desc:'Glider persistence in Rule 110. No tractable probability model for glider emergence from arbitrary seeds.'},
+            {n:55, cat:'eca',   rank:'swampy',name:'Rule 90 — checkerboard',       desc:'Rule 90 produces checkerboard within 8 steps. Probability depends on seed structure in non-obvious ways.'},
+            {n:56, cat:'eca',   rank:'swampy',name:'Rule 150 — symmetric',         desc:'Rule 150 evolution is symmetric about center. Seed-dependent symmetry probability has no clean model.'},
+            {n:57, cat:'eca',   rank:'swampy',name:'Rule 184 — jam-free',          desc:'Rule 184 traffic rule; jam-free condition. Depends on density of initial 1s in complex non-linear way.'},
+            {n:58, cat:'eca',   rank:'swampy',name:'Rule 54 — glider emission',    desc:'Rule 54 glider appearance. Probability of glider emission from random seed is computationally expensive to derive.'},
+            {n:59, cat:'eca',   rank:'swampy',name:'Class 4 — still life',         desc:'Any Class 4 rule reaches static row. Class 4 rules are computationally irreducible — probability not derivable without simulation.'},
+            {n:60, cat:'eca',   rank:'swampy',name:'ECA period detection',         desc:'ECA revisits original row within N steps. Short-period probability depends on rule class in complex ways.'},
+            {n:61, cat:'nt',    rank:'swampy',name:'Hash value is prime',          desc:'Full 256-bit hash is prime. Prime density ≈ 1/ln(2²⁵⁶) ≈ 1/177 — roughly stable but ranking is non-monotone. Swampy.'},
+            {n:62, cat:'nt',    rank:'swampy',name:'First 64 bits is prime',       desc:'64-bit window is prime. Density ≈ 1/44. Ranking is non-monotone — two primes are not comparable by rarity alone.'},
+            {n:63, cat:'nt',    rank:'tractable',   name:'First 32 bits is prime',       desc:'32-bit window is prime. P ≈ 1/ln(2³²) ≈ 1/22. Frequent and modelable — good for reading, borderline for ranking.'},
+            {n:64, cat:'nt',    rank:'tractable',   name:'Hash mod 360 = 0',             desc:'Hash divisible by 360. P = 1/360. Clean, uniform, precisely rankable. No difficulty tuning issues.'},
+            {n:65, cat:'nt',    rank:'tractable',   name:'Hamming dist to genesis ≤ N',  desc:'Bit distance below threshold N. Binomial tail — exact probability derivable. Clean rarity gradient.'},
+            {n:66, cat:'nt',    rank:'swampy',name:'Contains Mersenne prime bits', desc:'Window contains a Mersenne prime. Only 51 known Mersenne primes — irregular occurrence makes probability model swampy.'},
+            {n:67, cat:'nt',    rank:'swampy',name:'Byte sum is perfect square',   desc:'Sum of 32 bytes is a perfect square. Square density is irregular at small scales — swampy for difficulty adjustment.'},
+            {n:68, cat:'nt',    rank:'tractable',   name:'Nibble palindrome',            desc:'All 64 nibbles palindrome. P = (1/2⁴)⁃ˢᵒᵐᵉ. Clean positional condition — probability derivable.'},
+            {n:69, cat:'nt',    rank:'tractable',   name:'Valid curve point',            desc:'Hash is valid secp256k1 x-coordinate. P ≈ 1/2. Too common for consensus but perfectly clean probability.'},
+            {n:70, cat:'nt',    rank:'swampy',name:'Byte product ends in 0',       desc:'Non-zero byte product mod 10 = 0. Multiplicative structure over bytes has complex probability — swampy.'},
+            {n:71, cat:'rel',   rank:'tractable',   name:'Bit[i] = Bit[255−i] all i',   desc:'Full index-mirror palindrome. P = 2⁻¹²⁸. Clean — equivalent difficulty to 128 leading zeros.'},
+            {n:72, cat:'rel',   rank:'tractable',   name:'Halves identical',             desc:'Bit[i] = Bit[i+128] for all i. P = 2⁻¹²⁸. Clean and precisely rankable.'},
+            {n:73, cat:'rel',   rank:'tractable',   name:'Halves complement',            desc:'Bit[i] ≠ Bit[i+128] for all i. P = 2⁻¹²⁸. Global shadow condition — same clean model.'},
+            {n:74, cat:'rel',   rank:'tractable',   name:'Stride-8 zeros',               desc:'Bits at positions 0,8,...,248 all zero. P = 2⁻³². Clean positional condition, precisely rankable.'},
+            {n:75, cat:'rel',   rank:'tractable',   name:'Stride-8 ones',                desc:'Bits at positions 0,8,...,248 all one. P = 2⁻³². Same clean model.'},
+            {n:76, cat:'rel',   rank:'tractable',   name:'Prime-position zeros',         desc:'Bits at all 54 prime-numbered positions are 0. P = 2⁻⁵⁴. Fixed set of positions — clean.'},
+            {n:77, cat:'rel',   rank:'tractable',   name:'Prime-position ones',          desc:'Bits at all prime positions are 1. P = 2⁻⁵⁴. Same clean model.'},
+            {n:78, cat:'rel',   rank:'tractable',   name:'Fibonacci-position zeros',     desc:'Bits at 12 Fibonacci positions (≤255) all zero. P = 2⁻¹². Rare and cleanly derivable.'},
+            {n:79, cat:'rel',   rank:'tractable',   name:'Fibonacci-position ones',      desc:'Bits at 12 Fibonacci positions all one. P = 2⁻¹². Same clean model.'},
+            {n:80, cat:'rel',   rank:'tractable',   name:'XOR with rotation = all ones', desc:'Hash XOR 1-bit rotation = 0xFF...F. Every adjacent pair must differ. P = 2⁻²⁵⁵. Clean.'},
+            {n:81, cat:'known', rank:'tractable',   name:'Contains ASCII "QUAI"',        desc:'32-bit ASCII match anywhere. P ≈ 249/2³² per position — clean substring probability.'},
+            {n:82, cat:'known', rank:'tractable',   name:'Contains 0xDEADBEEF',         desc:'32-bit hex match anywhere. P ≈ 249/2³². Clean — same model as any fixed 32-bit substring.'},
+            {n:83, cat:'known', rank:'tractable',   name:'Contains 0xCAFEBABE',         desc:'Fixed 32-bit match anywhere. P ≈ 249/2³². Clean substring probability.'},
+            {n:84, cat:'known', rank:'tractable',   name:'Matches genesis prefix',       desc:'First N bits match genesis hash. P = 2⁻ᴺ. Clean — equivalent to leading zeros by another target.'},
+            {n:85, cat:'known', rank:'swampy',name:'Encodes current block height', desc:'32-bit window equals current block height. Target shifts every block — difficulty adjustment is non-stationary. Swampy.'},
+            {n:86, cat:'known', rank:'swampy',name:'Encodes Planck constant bits', desc:'Window matches Planck constant mantissa. Ambiguous window size and encoding — no clean probability model.'},
+            {n:87, cat:'known', rank:'tractable',   name:'Encodes speed of light bits',  desc:'Window matches c = 299792458. Fixed 32-bit integer — clean substring probability P ≈ 249/2³².'},
+            {n:88, cat:'known', rank:'swampy',name:'Encodes Avogadro\'s number',   desc:'Window matches Nₐ mantissa. Floating-point encoding ambiguity makes probability model swampy.'},
+            {n:89, cat:'known', rank:'tractable',   name:'Contains SHA-256("0") prefix', desc:'Fixed 32-bit substring match. P ≈ 249/2³². Clean — same as any known fixed target.'},
+            {n:90, cat:'known', rank:'tractable',   name:'Matches Satoshi address bits', desc:'160-bit window matches genesis P2PKH hash. P ≈ 97/2¹⁶⁰. Extremely rare and precisely calculable.'},
+            {n:91, cat:'info',  rank:'swampy',name:'Near-max Shannon entropy',     desc:'Sample entropy exceeds 7.9 bits/byte. Distribution of sample entropy from uniform source has complex tails. Swampy.'},
+            {n:92, cat:'info',  rank:'tractable',   name:'Passes NIST frequency test',   desc:'Proportion of 1s in [0.48, 0.52]. Normal approximation to binomial — clean probability model.'},
+            {n:93, cat:'info',  rank:'tractable',   name:'No autocorrelation at lag 1',  desc:'Adjacent bit XOR is balanced. Clean binomial model on 255 adjacent pairs.'},
+            {n:94, cat:'info',  rank:'swampy',name:'Spectral flatness',            desc:'DFT has no dominant frequency. Distribution of DFT magnitude under random input is complex — swampy for difficulty.'},
+            {n:95, cat:'info',  rank:'swampy',name:'All 256 byte values present',  desc:'Birthday problem variant — all 256 values in 32 draws is impossible (32 < 256). Condition is never satisfied. Maximally swampy.'},
+            {n:96, cat:'info',  rank:'tractable',   name:'Max run < log₂(256)',          desc:'Longest run shorter than 8 bits. Extreme value distribution of runs — well-studied. Clean probability model.'},
+            {n:97, cat:'info',  rank:'swampy',name:'Incompressible proxy',         desc:'RLE exceeds 240 bits. Compression length distribution has no closed form — swampy for difficulty tuning.'},
+            {n:98, cat:'info',  rank:'tractable',   name:'Balanced quadrants',           desc:'All four 64-bit quadrants have popcount within ±4 of 32. Product of four binomial windows — derivable.'},
+            {n:99, cat:'info',  rank:'tractable',   name:'High cross-entropy with prev', desc:'Hamming distance to previous hash exceeds 100 bits. Binomial model — exact probability derivable and stable.'},
+            {n:100,cat:'info',  rank:'swampy',name:'Min-entropy threshold',        desc:'Most-likely byte probability below 1/32. Min-entropy of a sample has complex distribution — swampy.'},
         ];
+
 
         const catMap = Object.fromEntries(CATS.map(c => [c.id, c]));
         let catalogActive = 'all';
+        let rankActive = 'all';
+
+        const RANK_STYLES = {
+            tractable: { bg:'var(--paper-3)', color:'var(--ink)', label:'Tractable' },
+            swampy:{ bg:'var(--ink)',     color:'var(--paper)', label:'Swampy' },
+        };
 
         function buildCatalogCats() {
             const el = document.getElementById('catalog-cats');
             if (!el) return;
-            const mkBtn = (id, label, n) => {
+            const mkBtn = (id, label, n, group) => {
                 const b = document.createElement('button');
-                b.id = 'ccat-' + id;
+                b.id = (group||'ccat') + '-' + id;
                 b.textContent = label + (n !== undefined ? ' (' + n + ')' : '');
                 b.style.cssText = 'font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border:var(--rule-bold);background:var(--paper);color:var(--ink-mid);cursor:pointer;margin:2px;';
-                b.onclick = () => { catalogActive = id; renderCatalog(); };
                 el.appendChild(b);
+                return b;
             };
-            mkBtn('all', 'All', 100);
-            CATS.forEach(c => mkBtn(c.id, c.label, PATTERNS.filter(p => p.cat === c.id).length));
+
+            // Category row
+            const catLabel = document.createElement('div');
+            catLabel.style.cssText = 'font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-light);margin-bottom:6px;margin-top:4px;width:100%;';
+            catLabel.textContent = 'Category';
+            el.appendChild(catLabel);
+
+            mkBtn('all', 'All', 100).onclick = () => { catalogActive = 'all'; renderCatalog(); };
+            CATS.forEach(c => {
+                const b = mkBtn(c.id, c.label, PATTERNS.filter(p => p.cat === c.id).length);
+                b.onclick = () => { catalogActive = c.id; renderCatalog(); };
+            });
+
+            // Rank row
+            const sep = document.createElement('div');
+            sep.style.cssText = 'font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-light);margin-top:10px;margin-bottom:6px;width:100%;';
+            sep.textContent = 'Consensus suitability';
+            el.appendChild(sep);
+
+            const ra = mkBtn('all', 'All ranks', undefined, 'rank');
+            ra.onclick = () => { rankActive = 'all'; renderCatalog(); };
+
+            const rd = mkBtn('tractable', 'Tractable — ' + PATTERNS.filter(p=>p.rank==='tractable').length, undefined, 'rank');
+            rd.style.borderColor = 'var(--ink)';
+            rd.onclick = () => { rankActive = 'tractable'; renderCatalog(); };
+
+            const rs = mkBtn('swampy', 'Swampy — ' + PATTERNS.filter(p=>p.rank==='swampy').length, undefined, 'rank');
+            rs.onclick = () => { rankActive = 'swampy'; renderCatalog(); };
         }
 
         function renderCatalog() {
@@ -1186,15 +1210,23 @@
             const countEl = document.getElementById('catalog-count');
             if (!grid) return;
 
+            // Update cat buttons
             document.querySelectorAll('[id^="ccat-"]').forEach(b => {
-                b.style.background = 'var(--paper)';
-                b.style.color = 'var(--ink-mid)';
+                b.style.background = 'var(--paper)'; b.style.color = 'var(--ink-mid)';
             });
             const ab = document.getElementById('ccat-' + catalogActive);
             if (ab) { ab.style.background = 'var(--ink)'; ab.style.color = 'var(--paper)'; }
 
+            // Update rank buttons
+            document.querySelectorAll('[id^="rank-"]').forEach(b => {
+                b.style.background = 'var(--paper)'; b.style.color = 'var(--ink-mid)';
+            });
+            const rb = document.getElementById('rank-' + rankActive);
+            if (rb) { rb.style.background = 'var(--ink)'; rb.style.color = 'var(--paper)'; }
+
             const filtered = PATTERNS.filter(p =>
                 (catalogActive === 'all' || p.cat === catalogActive) &&
+                (rankActive === 'all' || p.rank === rankActive) &&
                 (!q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))
             );
 
@@ -1203,13 +1235,17 @@
 
             filtered.forEach(p => {
                 const c = catMap[p.cat];
+                const r = RANK_STYLES[p.rank];
                 const card = document.createElement('div');
                 card.style.cssText = 'background:var(--paper);border:var(--rule);padding:14px 16px;';
                 card.innerHTML =
                     '<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--ink-light);margin-bottom:4px;">' + String(p.n).padStart(3,'0') + '</div>' +
                     '<div style="font-family:var(--font-title);font-size:18px;letter-spacing:1px;color:var(--ink);margin-bottom:6px;line-height:1.1;">' + p.name + '</div>' +
-                    '<div style="font-family:var(--font-body);font-size:14px;font-weight:300;color:var(--ink-mid);line-height:1.6;">' + p.desc + '</div>' +
-                    '<span style="display:inline-block;margin-top:8px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:2px 8px;background:' + c.bg + ';color:' + c.color + ';">' + c.label + '</span>';
+                    '<div style="font-family:var(--font-body);font-size:14px;font-weight:300;color:var(--ink-mid);line-height:1.6;margin-bottom:8px;">' + p.desc + '</div>' +
+                    '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+                    '<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:2px 8px;background:' + c.bg + ';color:' + c.color + ';">' + c.label + '</span>' +
+                    '<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:2px 8px;border:1px solid var(--ink);background:' + r.bg + ';color:' + r.color + ';">' + r.label + '</span>' +
+                    '</div>';
                 grid.appendChild(card);
             });
         }
