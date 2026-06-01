@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost of Intelligence — Qi per Watt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111111; --paper:#fbfbf9; --mid:#6b6b66; --faint:#d7d7d2; --hair:#e4e4df;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:56px 24px 72px; line-height:1.5;
+  }
+  .wrap{max-width:680px;margin:0 auto}
+
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--mid);margin-bottom:18px}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,6vw,46px);
+    letter-spacing:-.01em;line-height:1.05;margin-bottom:14px}
+  .lede{font-size:16px;color:var(--mid);max-width:54ch;line-height:1.55}
+  .lede b{color:var(--ink);font-weight:500}
+
+  .rule{height:1px;background:var(--ink);margin:40px 0}
+  .hair{height:1px;background:var(--hair);margin:32px 0}
+
+  /* direct answer */
+  .answer{margin-top:8px}
+  .answer .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--mid);margin-bottom:10px}
+  .answer .big{font-family:'Fraunces',serif;font-size:clamp(40px,9vw,68px);
+    font-weight:500;letter-spacing:-.02em;line-height:1}
+  .answer .big .n{font-family:'IBM Plex Mono',monospace;font-weight:500}
+  .answer .unit{font-size:.36em;color:var(--mid);font-family:'IBM Plex Sans',sans-serif;
+    letter-spacing:0}
+  .answer .equiv{margin-top:14px;font-size:15px;color:var(--mid)}
+  .answer .equiv b{color:var(--ink);font-weight:500;font-family:'IBM Plex Mono',monospace}
+
+  /* the ladder */
+  .ladder-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--mid);margin-bottom:22px}
+  .rung{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:18px}
+  .rung .qty{font-family:'IBM Plex Mono',monospace;font-size:clamp(22px,5vw,30px);
+    font-weight:500;letter-spacing:-.01em}
+  .rung .qty sup{font-size:.55em}
+  .rung .gloss{text-align:right}
+  .rung .gloss .name{font-family:'Fraunces',serif;font-size:17px;font-weight:500}
+  .rung .gloss .desc{font-size:12.5px;color:var(--mid);line-height:1.35;max-width:24ch;margin-left:auto}
+
+  .link{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:14px;
+    margin:14px 0 14px 2px;padding-left:0}
+  .link .stem{width:1px;height:34px;background:var(--ink);margin-left:7px}
+  .link .op{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--mid)}
+  .link .op b{color:var(--ink);font-weight:600}
+
+  /* controls */
+  .controls{margin-top:6px}
+  .ctrl{margin-bottom:26px}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .ctrl-name{font-size:14px;font-weight:500}
+  .ctrl-name span{color:var(--mid);font-weight:400}
+  .ctrl-val{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:1px;
+    background:var(--ink);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;
+    border-radius:50%;background:var(--paper);border:1.5px solid var(--ink);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;
+    background:var(--paper);border:1.5px solid var(--ink);cursor:pointer}
+  .ctrl-note{font-size:12px;color:var(--mid);margin-top:9px;line-height:1.4}
+
+  .foot{margin-top:8px;font-size:12.5px;color:var(--mid);line-height:1.65}
+  .foot .formula{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink);
+    border:1px solid var(--hair);border-radius:4px;padding:11px 13px;margin:0 0 16px;
+    overflow-x:auto;white-space:nowrap;background:#fff}
+  .foot b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Compute Futures — Figure</div>
+  <h1>The cost of intelligence, in Qi</h1>
+  <p class="lede">Qi is defined as hashpower &times; time, so its &ldquo;per&nbsp;watt&rdquo; price is just the inverse energy peg. One Qi is a fixed quantity of <b>running compute</b> &mdash; the only question is how much <b>thinking</b> that compute buys.</p>
+
+  <div class="rule"></div>
+
+  <!-- DIRECT ANSWER -->
+  <div class="answer">
+    <div class="k">Cost of intelligence — power basis</div>
+    <div class="big"><span class="n" id="ans">0.0020</span> <span class="unit">Qi per watt-day</span></div>
+    <div class="equiv">Equivalently, one Qi powers <b id="wd">500</b> watt-days of running compute.</div>
+  </div>
+
+  <div class="hair"></div>
+
+  <!-- THE LADDER -->
+  <div class="ladder-title">What one Qi becomes</div>
+
+  <div class="rung">
+    <div class="qty">1 Qi</div>
+    <div class="gloss"><div class="name">Money</div><div class="desc">the energy-pegged unit</div></div>
+  </div>
+
+  <div class="link">
+    <div class="stem"></div>
+    <div class="op">energy peg &middot; <b>100&middot;&eta; W held for one day</b></div>
+  </div>
+
+  <div class="rung">
+    <div class="qty"><span id="wd2">500</span> W&middot;days</div>
+    <div class="gloss"><div class="name">Power</div><div class="desc">= <span id="kwh">12.0</span> kWh of electricity</div></div>
+  </div>
+
+  <div class="link">
+    <div class="stem"></div>
+    <div class="op">compute efficiency &middot; <b>&epsilon; FLOP per joule</b></div>
+  </div>
+
+  <div class="rung">
+    <div class="qty"><span id="eflop">121</span> EFLOP</div>
+    <div class="gloss"><div class="name">Computation</div><div class="desc">raw floating-point work</div></div>
+  </div>
+
+  <div class="link">
+    <div class="stem"></div>
+    <div class="op">model intensity &middot; <b>J per token</b></div>
+  </div>
+
+  <div class="rung">
+    <div class="qty"><span id="tok">43</span> M tokens</div>
+    <div class="gloss"><div class="name">Thinking</div><div class="desc">generated reasoning</div></div>
+  </div>
+
+  <div class="hair"></div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <div class="ctrl-name">&eta; &nbsp;<span>mining efficiency · W per MH/s</span></div>
+        <div class="ctrl-val" id="etaVal">5.0</div>
+      </div>
+      <input type="range" id="eta" min="1" max="12" step="0.1" value="5">
+      <div class="ctrl-note">Network-marginal, set by the most efficient miner — not your rig. Tuned RTX 3060 Ti ≈ 5; industrial/ASIC &lt; 3.</div>
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <div class="ctrl-name">&epsilon; &nbsp;<span>compute intensity · TFLOP per joule</span></div>
+        <div class="ctrl-val" id="epsVal">2.8</div>
+      </div>
+      <input type="range" id="eps" min="0.2" max="10" step="0.1" value="2.8">
+      <div class="ctrl-note">Dense FP16 frontier accelerator ≈ 2.8 (H100-class); newer parts higher.</div>
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-head">
+        <div class="ctrl-name">J/token &nbsp;<span>energy per output token</span></div>
+        <div class="ctrl-val" id="jtokVal">1.0</div>
+      </div>
+      <input type="range" id="jtok" min="0.1" max="10" step="0.1" value="1">
+      <div class="ctrl-note">Served inference, wide spread: ~0.3–3 J/token with model size and batching.</div>
+    </div>
+  </div>
+
+  <div class="hair"></div>
+
+  <div class="foot">
+    <div class="formula">1 Qi = 100·η W × 24h = 2.4·η kWh · cost/W·day = 1/(100·η) Qi · FLOP/Qi = ε × 8.64×10⁶·η</div>
+    <b>The model in one line:</b> the power-basis price is fixed by the peg; the real variable is how far down the ladder a joule travels. As ε climbs faster than η falls, the same Qi buys more thinking — intelligence deflates against energy money.<br><br>
+    <b>Caveats:</b> 100 MH/s·day is the protocol reference; live conversion runs through the K-Quai controller and post-BIP-302 SOAP affects realized QUAI↔Qi, not the Qi peg. The J/token input is the soft link — swap in measured values.
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const supMap={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','.':'·'};
+const sup = n => String(n).split('').map(c=>supMap[c]||c).join('');
+function fmt(n,d=1){
+  if(!isFinite(n)) return '—';
+  if(n!==0 && (Math.abs(n)>=1e5 || Math.abs(n)<1e-3)){
+    const e=Math.floor(Math.log10(Math.abs(n)));
+    return (n/Math.pow(10,e)).toFixed(2)+'×10'+sup(e);
+  }
+  return n.toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:0});
+}
+
+function recompute(){
+  const eta  = parseFloat($('eta').value);
+  const eps  = parseFloat($('eps').value)*1e12; // FLOP/J
+  const jtok = parseFloat($('jtok').value);
+
+  $('etaVal').textContent  = eta.toFixed(1);
+  $('epsVal').textContent  = (eps/1e12).toFixed(1);
+  $('jtokVal').textContent = jtok.toFixed(1);
+
+  const wd    = 100*eta;          // W·days per Qi
+  const kwh   = 2.4*eta;          // kWh per Qi
+  const qiJ   = 8.64e6*eta;       // J per Qi
+  const perWd = 1/(100*eta);      // Qi per W·day
+  const eflop = (eps*qiJ)/1e18;   // EFLOP per Qi
+  const tok   = qiJ/jtok/1e6;     // million tokens per Qi
+
+  $('ans').textContent   = perWd.toFixed(4);
+  $('wd').textContent    = fmt(wd,0);
+  $('wd2').textContent   = fmt(wd,0);
+  $('kwh').textContent   = fmt(kwh,1);
+  $('eflop').textContent = fmt(eflop,0);
+  $('tok').textContent   = fmt(tok,0);
+}
+document.querySelectorAll('input[type=range]').forEach(s=>s.addEventListener('input',recompute));
+recompute();
+</script>
+</body>
+</html>
