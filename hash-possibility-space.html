@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -911,6 +912,13 @@
                     <td><span class="badge">Open question</span></td>
                 </tr>
                 <tr>
+                    <td><span class="cell-primary">Holographic Sharding</span><span class="cell-note">Per-shard work criterion</span></td>
+                    <td><span class="cell-primary">Whole digest, re-qualified per shard</span></td>
+                    <td>Every region block (~20s)</td>
+                    <td>Additive economic security across shards</td>
+                    <td><span class="badge">Proposed</span></td>
+                </tr>
+                <tr>
                     <td><span class="cell-primary">ECA Rule 30</span><span class="cell-note">Hash-seeded pseudorandomness</span></td>
                     <td><span class="cell-primary">Full 256-bit hash as initial row</span></td>
                     <td>Every workshare (~seconds)</td>
@@ -926,6 +934,29 @@
                 </tr>
             </tbody>
         </table>
+
+        <div class="callout fade-in">
+            <div class="callout-corner tl">EXTENSION</div>
+            <h3>The Same Principle, One Level Up: Holographic Sharding</h3>
+            <p>
+                Everything above reads multiple constructions out of a single hash. Applied to the hierarchy, the same move reads multiple
+                <em>work criteria</em> across multiple shards. In PoEM as deployed, every shard qualifies work identically — leading zeros —
+                so sharding splits hashrate across the hierarchy and opens a vulnerability window at each region block, roughly every four
+                blocks. Each shard is then capped at an economic security ceiling equal to the revenue it alone can generate, and adding
+                shards only replicates that ceiling in parallel.
+            </p>
+            <p>
+                Give each shard an independent work criterion and the hashrate is no longer sharded at all — the work is reapplied
+                horizontally. The per-shard ceilings become additive rather than parallel, so total economic security grows with shard count
+                instead of plateauing, and the "sharding dilutes security" objection disappears structurally. The possibility space catalogued
+                on this page is precisely the supply of independent criteria such a scheme would draw from: each distinct pattern in the digest
+                is a candidate qualification rule for a distinct shard.
+            </p>
+            <p style="opacity:0.7;">
+                Status: proposed, not implemented — deferred until sustained throughput approaches ~1,000 TPS. Raised by Steph Macurdy and
+                acknowledged as a viable per-shard improvement to PoEM by Karl Kreder on a Quai community call.
+            </p>
+        </div>
 
         <div class="btn-row fade-in">
             <a href="workshare-oracle.html" class="btn primary">Workshare Oracle — Proto-15</a>
