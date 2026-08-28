@@ -1,4 +1,4 @@
-
+  
 
 
 
@@ -80,9 +80,12 @@
 
         /* After unveil, hero shrinks to ~60vh */
         body:not(.locked) .hero {
-            min-height: 70vh;
-            padding-top: 100px;
+            min-height: 78vh;
+            padding-top: 190px;
             padding-bottom: 40px;
+        }
+        @media (max-width: 768px) {
+            body:not(.locked) .hero { padding-top: 140px; min-height: 74vh; }
         }
 
         /* Scroll hint arrow that appears after unveil */
@@ -862,8 +865,8 @@
     <section class="hero">
         <div class="hero-orb"></div>
         <h1><span>QI</span>.XYZ</h1>
-        <p class="hero-tagline">Energy based intelligence. Energy based money. Energy based economics.</p>
-        <p class="hero-tagline-sub">The frontier of decentralized intelligence.</p>
+        <p class="hero-tagline">Energy based intelligence, money and economics.</p>
+        <p class="hero-tagline-sub">Decentralized intelligence is the frontier.</p>
         <div class="hero-ctas">
             <button type="button" class="btn btn-primary" id="qiBtn" aria-expanded="false" aria-controls="essayPanel">Read: What Is Qi?</button>
             <a href="thesis.html" class="btn btn-ghost" id="thesisBtn">Technical Thesis</a>
