@@ -18,15 +18,16 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qi — Energy Money Docking Station</title>
-    <meta name="description" content="Startup accelerator, gamer guild, and brainstorm dock. Build on Qi, the energy-based money.">
-    <meta property="og:title" content="Qi.xyz — Energy Money Docking Station">
-    <meta property="og:description" content="Startup accelerator. Gamer guild. Brainstorm dock. All built on Qi — the energy-based money.">
+    <title>Qi — Energy Based Intelligence</title>
+    <meta name="description" content="Energy based intelligence, energy based money, energy based economics. Qi is the settlement layer where compute, capital, and thermodynamic work share one unit of account.">
+    <meta property="og:title" content="Qi.xyz — Energy Based Intelligence">
+    <meta property="og:description" content="Energy based intelligence. Energy based money. Energy based economics.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%2306080d'/%3E%3Ctext x='90' y='120' text-anchor='middle' font-family='monospace' font-size='90' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -534,83 +535,238 @@
         }
         .carousel-section-subtitle::before { content: '// '; color: rgba(0,240,255,0.25); }
 
-        /* ===== QUAI CAROUSEL — COMPACT (33% of prototypes size) ===== */
-        .carousel-quai {
-            padding-top: 32px;
-            padding-bottom: 24px;
-        }
-        .carousel-quai .carousel-section-title {
-            font-size: clamp(13px, 1.8vw, 18px);
-            letter-spacing: 4px;
-        }
-        .carousel-quai .carousel-section-title-row {
-            margin-bottom: 8px;
-        }
-        .carousel-quai .carousel-section-subtitle {
-            font-size: 9px;
-            margin-bottom: 10px;
-        }
-        .carousel-quai .carousel-header {
-            margin-bottom: 12px;
-        }
-        .carousel-quai .carousel-btn {
-            width: 28px;
-            height: 28px;
-            font-size: 14px;
-        }
-        /* Compact cards */
-        .carousel-quai .carousel-card {
-            flex: 0 0 200px !important;
-        }
-        .carousel-quai .carousel-card-visual {
-            height: 100px !important;
-        }
-        .carousel-quai .quai-logo-placeholder {
-            gap: 6px;
-        }
-        .carousel-quai .quai-logo-q {
-            width: 36px;
-            height: 36px;
-        }
-        .carousel-quai .quai-logo-wordmark {
-            font-size: 7px;
-            letter-spacing: 4px;
-        }
-        .carousel-quai .quai-logo-rule {
-            width: 20px;
-        }
-        .carousel-quai .card-tag-top {
-            font-size: 7px;
-            padding: 2px 5px;
-            letter-spacing: 1.5px;
-        }
-        .carousel-quai .card-status {
-            width: 6px;
-            height: 6px;
-        }
-        .carousel-quai .carousel-card-body {
-            padding: 12px 14px 16px;
-        }
-        .carousel-quai .carousel-card-body h3 {
-            font-size: 11px;
-            letter-spacing: 2px;
-            margin-bottom: 6px;
-        }
-        .carousel-quai .carousel-card-body p {
-            font-size: 11px;
-            line-height: 1.5;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+        /* ===== ESSAY PANEL — WHITE PAPER DOCUMENT ===== */
+        .essay-panel {
+            max-height: 0;
+            opacity: 0;
             overflow: hidden;
+            transition: max-height 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
         }
-        .carousel-quai .carousel-card-body .card-link {
-            font-size: 8px;
+        .essay-panel.open { max-height: 60000px; opacity: 1; }
+
+        .essay-stage {
+            padding: 56px 24px 88px;
+            background: #0a0d14;
+            border-top: 1px solid var(--border-dim);
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        /* Toolbar sits above the white page, in site chrome */
+        .essay-toolbar {
+            max-width: 850px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .essay-toolbar-label {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 4px;
+            text-transform: uppercase; color: var(--text-dim); margin-right: auto;
+        }
+        .essay-toolbar-label::before { content: '// '; color: rgba(0,240,255,0.3); }
+        .doc-btn {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 2.5px;
+            text-transform: uppercase; text-decoration: none;
+            color: var(--qi-cyan); background: transparent;
+            border: 1px solid var(--border-bright);
+            padding: 9px 16px; cursor: pointer;
+            transition: all 0.3s; display: inline-flex; align-items: center; gap: 7px;
+        }
+        .doc-btn:hover { background: var(--qi-cyan-dim); box-shadow: 0 0 18px rgba(0,240,255,0.12); }
+        .doc-btn.primary {
+            background: var(--qi-cyan); color: var(--bg-deep); border-color: var(--qi-cyan);
+            box-shadow: 0 0 20px rgba(0,240,255,0.2);
+        }
+        .doc-btn.primary:hover { box-shadow: 0 0 34px rgba(0,240,255,0.4); transform: translateY(-1px); }
+
+        /* ===== THE WHITE PAGE ===== */
+        .essay-doc {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #ffffff;
+            color: #14181d;
+            padding: 76px 82px 70px;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,240,255,0.14);
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            font-size: 17px;
+            line-height: 1.72;
+        }
+        .essay-doc .doc-eyebrow {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 4px;
+            text-transform: uppercase; color: #7c8794; margin-bottom: 14px;
+        }
+        .essay-doc h2.essay-title {
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            font-size: clamp(30px, 4.6vw, 44px);
+            font-weight: 700; letter-spacing: 0; text-transform: none;
+            color: #0b0e12; line-height: 1.15; margin-bottom: 12px;
+        }
+        .essay-doc h2.essay-title span { color: #0b0e12; text-shadow: none; }
+        .essay-doc .essay-byline {
+            font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
+            text-transform: uppercase; color: #7c8794;
+            padding-bottom: 26px; margin-bottom: 38px;
+            border-bottom: 1px solid #d8dde3;
+        }
+        .essay-doc h3 {
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            font-size: 22px; font-weight: 700; letter-spacing: 0;
+            text-transform: none; color: #0b0e12;
+            margin: 44px 0 16px;
+        }
+        .essay-doc h3::before { content: none; }
+        .essay-doc p {
+            color: #1e242b; font-size: 17px; line-height: 1.75;
+            margin-bottom: 18px; text-align: justify; hyphens: auto;
+        }
+        .essay-doc p.lede { font-size: 18.5px; color: #14181d; }
+        .essay-doc p + p { text-indent: 1.6em; }
+        .essay-doc p.lede + p, .essay-doc h3 + p { text-indent: 0; }
+        .essay-doc strong { color: #0b0e12; font-weight: 700; }
+        .essay-doc em { color: #1e242b; font-style: italic; }
+        .essay-figure { margin: 34px 0; }
+        .essay-figure img { width: 100%; display: block; border: 1px solid #d8dde3; background: #f4f6f8; }
+        .essay-figure figcaption {
+            font-family: 'Georgia', serif; font-size: 13px; font-style: italic;
+            color: #5c6672; text-align: center; margin-top: 10px; line-height: 1.55;
+        }
+        .essay-doc .essay-end {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 4px;
+            text-transform: uppercase; color: #8d97a3; text-align: center;
+            margin-top: 44px; padding-top: 22px; border-top: 1px solid #d8dde3;
+        }
+        .essay-close {
+            display: block; margin: 26px auto 0;
+            background: transparent; border: 1px solid var(--border-bright); color: var(--qi-cyan);
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+            text-transform: uppercase; padding: 12px 28px; cursor: pointer; transition: all 0.3s;
+        }
+        .essay-close:hover { background: var(--qi-cyan-dim); box-shadow: 0 0 18px rgba(0,240,255,0.12); }
+
+        @media (max-width: 768px) {
+            .essay-stage { padding: 36px 12px 56px; }
+            .essay-doc { padding: 40px 26px 44px; font-size: 16px; }
+            .essay-doc p { font-size: 16px; text-align: left; }
+            .essay-toolbar-label { display: none; }
+            .doc-btn { flex: 1 1 auto; justify-content: center; }
+        }
+
+        /* ===== PRINT / SAVE-AS-PDF ===== */
+        @media print {
+            @page { size: letter; margin: 0.9in 0.85in; }
+            html, body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                overflow: visible !important;
+            }
+            /* Hide everything except the document */
+            nav, .grid-bg, .hero, .proto-drawer, .carousel-section,
+            .essay-toolbar, .essay-close, .scroll-hint, footer { display: none !important; }
+            .station-content { opacity: 1 !important; transform: none !important; }
+            .essay-panel {
+                max-height: none !important;
+                opacity: 1 !important;
+                overflow: visible !important;
+            }
+            .essay-stage {
+                padding: 0 !important; background: #fff !important;
+                border: none !important;
+            }
+            .essay-doc {
+                max-width: none !important; margin: 0 !important;
+                padding: 0 !important; box-shadow: none !important;
+                background: #fff !important; color: #000 !important;
+                font-size: 11.5pt; line-height: 1.6;
+            }
+            .essay-doc h2.essay-title { font-size: 26pt; }
+            .essay-doc h3 {
+                font-size: 14pt; margin-top: 22pt;
+                break-after: avoid; page-break-after: avoid;
+            }
+            .essay-doc p { font-size: 11.5pt; color: #000 !important; orphans: 3; widows: 3; }
+            .essay-figure { break-inside: avoid; page-break-inside: avoid; }
+            a { color: #000 !important; text-decoration: none; }
+        }
+
+        /* ===== PROTOTYPES DRAWER (collapsed by default) ===== */
+        .proto-drawer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 40px 64px;
+        }
+        .proto-drawer-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: transparent;
+            border: 1px solid var(--border-bright);
+            border-radius: 2px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+            font-family: var(--font-mono);
+            text-align: left;
+        }
+        .proto-drawer-toggle:hover {
+            border-color: var(--qi-cyan);
+            background: var(--qi-cyan-dim);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
+        }
+        .proto-drawer-label {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        .proto-drawer-toggle:hover .proto-drawer-label,
+        .proto-drawer.open .proto-drawer-label { color: var(--qi-cyan); }
+        .proto-drawer-count {
+            font-size: 9px;
             letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            border: 1px solid var(--border-bright);
+            padding: 3px 8px;
+            border-radius: 999px;
         }
-        .carousel-quai .carousel-dots {
-            margin-top: 14px;
+        .proto-drawer-chev {
+            margin-left: auto;
+            color: var(--qi-cyan);
+            font-size: 14px;
+            line-height: 1;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .proto-drawer.open .proto-drawer-chev { transform: rotate(180deg); }
+
+        .proto-drawer-panel {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, margin-top 0.5s ease;
+            margin-top: 0;
+        }
+        .proto-drawer.open .proto-drawer-panel {
+            max-height: 3000px;
+            opacity: 1;
+            margin-top: 24px;
+        }
+        /* Inside the drawer the carousel is de-emphasised */
+        .proto-drawer .carousel-section { padding-top: 0; padding-bottom: 0; }
+        .proto-drawer .carousel-section-title { font-size: clamp(16px, 2vw, 22px); letter-spacing: 4px; }
+        .proto-drawer .carousel-prototypes::before { display: none; }
+
+        /* Merged Quai ecosystem cards keep brand red accents */
+        .carousel-card-quai:hover { border-color: var(--quai-red); box-shadow: 0 0 40px rgba(226, 41, 1, 0.18), 0 8px 32px rgba(0,0,0,0.4); }
+        .carousel-card-quai .carousel-card-body h3 { color: var(--quai-red); }
+        .carousel-card-quai .carousel-card-body .card-link { color: var(--quai-red); }
+        .carousel-card-quai .card-tag-top { border-color: rgba(226, 41, 1, 0.5); color: var(--quai-red); }
+
+        @media (max-width: 768px) {
+            .proto-drawer { padding: 32px 20px 48px; }
+            .proto-drawer-count { display: none; }
         }
 
         /* ===== PROTOTYPES CAROUSEL — NEON TOP BAR ===== */
@@ -643,140 +799,6 @@
             --quai-dark:  #0F0F0F;
             --quai-mid:   #646464;
             --quai-light: #A1A1A1;
-        }
-
-        /* Full-bleed red band — background extends beyond max-width via pseudo-element
-           so content stays perfectly aligned with the other carousel */
-        .carousel-quai {
-            background: transparent;
-            position: relative;
-            overflow: visible;
-        }
-        /* Red slab that breaks out to full viewport width */
-        .carousel-quai::after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100vw;
-            background: var(--quai-red);
-            z-index: -1;
-            pointer-events: none;
-        }
-        /* Grid lines overlay — same 60px grid as site, black lines at low opacity */
-        .carousel-quai-grid {
-            position: absolute;
-            top: 0; bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100vw;
-            background-image:
-                linear-gradient(rgba(0,0,0,0.12) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.12) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Section title — white on red */
-        .carousel-quai .carousel-section-title {
-            color: var(--quai-white);
-            text-shadow: none;
-        }
-        .carousel-quai .carousel-section-title .title-accent {
-            color: var(--quai-black);
-            text-shadow: none;
-        }
-
-        /* Subheading on red */
-        .carousel-quai .carousel-section-subtitle {
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 3px;
-        }
-        .carousel-quai .carousel-section-subtitle::before {
-            content: '> ';
-            color: var(--quai-black);
-        }
-
-        /* Label on red */
-        .carousel-quai .carousel-label {
-            color: var(--quai-black);
-        }
-        .carousel-quai .carousel-label::before { color: rgba(0,0,0,0.4); }
-
-        /* Nav buttons on red — black border/text, white fill on hover */
-        .carousel-quai .carousel-btn {
-            border-color: rgba(0,0,0,0.35);
-            color: var(--quai-black);
-            background: transparent;
-            box-shadow: none;
-        }
-        .carousel-quai .carousel-btn:hover {
-            border-color: var(--quai-black);
-            background: var(--quai-black);
-            color: var(--quai-white);
-            box-shadow: none;
-        }
-
-        /* Dots on red */
-        .carousel-quai .carousel-dot {
-            background: rgba(0,0,0,0.3);
-        }
-        .carousel-quai .carousel-dot.active {
-            background: var(--quai-black);
-            box-shadow: none;
-            width: 24px;
-        }
-
-        /* Track fade edges — must use actual red hex, not bg color (bg is on pseudo-el) */
-        .carousel-quai .carousel-track-wrapper::before { background: linear-gradient(90deg, #E22901, transparent); }
-        .carousel-quai .carousel-track-wrapper::after  { background: linear-gradient(-90deg, #E22901, transparent); }
-
-        /* Cards — black on red */
-        .carousel-quai .carousel-card {
-            background: var(--quai-black);
-            border: 1px solid rgba(0,0,0,0.5);
-            box-shadow: none;
-        }
-        .carousel-quai .carousel-card:hover {
-            border-color: var(--quai-white);
-            box-shadow: none;
-            transform: translateY(-6px);
-        }
-        /* Top accent line — solid white */
-        .carousel-quai .carousel-card::before {
-            background: var(--quai-white);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .carousel-quai .carousel-card:hover::before { opacity: 1; }
-
-        /* Card body */
-        .carousel-quai .carousel-card-body h3 {
-            color: var(--quai-white);
-            letter-spacing: 3px;
-        }
-        .carousel-quai .carousel-card-body p {
-            color: var(--quai-light);
-        }
-        .carousel-quai .carousel-card-body .card-link {
-            color: var(--quai-red);
-            font-size: 10px;
-            letter-spacing: 3px;
-        }
-        .carousel-quai .carousel-card-body .card-link::before {
-            content: '> ';
-        }
-
-        /* Card tag — on black cards, red border, white text */
-        .carousel-quai .card-tag-top {
-            background: var(--quai-black) !important;
-            border: 1px solid rgba(255,255,255,0.25) !important;
-            color: var(--quai-white) !important;
-            font-size: 9px;
-            letter-spacing: 3px;
-            backdrop-filter: none;
         }
 
         /* Logo placeholder — pure black card visual, red Q mark */
@@ -812,7 +834,7 @@
         }
     </style>
 </head>
-<body class="locked">
+<body>
 
     <div class="grid-bg"></div>
 
@@ -829,180 +851,113 @@
     <!-- HERO -->
     <section class="hero">
         <div class="hero-orb"></div>
-        <div class="hero-status">Brainstorm Station Online</div>
         <h1><span>QI</span>.XYZ</h1>
-        <p class="hero-tagline">Startup accelerator. Co-Founders. Quai Updates.</p>
+        <p class="hero-tagline">Energy based intelligence. Energy based money. Energy based economics.</p>
+        <p class="hero-tagline-sub">The frontier of decentralized intelligence.</p>
         <div class="hero-ctas">
-            <a href="#carousel" class="btn btn-primary" id="enterBtn">Enter the Station</a>
-            <a href="what-is-qi.html" class="btn btn-ghost" id="qiBtn">What Is Qi?</a>
+            <button type="button" class="btn btn-primary" id="qiBtn" aria-expanded="false" aria-controls="essayPanel">Read: What Is Qi?</button>
+            <a href="thesis.html" class="btn btn-ghost" id="thesisBtn">Technical Thesis</a>
         </div>
     </section>
 
     <!-- ===== STATION CONTENT (hidden until unveiled) ===== -->
     <div class="station-content" id="stationContent">
 
-    <!-- CAROUSEL: QUAI NETWORK OFFICIAL SITES -->
-    <div class="carousel-section carousel-quai" id="quai-carousel">
-        <div class="carousel-quai-grid"></div>
-        <div class="carousel-section-title-row">
-            <div class="carousel-section-title"><span class="title-accent">QUAI NETWORK</span> OFFICIAL SITES</div>
-            <div class="carousel-section-subtitle">Official resources &amp; ecosystem portals</div>
+    <!-- ===== WHAT IS QI? ESSAY (revealed by hero button) ===== -->
+    <div class="essay-panel" id="essayPanel">
+      <div class="essay-stage">
+
+        <div class="essay-toolbar">
+            <span class="essay-toolbar-label">What Is Qi? &nbsp;·&nbsp; v1.4 &nbsp;·&nbsp; 2026</span>
+            <a class="doc-btn primary" href="what-is-qi.pdf" download="what-is-qi-macurdy-v1.4.pdf">↓ Download PDF</a>
+            <button type="button" class="doc-btn" id="essayPrintBtn">⎙ Print / Save as PDF</button>
+            <a class="doc-btn" href="what-is-qi.pdf" target="_blank" rel="noopener">↗ Open PDF</a>
         </div>
-        <div class="carousel-header">
-            <div class="carousel-label">Official Resources</div>
-            <div class="carousel-controls">
-                <button class="carousel-btn" id="quaiCarouselPrev">‹</button>
-                <button class="carousel-btn" id="quaiCarouselNext">›</button>
-            </div>
-        </div>
-        <div class="carousel-track-wrapper">
-            <div class="carousel-track" id="quaiCarouselTrack">
 
-                <!-- 1 — Quai Network Main Site -->
-                <a href="https://qu.ai" target="_blank" class="carousel-card">
-                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
-                        <div class="quai-logo-placeholder">
-                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Red filled disc -->
-                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
-                                <!-- Black Q ring inside -->
-                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
-                                <!-- Black tail -->
-                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quai-logo-wordmark">QUAI NETWORK</span>
-                            <span class="quai-logo-rule"></span>
-                        </div>
-                        <span class="card-tag-top">Main Site</span>
-                        <span class="card-status live"></span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>qu.ai</h3>
-                        <p>The official Quai Network homepage. Multi-chain architecture, energy-based tokenomics, and the vision for programmable money at planetary scale.</p>
-                        <span class="card-link">qu.ai</span>
-                    </div>
-                </a>
+        <article class="essay-doc" id="essayDoc">
+            <div class="doc-eyebrow">Essay</div>
+            <h2 class="essay-title">What Is <span>Qi</span>?</h2>
+            <div class="essay-byline">Steph Macurdy &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; v1.4</div>
 
-                <!-- 2 — Documentation -->
-                <a href="https://docs.qu.ai" target="_blank" class="carousel-card">
-                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
-                        <div class="quai-logo-placeholder">
-                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
-                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
-                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quai-logo-wordmark">DOCUMENTATION</span>
-                            <span class="quai-logo-rule"></span>
-                        </div>
-                        <span class="card-tag-top">Dev Docs</span>
-                        <span class="card-status live"></span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>docs.qu.ai</h3>
-                        <p>Full technical documentation. Node setup, RPC APIs, smart contract deployment, Qi tokenomics deep-dives, and the PoEM consensus specification.</p>
-                        <span class="card-link">docs.qu.ai</span>
-                    </div>
-                </a>
+            <p class="lede">Technically, &ldquo;$Qi&rdquo; is a cryptographic token defined by Quai Network, the layer-1 blockchain with several intended purposes which will be discussed in depth in this essay. Philosophically, &ldquo;Qi&rdquo; is an older, wider, more ancient concept defined by cultural, historical, and spiritual traditions of human beings observing nature and its natural processes. In this sense, &ldquo;Qi&rdquo; represents the &ldquo;life energy&rdquo; or &ldquo;vital flow&rdquo; observed in nature&mdash;that which is deeply embedded in physical and spiritual systems alike.</p>
 
-                <!-- 3 — Block Explorer -->
-                <a href="https://quaiscan.io" target="_blank" class="carousel-card">
-                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
-                        <div class="quai-logo-placeholder">
-                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
-                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
-                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quai-logo-wordmark">BLOCK EXPLORER</span>
-                            <span class="quai-logo-rule"></span>
-                        </div>
-                        <span class="card-tag-top">Explorer</span>
-                        <span class="card-status live"></span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>quaiscan.io</h3>
-                        <p>Real-time blockchain explorer. Track transactions across all 13 zones, view block data, inspect smart contracts, and monitor network entropy in motion.</p>
-                        <span class="card-link">quaiscan.io</span>
-                    </div>
-                </a>
+            <p>A distinction will be made throughout this essay between $Qi defined by a blockchain, and Qi defined by nature. This distinction is necessary in order to enable the reader to appropriately switch between ontological and epistemological contexts: one defined entirely by a blockchain with formal, mathematical, deterministic rules, and the other defined entirely by subjective interpretations of world history and subjective experience. Then, when appropriate, blend their mutual reality together to find higher-order relationship. Inevitably, the author believes the token, $Qi, inherits ideology from human tradition and nature, with intention of representing those same ideas in the realm of the human economy, and it is an appropriate assumption that the engineers of the Quai Network blockchain had the same intention.</p>
 
-                <!-- 4 — Discord -->
-                <a href="https://discord.gg/quai" target="_blank" class="carousel-card">
-                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
-                        <div class="quai-logo-placeholder">
-                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
-                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
-                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quai-logo-wordmark">COMMUNITY</span>
-                            <span class="quai-logo-rule"></span>
-                        </div>
-                        <span class="card-tag-top">Discord</span>
-                        <span class="card-status live"></span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>Discord</h3>
-                        <p>The official Quai Network community server. Connect with miners, developers, and researchers. Share proposals and participate in governance discussions.</p>
-                        <span class="card-link">discord.gg/quai</span>
-                    </div>
-                </a>
+            <p>In 2026, nearly two hundred and fifty years of America&rsquo;s semiquincentennial year, the nature of the economy has evolved and has an awareness potential that is capable now of embedding the idea of life energy&rsquo;s vital flow into our organizing systems. Money, wrought with complexity and land-mines, is a representative system for tracking, facilitating, and organizing vital flows on the scale of our biosphere. To lack a scientific, ontological, and epistemological investigation into our inherited organizing methods would be grossly irresponsible. The question, <em>what is $Qi?</em>, is the pursuit to connect nature and natural processes to economy and economic processes in order to align natural incentives with natural constraints. To say what is occurring in the economy is not natural would be problematic to defend. Instead, I&rsquo;d like to claim that the economy may have capability to incorporate more awareness about itself&mdash;to give it the ability to know what is known and what can&rsquo;t be known about itself.</p>
 
-                <!-- 5 — X / Twitter -->
-                <a href="https://x.com/QuaiNetwork" target="_blank" class="carousel-card">
-                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
-                        <div class="quai-logo-placeholder">
-                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
-                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
-                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quai-logo-wordmark">X / TWITTER</span>
-                            <span class="quai-logo-rule"></span>
-                        </div>
-                        <span class="card-tag-top">Social</span>
-                        <span class="card-status live"></span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>@QuaiNetwork</h3>
-                        <p>Follow for real-time protocol updates, mainnet announcements, ecosystem spotlights, and team communications from Dominant Strategies.</p>
-                        <span class="card-link">x.com/QuaiNetwork</span>
-                    </div>
-                </a>
+            <h3>Epistemology</h3>
 
-                <!-- 6 — GitHub -->
-                <a href="https://github.com/dominant-strategies" target="_blank" class="carousel-card">
-                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
-                        <div class="quai-logo-placeholder">
-                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
-                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
-                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
-                            </svg>
-                            <span class="quai-logo-wordmark">OPEN SOURCE</span>
-                            <span class="quai-logo-rule"></span>
-                        </div>
-                        <span class="card-tag-top">GitHub</span>
-                        <span class="card-status live"></span>
-                    </div>
-                    <div class="carousel-card-body">
-                        <h3>dominant-strategies</h3>
-                        <p>All Quai Network source code is open. Explore go-quai, the SDK, PoEM implementation, and all tooling repos maintained by the core protocol team.</p>
-                        <span class="card-link">github.com/dominant-strategies</span>
-                    </div>
-                </a>
+            <p>Beginning with epistemology, the study of awareness. Typically known as a theory of knowledge, epistemology is reduced to what is and is not known. To know a coinflip is heads is to know it is not tails. To know it is not tails implies it is heads. Heads = Not Tails, Not Tails = Heads, Not Heads = Tails, Tails = Not Heads. Neither Heads nor Tails = Undetermined, or <strong>Vertical Landing</strong>.</p>
 
-            </div>
-        </div>
-        <div class="carousel-dots" id="quaiCarouselDots"></div>
+            <p>The structure of that argument&mdash;coin lands, outcome is one of two faces, knowledge follows by exclusion&mdash;is a particular mode of reasoning, and it is worth naming alongside the others. Epistemology distinguishes three. <strong>Deductive reasoning</strong> moves from a general rule to a specific conclusion. If the coin has two faces and is not heads, it is tails. Given the rule, the conclusion is certain. <strong>Inductive reasoning</strong> moves the other direction, from specific observations to a general pattern. Flip the coin a thousand times, observe roughly even heads and tails, and theorize a fair coin. The conclusion is not certain; it is probabilistic, and another thousand flips could revise it. <strong>Abductive reasoning</strong> begins from an incomplete observation and reaches for the best available explanation. The coin is standing on its edge. We did not predict this; we have no rule that resolves it; we infer&mdash;a draft, a breath, a flaw in the surface&mdash;and we proceed on the best guess we can make. The conclusion is also probabilistic, but unlike induction it does not rest on a body of prior observation. It rests on what the situation seems to require.</p>
+
+            <figure class="essay-figure">
+                <img src="figure-1-reasoning.png" alt="Deductive, inductive, and abductive reasoning" onerror="this.style.display='none'">
+                <figcaption>Figure 1. Deductive, inductive, and abductive reasoning. Deduction is certain; induction and abduction are probabilistic.</figcaption>
+            </figure>
+
+            <p>These three modes are not in competition; they cover different territory. Deduction is the engine of formal systems&mdash;mathematics, law, and the deterministic rules of a blockchain. Induction is the engine of empirical science. Abduction is the engine of diagnosis, investigation, design, and most of the decisions a person, a firm, or an economy actually has to make in real time. The Vertical Landing is an abductive event. It is the case deduction cannot resolve and induction has not yet seen enough of to characterize. It demands the third mode.</p>
+
+            <p>The Vertical Landing is the interesting case. It is the residue of the binary, the outcome the binary cannot represent, and the case abduction was named to address. A coin that lands on its edge has not failed to produce information; it has produced information the system was not designed to receive. Most working definitions of epistemology presume the system is designed to receive&mdash;that knowledge is the set of propositions which resolve cleanly to true or false. But the natural world routinely produces edges. A river is neither the bank nor the sea. A photon is neither here nor there until it is measured. A market is neither in equilibrium nor in collapse; it is in motion. If epistemology is to be useful to a theory of economy, and the economy is to be modeled as a natural process, then the study of awareness has to account for the edges as much as for the faces. It has to hold a third position: what is known, what is not known, and what cannot yet be resolved. This third position is where $Qi, and the economy that would price it, has to live.</p>
+
+            <h3>Money, and What It Is For</h3>
+
+            <p>Money has, by long convention, performed three functions: a medium of exchange, a store of value, and a unit of account. The medium-of-exchange function asks money to move&mdash;to clear transactions, settle debts, and circulate. The store-of-value function asks money to hold&mdash;to preserve purchasing power across time. The unit-of-account function asks money to measure&mdash;to denominate prices, wages, and contracts in a stable reference. These three asks are not obviously compatible. Something asked to circulate freely is asked not to be hoarded. Something asked to hold value is asked not to circulate. Something asked to measure is asked not to move at all. Asking a single instrument to satisfy all three is asking it to occupy three positions in the economy simultaneously, and the historical record of money is, in large part, the record of that demand failing.</p>
+
+            <p>A handful of figures in the twentieth century saw this and proposed a different anchor. Thomas Edison, writing in 1921, argued the gold standard tied money to an artificially scarce resource and proposed instead that currency be backed by real economic output&mdash;industrial electricity, or agricultural goods. Henry Ford extended the idea later in the 1920s, proposing a kilowatt-hour-denominated currency that would, in his words, break the grip of banking monopolies and price money in the actual productive capacity of a society rather than the accumulated holdings of its vaults. Frederick Soddy, a Nobel-laureate chemist who turned his attention to economics in the 1920s and 1930s, argued that unconstrained fiat issuance violated the conservation laws of physics&mdash;that it created value from nothing in a way no natural process can. By the 1960s, Buckminster Fuller was anticipating a global accounting system denominated in watts and joules rather than national currencies. The line through all of these proposals is the same: money should be answerable to energy, because energy is the substrate on which everything else in the economy is produced.</p>
+
+            <p>The dollar, while still on the gold standard, was at least answerable to something. Expanding the money supply meant accumulating gold reserves. That arrangement ended in 1971. What replaced it&mdash;the petrodollar system&mdash;was not designed as an energy-money system, but functioned as one in practice. By pricing oil exclusively in dollars, the United States generated persistent global demand for its currency and effectively pegged the dollar to barrels of oil rather than ounces of gold. The arrangement worked, in a sense. It also produced fifty years of foreign policy organized around the defense of that peg, and it conferred on the dollar a monetary privilege that depends, structurally, on the continued indispensability of oil. Both gold and oil illustrate the same recurring problem: when a productive commodity is asked to also serve as the reference rate of the monetary system, the monetary system distorts the commodity&rsquo;s native role, and the commodity distorts the monetary system. What is needed is a reference rate that is not borrowed from any commodity at all&mdash;one whose production is the monetary system&rsquo;s own work.</p>
+
+            <h3>Bitcoin and Gresham&rsquo;s Paradox</h3>
+
+            <p>Bitcoin, introduced in 2009, was the first monetary system whose issuance was tied to the completion of computational work. Miners expend electricity and hardware to produce hashes; the protocol rewards them with newly minted tokens. The supply is fixed, the issuance schedule is predetermined, and the network is permissionless. On its own terms, Bitcoin succeeded: it produced the first credibly neutral, energy-anchored monetary asset in modern history. But it inherited the same demand the older systems failed to meet&mdash;the demand that a single instrument serve all three monetary functions&mdash;and it failed in the same way, just differently.</p>
+
+            <p>The failure has a name. Gresham&rsquo;s Paradox, in its modern form, observes that when a scarce and immutable money coexists with an inflating one, the scarce money is hoarded and the inflating money is spent. This is exactly what Bitcoin produced. It became an excellent store of value and, by the same mechanism, a poor medium of exchange. Day-to-day transactions on Bitcoin-aware ecosystems are dominated not by Bitcoin but by fiat-backed stablecoins, which carry the inflationary properties Bitcoin was built to escape. The same pattern repeats on Ethereum, on Solana, and on every other major chain whose native asset is treated as an appreciating reserve. The conclusion this points to is structural: a single token cannot simultaneously be hoarded and spent, cannot simultaneously appreciate and denominate. The three functions of money have to be disaggregated&mdash;held by different instruments operating in the same system&mdash;or each function corrupts the others.</p>
+
+            <p>There is a second problem, less discussed, that becomes visible only once the first is named. Bitcoin&rsquo;s consensus mechanism couples two things that are logically separate: the ordering of transactions in time, and the validation of the transactions themselves. Each block is simultaneously a timestamp and a state update. The network cannot proceed until every node has synchronized on both. This coupling is what limits throughput, and it is also what limits the network&rsquo;s ability to shard&mdash;to split work across parallel chains&mdash;without fragmenting the state those chains are supposed to share. The clock and the ledger are entangled, and the entanglement is the bottleneck.</p>
+
+            <h3>Quai and Qi</h3>
+
+            <p>Quai Network is a layer-1 blockchain that addresses both problems at once. It disaggregates the functions of money across two tokens, and it eliminates the clock from the consensus process. Each move is worth examining on its own before they are seen together.</p>
+
+            <p>The consensus mechanism is called <strong>Proof of Entropy Minimization</strong>, or PoEM. Like Bitcoin&rsquo;s proof-of-work, it requires miners to expend energy to produce hashes; unlike Bitcoin, it does not order transactions by timestamp. It orders them by the causal relationships among the hashes themselves. This draws on a principle from Stephen Wolfram&rsquo;s fundamental theory of physics called <em>causal invariance</em>: the property that the same overall network structure emerges regardless of the order in which events are processed. For a distributed consensus system, causal invariance means the ledger can remain globally consistent without nodes needing to synchronize on a shared clock. Work can be sharded across many chains in parallel; the state those chains describe remains one state. The bottleneck Bitcoin inherits from its block-clock disappears.</p>
+
+            <p>The dual-token architecture sits on top of this consensus. Quai is the programmable, scarce asset&mdash;the store of value, with a constrained supply that trends toward zero net issuance over time. Qi is the energy-anchored asset&mdash;the unit of account and medium of exchange, whose issuance is tied directly to the energy cost of producing it. Quai rewards are proportional to the binary logarithm of mining difficulty; Qi rewards are proportional to difficulty itself. The constants that scale these issuances are adjusted periodically by an on-chain controller, with Qi&rsquo;s formula incorporating a decaying component so that issuance tracks real energy expenditure rather than gains in hardware efficiency. Miners choose, block by block, whether to receive Quai or Qi for their work, and the protocol provides a two-way burn-and-mint conversion between the two tokens at a rate that reflects the underlying economics. There is no peg. There is no reserve. The relationship between Quai and Qi is mediated entirely by the energy economy that produces them.</p>
+
+            <p>The structural consequence of this design is that Qi is the first cryptocurrency whose unit is intrinsically energetic. A unit of Qi is not a claim on a barrel of oil, an ounce of gold, or a promise from a central bank. It is a record of the computational work, measured in kilowatt-hours per hash, that the network performed to produce it. Its purchasing power is anchored not by scarcity, not by belief, but by the physical cost of its own production. This is the property Edison and Ford were reaching for a century ago, the property Soddy argued was a precondition for any monetary system that did not violate the conservation laws, and the property Bitcoin gestured at but could not isolate because it tried to serve all three monetary functions with a single token. Qi isolates it.</p>
+
+            <h3>The Third Position</h3>
+
+            <p>Return to the coin. The deductive reading of the economy treats it as a system whose rules are known and whose outcomes resolve cleanly&mdash;heads or tails, equilibrium or collapse, profit or loss. The inductive reading treats it as a system whose patterns can be characterized by enough observation. Both readings work some of the time, and both fail in the same way: they fail at the edges, in the moments the binary cannot represent and the record has not seen enough of to characterize. The economy spends most of its time at the edges. It is mostly Vertical Landings. To price it, a unit of account has to live in the third position&mdash;the position where what is known, what is not known, and what cannot yet be resolved are held together.</p>
+
+            <p>This is the answer the essay was reaching for. $Qi is the unit of account for an economy modeled as a natural process. Its value is not asserted, not pegged, not borrowed from a commodity whose primary role is something else. Its value is the physical work performed to produce it, denominated in the only currency the biosphere actually trades in: energy. Qi, the older concept&mdash;the vital flow observed in nature&mdash;is what the token, $Qi, was named to honor. The engineers of Quai Network built a monetary instrument whose unit is the same unit nature has always used. The economy, in being able to denominate itself in $Qi, gains the capacity it has not previously had: the capacity to know what is known about itself, what is not, and what cannot yet be resolved. To know the difference is the beginning of an economy that is, finally, answerable to the world it operates in.</p>
+
+            <p><strong>That is what Qi is.</strong></p>
+
+            <div class="essay-end">End &nbsp;·&nbsp; qi.xyz &nbsp;·&nbsp; 2026</div>
+        </article>
+
+        <button class="essay-close" id="essayCloseBtn">Close Essay ▲</button>
+
+      </div>
     </div>
 
-    <!-- CAROUSEL: IDEAS INVENTORY -->
+
+
+    <!-- ===== PROTOTYPES DRAWER (collapsed) ===== -->
+    <div class="proto-drawer" id="protoDrawer">
+        <button class="proto-drawer-toggle" id="protoDrawerToggle" aria-expanded="false" aria-controls="protoDrawerPanel">
+            <span class="proto-drawer-label">Prototypes &amp; Ecosystem</span>
+            <span class="proto-drawer-count">35 builds</span>
+            <span class="proto-drawer-chev">&#9662;</span>
+        </button>
+        <div class="proto-drawer-panel" id="protoDrawerPanel">
+
+    <!-- CAROUSEL: IDEAS INVENTORY + QUAI ECOSYSTEM (merged) -->
     <div class="carousel-section carousel-prototypes" id="carousel">
         <div class="carousel-section-title-row" style="text-align:center;">
             <div class="carousel-section-title"><span class="title-accent">QI XYZ</span> PROTOTYPES</div>
-            <div class="carousel-section-subtitle">Experimental builds &amp; ideas inventory</div>
+            <div class="carousel-section-subtitle">Experimental builds, ideas inventory &amp; Quai ecosystem</div>
         </div>
         <div class="carousel-header">
             <div class="carousel-label">Ideas Inventory</div>
@@ -2288,57 +2243,151 @@
                     </div>
                 </a>
 
-            </div>
+
+                <!-- ===== QUAI NETWORK OFFICIAL SITES (merged in) ===== -->
+
+                <!-- 1 — Quai Network Main Site -->
+                <a href="https://qu.ai" target="_blank" class="carousel-card carousel-card-quai" data-color="red">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Red filled disc -->
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <!-- Black Q ring inside -->
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <!-- Black tail -->
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">QUAI NETWORK</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Main Site</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>qu.ai</h3>
+                        <p>The official Quai Network homepage. Multi-chain architecture, energy-based tokenomics, and the vision for programmable money at planetary scale.</p>
+                        <span class="card-link">qu.ai</span>
+                    </div>
+                </a>
+
+                <!-- 2 — Documentation -->
+                <a href="https://docs.qu.ai" target="_blank" class="carousel-card carousel-card-quai" data-color="red">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">DOCUMENTATION</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Dev Docs</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>docs.qu.ai</h3>
+                        <p>Full technical documentation. Node setup, RPC APIs, smart contract deployment, Qi tokenomics deep-dives, and the PoEM consensus specification.</p>
+                        <span class="card-link">docs.qu.ai</span>
+                    </div>
+                </a>
+
+                <!-- 3 — Block Explorer -->
+                <a href="https://quaiscan.io" target="_blank" class="carousel-card carousel-card-quai" data-color="red">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">BLOCK EXPLORER</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Explorer</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>quaiscan.io</h3>
+                        <p>Real-time blockchain explorer. Track transactions across all 13 zones, view block data, inspect smart contracts, and monitor network entropy in motion.</p>
+                        <span class="card-link">quaiscan.io</span>
+                    </div>
+                </a>
+
+                <!-- 4 — Discord -->
+                <a href="https://discord.gg/quai" target="_blank" class="carousel-card carousel-card-quai" data-color="red">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">COMMUNITY</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Discord</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>Discord</h3>
+                        <p>The official Quai Network community server. Connect with miners, developers, and researchers. Share proposals and participate in governance discussions.</p>
+                        <span class="card-link">discord.gg/quai</span>
+                    </div>
+                </a>
+
+                <!-- 5 — X / Twitter -->
+                <a href="https://x.com/QuaiNetwork" target="_blank" class="carousel-card carousel-card-quai" data-color="red">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">X / TWITTER</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">Social</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>@QuaiNetwork</h3>
+                        <p>Follow for real-time protocol updates, mainnet announcements, ecosystem spotlights, and team communications from Dominant Strategies.</p>
+                        <span class="card-link">x.com/QuaiNetwork</span>
+                    </div>
+                </a>
+
+                <!-- 6 — GitHub -->
+                <a href="https://github.com/dominant-strategies" target="_blank" class="carousel-card carousel-card-quai" data-color="red">
+                    <div class="carousel-card-visual" style="height:220px;background:#000000;">
+                        <div class="quai-logo-placeholder">
+                            <svg class="quai-logo-q" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="38" cy="38" r="37" fill="#E22901"/>
+                                <circle cx="36" cy="35" r="14" fill="none" stroke="#000000" stroke-width="7"/>
+                                <line x1="46" y1="45" x2="58" y2="58" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                            <span class="quai-logo-wordmark">OPEN SOURCE</span>
+                            <span class="quai-logo-rule"></span>
+                        </div>
+                        <span class="card-tag-top">GitHub</span>
+                        <span class="card-status live"></span>
+                    </div>
+                    <div class="carousel-card-body">
+                        <h3>dominant-strategies</h3>
+                        <p>All Quai Network source code is open. Explore go-quai, the SDK, PoEM implementation, and all tooling repos maintained by the core protocol team.</p>
+                        <span class="card-link">github.com/dominant-strategies</span>
+                    </div>
+                </a>
+
+                        </div>
         </div>
         <div class="carousel-dots" id="carouselDots"></div>
     </div>
 
-    <!-- ===== ACCELERATED STARTUPS ===== -->
-    <div class="carousel-section" style="padding-top:80px;padding-bottom:100px;">
-        <div class="carousel-section-title-row" style="text-align:center;margin-bottom:48px;">
-            <div class="carousel-section-title"><span class="title-accent">ACCELERATED</span> STARTUPS</div>
-            <div class="carousel-section-subtitle" style="justify-content:center;">// Brainstormed &amp; accelerated through Qi.xyz — now seeking co-founders</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:900px;margin:0 auto;">
-
-            <!-- Card 1 — American Energy Money -->
-            <a href="https://americanenergymoney.com" target="_blank" class="carousel-card" style="flex:none;display:block;text-decoration:none;color:var(--text-primary);position:relative;">
-                <!-- Qi Approval Stamp -->
-                <div style="position:absolute;top:12px;right:12px;z-index:20;width:64px;height:64px;border-radius:50%;border:2.5px solid var(--qi-cyan);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(6,8,13,0.85);transform:rotate(-12deg);box-shadow:0 0 12px rgba(0,240,255,0.3);backdrop-filter:blur(4px);">
-                    <span style="font-family:var(--font-display);font-size:13px;font-weight:900;color:var(--qi-cyan);letter-spacing:1px;line-height:1;">Qi</span>
-                    <span style="font-family:var(--font-mono);font-size:5.5px;color:var(--qi-cyan);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;opacity:0.8;">APPROVED</span>
-                </div>
-                <div class="carousel-card-visual carousel-card-img" style="height:160px;">
-                        <img src="flag.png" alt="American Energy Money" />
-                    <span class="card-tag-top" style="border-color:rgba(255,184,0,0.4);color:var(--qi-amber);">Case Study</span>
-                </div>
-                <div class="carousel-card-body" style="border-top:1px solid rgba(255,184,0,0.15);padding:20px 20px 20px;">
-                    <h3 style="color:var(--qi-amber);">The Compute Frontier</h3>
-                    <p style="color:var(--text-secondary);margin-bottom:12px;">The commercial and industrial application of energy based money.</p>
-                    <span class="card-link" style="color:var(--qi-amber);">americanenergymoney.com →</span>
-                </div>
-            </a>
-
-            <!-- Card 2 — Thermoeconomics -->
-            <a href="https://thermoeconomics.info" target="_blank" class="carousel-card" style="flex:none;display:block;text-decoration:none;color:var(--text-primary);position:relative;">
-                <!-- Qi Approval Stamp -->
-                <div style="position:absolute;top:12px;right:12px;z-index:20;width:64px;height:64px;border-radius:50%;border:2.5px solid var(--qi-cyan);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(6,8,13,0.85);transform:rotate(-12deg);box-shadow:0 0 12px rgba(0,240,255,0.3);backdrop-filter:blur(4px);">
-                    <span style="font-family:var(--font-display);font-size:13px;font-weight:900;color:var(--qi-cyan);letter-spacing:1px;line-height:1;">Qi</span>
-                    <span style="font-family:var(--font-mono);font-size:5.5px;color:var(--qi-cyan);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;opacity:0.8;">APPROVED</span>
-                </div>
-                <div class="carousel-card-visual carousel-card-img" style="height:160px;">
-                        <img src="Quai.png" alt="Thermoeconomics" />
-                    <span class="card-tag-top">Case Study</span>
-                </div>
-                <div class="carousel-card-body" style="border-top:1px solid rgba(0,240,255,0.1);padding:20px 20px 20px;">
-                    <h3>Entropy as Value</h3>
-                    <p style="color:var(--text-secondary);margin-bottom:12px;">Research platform connecting all branches of science with economics.</p>
-                    <span class="card-link">thermoeconomics.info →</span>
-                </div>
-            </a>
-
-        </div>
-    </div>
+        </div><!-- END .proto-drawer-panel -->
+    </div><!-- END .proto-drawer -->
 
     </div><!-- END .station-content -->
 
@@ -2360,10 +2409,8 @@
             }
         }
 
-        document.getElementById('enterBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            unveilStation('#carousel');
-        });
+        // Station content is visible by default now — unveil kept for legacy anchors.
+        unveilStation();
 
         // ===== CAROUSEL =====
         const track = document.getElementById('carouselTrack');
@@ -2498,77 +2545,74 @@
         resetAutoplay();
         window.addEventListener('resize', () => { buildDots(); goTo(Math.min(currentIndex, getMaxIndex())); });
 
+        // ===== WHAT IS QI? ESSAY REVEAL =====
+        (function() {
+            const panel = document.getElementById('essayPanel');
+            const btn = document.getElementById('qiBtn');
+            const closeBtn = document.getElementById('essayCloseBtn');
+            if (!panel || !btn) return;
+
+            function setOpen(open) {
+                panel.classList.toggle('open', open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                btn.textContent = open ? 'Hide Essay' : 'Read: What Is Qi?';
+            }
+
+            btn.addEventListener('click', () => {
+                const open = !panel.classList.contains('open');
+                setOpen(open);
+                if (open) {
+                    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+                }
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    setOpen(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            // Print / Save as PDF — ensure the panel is open so print CSS has content
+            const printBtn = document.getElementById('essayPrintBtn');
+            if (printBtn) {
+                printBtn.addEventListener('click', () => {
+                    if (!panel.classList.contains('open')) setOpen(true);
+                    setTimeout(() => window.print(), 200);
+                });
+            }
+
+            // Ctrl/Cmd+P while the essay is open prints the essay cleanly
+            window.addEventListener('beforeprint', () => {
+                if (!panel.classList.contains('open')) setOpen(true);
+            });
+        })();
+
+        // ===== PROTOTYPES DRAWER =====
+        (function() {
+            const drawer = document.getElementById('protoDrawer');
+            const toggle = document.getElementById('protoDrawerToggle');
+            if (!drawer || !toggle) return;
+            clearInterval(autoplayInterval); // don't autoplay while collapsed
+            toggle.addEventListener('click', () => {
+                const open = drawer.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                if (open) {
+                    // Panel had zero width while collapsed — recompute carousel geometry
+                    setTimeout(() => { currentIndex = 0; buildDots(); updateTrack(); resetAutoplay(); }, 60);
+                    setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+                } else {
+                    clearInterval(autoplayInterval);
+                }
+            });
+        })();
+
         // Nav logo scrolls to top
         document.querySelector('.nav-logo').addEventListener('click', (e) => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // ===== QUAI NETWORK OFFICIAL CAROUSEL =====
-        (function() {
-            const qTrack = document.getElementById('quaiCarouselTrack');
-            const qCards = qTrack.querySelectorAll('.carousel-card');
-            const qDots  = document.getElementById('quaiCarouselDots');
-            const qCardWidth = 224; // 200px card + 24px gap
-            let qIndex = 0;
-            let qAutoplay;
-
-            function qVisible() { return Math.floor(qTrack.parentElement.offsetWidth / qCardWidth) || 1; }
-            function qMax()     { return Math.max(0, qCards.length - qVisible()); }
-
-            function qBuildDots() {
-                qDots.innerHTML = '';
-                for (let i = 0; i <= qMax(); i++) {
-                    const d = document.createElement('button');
-                    d.classList.add('carousel-dot');
-                    if (i === qIndex) d.classList.add('active');
-                    d.addEventListener('click', () => qGoTo(i));
-                    qDots.appendChild(d);
-                }
-            }
-
-            function qUpdate() {
-                qTrack.style.transform = `translateX(-${qIndex * qCardWidth}px)`;
-                qDots.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === qIndex));
-            }
-
-            function qGoTo(i) {
-                qIndex = Math.min(Math.max(0, i), qMax());
-                qUpdate();
-                qReset();
-            }
-
-            function qReset() {
-                clearInterval(qAutoplay);
-                qAutoplay = setInterval(() => qGoTo(qIndex >= qMax() ? 0 : qIndex + 1), 5000);
-            }
-
-            document.getElementById('quaiCarouselNext').addEventListener('click', () => qGoTo(qIndex >= qMax() ? 0 : qIndex + 1));
-            document.getElementById('quaiCarouselPrev').addEventListener('click', () => qGoTo(qIndex <= 0 ? qMax() : qIndex - 1));
-
-            // Touch
-            let qTouchX = 0;
-            qTrack.addEventListener('touchstart', e => { qTouchX = e.touches[0].clientX; }, { passive: true });
-            qTrack.addEventListener('touchend', e => {
-                const d = qTouchX - e.changedTouches[0].clientX;
-                if (Math.abs(d) > 50) d > 0 ? qGoTo(qIndex + 1) : qGoTo(qIndex - 1);
-            }, { passive: true });
-
-            // Mouse drag
-            const qWrapper = qTrack.parentElement;
-            let qDrag = false, qDragX = 0, qDragged = false;
-            qWrapper.style.cursor = 'grab'; qWrapper.style.userSelect = 'none';
-            qWrapper.addEventListener('mousedown', e => { qDrag = true; qDragged = false; qWrapper.style.cursor = 'grabbing'; qDragX = e.pageX; clearInterval(qAutoplay); e.preventDefault(); });
-            qWrapper.addEventListener('mouseleave', () => { if (qDrag) { qDrag = false; qWrapper.style.cursor = 'grab'; qUpdate(); qReset(); } });
-            qWrapper.addEventListener('mouseup', e => { if (!qDrag) return; qDrag = false; qWrapper.style.cursor = 'grab'; const d = qDragX - e.pageX; if (Math.abs(d) > 50) { qDragged = true; qGoTo(d > 0 ? qIndex + 1 : qIndex - 1); } else { qUpdate(); } qReset(); });
-            qWrapper.addEventListener('mousemove', e => { if (!qDrag) return; e.preventDefault(); qTrack.style.transform = `translateX(-${qIndex * qCardWidth + (qDragX - e.pageX)}px)`; });
-            qWrapper.addEventListener('click', e => { if (qDragged) { e.preventDefault(); e.stopPropagation(); qDragged = false; } }, true);
-
-            qBuildDots();
-            qUpdate();
-            qReset();
-            window.addEventListener('resize', () => { qBuildDots(); qGoTo(Math.min(qIndex, qMax())); });
-        })();
     </script>
 
     <!-- ===== WORKSHARE ORACLE CARD ANIMATION ===== -->
