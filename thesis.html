@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qi — Technical Thesis</title>
+<meta name="description" content="The technical thesis behind Qi: energy based intelligence, energy based money, energy based economics.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2306080d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-size='18' font-weight='bold' fill='%2300f0ff'%3EQi%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+    --qi-cyan: #00f0ff;
+    --qi-cyan-dim: rgba(0, 240, 255, 0.15);
+    --qi-cyan-glow: rgba(0, 240, 255, 0.4);
+    --qi-amber: #ffb800;
+    --qi-red: #ff3366;
+    --qi-green: #39FF14;
+    --qi-purple: #bf5af2;
+    --bg-deep: #06080d;
+    --bg-panel: #0c1018;
+    --bg-card: #111822;
+    --border-dim: rgba(0, 240, 255, 0.12);
+    --border-bright: rgba(0, 240, 255, 0.3);
+    --text-primary: #e8ecf0;
+    --text-secondary: #7a8a9e;
+    --text-dim: #4a5568;
+    --font-display: 'Orbitron', monospace;
+    --font-body: 'Rajdhani', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+.grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+        linear-gradient(rgba(0,240,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* ===== NAV ===== */
+nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; gap: 24px;
+    padding: 18px 40px;
+    background: rgba(6,8,13,0.82);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-dim);
+}
+.nav-logo {
+    font-family: var(--font-display); font-weight: 900; font-size: 20px;
+    letter-spacing: 4px; color: var(--qi-cyan); text-decoration: none;
+    text-shadow: 0 0 20px var(--qi-cyan-glow);
+}
+.nav-crumb {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-dim);
+}
+.nav-back {
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--qi-cyan); text-decoration: none;
+    border: 1px solid var(--border-bright); padding: 8px 16px;
+    transition: all 0.3s;
+}
+.nav-back:hover { background: var(--qi-cyan-dim); box-shadow: 0 0 16px rgba(0,240,255,0.12); }
+
+/* ===== DECK SHELL ===== */
+.deck-shell {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    padding: 120px 40px 60px;
+}
+.deck-eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--qi-cyan); margin-bottom: 10px;
+}
+.deck-eyebrow::before { content: '◆ '; }
+.deck-title {
+    font-family: var(--font-display); font-size: clamp(26px, 4vw, 44px);
+    font-weight: 900; letter-spacing: 6px; text-transform: uppercase;
+    margin-bottom: 28px; line-height: 1.1;
+}
+.deck-title span { color: var(--qi-cyan); text-shadow: 0 0 30px var(--qi-cyan-glow); }
+
+/* ===== SLIDE STAGE ===== */
+.stage {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    min-height: 540px;
+    overflow: hidden;
+}
+.stage::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--qi-cyan);
+    box-shadow: 0 0 20px var(--qi-cyan-glow);
+}
+.slide {
+    display: none;
+    padding: 56px 56px 48px;
+    animation: slide-in 0.5s ease;
+}
+.slide.active { display: block; }
+@keyframes slide-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.slide-num {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 4px;
+    color: var(--text-dim); text-transform: uppercase; margin-bottom: 14px;
+}
+.slide h2 {
+    font-family: var(--font-display); font-size: clamp(20px, 2.8vw, 30px);
+    font-weight: 800; letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 8px; line-height: 1.2;
+}
+.slide h2 em { font-style: normal; color: var(--qi-cyan); }
+.slide .kicker {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--qi-amber); margin-bottom: 28px;
+}
+.slide p { color: var(--text-secondary); margin-bottom: 18px; max-width: 760px; }
+.slide p strong { color: var(--text-primary); font-weight: 600; }
+.slide ul { list-style: none; margin-bottom: 20px; max-width: 760px; }
+.slide li {
+    color: var(--text-secondary); margin-bottom: 12px; padding-left: 22px; position: relative;
+}
+.slide li::before {
+    content: '▸'; position: absolute; left: 0; color: var(--qi-cyan);
+}
+.slide li strong { color: var(--text-primary); font-weight: 600; }
+
+.eq {
+    font-family: var(--font-mono);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-dim);
+    border-left: 3px solid var(--qi-cyan);
+    padding: 18px 22px;
+    margin: 22px 0;
+    color: var(--qi-cyan);
+    font-size: 16px;
+    overflow-x: auto;
+}
+.eq .note { display: block; margin-top: 8px; color: var(--text-dim); font-size: 12px; letter-spacing: 1px; }
+
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 28px 0 8px; }
+.trio-cell {
+    background: var(--bg-panel); border: 1px solid var(--border-dim);
+    padding: 22px 20px;
+}
+.trio-cell .glyph { font-family: var(--font-display); font-size: 26px; font-weight: 900; margin-bottom: 10px; }
+.trio-cell h4 {
+    font-family: var(--font-display); font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 8px; color: var(--text-primary);
+}
+.trio-cell p { font-size: 14px; margin: 0; color: var(--text-secondary); }
+.trio-cell[data-c="cyan"] .glyph { color: var(--qi-cyan); }
+.trio-cell[data-c="amber"] .glyph { color: var(--qi-amber); }
+.trio-cell[data-c="green"] .glyph { color: var(--qi-green); }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.pill {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-secondary);
+    border: 1px solid var(--border-dim); padding: 6px 12px; border-radius: 999px;
+}
+
+/* ===== CONTROLS ===== */
+.deck-controls {
+    display: flex; align-items: center; gap: 16px;
+    margin-top: 24px;
+}
+.deck-btn {
+    background: transparent; border: 1px solid var(--border-bright);
+    color: var(--qi-cyan); width: 44px; height: 44px;
+    font-size: 18px; cursor: pointer; transition: all 0.3s;
+    font-family: var(--font-mono);
+}
+.deck-btn:hover:not(:disabled) { background: var(--qi-cyan-dim); box-shadow: 0 0 16px rgba(0,240,255,0.15); }
+.deck-btn:disabled { opacity: 0.25; cursor: default; }
+.deck-progress {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px;
+    color: var(--text-dim); text-transform: uppercase;
+}
+.deck-dots { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.deck-dot {
+    width: 8px; height: 8px; border-radius: 999px; border: none;
+    background: var(--border-bright); cursor: pointer; transition: all 0.3s; padding: 0;
+}
+.deck-dot.active { width: 24px; background: var(--qi-cyan); box-shadow: 0 0 6px var(--qi-cyan-glow); }
+
+.deck-hint {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px;
+    color: var(--text-dim); text-transform: uppercase; margin-top: 28px; text-align: center;
+}
+
+@media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-crumb { display: none; }
+    .deck-shell { padding: 100px 20px 48px; }
+    .slide { padding: 32px 24px 32px; }
+    .stage { min-height: 620px; }
+    .trio { grid-template-columns: 1fr; }
+    .deck-dots { width: 100%; margin-left: 0; margin-top: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav>
+    <a href="index.html" class="nav-logo">QI</a>
+    <span class="nav-crumb">// Technical Thesis</span>
+    <a href="index.html" class="nav-back">← Home</a>
+</nav>
+
+<div class="deck-shell">
+    <div class="deck-eyebrow">Technical Thesis</div>
+    <h1 class="deck-title">Energy Based <span>Intelligence</span></h1>
+
+    <div class="stage" id="stage">
+
+        <!-- 1 -->
+        <section class="slide active">
+            <div class="slide-num">01 / 08 — Premise</div>
+            <h2>One Ledger For <em>Work</em></h2>
+            <div class="kicker">Intelligence, money, and economics are the same accounting problem</div>
+            <p>Every act of computation is a physical process. It dissipates energy, produces entropy, and leaves a record. Modern economies price the outputs of that process — tokens, inferences, GPU-hours — while systematically failing to price the process itself.</p>
+            <p>The thesis of Qi is simple: <strong>the thermodynamic cost of work is the only unit of account that does not require a trusted issuer.</strong> Once you can measure it, you can settle in it.</p>
+            <div class="trio">
+                <div class="trio-cell" data-c="cyan">
+                    <div class="glyph">◈</div>
+                    <h4>Intelligence</h4>
+                    <p>Inference is dissipation. Model capability has a floor set by physics, not by capital.</p>
+                </div>
+                <div class="trio-cell" data-c="amber">
+                    <div class="glyph">◆</div>
+                    <h4>Money</h4>
+                    <p>A unit whose issuance cost is a measured quantity of joules cannot be printed into existence.</p>
+                </div>
+                <div class="trio-cell" data-c="green">
+                    <div class="glyph">◉</div>
+                    <h4>Economics</h4>
+                    <p>Prices become measurements. Value flows along thermodynamic gradients, not narrative ones.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2 -->
+        <section class="slide">
+            <div class="slide-num">02 / 08 — The Measurement Problem</div>
+            <h2>Why Fiat Cannot <em>Price Compute</em></h2>
+            <div class="kicker">The unit of account is the bug</div>
+            <p>Compute markets today are denominated in currencies whose supply is a policy variable. That introduces a term into every cost calculation that has nothing to do with the underlying physics of the machine.</p>
+            <ul>
+                <li><strong>Energy is local, currency is global.</strong> A kilowatt-hour in Iceland and one in Virginia are physically identical and financially incommensurable.</li>
+                <li><strong>Depreciation schedules are fiction.</strong> Hardware amortization is an accounting convention layered over a real dissipation process.</li>
+                <li><strong>Contracts settle in claims, not in work.</strong> Every compute contract is ultimately a promise about a balance sheet, not a receipt for joules spent.</li>
+            </ul>
+            <p>The consequence is that the fastest-growing sector in the economy — inference — has no native unit. It borrows one, and inherits every distortion that comes with it.</p>
+        </section>
+
+        <!-- 3 -->
+        <section class="slide">
+            <div class="slide-num">03 / 08 — Foundation</div>
+            <h2>Information Is <em>Physical</em></h2>
+            <div class="kicker">Shannon → Landauer → Settlement</div>
+            <p>The bridge between information theory and thermodynamics is not a metaphor. Erasing a bit of information has a minimum energy cost at temperature <em>T</em>:</p>
+            <div class="eq">
+                E<sub>min</sub> = k<sub>B</sub> · T · ln 2
+                <span class="note">Landauer's bound — the thermodynamic floor of irreversible computation</span>
+            </div>
+            <p>Real machines run many orders of magnitude above this bound, but the bound is what makes the accounting well-posed: <strong>there exists a physically grounded lower limit on the cost of any computation</strong>, and every real implementation reports its distance from that limit.</p>
+            <p>That distance is measurable, comparable across hardware and geography, and impossible to fake without actually doing the work.</p>
+        </section>
+
+        <!-- 4 -->
+        <section class="slide">
+            <div class="slide-num">04 / 08 — Mechanism</div>
+            <h2>Proof of <em>Entropy Minima</em></h2>
+            <div class="kicker">PoEM — work as a continuous, not binary, signal</div>
+            <p>Conventional proof-of-work treats a hash as pass/fail against a threshold. This discards information: a hash that beats the target by a wide margin represents more expected work than one that barely clears it.</p>
+            <p>PoEM reads the full magnitude of each solution and treats it as an entropy measurement. The chain's canonical history is the one that represents the <strong>minimum cumulative entropy</strong> — the trajectory that most efficiently converts energy into ordered state.</p>
+            <div class="eq">
+                ΔS ∝ −log₂( h / 2<sup>256</sup> )
+                <span class="note">Entropy contribution of a solution h — continuous, not thresholded</span>
+            </div>
+            <ul>
+                <li><strong>Faster convergence.</strong> Fork choice resolves on a continuous signal rather than a discrete count.</li>
+                <li><strong>Better use of expended work.</strong> No hash below the threshold is wasted information.</li>
+                <li><strong>Sharding-compatible.</strong> Entropy is additive across parallel chains in a way that block-count is not.</li>
+            </ul>
+        </section>
+
+        <!-- 5 -->
+        <section class="slide">
+            <div class="slide-num">05 / 08 — The Token</div>
+            <h2>Qi As An <em>Energy Unit</em></h2>
+            <div class="kicker">A stable claim on joules, not on a balance sheet</div>
+            <p>Qi is issued as a function of measured entropy production. Its issuance schedule is not a chosen parameter — it is a readout of how much work the network actually performed.</p>
+            <ul>
+                <li><strong>No discretionary issuance.</strong> There is no committee. There is a measurement.</li>
+                <li><strong>Denominated in work, not in belief.</strong> One Qi corresponds to a defined quantity of computational dissipation.</li>
+                <li><strong>Naturally counter-cyclical against energy prices.</strong> When energy is cheap, more work is affordable; the unit tracks the resource, not the sentiment.</li>
+            </ul>
+            <p>This is what makes Qi usable as an accounting layer for compute rather than merely as a speculative asset. A datacenter can quote in it. A model provider can settle in it. Neither has to trust the other's currency assumptions.</p>
+        </section>
+
+        <!-- 6 -->
+        <section class="slide">
+            <div class="slide-num">06 / 08 — Architecture</div>
+            <h2>The <em>Settlement Stack</em></h2>
+            <div class="kicker">From joules to invoices</div>
+            <ul>
+                <li><strong>Layer 0 — Physical.</strong> Generation and compute co-located. Solar, curtailed grid capacity, waste heat recovery.</li>
+                <li><strong>Layer 1 — Consensus.</strong> PoEM-secured chain producing a verifiable entropy record.</li>
+                <li><strong>Layer 2 — Unit.</strong> Qi issuance bound to that record; the numéraire for everything above.</li>
+                <li><strong>Layer 3 — Markets.</strong> Compute futures, capacity auctions, inference metering, settlement rails.</li>
+                <li><strong>Layer 4 — Applications.</strong> Model providers and agents that price their own operation in energy terms.</li>
+            </ul>
+            <p>Each layer is only as trustworthy as the measurement beneath it — which is precisely the point. The stack is designed so that <strong>the deepest layer is the one that requires the least trust.</strong></p>
+        </section>
+
+        <!-- 7 -->
+        <section class="slide">
+            <div class="slide-num">07 / 08 — Consequence</div>
+            <h2>Energy Based <em>Economics</em></h2>
+            <div class="kicker">What changes when the unit changes</div>
+            <p>Give an economy a unit of account grounded in physics and a set of second-order effects follow, none of which require anyone to adopt a new ideology.</p>
+            <ul>
+                <li><strong>Stranded energy becomes bankable.</strong> Curtailed generation converts directly into a liquid unit at the point of production.</li>
+                <li><strong>Efficiency becomes revenue.</strong> Approaching the Landauer bound is not a sustainability initiative; it is margin.</li>
+                <li><strong>Cross-border settlement stops needing an intermediary currency.</strong> Joules are already fungible.</li>
+                <li><strong>AI capex gets an honest denominator.</strong> The real cost of a model is its dissipation, and it can finally be quoted.</li>
+            </ul>
+        </section>
+
+        <!-- 8 -->
+        <section class="slide">
+            <div class="slide-num">08 / 08 — Status</div>
+            <h2>Where This <em>Stands</em></h2>
+            <div class="kicker">Open questions and honest limits</div>
+            <p>This is a research programme with working components, not a finished system. The parts that are load-bearing and still contested:</p>
+            <ul>
+                <li><strong>Measurement fidelity.</strong> Entropy accounting is exact at the protocol layer and approximate at the hardware layer. Closing that gap is open work.</li>
+                <li><strong>Volatility of the underlying.</strong> Energy prices move. A unit that tracks them faithfully will move with them — that is a feature for accounting and a friction for retail use.</li>
+                <li><strong>Adoption is a coordination problem.</strong> A unit of account is worth what others will quote in. Physics does not solve that; markets do.</li>
+            </ul>
+            <p>The claim being made here is narrower than it may sound: not that energy money is inevitable, but that <strong>compute is the first market large enough, and physical enough, for the accounting to actually pay for itself.</strong></p>
+            <div class="pill-row">
+                <span class="pill">Shannon Information Theory</span>
+                <span class="pill">Landauer Bound</span>
+                <span class="pill">Wolfram Physics</span>
+                <span class="pill">PoEM</span>
+                <span class="pill">Thermoeconomics</span>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="deck-controls">
+        <button class="deck-btn" id="prevBtn" aria-label="Previous slide">‹</button>
+        <button class="deck-btn" id="nextBtn" aria-label="Next slide">›</button>
+        <span class="deck-progress" id="progress">01 / 08</span>
+        <div class="deck-dots" id="dots"></div>
+    </div>
+
+    <div class="deck-hint">Use ← → arrow keys to navigate</div>
+</div>
+
+<script>
+(function () {
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dots = document.getElementById('dots');
+    const prev = document.getElementById('prevBtn');
+    const next = document.getElementById('nextBtn');
+    const progress = document.getElementById('progress');
+    let i = 0;
+
+    const pad = n => String(n).padStart(2, '0');
+
+    slides.forEach((_, n) => {
+        const d = document.createElement('button');
+        d.className = 'deck-dot' + (n === 0 ? ' active' : '');
+        d.setAttribute('aria-label', 'Slide ' + (n + 1));
+        d.addEventListener('click', () => go(n));
+        dots.appendChild(d);
+    });
+
+    function go(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, k) => s.classList.toggle('active', k === i));
+        dots.querySelectorAll('.deck-dot').forEach((d, k) => d.classList.toggle('active', k === i));
+        progress.textContent = pad(i + 1) + ' / ' + pad(slides.length);
+        prev.disabled = i === 0;
+        next.disabled = i === slides.length - 1;
+        document.getElementById('stage').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    prev.addEventListener('click', () => go(i - 1));
+    next.addEventListener('click', () => go(i + 1));
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') go(i + 1);
+        if (e.key === 'ArrowLeft') go(i - 1);
+    });
+
+    // Touch swipe
+    let x0 = 0;
+    const stage = document.getElementById('stage');
+    stage.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend', e => {
+        const d = x0 - e.changedTouches[0].clientX;
+        if (Math.abs(d) > 50) go(d > 0 ? i + 1 : i - 1);
+    }, { passive: true });
+
+    go(0);
+})();
+</script>
+
+</body>
+</html>
