@@ -1,20 +1,3 @@
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -595,22 +578,31 @@
             font-size: 17px;
             line-height: 1.72;
         }
-        .essay-doc .doc-eyebrow {
-            font-family: var(--font-mono); font-size: 10px; letter-spacing: 4px;
-            text-transform: uppercase; color: #7c8794; margin-bottom: 14px;
-        }
         .essay-doc h2.essay-title {
             font-family: 'Georgia', 'Times New Roman', Times, serif;
             font-size: clamp(30px, 4.6vw, 44px);
             font-weight: 700; letter-spacing: 0; text-transform: none;
-            color: #0b0e12; line-height: 1.15; margin-bottom: 12px;
+            color: #0b0e12; line-height: 1.15;
+            text-align: center;
+            padding-bottom: 30px; margin-bottom: 40px;
+            border-bottom: 1px solid #d8dde3;
         }
         .essay-doc h2.essay-title span { color: #0b0e12; text-shadow: none; }
-        .essay-doc .essay-byline {
-            font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
-            text-transform: uppercase; color: #7c8794;
-            padding-bottom: 26px; margin-bottom: 38px;
-            border-bottom: 1px solid #d8dde3;
+
+        /* Closing line + signature */
+        .essay-doc p.closing {
+            font-style: italic; font-size: 19px; color: #14181d;
+            text-align: left; text-indent: 0;
+            margin-top: 34px; margin-bottom: 34px;
+        }
+        .essay-sig { margin-top: 4px; }
+        .essay-sig .sig-name {
+            font-family: 'Georgia', serif; font-size: 17px;
+            font-weight: 700; color: #0b0e12; margin-bottom: 3px;
+        }
+        .essay-sig .sig-role {
+            font-family: var(--font-mono); font-size: 11px;
+            letter-spacing: 2px; text-transform: uppercase; color: #7c8794;
         }
         .essay-doc h3 {
             font-family: 'Georgia', 'Times New Roman', Times, serif;
@@ -688,6 +680,10 @@
                 break-after: avoid; page-break-after: avoid;
             }
             .essay-doc p { font-size: 11.5pt; color: #000 !important; orphans: 3; widows: 3; }
+            .essay-doc p.closing { font-size: 12.5pt; margin: 18pt 0; }
+            .essay-sig { break-inside: avoid; page-break-inside: avoid; }
+            .essay-sig .sig-name { font-size: 12pt; }
+            .essay-sig .sig-role { font-size: 9pt; }
             .essay-figure { break-inside: avoid; page-break-inside: avoid; }
             a { color: #000 !important; text-decoration: none; }
         }
@@ -881,73 +877,34 @@
       <div class="essay-stage">
 
         <div class="essay-toolbar">
-            <span class="essay-toolbar-label">What Is Qi? &nbsp;·&nbsp; v1.4 &nbsp;·&nbsp; 2026</span>
+            <span class="essay-toolbar-label">What Is Qi?</span>
             <a class="doc-btn primary" href="what-is-qi.pdf" download="what-is-qi-macurdy-v1.4.pdf">↓ Download PDF</a>
-            <button type="button" class="doc-btn" id="essayPrintBtn">⎙ Print / Save as PDF</button>
             <a class="doc-btn" href="what-is-qi.pdf" target="_blank" rel="noopener">↗ Open PDF</a>
         </div>
 
         <article class="essay-doc" id="essayDoc">
-            <div class="doc-eyebrow">Essay</div>
             <h2 class="essay-title">What Is <span>Qi</span>?</h2>
-            <div class="essay-byline">Steph Macurdy &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; v1.4</div>
 
-            <p class="lede">Technically, &ldquo;$Qi&rdquo; is a cryptographic token defined by Quai Network, the layer-1 blockchain with several intended purposes which will be discussed in depth in this essay. Philosophically, &ldquo;Qi&rdquo; is an older, wider, more ancient concept defined by cultural, historical, and spiritual traditions of human beings observing nature and its natural processes. In this sense, &ldquo;Qi&rdquo; represents the &ldquo;life energy&rdquo; or &ldquo;vital flow&rdquo; observed in nature&mdash;that which is deeply embedded in physical and spiritual systems alike.</p>
+            <p class="lede">Qi represents an unbroken lineage from fuel to joule to computation. It is conceived as a reference unit unburdened by the accumulated errors of convention, translation, and approximation that increasingly challenge our ability to coordinate a rapidly evolving economy. The design, construction, and architecture of Qi represent a new approach to distributed consensus, information theory, inference, and, potentially, our understanding of the physical foundations of economic value.</p>
 
-            <p>A distinction will be made throughout this essay between $Qi defined by a blockchain, and Qi defined by nature. This distinction is necessary in order to enable the reader to appropriately switch between ontological and epistemological contexts: one defined entirely by a blockchain with formal, mathematical, deterministic rules, and the other defined entirely by subjective interpretations of world history and subjective experience. Then, when appropriate, blend their mutual reality together to find higher-order relationship. Inevitably, the author believes the token, $Qi, inherits ideology from human tradition and nature, with intention of representing those same ideas in the realm of the human economy, and it is an appropriate assumption that the engineers of the Quai Network blockchain had the same intention.</p>
+            <p>The world economy is always evolving&mdash;and today, it is evolving at an accelerating rate. As intelligence becomes increasingly computational and physical systems become increasingly integrated with information systems, fidelity and precision become essential to our ability to coordinate, preserve, and adapt our institutions. From this vantage point, Qi has been designed to help coordinate the world economy around a reference unit equal in ambition to the great standards of measurement across the sciences.</p>
 
-            <p>In 2026, nearly two hundred and fifty years of America&rsquo;s semiquincentennial year, the nature of the economy has evolved and has an awareness potential that is capable now of embedding the idea of life energy&rsquo;s vital flow into our organizing systems. Money, wrought with complexity and land-mines, is a representative system for tracking, facilitating, and organizing vital flows on the scale of our biosphere. To lack a scientific, ontological, and epistemological investigation into our inherited organizing methods would be grossly irresponsible. The question, <em>what is $Qi?</em>, is the pursuit to connect nature and natural processes to economy and economic processes in order to align natural incentives with natural constraints. To say what is occurring in the economy is not natural would be problematic to defend. Instead, I&rsquo;d like to claim that the economy may have capability to incorporate more awareness about itself&mdash;to give it the ability to know what is known and what can&rsquo;t be known about itself.</p>
+            <p>Qi is an economic unit of measurement defined through an entropic relationship common to computation. Its purpose is to provide a common reference through which the economic tradeoffs between physical and computational systems can be understood. Energy, information, computation, and labor are no longer separate domains. They are increasingly expressions of a connected economic reality.</p>
 
-            <h3>Epistemology</h3>
+            <p>Our team of computationalists, economists, material scientists, cryptographers, and engineers is building the foundations for an energy-based money designed for this emerging world. Qi is intended to become increasingly relevant to the unit economics of artificial intelligence, compute markets, and the foundational caloric-labor economy of natural and organic systems. Its ambition is not to replace complexity with simplicity, but to establish a common measure capable of operating across increasingly complex systems.</p>
 
-            <p>Beginning with epistemology, the study of awareness. Typically known as a theory of knowledge, epistemology is reduced to what is and is not known. To know a coinflip is heads is to know it is not tails. To know it is not tails implies it is heads. Heads = Not Tails, Not Tails = Heads, Not Heads = Tails, Tails = Not Heads. Neither Heads nor Tails = Undetermined, or <strong>Vertical Landing</strong>.</p>
+            <p>We train economic models and controllers to bound the reference unit, understand compute markets, and help natural and organic systems learn to think, adapt, and evolve within changing constraints. Our mission is to accelerate the adoption and proliferation of Qi by building the intellectual, computational, and financial infrastructure necessary for it to become useful.</p>
 
-            <p>The structure of that argument&mdash;coin lands, outcome is one of two faces, knowledge follows by exclusion&mdash;is a particular mode of reasoning, and it is worth naming alongside the others. Epistemology distinguishes three. <strong>Deductive reasoning</strong> moves from a general rule to a specific conclusion. If the coin has two faces and is not heads, it is tails. Given the rule, the conclusion is certain. <strong>Inductive reasoning</strong> moves the other direction, from specific observations to a general pattern. Flip the coin a thousand times, observe roughly even heads and tails, and theorize a fair coin. The conclusion is not certain; it is probabilistic, and another thousand flips could revise it. <strong>Abductive reasoning</strong> begins from an incomplete observation and reaches for the best available explanation. The coin is standing on its edge. We did not predict this; we have no rule that resolves it; we infer&mdash;a draft, a breath, a flaw in the surface&mdash;and we proceed on the best guess we can make. The conclusion is also probabilistic, but unlike induction it does not rest on a body of prior observation. It rests on what the situation seems to require.</p>
+            <p>This frontier lab will build upon open-source intelligence models and open-source blockchain infrastructure, while seeking to compress its understanding of these systems into durable economic strategies. Our focus is on identifying and arbitraging systems that extract value without proportionate contribution&mdash;whether in blockchains, artificial intelligence, or institutions&mdash;and redirecting attention toward systems capable of producing, preserving, and coordinating genuine value.</p>
 
-            <figure class="essay-figure">
-                <img src="figure-1-reasoning.png" alt="Deductive, inductive, and abductive reasoning" onerror="this.style.display='none'">
-                <figcaption>Figure 1. Deductive, inductive, and abductive reasoning. Deduction is certain; induction and abduction are probabilistic.</figcaption>
-            </figure>
+            <p>Qi is ultimately a question of measurement: what do we count, what do we preserve, and what do we build toward? In an economy increasingly governed by the transformation of energy into information and information into intelligence, we believe the answer requires a reference unit grounded in the deepest constraints shared by all computation.</p>
 
-            <p>These three modes are not in competition; they cover different territory. Deduction is the engine of formal systems&mdash;mathematics, law, and the deterministic rules of a blockchain. Induction is the engine of empirical science. Abduction is the engine of diagnosis, investigation, design, and most of the decisions a person, a firm, or an economy actually has to make in real time. The Vertical Landing is an abductive event. It is the case deduction cannot resolve and induction has not yet seen enough of to characterize. It demands the third mode.</p>
+            <p class="closing">May we aim well,</p>
 
-            <p>The Vertical Landing is the interesting case. It is the residue of the binary, the outcome the binary cannot represent, and the case abduction was named to address. A coin that lands on its edge has not failed to produce information; it has produced information the system was not designed to receive. Most working definitions of epistemology presume the system is designed to receive&mdash;that knowledge is the set of propositions which resolve cleanly to true or false. But the natural world routinely produces edges. A river is neither the bank nor the sea. A photon is neither here nor there until it is measured. A market is neither in equilibrium nor in collapse; it is in motion. If epistemology is to be useful to a theory of economy, and the economy is to be modeled as a natural process, then the study of awareness has to account for the edges as much as for the faces. It has to hold a third position: what is known, what is not known, and what cannot yet be resolved. This third position is where $Qi, and the economy that would price it, has to live.</p>
-
-            <h3>Money, and What It Is For</h3>
-
-            <p>Money has, by long convention, performed three functions: a medium of exchange, a store of value, and a unit of account. The medium-of-exchange function asks money to move&mdash;to clear transactions, settle debts, and circulate. The store-of-value function asks money to hold&mdash;to preserve purchasing power across time. The unit-of-account function asks money to measure&mdash;to denominate prices, wages, and contracts in a stable reference. These three asks are not obviously compatible. Something asked to circulate freely is asked not to be hoarded. Something asked to hold value is asked not to circulate. Something asked to measure is asked not to move at all. Asking a single instrument to satisfy all three is asking it to occupy three positions in the economy simultaneously, and the historical record of money is, in large part, the record of that demand failing.</p>
-
-            <p>A handful of figures in the twentieth century saw this and proposed a different anchor. Thomas Edison, writing in 1921, argued the gold standard tied money to an artificially scarce resource and proposed instead that currency be backed by real economic output&mdash;industrial electricity, or agricultural goods. Henry Ford extended the idea later in the 1920s, proposing a kilowatt-hour-denominated currency that would, in his words, break the grip of banking monopolies and price money in the actual productive capacity of a society rather than the accumulated holdings of its vaults. Frederick Soddy, a Nobel-laureate chemist who turned his attention to economics in the 1920s and 1930s, argued that unconstrained fiat issuance violated the conservation laws of physics&mdash;that it created value from nothing in a way no natural process can. By the 1960s, Buckminster Fuller was anticipating a global accounting system denominated in watts and joules rather than national currencies. The line through all of these proposals is the same: money should be answerable to energy, because energy is the substrate on which everything else in the economy is produced.</p>
-
-            <p>The dollar, while still on the gold standard, was at least answerable to something. Expanding the money supply meant accumulating gold reserves. That arrangement ended in 1971. What replaced it&mdash;the petrodollar system&mdash;was not designed as an energy-money system, but functioned as one in practice. By pricing oil exclusively in dollars, the United States generated persistent global demand for its currency and effectively pegged the dollar to barrels of oil rather than ounces of gold. The arrangement worked, in a sense. It also produced fifty years of foreign policy organized around the defense of that peg, and it conferred on the dollar a monetary privilege that depends, structurally, on the continued indispensability of oil. Both gold and oil illustrate the same recurring problem: when a productive commodity is asked to also serve as the reference rate of the monetary system, the monetary system distorts the commodity&rsquo;s native role, and the commodity distorts the monetary system. What is needed is a reference rate that is not borrowed from any commodity at all&mdash;one whose production is the monetary system&rsquo;s own work.</p>
-
-            <h3>Bitcoin and Gresham&rsquo;s Paradox</h3>
-
-            <p>Bitcoin, introduced in 2009, was the first monetary system whose issuance was tied to the completion of computational work. Miners expend electricity and hardware to produce hashes; the protocol rewards them with newly minted tokens. The supply is fixed, the issuance schedule is predetermined, and the network is permissionless. On its own terms, Bitcoin succeeded: it produced the first credibly neutral, energy-anchored monetary asset in modern history. But it inherited the same demand the older systems failed to meet&mdash;the demand that a single instrument serve all three monetary functions&mdash;and it failed in the same way, just differently.</p>
-
-            <p>The failure has a name. Gresham&rsquo;s Paradox, in its modern form, observes that when a scarce and immutable money coexists with an inflating one, the scarce money is hoarded and the inflating money is spent. This is exactly what Bitcoin produced. It became an excellent store of value and, by the same mechanism, a poor medium of exchange. Day-to-day transactions on Bitcoin-aware ecosystems are dominated not by Bitcoin but by fiat-backed stablecoins, which carry the inflationary properties Bitcoin was built to escape. The same pattern repeats on Ethereum, on Solana, and on every other major chain whose native asset is treated as an appreciating reserve. The conclusion this points to is structural: a single token cannot simultaneously be hoarded and spent, cannot simultaneously appreciate and denominate. The three functions of money have to be disaggregated&mdash;held by different instruments operating in the same system&mdash;or each function corrupts the others.</p>
-
-            <p>There is a second problem, less discussed, that becomes visible only once the first is named. Bitcoin&rsquo;s consensus mechanism couples two things that are logically separate: the ordering of transactions in time, and the validation of the transactions themselves. Each block is simultaneously a timestamp and a state update. The network cannot proceed until every node has synchronized on both. This coupling is what limits throughput, and it is also what limits the network&rsquo;s ability to shard&mdash;to split work across parallel chains&mdash;without fragmenting the state those chains are supposed to share. The clock and the ledger are entangled, and the entanglement is the bottleneck.</p>
-
-            <h3>Quai and Qi</h3>
-
-            <p>Quai Network is a layer-1 blockchain that addresses both problems at once. It disaggregates the functions of money across two tokens, and it eliminates the clock from the consensus process. Each move is worth examining on its own before they are seen together.</p>
-
-            <p>The consensus mechanism is called <strong>Proof of Entropy Minimization</strong>, or PoEM. Like Bitcoin&rsquo;s proof-of-work, it requires miners to expend energy to produce hashes; unlike Bitcoin, it does not order transactions by timestamp. It orders them by the causal relationships among the hashes themselves. This draws on a principle from Stephen Wolfram&rsquo;s fundamental theory of physics called <em>causal invariance</em>: the property that the same overall network structure emerges regardless of the order in which events are processed. For a distributed consensus system, causal invariance means the ledger can remain globally consistent without nodes needing to synchronize on a shared clock. Work can be sharded across many chains in parallel; the state those chains describe remains one state. The bottleneck Bitcoin inherits from its block-clock disappears.</p>
-
-            <p>The dual-token architecture sits on top of this consensus. Quai is the programmable, scarce asset&mdash;the store of value, with a constrained supply that trends toward zero net issuance over time. Qi is the energy-anchored asset&mdash;the unit of account and medium of exchange, whose issuance is tied directly to the energy cost of producing it. Quai rewards are proportional to the binary logarithm of mining difficulty; Qi rewards are proportional to difficulty itself. The constants that scale these issuances are adjusted periodically by an on-chain controller, with Qi&rsquo;s formula incorporating a decaying component so that issuance tracks real energy expenditure rather than gains in hardware efficiency. Miners choose, block by block, whether to receive Quai or Qi for their work, and the protocol provides a two-way burn-and-mint conversion between the two tokens at a rate that reflects the underlying economics. There is no peg. There is no reserve. The relationship between Quai and Qi is mediated entirely by the energy economy that produces them.</p>
-
-            <p>The structural consequence of this design is that Qi is the first cryptocurrency whose unit is intrinsically energetic. A unit of Qi is not a claim on a barrel of oil, an ounce of gold, or a promise from a central bank. It is a record of the computational work, measured in kilowatt-hours per hash, that the network performed to produce it. Its purchasing power is anchored not by scarcity, not by belief, but by the physical cost of its own production. This is the property Edison and Ford were reaching for a century ago, the property Soddy argued was a precondition for any monetary system that did not violate the conservation laws, and the property Bitcoin gestured at but could not isolate because it tried to serve all three monetary functions with a single token. Qi isolates it.</p>
-
-            <h3>The Third Position</h3>
-
-            <p>Return to the coin. The deductive reading of the economy treats it as a system whose rules are known and whose outcomes resolve cleanly&mdash;heads or tails, equilibrium or collapse, profit or loss. The inductive reading treats it as a system whose patterns can be characterized by enough observation. Both readings work some of the time, and both fail in the same way: they fail at the edges, in the moments the binary cannot represent and the record has not seen enough of to characterize. The economy spends most of its time at the edges. It is mostly Vertical Landings. To price it, a unit of account has to live in the third position&mdash;the position where what is known, what is not known, and what cannot yet be resolved are held together.</p>
-
-            <p>This is the answer the essay was reaching for. $Qi is the unit of account for an economy modeled as a natural process. Its value is not asserted, not pegged, not borrowed from a commodity whose primary role is something else. Its value is the physical work performed to produce it, denominated in the only currency the biosphere actually trades in: energy. Qi, the older concept&mdash;the vital flow observed in nature&mdash;is what the token, $Qi, was named to honor. The engineers of Quai Network built a monetary instrument whose unit is the same unit nature has always used. The economy, in being able to denominate itself in $Qi, gains the capacity it has not previously had: the capacity to know what is known about itself, what is not, and what cannot yet be resolved. To know the difference is the beginning of an economy that is, finally, answerable to the world it operates in.</p>
-
-            <p><strong>That is what Qi is.</strong></p>
-
-            <div class="essay-end">End &nbsp;·&nbsp; qi.xyz &nbsp;·&nbsp; 2026</div>
+            <div class="essay-sig">
+                <div class="sig-name">Steph Macurdy</div>
+                <div class="sig-role">CEO, American Energy Money, Inc.</div>
+            </div>
         </article>
 
         <button class="essay-close" id="essayCloseBtn">Close Essay ▲</button>
@@ -2593,15 +2550,6 @@
                 closeBtn.addEventListener('click', () => {
                     setOpen(false);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            }
-
-            // Print / Save as PDF — ensure the panel is open so print CSS has content
-            const printBtn = document.getElementById('essayPrintBtn');
-            if (printBtn) {
-                printBtn.addEventListener('click', () => {
-                    if (!panel.classList.contains('open')) setOpen(true);
-                    setTimeout(() => window.print(), 200);
                 });
             }
 
