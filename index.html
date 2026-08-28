@@ -694,6 +694,16 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 48px 40px 64px;
+            display: none;
+        }
+        /* Revealed only once the essay has been opened */
+        .proto-drawer.revealed {
+            display: block;
+            animation: proto-fade-in 0.7s ease both;
+        }
+        @keyframes proto-fade-in {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
         .proto-drawer-toggle {
             width: 100%;
@@ -2556,6 +2566,16 @@
                 panel.classList.toggle('open', open);
                 btn.setAttribute('aria-expanded', open ? 'true' : 'false');
                 btn.textContent = open ? 'Hide Essay' : 'Read: What Is Qi?';
+                // Prototypes bar only exists once the essay is on screen
+                const drawer = document.getElementById('protoDrawer');
+                if (drawer) {
+                    drawer.classList.toggle('revealed', open);
+                    if (!open) {
+                        drawer.classList.remove('open');
+                        const t = document.getElementById('protoDrawerToggle');
+                        if (t) t.setAttribute('aria-expanded', 'false');
+                    }
+                }
             }
 
             btn.addEventListener('click', () => {
