@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -193,6 +192,15 @@ nav {
 }
 .stack-row .txt { font-size: 1.6cqw; line-height: 1.45; color: var(--ink-soft); }
 .stack-row .txt strong { color: var(--ink); font-weight: 600; }
+.stack.wide { max-width: 100%; }
+.stack-row .m { flex: 0 0 31cqw; font-size: 1.95cqw; color: var(--ink); }
+.slide p math, .cols p math { font-size: 1.05em; }
+.eq math { font-size: 1.1em; }
+.slide math { font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', math; letter-spacing: 0; }
+.stack.wide .stack-row .lbl { flex-basis: 9cqw; }
+.eq.row { display: flex; align-items: center; gap: 3cqw; }
+.eq.row .note { margin-top: 0; }
+.slide ul.wide { max-width: 100%; }
 
 /* Slide footer — identical position on every slide */
 .slide-foot {
@@ -273,6 +281,8 @@ nav {
     .stack-row { padding: 7pt 10pt; gap: 12pt; }
     .stack-row .lbl { font-size: 9pt; flex: 0 0 52pt; }
     .stack-row .txt { font-size: 11.5pt; }
+    .stack-row .m { flex: 0 0 230pt; font-size: 14pt; }
+    .stack.wide .stack-row .lbl { flex-basis: 66pt; }
     .slide-foot {
         position: absolute; left: 0.7in; right: 0.7in; bottom: 0.4in;
         font-size: 8.5pt; letter-spacing: 1.8pt; padding-top: 8pt;
@@ -307,7 +317,7 @@ nav {
             <!-- 1 -->
             <section class="slide statement active">
                 <div class="tag">Technical Thesis &middot; 2026</div>
-                <h2>Intelligence is a physical process.<br>It should be referenced in physics.</h2>
+                <h2>Intelligence is a physical process.</h2>
                 <div class="rule"></div>
                 <p>Every inference dissipates energy and produces entropy. Qi makes that dissipation the reference frame &mdash; a unit of account measured, not declared.</p>
                 <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>01</span></div>
@@ -316,11 +326,11 @@ nav {
             <!-- 2 -->
             <section class="slide">
                 <div class="tag">The Problem</div>
-                <h2>Intelligence has yet to find its true physical reference</h2>
+                <h2>It needs a true physical reference.</h2>
                 <div class="rule"></div>
                 <ul>
+                    <li><strong>Intelligence is a chain of physical ratios.</strong> Each link is measurable, and the chain telescopes to one number:<math display="block" style="margin:1cqw 0 0.4cqw;text-align:left"><mrow><mo>(</mo><mfrac><mtext>Compute</mtext><mtext>Joule</mtext></mfrac><mo>)</mo></mrow><mo>&times;</mo><mrow><mo>(</mo><mfrac><mtext>Inference</mtext><mtext>Compute</mtext></mfrac><mo>)</mo></mrow><mo>&times;</mo><mrow><mo>(</mo><mfrac><mtext>Intelligence</mtext><mtext>Inference</mtext></mfrac><mo>)</mo></mrow><mo>=</mo><mfrac><mtext>Intelligence</mtext><mtext>Joule</mtext></mfrac></math></li>
                     <li><strong>We price the output, not the process.</strong> Tokens and inferences are billed; the thermodynamic work producing them is never measured.</li>
-                    <li><strong>The reference frame is a policy variable.</strong> Model economics are denominated in a unit whose supply is chosen, so every cost carries a term unrelated to physics.</li>
                     <li><strong>Two identical joules are not comparable.</strong> The same computation in two countries settles at two prices for reasons the machine never sees.</li>
                 </ul>
                 <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>02</span></div>
@@ -329,32 +339,78 @@ nav {
             <!-- 3 -->
             <section class="slide">
                 <div class="tag">Foundation</div>
-                <h2>Inference is physical</h2>
+                <h2>One primitive: surprisal</h2>
                 <div class="rule"></div>
-                <p>Erasing one bit has a hard minimum energy cost at temperature <em>T</em>:</p>
-                <div class="eq">
-                    E<sub>min</sub> = k<sub>B</sub> &middot; T &middot; ln 2
-                    <span class="note">Landauer's bound &mdash; the thermodynamic floor of irreversible computation</span>
+                <p>A distinction defines the possibilities; the logarithm makes their probabilities additive. Everything that follows is a rotation of one object.</p>
+                <div class="stack wide">
+                    <div class="stack-row"><span class="lbl">Event</span><span class="m"><math displaystyle="true"><mi>I</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mo form="prefix">&minus;</mo><mi>ln</mi><mspace width="0.17em"/><mi>p</mi><mo>(</mo><mi>x</mi><mo>)</mo></math></span><span class="txt"><strong>Surprisal.</strong> How unexpected one outcome is, in nats. Independent events add.</span></div>
+                    <div class="stack-row"><span class="lbl">Average</span><span class="m"><math displaystyle="true"><mi>H</mi><mo>[</mo><mi>p</mi><mo>]</mo><mo>=</mo><mo form="prefix">&minus;</mo><msub><mo>&sum;</mo><mi>i</mi></msub><msub><mi>p</mi><mi>i</mi></msub><mspace width="0.17em"/><mi>ln</mi><mspace width="0.17em"/><msub><mi>p</mi><mi>i</mi></msub></math></span><span class="txt"><strong>Entropy</strong> is expected surprisal. For &Omega; equal states, H = ln &Omega;: counting made additive.</span></div>
+                    <div class="stack-row"><span class="lbl">Units</span><span class="m"><math displaystyle="true"><mi>S</mi><mo>=</mo><msub><mi>k</mi><mi mathvariant="normal">B</mi></msub><mi>H</mi></math></span><span class="txt"><strong>Boltzmann&rsquo;s constant</strong> converts nats to J/K. Same probabilities, physical dimensions.</span></div>
                 </div>
-                <p>This is the lowest bound. Real machines run far above it, and that distance is <strong>measurable, comparable across hardware, and impossible to fake without doing the work.</strong></p>
                 <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>03</span></div>
             </section>
 
             <!-- 4 -->
             <section class="slide">
-                <div class="tag">Mechanism</div>
-                <h2>Proof of Entropy Minimization</h2>
+                <div class="tag">Equilibrium</div>
+                <h2>Surprisal gets an energy scale</h2>
                 <div class="rule"></div>
-                <p>PoEM turns the bound into a running measurement. It reads the full magnitude of every hash as an entropy contribution, and orders events by causal relationship rather than by clock.</p>
-                <ul>
-                    <li><strong>Work becomes a continuous signal.</strong> Every hash carries information, not only those clearing a threshold.</li>
-                    <li><strong>No shared clock.</strong> Causal invariance keeps one consistent state without global synchronization.</li>
-                    <li><strong>Parallel by construction.</strong> Compute shards across chains; the entropy record stays additive.</li>
-                </ul>
+                <p>Maximize entropy subject to what is known and the answer is an exponential family. Constrain mean energy and it is the Boltzmann distribution.</p>
+                <div class="stack wide">
+                    <div class="stack-row"><span class="lbl">Weight</span><span class="m"><math displaystyle="true"><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mfrac><msup><mi>e</mi><mrow><mo>&minus;</mo><mi>&beta;</mi><msub><mi>E</mi><mi>i</mi></msub></mrow></msup><mi>Z</mi></mfrac></math></span><span class="txt"><strong>Boltzmann distribution.</strong> &beta; = 1/k<sub>B</sub>T is the multiplier that enforces mean energy.</span></div>
+                    <div class="stack-row"><span class="lbl">Generate</span><span class="m"><math displaystyle="true"><mi>F</mi><mo>=</mo><mo form="prefix">&minus;</mo><msub><mi>k</mi><mi mathvariant="normal">B</mi></msub><mi>T</mi><mspace width="0.17em"/><mi>ln</mi><mspace width="0.17em"/><mi>Z</mi></math></span><span class="txt"><strong>The partition function</strong> Z generates free energy, mean energy, entropy, and fluctuations.</span></div>
+                    <div class="stack-row"><span class="lbl">Identity</span><span class="m"><math displaystyle="true"><msub><mi>E</mi><mi>i</mi></msub><mo>&minus;</mo><mi>F</mi><mo>=</mo><msub><mi>k</mi><mi mathvariant="normal">B</mi></msub><mi>T</mi><mo>(</mo><mo form="prefix">&minus;</mo><mi>ln</mi><mspace width="0.17em"/><msub><mi>p</mi><mi>i</mi></msub><mo>)</mo></math></span><span class="txt"><strong>Surprisal &times; k<sub>B</sub>T is energy.</strong> In the canonical ensemble, a probability distinction has a cost in joules.</span></div>
+                </div>
                 <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>04</span></div>
             </section>
 
             <!-- 5 -->
+            <section class="slide">
+                <div class="tag">Displacement</div>
+                <h2 style="max-width:100%">Divergence is Information Geometry</h2>
+                <div class="rule"></div>
+                <p>One quantity measures a system&rsquo;s distance from equilibrium and a belief&rsquo;s distance from the posterior.</p>
+                <div class="stack wide">
+                    <div class="stack-row"><span class="lbl">Compare</span><span class="m"><math displaystyle="true"><msub><mi>D</mi><mi>KL</mi></msub><mo>(</mo><mi>q</mi><mo>&#x2225;</mo><mi>p</mi><mo>)</mo><mo>=</mo><msub><mo>&sum;</mo><mi>x</mi></msub><mi>q</mi><mspace width="0.17em"/><mi>ln</mi><mspace width="0.17em"/><mfrac><mi>q</mi><mi>p</mi></mfrac><mo>&ge;</mo><mn>0</mn></math></span><span class="txt"><strong>Relative entropy.</strong> The expected difference of two surprisals; zero only when q = p.</span></div>
+                    <div class="stack-row"><span class="lbl">Physics</span><span class="m"><math displaystyle="true"><mi>F</mi><mo>[</mo><mi>q</mi><mo>]</mo><mo>&minus;</mo><msub><mi>F</mi><mi>eq</mi></msub><mo>=</mo><msub><mi>k</mi><mi mathvariant="normal">B</mi></msub><mi>T</mi><mo>&#x22C5;</mo><msub><mi>D</mi><mi>KL</mi></msub><mo>(</mo><mi>q</mi><mo>&#x2225;</mo><msub><mi>p</mi><mi>eq</mi></msub><mo>)</mo></math></span><span class="txt"><strong>Excess free energy</strong> is scaled divergence. Equilibrium is the minimum.</span></div>
+                    <div class="stack-row"><span class="lbl">Inference</span><span class="m"><math displaystyle="true"><msub><mi>F</mi><mi>V</mi></msub><mo>[</mo><mi>q</mi><mo>]</mo><mo>=</mo><msub><mi>D</mi><mi>KL</mi></msub><mo>(</mo><mi>q</mi><mo>&#x2225;</mo><mi>P</mi><mo>(</mo><mi>h</mi><mo>|</mo><mi>d</mi><mo>)</mo><mo>)</mo><mo>&minus;</mo><mi>ln</mi><mspace width="0.17em"/><mi>P</mi><mo>(</mo><mi>d</mi><mo>)</mo></math></span><span class="txt"><strong>Variational free energy</strong> bounds the surprise of the data. Minimizing it is Bayesian inference.</span></div>
+                </div>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>05</span></div>
+            </section>
+
+            <!-- 6 -->
+            <section class="slide">
+                <div class="tag">Mechanism</div>
+                <h2>Proof of Entropy Minimization</h2>
+                <div class="rule"></div>
+                <p>PoEM turns surprisal into a running measurement, reading the full magnitude of every hash.</p>
+                <div class="eq row">
+                    <math displaystyle="true"><mi>I</mi><mo>(</mo><mi>h</mi><mo>)</mo><mo>=</mo><mo form="prefix">&minus;</mo><msub><mi>log</mi><mspace width="0.17em"/><mn>2</mn></msub><mfrac><mi>h</mi><msup><mn>2</mn><mn>256</mn></msup></mfrac></math>
+                    <span class="note">A hash with n leading zeros occurs with probability 1/2<sup>n</sup> &mdash; a receipt for n bits of surprisal.</span>
+                </div>
+                <ul class="wide">
+                    <li><strong>Work becomes a continuous signal.</strong> Every hash carries information, not only the winners.</li>
+                    <li><strong>No shared clock.</strong> Events are ordered by causality; causal invariance keeps one consistent state.</li>
+                    <li><strong>Parallel by construction.</strong> Compute shards across chains; the entropy record stays additive.</li>
+                </ul>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>06</span></div>
+            </section>
+
+            <!-- 7 -->
+            <section class="slide">
+                <div class="tag">Arbitrage</div>
+                <h2>Arbitraging Consensus</h2>
+                <div class="rule"></div>
+                <div class="stack wide">
+                    <div class="stack-row"><span class="lbl">Bitcoin</span><span class="m"><math displaystyle="true"><mi>w</mi><mo>(</mo><mi>h</mi><mo>)</mo><mo>=</mo><msub><mn>1</mn><mrow><mi>I</mi><mo>(</mo><mi>h</mi><mo>)</mo><mo>&ge;</mo><mi>n</mi></mrow></msub></math></span><span class="txt"><strong>Threshold.</strong> A hash counts only if it clears n leading zeros. Every near-miss is discarded.</span></div>
+                    <div class="stack-row"><span class="lbl">Zcash</span><span class="m"><math displaystyle="true"><mi>w</mi><mo>(</mo><mi>h</mi><mo>)</mo><mo>=</mo><msub><mn>1</mn><mrow><mi>I</mi><mo>(</mo><mi>h</mi><mo>)</mo><mo>&ge;</mo><mi>n</mi></mrow></msub></math></span><span class="txt"><strong>Threshold.</strong> Equihash is memory-hard, but the block still counts only if its hash clears the target.</span></div>
+                    <div class="stack-row"><span class="lbl">PoEM</span><span class="m"><math displaystyle="true"><mi>w</mi><mo>(</mo><mi>h</mi><mo>)</mo><mo>=</mo><mi>I</mi><mo>(</mo><mi>h</mi><mo>)</mo></math></span><span class="txt"><strong>Continuous.</strong> Every leading zero and every fractional bit is measured. Nothing is thrown away.</span></div>
+                </div>
+                <p style="margin-top:1.6cqw;max-width:100%"><strong>The subsidy is paid on the cut, not the work.</strong> Measured to the fractional bit, the spread between what a threshold subsidy pays and what the work costs in joules becomes visible, and exploitable.</p>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>07</span></div>
+            </section>
+
+            <!-- 8 -->
             <section class="slide">
                 <div class="tag">The Reference</div>
                 <h2>One unit, measured, establishes parity</h2>
@@ -377,13 +433,13 @@ nav {
                         <p>Two-way conversion at a rate set by the energy economy itself.</p>
                     </div>
                 </div>
-                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>05</span></div>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>08</span></div>
             </section>
 
-            <!-- 6 -->
+            <!-- 9 -->
             <section class="slide">
                 <div class="tag">Architecture</div>
-                <h2>From fuel to joule to inference</h2>
+                <h2>From fuel to joule to rule</h2>
                 <div class="rule"></div>
                 <div class="stack">
                     <div class="stack-row"><span class="lbl">Layer 0</span><span class="txt"><strong>Physical.</strong> Generation co-located with compute &mdash; solar, curtailed capacity, waste heat.</span></div>
@@ -392,34 +448,60 @@ nav {
                     <div class="stack-row"><span class="lbl">Layer 3</span><span class="txt"><strong>Markets.</strong> Capacity auctions, inference metering, settlement rails.</span></div>
                     <div class="stack-row"><span class="lbl">Layer 4</span><span class="txt"><strong>Intelligence.</strong> Models and agents that price their own operation in energy terms.</span></div>
                 </div>
-                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>06</span></div>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>09</span></div>
             </section>
 
-            <!-- 7 -->
+            <!-- 10 -->
             <section class="slide">
                 <div class="tag">Consequence</div>
-                <h2>What changes with a true reference frame</h2>
+                <h2>What changes with a true reference</h2>
                 <div class="rule"></div>
                 <ul>
                     <li><strong>Cognition gets a cost function.</strong> The real price of a model is its dissipation &mdash; and it can finally be quoted.</li>
-                    <li><strong>Efficiency becomes margin.</strong> Moving toward the Landauer bound is revenue, not a sustainability initiative.</li>
-                    <li><strong>Stranded energy becomes intelligence.</strong> Curtailed generation converts directly into compute at the point of production.</li>
+                    <li><strong>Efficiency becomes margin.</strong> Moving toward the thermodynamic floor is revenue, not a sustainability initiative.</li>
+                    <li><strong>The economic observer gets an opportunity cost.</strong> Every choice to spend energy, produce entropy, or run inference forgoes the others. With one reference, what is forgone can be priced.</li>
                 </ul>
-                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>07</span></div>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>10</span></div>
             </section>
 
-            <!-- 8 -->
+            <!-- 11 -->
             <section class="slide">
-                <div class="tag">Open Questions</div>
-                <h2>Where we stand</h2>
+                <div class="tag">The Bet</div>
+                <h2>What is proven, and where our money is</h2>
                 <div class="rule"></div>
-                <p>A research programme, a hedge strategy, a cost curve:</p>
-                <ul>
-                    <li><strong>Measurement fidelity.</strong> Entropy accounting is exact at the protocol layer and approximate at the hardware layer.</li>
-                    <li><strong>Volatility.</strong> Optionality that bounds the reference.</li>
-                    <li><strong>Adoption is value.</strong> A reference frame is worth what others will measure against. Preservation of the economic observer.</li>
-                </ul>
-                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>08</span></div>
+                <div class="cols">
+                    <div>
+                        <div class="col-num">Exact</div>
+                        <h4>Equivalences</h4>
+                        <p><math><mi>S</mi><mo>=</mo><msub><mi>k</mi><mi mathvariant="normal">B</mi></msub><mi>H</mi></math>, <math><mi>F</mi><mo>=</mo><mo form="prefix">&minus;</mo><msub><mi>k</mi><mi mathvariant="normal">B</mi></msub><mi>T</mi><mspace width="0.17em"/><mi>ln</mi><mspace width="0.17em"/><mi>Z</mi></math>, and free energy as scaled divergence hold exactly under their stated assumptions.</p>
+                    </div>
+                    <div>
+                        <div class="col-num">Structural</div>
+                        <h4>The Free Energy Principle</h4>
+                        <p><strong>Active Inference:</strong> perception and action both minimize variational free energy. <strong>Bayesian Mechanics:</strong> anything with a Markov blanket behaves as if it infers its world. Same form, read as belief.</p>
+                    </div>
+                    <div>
+                        <div class="col-num">Our bet</div>
+                        <h4>Arbitrage and a framework</h4>
+                        <p><strong>Arbitrage</strong> on inefficient Proof of Work schemes that pay for work at a threshold. <strong>A framework</strong> for seeing economically in a world of decentralized intelligence.</p>
+                    </div>
+                </div>
+                <p style="margin-top:1.6cqw;max-width:100%">Every claim downstream declares its state space, its constraints, and its physical conversion.</p>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>11</span></div>
+            </section>
+
+            <!-- 12 -->
+            <section class="slide">
+                <div class="tag">What We Build</div>
+                <h2>Research &amp; Engineering</h2>
+                <div class="rule"></div>
+                <div class="stack">
+                    <div class="stack-row"><span class="lbl">Capital</span><span class="txt"><strong>Hedge fund arbitrage.</strong> Positions against mispriced Proof of Work subsidies, sized by measured surprisal per joule.</span></div>
+                    <div class="stack-row"><span class="lbl">Infra</span><span class="txt"><strong>Open source infra upgrade:</strong> <em>Information theory of unlimited sharding.</em> An additive entropy record lets consensus shard without bound.</span></div>
+                    <div class="stack-row"><span class="lbl">Research</span><span class="txt"><strong>Research Institute of Thermoeconomics.</strong> The mathematical spine, its proofs, and the line between identity and analogy.</span></div>
+                    <div class="stack-row"><span class="lbl">Markets</span><span class="txt"><strong>Commercialization of Compute Futures based on Energy Money.</strong> Forward contracts on compute, denominated in a unit referenced in physics.</span></div>
+                </div>
+                <div class="slide-foot"><span>Qi &middot; Technical Thesis</span><span>12</span></div>
             </section>
 
         </div>
@@ -428,7 +510,7 @@ nav {
     </div>
 
     <div class="deck-bar">
-        <span class="deck-count" id="count">01 / 08</span>
+        <span class="deck-count" id="count">01 / 12</span>
         <div class="deck-dots" id="dots"></div>
     </div>
 
