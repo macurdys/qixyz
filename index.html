@@ -638,6 +638,11 @@
             font-family: 'Georgia', serif; font-size: 13px; font-style: italic;
             color: #5c6672; text-align: center; margin-top: 10px; line-height: 1.55;
         }
+        .essay-sig .sig-role a { color: inherit; text-decoration: none; }
+        .qi-eq { text-align: center; margin: 14px 0 18px; font-size: 1.15em; }
+        .qi-eq .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 2px; }
+        .qi-eq .frac > span:first-child { border-bottom: 1px solid currentColor; padding: 0 4px; }
+        .qi-eq .frac > span { line-height: 1.2; }
         .essay-doc .essay-end {
             font-family: var(--font-mono); font-size: 10px; letter-spacing: 4px;
             text-transform: uppercase; color: #8d97a3; text-align: center;
@@ -888,58 +893,41 @@
 
         <div class="essay-toolbar">
             <span class="essay-toolbar-label">What Is Qi?</span>
-            <a class="doc-btn primary" href="what-is-qi.pdf" download="what-is-qi-macurdy-v1.4.pdf">↓ Download PDF</a>
-            <a class="doc-btn" href="what-is-qi.pdf" target="_blank" rel="noopener">↗ Open PDF</a>
+            <a class="doc-btn primary" href="what-is-qi.pdf?v=2" download="what-is-qi.pdf">↓ Download PDF</a>
+            <a class="doc-btn" href="what-is-qi.pdf?v=2" target="_blank" rel="noopener">↗ Open PDF</a>
         </div>
 
         <article class="essay-doc" id="essayDoc">
             <h2 class="essay-title">What Is <span>Qi</span>?</h2>
 
 
-            <p class="litany">Qi is a localized, normalized, and minimized energy oracle.</p>
-            <p class="litany">Energy oracles supply randomness, work, and decentralization.</p>
-            <p class="litany gap">Qi is a lineage from fuel, to joule, to rule.</p>
-            <p class="litany">The rule is code, open-sourced, and provable.</p>
-            <p class="litany gap">Qi is a token emitted proportional to the difficulty required to produce it.</p>
-            <p class="litany">It is a reference, a measure, a metric. The first of its kind.</p>
-            <p class="litany gap">Qi is a currency within a monetary system.</p>
-            <p class="litany">It&rsquo;s used for stability, privacy, and payments.</p>
-            <p class="litany gap">Qi is a pair, with Quai.</p>
-            <p class="litany">Quai is programmable, composable, and volatile</p>
-            <p class="litany">Qi is a put option on Quai.</p>
-            <p class="litany">Quai is a call option on Qi.</p>
-            <p class="litany gap">Qi is defined by an entropic relationship, where ΔS = 1/2<sup>n</sup>.</p>
-            <p class="litany">Qi is cryptographic, inheriting all properties bestowed by Satoshi & the Cypherpunks.</p>
-
-            <h3>Energy, Electricity, Economics</h3>
-
-            <div class="essay-chain">Fuel <i>&rarr;</i> Joule <i>&rarr;</i> Rule</div>
-
-            <p><strong>Fuel</strong> is heterogeneous. Gas, wind, nuclear, solar, hydro &mdash;no two are priced alike. Fuel is where value is local.</p>
-
-            <p><strong>Joule</strong> is the normalization. Combustion, fission, and photovoltaics all terminate in the same scalar, comparable across borders, technologies, systems, and centuries. This is the step that makes fuel commensurable. But a joule is only a measurement; a claim to have spent one settles nothing, because no one else can check it.</p>
-
-            <p><strong>Rule</strong> is what makes the spent joule a fact. The hash is the receipt and difficulty is the rule that defines the cost. Emission is measured: Qi is released in proportion to work presented against a target, so the marginal cost of a unit is the marginal cost of the electricity that found it. No issuer, no promise, no redemption&mdash;a number anyone can verify.</p>
+            <p class="litany"><em>Qi</em> is a localized, normalized, and minimized energy oracle.</p>
+            <p class="litany">Energy oracles supply randomness, decentralization, and work.</p>
+            <p class="litany"><em>Qi</em> forms a lineage; from fuel, to joule, to rule.</p>
+            <p class="litany">Any fuel, Every joule, One rule. The rule is provable, open-source code.</p>
+            <p class="litany"><em>Qi</em> is emitted as a token, proportional to the fuel required to produce it. Seignorage is eliminated.</p>
+            <p class="litany"><em>Qi</em> is a reference, a measure, and a metric. The first of its kind. A new scientific unit for economics.</p>
+            <p class="litany"><em>Qi</em> is paired with a partner: <em>Quai</em>. Together, they form a complete monetary system.</p>
+            <p class="litany">One is stable and private. One is programmable and speculative. One denominates the other. One converts for the other. Together, they form one unit in an interconnected system.</p>
+            <p class="litany"><em>Qi</em> carries an embedded call into <em>Quai</em>. <em>Quai</em> carries an embedded put into <em>Qi</em>.</p>
+            <p class="litany"><em>Qi</em> inherits all cryptographic properties bestowed by Satoshi &amp; the Cypherpunks.</p>
+            <p class="litany">Both have an intrinsic entropic relationship defined by:</p>
+            <div class="qi-eq"><i>&Delta;S</i> = <span class="frac"><span>1</span><span>2<i>n</i></span></span>.</div>
 
             <h3>Our Mission</h3>
 
-            <p>Qi.xyz is a frontier economics lab for decentralized intelligence.</p>
-
-            <p>We use Qi as an energy oracle and measurement unit for all organic and inorganic systems. We expect Qi will be used for defining the future unit economics of all physical systems.</p>
-
-            <p>Therefore, our mission is to accelerate the adoption and proliferation of Qi.</p>
-
-            <p>To that extent, our team will use and build proprietary models to arbitrage financial markets and develop open-source blockchain infrastructure to service Qi. Our goal is to direct resources toward systems capable of coordinating, preserving, and adapting our collective intelligence to rapid changes.</p>
-
-            <p>Qi is simultaneously a solution, a reference, and a framework for understanding the relationship between energy, computation, and economics.</p>
-
-            <p>As our world economy becomes increasingly computational, Qi will become inevitable.</p>
-
-            <p class="closing">Learn more at <a href="https://thermoeconomics.info/">thermoeconomics.info</a> and <a href="https://qi.xyz/">qi.xyz</a>.</p>
+            <p><a Qi.xyz</a> is a frontier economics lab for frontier (decentralized) intelligence.</p>
+            <p>We use <em>Qi</em> as an energy oracle and measurement unit for all organic and inorganic systems. We expect <em>Qi</em> will be used for defining the unit economics of all physical systems in the future.</p>
+            <p>Therefore, our mission is to accelerate the adoption and proliferation of <em>Qi</em>.</p>
+            <p>To that extent, our team builds and employs proprietary economic models to arbitrage proof of work based cryptocurrencies. We expect an expansion into commodity and currency markets as well. Additionally, we develop open-source infrastructure for blockchains to service <em>Qi</em>. Our goal with <em>Qi</em> is to direct resources towards it and other systems capable of coordinating, preserving, and adapting our collective intelligence to unexpected and rapid change.</p>
+            <p><em>Qi</em> is simultaneously a solution to fiat monetary policy, a reference unit for physics and science, and an ontology framework for understanding the relationship between energy, computation, and value.</p>
+            <p>As our world economy becomes increasingly computational, <em>Qi</em> will become inevitable.</p>
+            <p class="closing">To learn more, please visit <a href="https://thermoeconomics.info/">thermoeconomics.info</a> and <a href="https://qi.xyz/">qi.xyz</a>.</p>
 
             <div class="essay-sig">
                 <div class="sig-name">Steph Macurdy</div>
-                <div class="sig-role">Institute of Thermoeconomics &middot; qi.xyz</div>
+                <div class="sig-role">Founder</div>
+                <div class="sig-role"><a href="https://thermoeconomics.info/">Institute of Thermoeconomics</a> || <a href="https://qi.xyz/">Qi.xyz</a></div>
             </div>
         </article>
 
